@@ -3,309 +3,542 @@
 <head>
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <title>Brihta</title>
-  <link href="https://fonts.googleapis.com/css2?family=Nunito:wght@400;600;700;800;900&family=Fredoka+One&display=swap" rel="stylesheet">
+  <title>Brihta — Učni portal</title>
+  <link href="https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@400;500;600;700;800;900&display=swap" rel="stylesheet">
   <style>
     *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
 
     :root {
-      --forest:   #1a3a2a;
-      --moss:     #2d5a3d;
-      --leaf:     #3d7a52;
-      --muted:    #5a7a68;
-      --amber:    #f5a623;
-      --amber2:   #e8902a;
-      --cream:    #fdf6e3;
-      --shadow:   rgba(26,58,42,0.15);
+      --green:     #3d7a52;
+      --green-lt:  #4e9966;
+      --green-dk:  #1a3a2a;
+      --green-bg:  #f0f7f3;
+      --amber:     #f5a623;
+      --amber-dk:  #e8902a;
+      --white:     #ffffff;
+      --gray-1:    #f5f5f7;
+      --gray-2:    #e8e8ed;
+      --gray-3:    #aeaeb2;
+      --gray-4:    #636366;
+      --text:      #1d1d1f;
+      --shadow-sm: 0 2px 8px rgba(0,0,0,0.08);
+      --shadow-md: 0 8px 24px rgba(0,0,0,0.10);
+      --shadow-lg: 0 20px 48px rgba(0,0,0,0.14);
+      --radius-xl: 24px;
+      --radius-lg: 18px;
+      --radius-md: 14px;
+      --radius-sm: 10px;
+      --max-w: 720px;
     }
+
+    html { scroll-behavior: smooth; }
 
     body {
-      font-family: 'Nunito', sans-serif;
-      background-color: var(--cream);
-      background-image:
-        radial-gradient(circle at 15% 20%, rgba(61,122,82,0.08) 0%, transparent 50%),
-        radial-gradient(circle at 85% 80%, rgba(245,166,35,0.07) 0%, transparent 50%);
+      font-family: 'Plus Jakarta Sans', -apple-system, sans-serif;
+      background: var(--white);
+      color: var(--text);
       min-height: 100vh;
-      color: var(--forest);
+      -webkit-font-smoothing: antialiased;
     }
 
-    /* HEADER */
-    header {
-      background: linear-gradient(135deg, var(--forest) 0%, var(--moss) 60%, #1e4a32 100%);
-      padding: 28px 24px 36px;
+    /* ─── HERO HEADER ─── */
+    .hero {
+      background: linear-gradient(160deg, #1a3a2a 0%, #2d5a3d 45%, #3d7a52 100%);
+      padding: 0 24px 0;
       position: relative;
       overflow: hidden;
     }
-    header::before {
+
+    .hero::before {
       content: '';
       position: absolute; inset: 0;
-      background: url("data:image/svg+xml,%3Csvg width='60' height='60' viewBox='0 0 60 60' xmlns='http://www.w3.org/2000/svg'%3E%3Cg fill='%23ffffff' fill-opacity='0.03'%3E%3Cpath d='M36 34v-4h-2v4h-4v2h4v4h2v-4h4v-2h-4zm0-30V0h-2v4h-4v2h4v4h2V6h4V4h-4zM6 34v-4H4v4H0v2h4v4h2v-4h4v-2H6zM6 4V0H4v4H0v2h4v4h2V6h4V4H6z'/%3E%3C/g%3E%3C/svg%3E");
+      background:
+        radial-gradient(ellipse 80% 60% at 70% 50%, rgba(245,166,35,0.08) 0%, transparent 70%),
+        radial-gradient(ellipse 50% 80% at 10% 100%, rgba(61,122,82,0.3) 0%, transparent 60%);
+      pointer-events: none;
     }
-    .header-inner {
-      max-width: 680px;
+
+    /* Subtle dot grid */
+    .hero::after {
+      content: '';
+      position: absolute; inset: 0;
+      background-image: radial-gradient(circle, rgba(255,255,255,0.07) 1px, transparent 1px);
+      background-size: 28px 28px;
+      pointer-events: none;
+    }
+
+    .hero-inner {
+      max-width: var(--max-w);
       margin: 0 auto;
       display: flex;
       align-items: center;
-      gap: 20px;
+      gap: 0;
+      position: relative;
+      z-index: 1;
+    }
+
+    .hero-logo-wrap {
+      flex-shrink: 0;
+      width: 200px;
+      height: 200px;
+      display: flex;
+      align-items: flex-end;
+      justify-content: center;
       position: relative;
     }
-    .owl-wrap {
-      flex-shrink: 0;
-      width: 80px; height: 80px;
-      background: rgba(255,255,255,0.1);
-      border-radius: 50%;
-      display: flex; align-items: center; justify-content: center;
-      border: 3px solid rgba(245,166,35,0.5);
-      box-shadow: 0 0 0 6px rgba(245,166,35,0.1);
+
+    .hero-logo-wrap img {
+      width: 200px;
+      height: 200px;
+      object-fit: contain;
+      object-position: bottom center;
+      filter: drop-shadow(0 8px 24px rgba(0,0,0,0.3));
+      animation: heroOwlIn 0.7s cubic-bezier(.34,1.56,.64,1) both;
     }
-    .header-text h1 {
-      font-family: 'Fredoka One', cursive;
-      font-size: 2.4rem;
-      color: #ffffff;
-      letter-spacing: 0.5px;
-      line-height: 1;
+
+    @keyframes heroOwlIn {
+      from { opacity: 0; transform: translateY(20px) scale(0.9); }
+      to   { opacity: 1; transform: translateY(0) scale(1); }
     }
-    .header-text p {
-      color: rgba(255,255,255,0.65);
-      font-size: 0.95rem;
-      font-weight: 600;
-      margin-top: 4px;
+
+    .hero-text {
+      flex: 1;
+      padding: 36px 0 36px 28px;
+      animation: heroTextIn 0.6s ease both 0.15s;
     }
-    .amber-dot {
-      display: inline-block;
-      width: 8px; height: 8px;
+
+    @keyframes heroTextIn {
+      from { opacity: 0; transform: translateX(16px); }
+      to   { opacity: 1; transform: translateX(0); }
+    }
+
+    .hero-badge {
+      display: inline-flex;
+      align-items: center;
+      gap: 6px;
+      background: rgba(245,166,35,0.18);
+      border: 1px solid rgba(245,166,35,0.35);
+      border-radius: 100px;
+      padding: 4px 12px;
+      font-size: 0.7rem;
+      font-weight: 700;
+      letter-spacing: 1px;
+      text-transform: uppercase;
+      color: var(--amber);
+      margin-bottom: 12px;
+    }
+
+    .hero-badge-dot {
+      width: 6px; height: 6px;
       background: var(--amber);
       border-radius: 50%;
-      margin-right: 6px;
-      vertical-align: middle;
+      animation: pulse 2s ease-in-out infinite;
     }
 
-    /* MAIN */
-    main { max-width: 680px; margin: 0 auto; padding: 32px 20px 60px; }
-
-    /* SECTION LABELS */
-    .section-label {
-      display: flex; align-items: center; gap: 10px;
-      margin-bottom: 16px;
-    }
-    .section-label-text {
-      font-size: 0.72rem; font-weight: 800;
-      letter-spacing: 1.5px; text-transform: uppercase;
-      color: var(--muted); white-space: nowrap;
-    }
-    .section-line {
-      flex: 1; height: 1px;
-      background: linear-gradient(to right, rgba(90,122,104,0.3), transparent);
+    @keyframes pulse {
+      0%, 100% { opacity: 1; transform: scale(1); }
+      50%       { opacity: 0.5; transform: scale(0.7); }
     }
 
-    /* APP GRID */
+    .hero-title {
+      font-size: clamp(2.6rem, 6vw, 3.8rem);
+      font-weight: 900;
+      color: #fff;
+      line-height: 1;
+      letter-spacing: -1.5px;
+    }
+
+    .hero-title span {
+      background: linear-gradient(90deg, #f5a623, #ffd080);
+      -webkit-background-clip: text;
+      -webkit-text-fill-color: transparent;
+      background-clip: text;
+    }
+
+    .hero-sub {
+      margin-top: 8px;
+      font-size: 0.95rem;
+      font-weight: 500;
+      color: rgba(255,255,255,0.6);
+      letter-spacing: 0.2px;
+    }
+
+    /* ─── MAIN ─── */
+    main {
+      max-width: var(--max-w);
+      margin: 0 auto;
+      padding: 40px 20px 80px;
+    }
+
+    /* ─── SECTION HEADERS ─── */
+    .section-header {
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      margin-bottom: 20px;
+    }
+
+    .section-title {
+      font-size: 0.72rem;
+      font-weight: 800;
+      letter-spacing: 1.8px;
+      text-transform: uppercase;
+      color: var(--gray-3);
+    }
+
+    /* ─── APP GRID ─── */
     .app-grid {
       display: grid;
       grid-template-columns: repeat(4, 1fr);
-      gap: 16px;
-      margin-bottom: 36px;
-    }
-    @media (max-width: 400px) {
-      .app-grid { grid-template-columns: repeat(3, 1fr); gap: 12px; }
+      gap: 20px;
+      margin-bottom: 44px;
     }
 
-    /* APP ICON */
+    @media (max-width: 480px) {
+      .app-grid { grid-template-columns: repeat(3, 1fr); gap: 16px; }
+    }
+
+    /* ─── APP ICON ─── */
     .app-icon {
-      display: flex; flex-direction: column;
-      align-items: center; gap: 8px;
-      cursor: pointer; position: relative;
-    }
-    .app-icon-box {
-      width: 72px; height: 72px;
-      border-radius: 20px;
-      display: flex; align-items: center; justify-content: center;
-      font-size: 2rem;
-      box-shadow: 0 4px 14px var(--shadow), 0 1px 3px rgba(0,0,0,0.08);
-      transition: transform 0.18s cubic-bezier(.34,1.56,.64,1), box-shadow 0.18s ease;
-      position: relative; overflow: hidden;
-    }
-    .app-icon-box::after {
-      content: '';
-      position: absolute; inset: 0;
-      background: linear-gradient(135deg, rgba(255,255,255,0.22) 0%, transparent 60%);
-      border-radius: inherit; pointer-events: none;
-    }
-    .app-icon:hover .app-icon-box {
-      transform: translateY(-4px) scale(1.05);
-      box-shadow: 0 12px 28px var(--shadow);
-    }
-    .app-icon:active .app-icon-box { transform: scale(0.92); }
-    .app-icon-label {
-      font-size: 0.8rem; font-weight: 700;
-      color: var(--forest); text-align: center;
-      line-height: 1.2; max-width: 80px;
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      gap: 10px;
+      cursor: pointer;
+      position: relative;
+      animation: popIn 0.5s cubic-bezier(.34,1.56,.64,1) both;
     }
 
-    /* Delete */
-    .delete-badge {
-      position: absolute; top: -5px; right: -5px;
-      width: 22px; height: 22px;
-      background: #e53935; border-radius: 50%;
-      color: white; font-size: 14px; font-weight: 700;
-      border: none; cursor: pointer;
-      display: flex; align-items: center; justify-content: center;
-      opacity: 0; pointer-events: none;
-      transition: opacity 0.15s; z-index: 2;
-      box-shadow: 0 2px 6px rgba(0,0,0,0.3);
-    }
-    .delete-mode .delete-badge { opacity: 1; pointer-events: auto; }
-    .delete-mode .app-icon-box { animation: wiggle 0.4s ease-in-out infinite; }
-    @keyframes wiggle { 0%,100% { transform: rotate(-2deg); } 50% { transform: rotate(2deg); } }
-
-    /* TOOLBAR */
-    .toolbar { display: flex; gap: 10px; flex-wrap: wrap; margin-top: 8px; }
-    .btn {
-      padding: 10px 20px; border-radius: 12px;
-      font-family: 'Nunito', sans-serif; font-weight: 700;
-      font-size: 0.88rem; border: none; cursor: pointer;
-      transition: transform 0.15s, opacity 0.15s;
-    }
-    .btn:hover { opacity: 0.88; transform: translateY(-1px); }
-    .btn:active { transform: scale(0.96); }
-    .btn-primary { background: var(--moss); color: #fff; }
-    .btn-ghost { background: rgba(90,122,104,0.12); color: var(--moss); }
-    .note { font-size: 0.74rem; color: var(--muted); margin-top: 10px; font-weight: 600; }
-
-    /* MODAL */
-    .modal-backdrop {
-      position: fixed; inset: 0;
-      background: rgba(26,58,42,0.55);
-      backdrop-filter: blur(8px);
-      display: flex; align-items: center; justify-content: center;
-      padding: 20px; z-index: 100;
-      animation: fadeIn 0.2s ease;
-    }
-    @keyframes fadeIn { from { opacity:0; } to { opacity:1; } }
-    .modal-box {
-      background: var(--cream); border-radius: 24px;
-      padding: 32px; max-width: 400px; width: 100%;
-      box-shadow: 0 24px 60px rgba(0,0,0,0.2);
-      animation: slideUp 0.25s cubic-bezier(.34,1.56,.64,1);
-    }
-    @keyframes slideUp { from { opacity:0; transform:translateY(20px); } to { opacity:1; transform:translateY(0); } }
-    .modal-box h2 {
-      font-family: 'Fredoka One', cursive;
-      font-size: 1.5rem; color: var(--forest); margin-bottom: 20px;
-    }
-    .modal-field { margin-bottom: 16px; }
-    .modal-field label {
-      display: block; font-weight: 800; font-size: 0.78rem;
-      color: var(--muted); margin-bottom: 6px;
-      text-transform: uppercase; letter-spacing: 0.5px;
-    }
-    .modal-field input {
-      width: 100%; padding: 12px 16px; border-radius: 12px;
-      border: 2px solid rgba(90,122,104,0.2);
-      font-family: 'Nunito', sans-serif; font-size: 0.95rem;
-      font-weight: 600; color: var(--forest);
-      background: white; outline: none;
-      transition: border-color 0.15s;
-    }
-    .modal-field input:focus { border-color: var(--leaf); }
-    .modal-btns { display: flex; gap: 10px; margin-top: 20px; }
-    .modal-btns .btn { flex: 1; padding: 13px; font-size: 0.9rem; }
-    .modal-box p.modal-desc { color: var(--muted); font-weight: 600; margin-bottom: 20px; }
-
-    /* TOAST */
-    .toast {
-      position: fixed; top: 20px; left: 50%;
-      transform: translateX(-50%);
-      background: var(--forest); color: white;
-      padding: 12px 24px; border-radius: 14px;
-      font-weight: 700; font-size: 0.9rem; z-index: 200;
-      box-shadow: 0 8px 24px rgba(0,0,0,0.2);
-      animation: toastIn 0.3s cubic-bezier(.34,1.56,.64,1);
-    }
-    @keyframes toastIn { from { opacity:0; transform:translateX(-50%) translateY(-12px); } to { opacity:1; transform:translateX(-50%) translateY(0); } }
-
-    /* STAGGER */
-    .app-icon { animation: popIn 0.4s cubic-bezier(.34,1.56,.64,1) both; }
     .app-icon:nth-child(1) { animation-delay: 0.05s; }
     .app-icon:nth-child(2) { animation-delay: 0.10s; }
     .app-icon:nth-child(3) { animation-delay: 0.15s; }
     .app-icon:nth-child(4) { animation-delay: 0.20s; }
     .app-icon:nth-child(5) { animation-delay: 0.25s; }
     .app-icon:nth-child(6) { animation-delay: 0.30s; }
-    @keyframes popIn { from { opacity:0; transform:scale(0.7) translateY(10px); } to { opacity:1; transform:scale(1) translateY(0); } }
+
+    @keyframes popIn {
+      from { opacity: 0; transform: scale(0.75) translateY(12px); }
+      to   { opacity: 1; transform: scale(1) translateY(0); }
+    }
+
+    .app-icon-box {
+      width: 76px;
+      height: 76px;
+      border-radius: 22px;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      font-size: 2.1rem;
+      position: relative;
+      overflow: hidden;
+      box-shadow:
+        0 4px 0 rgba(0,0,0,0.12),
+        0 6px 18px rgba(0,0,0,0.12);
+      transition: transform 0.2s cubic-bezier(.34,1.56,.64,1), box-shadow 0.2s ease;
+    }
+
+    /* Gloss shine */
+    .app-icon-box::before {
+      content: '';
+      position: absolute;
+      top: 0; left: 0; right: 0;
+      height: 45%;
+      background: linear-gradient(180deg, rgba(255,255,255,0.28) 0%, rgba(255,255,255,0) 100%);
+      border-radius: 22px 22px 0 0;
+      pointer-events: none;
+    }
+
+    .app-icon:hover .app-icon-box {
+      transform: translateY(-5px) scale(1.06);
+      box-shadow: 0 8px 0 rgba(0,0,0,0.10), 0 14px 32px rgba(0,0,0,0.16);
+    }
+
+    .app-icon:active .app-icon-box {
+      transform: scale(0.92) translateY(0);
+      box-shadow: 0 1px 0 rgba(0,0,0,0.10), 0 2px 8px rgba(0,0,0,0.10);
+    }
+
+    .app-icon-label {
+      font-size: 0.78rem;
+      font-weight: 700;
+      color: var(--text);
+      text-align: center;
+      line-height: 1.25;
+      max-width: 80px;
+    }
+
+    /* ─── DELETE MODE ─── */
+    .delete-badge {
+      position: absolute;
+      top: -7px; left: -7px;
+      width: 24px; height: 24px;
+      background: #ff3b30;
+      border-radius: 50%;
+      color: white;
+      font-size: 16px;
+      font-weight: 700;
+      border: 2px solid white;
+      cursor: pointer;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      opacity: 0;
+      pointer-events: none;
+      transition: opacity 0.15s;
+      z-index: 5;
+      box-shadow: 0 2px 8px rgba(0,0,0,0.25);
+      line-height: 1;
+    }
+
+    .delete-mode .delete-badge { opacity: 1; pointer-events: auto; }
+    .delete-mode .app-icon-box { animation: jiggle 0.35s ease-in-out infinite; }
+
+    @keyframes jiggle {
+      0%, 100% { transform: rotate(-2.5deg); }
+      50%       { transform: rotate(2.5deg); }
+    }
+
+    /* ─── TOOLBAR ─── */
+    .toolbar {
+      display: flex;
+      gap: 10px;
+      flex-wrap: wrap;
+      margin-top: 4px;
+    }
+
+    .btn {
+      display: inline-flex;
+      align-items: center;
+      gap: 6px;
+      padding: 12px 22px;
+      border-radius: 100px;
+      font-family: 'Plus Jakarta Sans', sans-serif;
+      font-weight: 700;
+      font-size: 0.88rem;
+      border: none;
+      cursor: pointer;
+      transition: transform 0.15s cubic-bezier(.34,1.56,.64,1), box-shadow 0.15s ease, opacity 0.15s;
+      letter-spacing: 0.1px;
+    }
+
+    .btn:hover { transform: translateY(-2px); }
+    .btn:active { transform: scale(0.95); }
+
+    .btn-primary {
+      background: var(--green);
+      color: #fff;
+      box-shadow: 0 4px 14px rgba(61,122,82,0.35);
+    }
+    .btn-primary:hover { box-shadow: 0 8px 24px rgba(61,122,82,0.4); }
+
+    .btn-ghost {
+      background: var(--gray-1);
+      color: var(--gray-4);
+      box-shadow: var(--shadow-sm);
+    }
+    .btn-ghost:hover { background: var(--gray-2); }
+
+    .note {
+      font-size: 0.73rem;
+      color: var(--gray-3);
+      margin-top: 14px;
+      font-weight: 500;
+      display: flex;
+      align-items: center;
+      gap: 5px;
+    }
+
+    /* ─── DIVIDER ─── */
+    .divider {
+      height: 1px;
+      background: var(--gray-2);
+      margin: 36px 0;
+    }
+
+    /* ─── MODAL ─── */
+    .modal-backdrop {
+      position: fixed; inset: 0;
+      background: rgba(0,0,0,0.35);
+      backdrop-filter: blur(20px) saturate(180%);
+      -webkit-backdrop-filter: blur(20px) saturate(180%);
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      padding: 20px;
+      z-index: 1000;
+      animation: fadeIn 0.2s ease;
+    }
+
+    @keyframes fadeIn { from { opacity: 0; } to { opacity: 1; } }
+
+    .modal-box {
+      background: rgba(255,255,255,0.95);
+      backdrop-filter: blur(40px);
+      -webkit-backdrop-filter: blur(40px);
+      border-radius: var(--radius-xl);
+      padding: 32px;
+      max-width: 400px;
+      width: 100%;
+      box-shadow: 0 32px 80px rgba(0,0,0,0.22), 0 0 0 1px rgba(0,0,0,0.06);
+      animation: slideUp 0.3s cubic-bezier(.34,1.4,.64,1);
+    }
+
+    @keyframes slideUp {
+      from { opacity: 0; transform: translateY(30px) scale(0.96); }
+      to   { opacity: 1; transform: translateY(0) scale(1); }
+    }
+
+    .modal-box h2 {
+      font-size: 1.4rem;
+      font-weight: 800;
+      color: var(--text);
+      margin-bottom: 24px;
+      letter-spacing: -0.5px;
+    }
+
+    .modal-field { margin-bottom: 14px; }
+
+    .modal-field label {
+      display: block;
+      font-weight: 700;
+      font-size: 0.72rem;
+      color: var(--gray-3);
+      margin-bottom: 6px;
+      text-transform: uppercase;
+      letter-spacing: 1px;
+    }
+
+    .modal-field input {
+      width: 100%;
+      padding: 13px 16px;
+      border-radius: var(--radius-md);
+      border: 1.5px solid var(--gray-2);
+      font-family: 'Plus Jakarta Sans', sans-serif;
+      font-size: 0.95rem;
+      font-weight: 600;
+      color: var(--text);
+      background: var(--gray-1);
+      outline: none;
+      transition: border-color 0.15s, background 0.15s, box-shadow 0.15s;
+    }
+
+    .modal-field input:focus {
+      border-color: var(--green);
+      background: white;
+      box-shadow: 0 0 0 4px rgba(61,122,82,0.1);
+    }
+
+    .modal-btns {
+      display: flex;
+      gap: 10px;
+      margin-top: 24px;
+    }
+
+    .modal-desc {
+      font-size: 0.9rem;
+      color: var(--gray-4);
+      margin-bottom: 24px;
+      line-height: 1.5;
+    }
+
+    /* ─── TOAST ─── */
+    #toast-container {
+      position: fixed;
+      bottom: 32px;
+      left: 50%;
+      transform: translateX(-50%);
+      z-index: 2000;
+      display: flex;
+      flex-direction: column;
+      gap: 10px;
+      align-items: center;
+      pointer-events: none;
+    }
+
+    .toast {
+      background: var(--green-dk);
+      color: white;
+      padding: 13px 22px;
+      border-radius: 100px;
+      font-weight: 700;
+      font-size: 0.88rem;
+      box-shadow: 0 8px 24px rgba(0,0,0,0.2);
+      animation: toastIn 0.35s cubic-bezier(.34,1.56,.64,1) both,
+                 toastOut 0.3s ease 2.5s both;
+      white-space: nowrap;
+    }
+
+    @keyframes toastIn  { from { opacity:0; transform: translateY(16px) scale(0.9); } to { opacity:1; transform:translateY(0) scale(1); } }
+    @keyframes toastOut { from { opacity:1; } to { opacity:0; transform:translateY(8px); } }
+
+    /* ─── HERO FOOTER WAVE ─── */
+    .hero-wave {
+      display: block;
+      width: 100%;
+      overflow: hidden;
+      line-height: 0;
+      margin-bottom: -2px;
+    }
   </style>
 </head>
 <body>
 
-<header>
-  <div class="header-inner">
-    <div class="owl-wrap">
-      <svg width="56" height="56" viewBox="0 0 56 56" fill="none" xmlns="http://www.w3.org/2000/svg">
-        <!-- Body -->
-        <ellipse cx="28" cy="37" rx="15" ry="16" fill="#f5a623"/>
-        <!-- Wings -->
-        <ellipse cx="13" cy="39" rx="6" ry="10" fill="#e8902a" transform="rotate(-15 13 39)"/>
-        <ellipse cx="43" cy="39" rx="6" ry="10" fill="#e8902a" transform="rotate(15 43 39)"/>
-        <!-- Belly -->
-        <ellipse cx="28" cy="43" rx="9" ry="10" fill="#fdf6e3" opacity="0.4"/>
-        <!-- Head -->
-        <ellipse cx="28" cy="20" rx="14" ry="13" fill="#f5a623"/>
-        <!-- Ear tufts -->
-        <polygon points="18,10 14,2 22,8" fill="#e8902a"/>
-        <polygon points="38,10 42,2 34,8" fill="#e8902a"/>
-        <!-- Eye whites -->
-        <circle cx="22" cy="20" r="6.5" fill="white"/>
-        <circle cx="34" cy="20" r="6.5" fill="white"/>
-        <!-- Irises -->
-        <circle cx="22" cy="20" r="4.5" fill="#1a3a2a"/>
-        <circle cx="34" cy="20" r="4.5" fill="#1a3a2a"/>
-        <!-- Pupils shine -->
-        <circle cx="23.5" cy="18.5" r="1.5" fill="white"/>
-        <circle cx="35.5" cy="18.5" r="1.5" fill="white"/>
-        <!-- Beak -->
-        <polygon points="28,24 25,29 31,29" fill="#e8902a"/>
-        <!-- Graduation cap top -->
-        <ellipse cx="28" cy="9" rx="13" ry="3.5" fill="#1a3a2a"/>
-        <!-- Cap button -->
-        <rect x="26.5" y="3" width="3" height="7" fill="#1a3a2a"/>
-        <rect x="21" y="2" width="14" height="3.5" rx="1" fill="#1a3a2a"/>
-        <!-- Tassel string -->
-        <line x1="35" y1="5" x2="40" y2="11" stroke="#f5a623" stroke-width="1.5" stroke-linecap="round"/>
-        <!-- Tassel end -->
-        <circle cx="40" cy="12" r="2.5" fill="#f5a623"/>
-        <!-- Feet -->
-        <ellipse cx="23" cy="52" rx="5" ry="2" fill="#e8902a"/>
-        <ellipse cx="33" cy="52" rx="5" ry="2" fill="#e8902a"/>
-      </svg>
+<!-- HERO -->
+<header class="hero">
+  <div class="hero-inner">
+    <div class="hero-logo-wrap">
+      <img src="Gemini_Generated_Image_d14t4nd14t4nd14t.png" alt="Brihta maskota">
     </div>
-    <div class="header-text">
-      <h1>Brihta</h1>
-      <p><span class="amber-dot"></span>Učni portal · Osnovna šola</p>
+    <div class="hero-text">
+      <div class="hero-badge">
+        <span class="hero-badge-dot"></span>
+        Učni portal
+      </div>
+      <div class="hero-title">Brihta<span>.</span></div>
+      <div class="hero-sub">Osnovna šola · Predmeti &amp; orodja</div>
     </div>
   </div>
 </header>
+<svg class="hero-wave" viewBox="0 0 1440 36" xmlns="http://www.w3.org/2000/svg" preserveAspectRatio="none">
+  <path d="M0,36 C360,0 1080,0 1440,36 L1440,36 L0,36 Z" fill="#ffffff"/>
+</svg>
 
 <main>
+
+  <!-- PREDMETI -->
   <section>
-    <div class="section-label">
-      <span class="section-label-text">Predmeti</span>
-      <div class="section-line"></div>
+    <div class="section-header">
+      <span class="section-title">Predmeti</span>
     </div>
     <div class="app-grid" id="subjects-grid"></div>
   </section>
 
+  <div class="divider"></div>
+
+  <!-- ORODJA -->
   <section>
-    <div class="section-label">
-      <span class="section-label-text">Učiteljeva orodja</span>
-      <div class="section-line"></div>
+    <div class="section-header">
+      <span class="section-title">Učiteljeva orodja</span>
     </div>
     <div class="app-grid" id="tools-grid"></div>
   </section>
 
+  <!-- TOOLBAR -->
   <div class="toolbar">
-    <button class="btn btn-primary" id="add-btn">+ Dodaj stran</button>
-    <button class="btn btn-ghost" id="edit-btn">✏️ Uredi</button>
+    <button class="btn btn-primary" id="add-btn">
+      <svg width="14" height="14" viewBox="0 0 14 14" fill="none"><path d="M7 1v12M1 7h12" stroke="white" stroke-width="2.2" stroke-linecap="round"/></svg>
+      Dodaj stran
+    </button>
+    <button class="btn btn-ghost" id="edit-btn">
+      <svg width="14" height="14" viewBox="0 0 14 14" fill="none"><path d="M9.5 1.5l3 3L4 13H1v-3L9.5 1.5z" stroke="currentColor" stroke-width="1.6" stroke-linejoin="round"/></svg>
+      Uredi
+    </button>
   </div>
-  <p class="note">Gumb "Dodaj" shrani stran samo lokalno za vas.</p>
+  <p class="note">
+    <svg width="12" height="12" viewBox="0 0 12 12" fill="none"><circle cx="6" cy="6" r="5" stroke="#aeaeb2" stroke-width="1.2"/><path d="M6 5.5v3M6 4h.01" stroke="#aeaeb2" stroke-width="1.2" stroke-linecap="round"/></svg>
+    Dodane strani se shranijo lokalno na tej napravi.
+  </p>
+
 </main>
 
 <div id="modal-container"></div>
@@ -315,14 +548,14 @@
   const STORAGE_KEY = "brihta_custom_links";
 
   const subjects = [
-    { id:"s_mat", name:"Matematika", url:"https://brihta.github.io/matematika/",  icon:"🔢", color:"#e53935" },
-    { id:"s_drz", name:"Družba",     url:"https://brihta.github.io/druzba/",      icon:"🌍", color:"#43a047" },
-    { id:"s_ang", name:"Angleščina", url:"https://brihta.github.io/anglescina/",  icon:"🇬🇧", color:"#1e88e5" },
+    { id:"s_mat", name:"Matematika",  url:"https://brihta.github.io/matematika/",  icon:"🔢", color:"#ff3b30" },
+    { id:"s_drz", name:"Družba",      url:"https://brihta.github.io/druzba/",      icon:"🌍", color:"#34c759" },
+    { id:"s_ang", name:"Angleščina",  url:"https://brihta.github.io/anglescina/",  icon:"🇬🇧", color:"#007aff" },
   ];
 
   const builtinTools = [
-    { id:"t_bing", name:"Bingo",             url:"https://nicki89-blip.github.io/bingo/",  icon:"🎲", color:"#8e24aa" },
-    { id:"t_clnp", name:"Pospravimo razred", url:"https://larakin.my.canva.site/cleanup",  icon:"🧹", color:"#f57c00" },
+    { id:"t_bing", name:"Bingo",             url:"https://nicki89-blip.github.io/bingo/", icon:"🎲", color:"#af52de" },
+    { id:"t_clnp", name:"Pospravimo razred", url:"https://larakin.my.canva.site/cleanup", icon:"🧹", color:"#ff9500" },
   ];
 
   let deleteMode = false;
@@ -331,12 +564,11 @@
     try { return JSON.parse(localStorage.getItem(STORAGE_KEY) || "[]"); } catch { return []; }
   }
   function saveCustom(arr) { localStorage.setItem(STORAGE_KEY, JSON.stringify(arr)); }
-
   function isFixed(id) { return id.startsWith('s_') || id.startsWith('t_'); }
 
   function renderGrid(containerId, items) {
     const grid = document.getElementById(containerId);
-    if (deleteMode) grid.classList.add('delete-mode'); else grid.classList.remove('delete-mode');
+    grid.classList.toggle('delete-mode', deleteMode);
     grid.innerHTML = "";
     items.forEach(item => {
       const div = document.createElement("div");
@@ -363,7 +595,10 @@
   function render() {
     renderGrid('subjects-grid', subjects);
     renderGrid('tools-grid', [...builtinTools, ...loadCustom()]);
-    document.getElementById('edit-btn').textContent = deleteMode ? '✅ Končano' : '✏️ Uredi';
+    const editBtn = document.getElementById('edit-btn');
+    editBtn.innerHTML = deleteMode
+      ? `<svg width="14" height="14" viewBox="0 0 14 14" fill="none"><path d="M2 7l4 4 6-6" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"/></svg> Končano`
+      : `<svg width="14" height="14" viewBox="0 0 14 14" fill="none"><path d="M9.5 1.5l3 3L4 13H1v-3L9.5 1.5z" stroke="currentColor" stroke-width="1.6" stroke-linejoin="round"/></svg> Uredi`;
   }
 
   document.getElementById('edit-btn').addEventListener('click', () => { deleteMode = !deleteMode; render(); });
@@ -374,25 +609,26 @@
       <div class="modal-backdrop">
         <div class="modal-box">
           <h2>Dodaj stran</h2>
-          <div class="modal-field"><label>Ime</label><input id="m-name" type="text" placeholder="npr. Kviz"></div>
-          <div class="modal-field"><label>URL</label><input id="m-url" type="url" placeholder="https://..."></div>
+          <div class="modal-field"><label>Ime strani</label><input id="m-name" type="text" placeholder="npr. Kviz iz narave"></div>
+          <div class="modal-field"><label>URL naslov</label><input id="m-url" type="url" placeholder="https://..."></div>
           <div class="modal-field"><label>Emoji ikona</label><input id="m-icon" type="text" placeholder="🌐" maxlength="4" value="🌐"></div>
           <div class="modal-btns">
-            <button class="btn btn-primary" id="m-save">Shrani</button>
+            <button class="btn btn-primary" id="m-save" style="flex:1">Shrani</button>
             <button class="btn btn-ghost" id="m-cancel">Prekliči</button>
           </div>
         </div>
       </div>`;
+    modal.querySelector('.modal-backdrop').addEventListener('click', e => { if (e.target === e.currentTarget) modal.innerHTML = ''; });
     document.getElementById('m-cancel').onclick = () => modal.innerHTML = '';
     document.getElementById('m-save').onclick = () => {
       const name = document.getElementById('m-name').value.trim();
-      let url = document.getElementById('m-url').value.trim();
+      let url   = document.getElementById('m-url').value.trim();
       const icon = document.getElementById('m-icon').value.trim() || '🌐';
-      if (!name || !url) { showToast('Izpolni vsa polja!'); return; }
+      if (!name || !url) { showToast('⚠️ Izpolni vsa polja!'); return; }
       if (!url.startsWith('http')) url = 'https://' + url;
       const custom = loadCustom();
-      const colors = ['#00897b','#6d4c41','#546e7a','#c0392b','#7b1fa2'];
-      custom.push({ id:'c_'+Date.now(), name, url, icon, color: colors[custom.length % colors.length] });
+      const palette = ['#00c7be','#5e5ce6','#32d74b','#ff375f','#ffd60a','#0a84ff'];
+      custom.push({ id: 'c_' + Date.now(), name, url, icon, color: palette[custom.length % palette.length] });
       saveCustom(custom);
       modal.innerHTML = '';
       render();
@@ -405,10 +641,10 @@
     modal.innerHTML = `
       <div class="modal-backdrop">
         <div class="modal-box">
-          <h2>Izbriši?</h2>
-          <p class="modal-desc">Odstranim <strong>${item.name}</strong>?</p>
+          <h2>Izbriši stran?</h2>
+          <p class="modal-desc">Odstranim <strong>${item.name}</strong> iz portala? Tega ne moreš razveljaviti.</p>
           <div class="modal-btns">
-            <button class="btn btn-primary" id="c-yes" style="background:#e53935">Da, izbriši</button>
+            <button class="btn btn-primary" id="c-yes" style="background:#ff3b30;box-shadow:0 4px 14px rgba(255,59,48,0.3);flex:1">Izbriši</button>
             <button class="btn btn-ghost" id="c-no">Prekliči</button>
           </div>
         </div>
@@ -426,7 +662,8 @@
 
   function showToast(msg) {
     const t = document.createElement('div');
-    t.className = 'toast'; t.textContent = msg;
+    t.className = 'toast';
+    t.textContent = msg;
     document.getElementById('toast-container').appendChild(t);
     setTimeout(() => t.remove(), 2800);
   }
