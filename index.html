@@ -1,198 +1,437 @@
-<!doctype html>
-<html lang="sl" class="h-full">
- <head>
+<!DOCTYPE html>
+<html lang="sl">
+<head>
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <title>Moji Linki</title>
-  <script src="https://cdn.tailwindcss.com"></script>
+  <title>Brihta</title>
+  <link href="https://fonts.googleapis.com/css2?family=Nunito:wght@400;600;700;800;900&family=Fredoka+One&display=swap" rel="stylesheet">
   <style>
-    body { box-sizing: border-box; }
-    .app-icon { transition: transform 0.2s ease, opacity 0.2s ease; }
-    .app-icon:active { transform: scale(0.95); opacity: 0.8; }
-    .delete-mode .app-icon { animation: wiggle 0.3s ease-in-out infinite; }
-    @keyframes wiggle { 0%, 100% { transform: rotate(-1deg); } 50% { transform: rotate(1deg); } }
-    .delete-badge { transition: opacity 0.2s ease; }
-    .modal-backdrop { backdrop-filter: blur(8px); }
-    .toast { animation: slideIn 0.3s ease-out; }
-    @keyframes slideIn { from { transform: translateY(-100%); opacity: 0; } to { transform: translateY(0); opacity: 1; } }
-    ::-webkit-scrollbar { width: 8px; }
-    ::-webkit-scrollbar-track { background: #16213e; }
-    ::-webkit-scrollbar-thumb { background: #3282b8; border-radius: 4px; }
-    ::-webkit-scrollbar-thumb:hover { background: #0f4c75; }
+    *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+
+    :root {
+      --forest:   #1a3a2a;
+      --moss:     #2d5a3d;
+      --leaf:     #3d7a52;
+      --muted:    #5a7a68;
+      --amber:    #f5a623;
+      --amber2:   #e8902a;
+      --cream:    #fdf6e3;
+      --shadow:   rgba(26,58,42,0.15);
+    }
+
+    body {
+      font-family: 'Nunito', sans-serif;
+      background-color: var(--cream);
+      background-image:
+        radial-gradient(circle at 15% 20%, rgba(61,122,82,0.08) 0%, transparent 50%),
+        radial-gradient(circle at 85% 80%, rgba(245,166,35,0.07) 0%, transparent 50%);
+      min-height: 100vh;
+      color: var(--forest);
+    }
+
+    /* HEADER */
+    header {
+      background: linear-gradient(135deg, var(--forest) 0%, var(--moss) 60%, #1e4a32 100%);
+      padding: 28px 24px 36px;
+      position: relative;
+      overflow: hidden;
+    }
+    header::before {
+      content: '';
+      position: absolute; inset: 0;
+      background: url("data:image/svg+xml,%3Csvg width='60' height='60' viewBox='0 0 60 60' xmlns='http://www.w3.org/2000/svg'%3E%3Cg fill='%23ffffff' fill-opacity='0.03'%3E%3Cpath d='M36 34v-4h-2v4h-4v2h4v4h2v-4h4v-2h-4zm0-30V0h-2v4h-4v2h4v4h2V6h4V4h-4zM6 34v-4H4v4H0v2h4v4h2v-4h4v-2H6zM6 4V0H4v4H0v2h4v4h2V6h4V4H6z'/%3E%3C/g%3E%3C/svg%3E");
+    }
+    .header-inner {
+      max-width: 680px;
+      margin: 0 auto;
+      display: flex;
+      align-items: center;
+      gap: 20px;
+      position: relative;
+    }
+    .owl-wrap {
+      flex-shrink: 0;
+      width: 80px; height: 80px;
+      background: rgba(255,255,255,0.1);
+      border-radius: 50%;
+      display: flex; align-items: center; justify-content: center;
+      border: 3px solid rgba(245,166,35,0.5);
+      box-shadow: 0 0 0 6px rgba(245,166,35,0.1);
+    }
+    .header-text h1 {
+      font-family: 'Fredoka One', cursive;
+      font-size: 2.4rem;
+      color: #ffffff;
+      letter-spacing: 0.5px;
+      line-height: 1;
+    }
+    .header-text p {
+      color: rgba(255,255,255,0.65);
+      font-size: 0.95rem;
+      font-weight: 600;
+      margin-top: 4px;
+    }
+    .amber-dot {
+      display: inline-block;
+      width: 8px; height: 8px;
+      background: var(--amber);
+      border-radius: 50%;
+      margin-right: 6px;
+      vertical-align: middle;
+    }
+
+    /* MAIN */
+    main { max-width: 680px; margin: 0 auto; padding: 32px 20px 60px; }
+
+    /* SECTION LABELS */
+    .section-label {
+      display: flex; align-items: center; gap: 10px;
+      margin-bottom: 16px;
+    }
+    .section-label-text {
+      font-size: 0.72rem; font-weight: 800;
+      letter-spacing: 1.5px; text-transform: uppercase;
+      color: var(--muted); white-space: nowrap;
+    }
+    .section-line {
+      flex: 1; height: 1px;
+      background: linear-gradient(to right, rgba(90,122,104,0.3), transparent);
+    }
+
+    /* APP GRID */
+    .app-grid {
+      display: grid;
+      grid-template-columns: repeat(4, 1fr);
+      gap: 16px;
+      margin-bottom: 36px;
+    }
+    @media (max-width: 400px) {
+      .app-grid { grid-template-columns: repeat(3, 1fr); gap: 12px; }
+    }
+
+    /* APP ICON */
+    .app-icon {
+      display: flex; flex-direction: column;
+      align-items: center; gap: 8px;
+      cursor: pointer; position: relative;
+    }
+    .app-icon-box {
+      width: 72px; height: 72px;
+      border-radius: 20px;
+      display: flex; align-items: center; justify-content: center;
+      font-size: 2rem;
+      box-shadow: 0 4px 14px var(--shadow), 0 1px 3px rgba(0,0,0,0.08);
+      transition: transform 0.18s cubic-bezier(.34,1.56,.64,1), box-shadow 0.18s ease;
+      position: relative; overflow: hidden;
+    }
+    .app-icon-box::after {
+      content: '';
+      position: absolute; inset: 0;
+      background: linear-gradient(135deg, rgba(255,255,255,0.22) 0%, transparent 60%);
+      border-radius: inherit; pointer-events: none;
+    }
+    .app-icon:hover .app-icon-box {
+      transform: translateY(-4px) scale(1.05);
+      box-shadow: 0 12px 28px var(--shadow);
+    }
+    .app-icon:active .app-icon-box { transform: scale(0.92); }
+    .app-icon-label {
+      font-size: 0.8rem; font-weight: 700;
+      color: var(--forest); text-align: center;
+      line-height: 1.2; max-width: 80px;
+    }
+
+    /* Delete */
+    .delete-badge {
+      position: absolute; top: -5px; right: -5px;
+      width: 22px; height: 22px;
+      background: #e53935; border-radius: 50%;
+      color: white; font-size: 14px; font-weight: 700;
+      border: none; cursor: pointer;
+      display: flex; align-items: center; justify-content: center;
+      opacity: 0; pointer-events: none;
+      transition: opacity 0.15s; z-index: 2;
+      box-shadow: 0 2px 6px rgba(0,0,0,0.3);
+    }
+    .delete-mode .delete-badge { opacity: 1; pointer-events: auto; }
+    .delete-mode .app-icon-box { animation: wiggle 0.4s ease-in-out infinite; }
+    @keyframes wiggle { 0%,100% { transform: rotate(-2deg); } 50% { transform: rotate(2deg); } }
+
+    /* TOOLBAR */
+    .toolbar { display: flex; gap: 10px; flex-wrap: wrap; margin-top: 8px; }
+    .btn {
+      padding: 10px 20px; border-radius: 12px;
+      font-family: 'Nunito', sans-serif; font-weight: 700;
+      font-size: 0.88rem; border: none; cursor: pointer;
+      transition: transform 0.15s, opacity 0.15s;
+    }
+    .btn:hover { opacity: 0.88; transform: translateY(-1px); }
+    .btn:active { transform: scale(0.96); }
+    .btn-primary { background: var(--moss); color: #fff; }
+    .btn-ghost { background: rgba(90,122,104,0.12); color: var(--moss); }
+    .note { font-size: 0.74rem; color: var(--muted); margin-top: 10px; font-weight: 600; }
+
+    /* MODAL */
+    .modal-backdrop {
+      position: fixed; inset: 0;
+      background: rgba(26,58,42,0.55);
+      backdrop-filter: blur(8px);
+      display: flex; align-items: center; justify-content: center;
+      padding: 20px; z-index: 100;
+      animation: fadeIn 0.2s ease;
+    }
+    @keyframes fadeIn { from { opacity:0; } to { opacity:1; } }
+    .modal-box {
+      background: var(--cream); border-radius: 24px;
+      padding: 32px; max-width: 400px; width: 100%;
+      box-shadow: 0 24px 60px rgba(0,0,0,0.2);
+      animation: slideUp 0.25s cubic-bezier(.34,1.56,.64,1);
+    }
+    @keyframes slideUp { from { opacity:0; transform:translateY(20px); } to { opacity:1; transform:translateY(0); } }
+    .modal-box h2 {
+      font-family: 'Fredoka One', cursive;
+      font-size: 1.5rem; color: var(--forest); margin-bottom: 20px;
+    }
+    .modal-field { margin-bottom: 16px; }
+    .modal-field label {
+      display: block; font-weight: 800; font-size: 0.78rem;
+      color: var(--muted); margin-bottom: 6px;
+      text-transform: uppercase; letter-spacing: 0.5px;
+    }
+    .modal-field input {
+      width: 100%; padding: 12px 16px; border-radius: 12px;
+      border: 2px solid rgba(90,122,104,0.2);
+      font-family: 'Nunito', sans-serif; font-size: 0.95rem;
+      font-weight: 600; color: var(--forest);
+      background: white; outline: none;
+      transition: border-color 0.15s;
+    }
+    .modal-field input:focus { border-color: var(--leaf); }
+    .modal-btns { display: flex; gap: 10px; margin-top: 20px; }
+    .modal-btns .btn { flex: 1; padding: 13px; font-size: 0.9rem; }
+    .modal-box p.modal-desc { color: var(--muted); font-weight: 600; margin-bottom: 20px; }
+
+    /* TOAST */
+    .toast {
+      position: fixed; top: 20px; left: 50%;
+      transform: translateX(-50%);
+      background: var(--forest); color: white;
+      padding: 12px 24px; border-radius: 14px;
+      font-weight: 700; font-size: 0.9rem; z-index: 200;
+      box-shadow: 0 8px 24px rgba(0,0,0,0.2);
+      animation: toastIn 0.3s cubic-bezier(.34,1.56,.64,1);
+    }
+    @keyframes toastIn { from { opacity:0; transform:translateX(-50%) translateY(-12px); } to { opacity:1; transform:translateX(-50%) translateY(0); } }
+
+    /* STAGGER */
+    .app-icon { animation: popIn 0.4s cubic-bezier(.34,1.56,.64,1) both; }
+    .app-icon:nth-child(1) { animation-delay: 0.05s; }
+    .app-icon:nth-child(2) { animation-delay: 0.10s; }
+    .app-icon:nth-child(3) { animation-delay: 0.15s; }
+    .app-icon:nth-child(4) { animation-delay: 0.20s; }
+    .app-icon:nth-child(5) { animation-delay: 0.25s; }
+    .app-icon:nth-child(6) { animation-delay: 0.30s; }
+    @keyframes popIn { from { opacity:0; transform:scale(0.7) translateY(10px); } to { opacity:1; transform:scale(1) translateY(0); } }
   </style>
- </head>
- <body class="h-full">
-  <div id="app-wrapper" class="h-full w-full overflow-auto"></div>
-  <script>
-    const config = {
-      background_color: "#1a1a2e",
-      surface_color: "#16213e",
-      text_color: "#edf2f4",
-      primary_action_color: "#0f4c75",
-      secondary_action_color: "#3282b8",
-      font_family: "system-ui",
-      font_size: 16,
-      page_title: "Moji Linki",
-      add_button_text: "Dodaj svojo"
+</head>
+<body>
+
+<header>
+  <div class="header-inner">
+    <div class="owl-wrap">
+      <svg width="56" height="56" viewBox="0 0 56 56" fill="none" xmlns="http://www.w3.org/2000/svg">
+        <!-- Body -->
+        <ellipse cx="28" cy="37" rx="15" ry="16" fill="#f5a623"/>
+        <!-- Wings -->
+        <ellipse cx="13" cy="39" rx="6" ry="10" fill="#e8902a" transform="rotate(-15 13 39)"/>
+        <ellipse cx="43" cy="39" rx="6" ry="10" fill="#e8902a" transform="rotate(15 43 39)"/>
+        <!-- Belly -->
+        <ellipse cx="28" cy="43" rx="9" ry="10" fill="#fdf6e3" opacity="0.4"/>
+        <!-- Head -->
+        <ellipse cx="28" cy="20" rx="14" ry="13" fill="#f5a623"/>
+        <!-- Ear tufts -->
+        <polygon points="18,10 14,2 22,8" fill="#e8902a"/>
+        <polygon points="38,10 42,2 34,8" fill="#e8902a"/>
+        <!-- Eye whites -->
+        <circle cx="22" cy="20" r="6.5" fill="white"/>
+        <circle cx="34" cy="20" r="6.5" fill="white"/>
+        <!-- Irises -->
+        <circle cx="22" cy="20" r="4.5" fill="#1a3a2a"/>
+        <circle cx="34" cy="20" r="4.5" fill="#1a3a2a"/>
+        <!-- Pupils shine -->
+        <circle cx="23.5" cy="18.5" r="1.5" fill="white"/>
+        <circle cx="35.5" cy="18.5" r="1.5" fill="white"/>
+        <!-- Beak -->
+        <polygon points="28,24 25,29 31,29" fill="#e8902a"/>
+        <!-- Graduation cap top -->
+        <ellipse cx="28" cy="9" rx="13" ry="3.5" fill="#1a3a2a"/>
+        <!-- Cap button -->
+        <rect x="26.5" y="3" width="3" height="7" fill="#1a3a2a"/>
+        <rect x="21" y="2" width="14" height="3.5" rx="1" fill="#1a3a2a"/>
+        <!-- Tassel string -->
+        <line x1="35" y1="5" x2="40" y2="11" stroke="#f5a623" stroke-width="1.5" stroke-linecap="round"/>
+        <!-- Tassel end -->
+        <circle cx="40" cy="12" r="2.5" fill="#f5a623"/>
+        <!-- Feet -->
+        <ellipse cx="23" cy="52" rx="5" ry="2" fill="#e8902a"/>
+        <ellipse cx="33" cy="52" rx="5" ry="2" fill="#e8902a"/>
+      </svg>
+    </div>
+    <div class="header-text">
+      <h1>Brihta</h1>
+      <p><span class="amber-dot"></span>Učni portal · Osnovna šola</p>
+    </div>
+  </div>
+</header>
+
+<main>
+  <section>
+    <div class="section-label">
+      <span class="section-label-text">Predmeti</span>
+      <div class="section-line"></div>
+    </div>
+    <div class="app-grid" id="subjects-grid"></div>
+  </section>
+
+  <section>
+    <div class="section-label">
+      <span class="section-label-text">Učiteljeva orodja</span>
+      <div class="section-line"></div>
+    </div>
+    <div class="app-grid" id="tools-grid"></div>
+  </section>
+
+  <div class="toolbar">
+    <button class="btn btn-primary" id="add-btn">+ Dodaj stran</button>
+    <button class="btn btn-ghost" id="edit-btn">✏️ Uredi</button>
+  </div>
+  <p class="note">Gumb "Dodaj" shrani stran samo lokalno za vas.</p>
+</main>
+
+<div id="modal-container"></div>
+<div id="toast-container"></div>
+
+<script>
+  const STORAGE_KEY = "brihta_custom_links";
+
+  const subjects = [
+    { id:"s_mat", name:"Matematika", url:"https://brihta.github.io/matematika/",  icon:"🔢", color:"#e53935" },
+    { id:"s_drz", name:"Družba",     url:"https://brihta.github.io/druzba/",      icon:"🌍", color:"#43a047" },
+    { id:"s_ang", name:"Angleščina", url:"https://brihta.github.io/anglescina/",  icon:"🇬🇧", color:"#1e88e5" },
+  ];
+
+  const builtinTools = [
+    { id:"t_bing", name:"Bingo",             url:"https://nicki89-blip.github.io/bingo/",  icon:"🎲", color:"#8e24aa" },
+    { id:"t_clnp", name:"Pospravimo razred", url:"https://larakin.my.canva.site/cleanup",  icon:"🧹", color:"#f57c00" },
+  ];
+
+  let deleteMode = false;
+
+  function loadCustom() {
+    try { return JSON.parse(localStorage.getItem(STORAGE_KEY) || "[]"); } catch { return []; }
+  }
+  function saveCustom(arr) { localStorage.setItem(STORAGE_KEY, JSON.stringify(arr)); }
+
+  function isFixed(id) { return id.startsWith('s_') || id.startsWith('t_'); }
+
+  function renderGrid(containerId, items) {
+    const grid = document.getElementById(containerId);
+    if (deleteMode) grid.classList.add('delete-mode'); else grid.classList.remove('delete-mode');
+    grid.innerHTML = "";
+    items.forEach(item => {
+      const div = document.createElement("div");
+      div.className = "app-icon";
+      const canDelete = !isFixed(item.id);
+      div.innerHTML = `
+        <div class="app-icon-box" style="background:${item.color};">
+          ${item.icon}
+          ${canDelete ? `<button class="delete-badge" data-id="${item.id}" title="Izbriši">×</button>` : ''}
+        </div>
+        <span class="app-icon-label">${item.name}</span>
+      `;
+      div.querySelector('.app-icon-box').addEventListener('click', e => {
+        if (e.target.classList.contains('delete-badge')) return;
+        if (deleteMode) return;
+        window.open(item.url, '_blank', 'noopener,noreferrer');
+      });
+      const badge = div.querySelector('.delete-badge');
+      if (badge) badge.addEventListener('click', e => { e.stopPropagation(); showDeleteConfirm(item); });
+      grid.appendChild(div);
+    });
+  }
+
+  function render() {
+    renderGrid('subjects-grid', subjects);
+    renderGrid('tools-grid', [...builtinTools, ...loadCustom()]);
+    document.getElementById('edit-btn').textContent = deleteMode ? '✅ Končano' : '✏️ Uredi';
+  }
+
+  document.getElementById('edit-btn').addEventListener('click', () => { deleteMode = !deleteMode; render(); });
+
+  document.getElementById('add-btn').addEventListener('click', () => {
+    const modal = document.getElementById('modal-container');
+    modal.innerHTML = `
+      <div class="modal-backdrop">
+        <div class="modal-box">
+          <h2>Dodaj stran</h2>
+          <div class="modal-field"><label>Ime</label><input id="m-name" type="text" placeholder="npr. Kviz"></div>
+          <div class="modal-field"><label>URL</label><input id="m-url" type="url" placeholder="https://..."></div>
+          <div class="modal-field"><label>Emoji ikona</label><input id="m-icon" type="text" placeholder="🌐" maxlength="4" value="🌐"></div>
+          <div class="modal-btns">
+            <button class="btn btn-primary" id="m-save">Shrani</button>
+            <button class="btn btn-ghost" id="m-cancel">Prekliči</button>
+          </div>
+        </div>
+      </div>`;
+    document.getElementById('m-cancel').onclick = () => modal.innerHTML = '';
+    document.getElementById('m-save').onclick = () => {
+      const name = document.getElementById('m-name').value.trim();
+      let url = document.getElementById('m-url').value.trim();
+      const icon = document.getElementById('m-icon').value.trim() || '🌐';
+      if (!name || !url) { showToast('Izpolni vsa polja!'); return; }
+      if (!url.startsWith('http')) url = 'https://' + url;
+      const custom = loadCustom();
+      const colors = ['#00897b','#6d4c41','#546e7a','#c0392b','#7b1fa2'];
+      custom.push({ id:'c_'+Date.now(), name, url, icon, color: colors[custom.length % colors.length] });
+      saveCustom(custom);
+      modal.innerHTML = '';
+      render();
+      showToast('Stran dodana! 🎉');
     };
+  });
 
-    // ⬇️ TUKAJ SO VAŠE JAVNE STRANI ⬇️
-    const publicWebsites = [
-      { 
-        id: "public_1", 
-        name: "Bingo", 
-        url: "https://nicki89-blip.github.io/bingo/", 
-        icon: "🌐", 
-        color: "#4285F4" 
-      },
-      { 
-        id: "public_2", 
-        name: "Angleščina", 
-        url: "https://nicki89-blip.github.io/angslo/", 
-        icon: "📺", 
-        color: "#FF0000" 
-      },
-      { 
-        id: "public_3", 
-        name: "Pospravimo razred", 
-        url: "https://larakin.my.canva.site/cleanup", 
-        icon: "🎨", 
-        color: "#00C4CC" 
-      },
-      { 
-        id: "public_4", 
-        name: "Družba", 
-        url: "https://nicki89-blip.github.io/druzba/", 
-        icon: "📝", 
-        color: "#00C4CC" 
-      },
-    ];
-
-    let currentWebsites = [];
-    let deleteMode = false;
-    const STORAGE_KEY = "website_launcher_db";
-
-    function loadData() {
-        let savedData = [];
-        const localData = localStorage.getItem(STORAGE_KEY);
-        if (localData) { savedData = JSON.parse(localData); }
-        currentWebsites = [...publicWebsites, ...savedData];
-        renderWebsites();
-    }
-
-    function saveLocalData(newWebsite) {
-        let localData = [];
-        const existingData = localStorage.getItem(STORAGE_KEY);
-        if (existingData) { localData = JSON.parse(existingData); }
-        localData.push(newWebsite);
-        localStorage.setItem(STORAGE_KEY, JSON.stringify(localData));
-        loadData();
-    }
-
-    function deleteLocalData(websiteId) {
-        const isPublic = publicWebsites.find(w => w.id === websiteId);
-        if (isPublic) { showToast("Javnih strani ni mogoče izbrisati!"); return; }
-        let localData = [];
-        const existingData = localStorage.getItem(STORAGE_KEY);
-        if (existingData) { localData = JSON.parse(existingData); }
-        localData = localData.filter(w => w.id !== websiteId);
-        localStorage.setItem(STORAGE_KEY, JSON.stringify(localData));
-        if (localData.length === 0) deleteMode = false;
-        loadData();
-        showToast("Stran izbrisana!");
-    }
-
-    function renderWebsites() {
-      const wrapper = document.getElementById("app-wrapper");
-      wrapper.style.fontFamily = `${config.font_family}, system-ui, sans-serif`;
-      wrapper.style.backgroundColor = config.background_color;
-      wrapper.style.color = config.text_color;
-
-      wrapper.innerHTML = `
-        <div class="min-h-full p-6">
-          <div id="page-header" class="max-w-6xl mx-auto mb-8">
-            <h1 class="font-bold mb-6" style="font-size: ${config.font_size * 1.75}px; color: ${config.text_color};">${config.page_title}</h1>
-            <div class="flex gap-3 flex-wrap">
-              <button id="add-website-btn" class="px-6 py-3 rounded-xl text-white font-semibold shadow-lg hover:opacity-90 transition-opacity" style="background-color: ${config.primary_action_color}; font-size: ${config.font_size}px;">${config.add_button_text}</button>
-              <button id="delete-mode-btn" class="px-6 py-3 rounded-xl text-white font-semibold shadow-lg hover:opacity-90 transition-opacity" style="background-color: ${config.secondary_action_color}; font-size: ${config.font_size}px;">${deleteMode ? "Končano" : "Uredi"}</button>
-            </div>
-            <p class="mt-4 opacity-50 text-sm">Opomba: Gumb "Dodaj" shrani stran samo za vas (lokalno).</p>
-          </div>
-          <div id="websites-grid" class="max-w-6xl mx-auto grid grid-cols-2 sm:grid-cols-3 md:grid-cols-4 lg:grid-cols-5 gap-6 ${deleteMode ? "delete-mode" : ""}">
-            ${currentWebsites.length === 0 ? `<div class="col-span-full text-center py-16"><p>Ni strani.</p></div>` : currentWebsites.map(w => `
-              <div class="app-icon relative flex flex-col items-center cursor-pointer" data-id="${w.id}">
-                <div class="relative">
-                  <div class="w-20 h-20 rounded-2xl shadow-lg flex items-center justify-center text-4xl" style="background-color: ${w.color};">${w.icon}</div>
-                  <button class="delete-badge absolute -top-2 -right-2 w-7 h-7 bg-red-500 rounded-full flex items-center justify-center text-white font-bold shadow-lg" style="opacity: ${deleteMode ? "1" : "0"}; pointer-events: ${deleteMode ? "auto" : "none"}; font-size: ${config.font_size * 1.125}px;">×</button>
-                </div>
-                <span class="mt-2 text-center px-1 line-clamp-2" style="font-size: ${config.font_size * 0.875}px; color: ${config.text_color};">${w.name}</span>
-              </div>`).join("")}
-          </div>
-          <div id="toast-container" class="fixed top-6 left-1/2 transform -translate-x-1/2 z-50"></div>
-          <div id="modal-container"></div>
-        </div>
-      `;
-
-      document.getElementById("add-website-btn").addEventListener("click", showAddModal);
-      document.getElementById("delete-mode-btn").addEventListener("click", toggleDeleteMode);
-      document.querySelectorAll(".app-icon").forEach(icon => {
-        const websiteId = icon.dataset.id;
-        const website = currentWebsites.find(w => w.id === websiteId);
-        icon.addEventListener("click", (e) => {
-          if (!deleteMode && !e.target.classList.contains("delete-badge")) { window.open(website.url, "_blank", "noopener,noreferrer"); }
-        });
-        const deleteBtn = icon.querySelector(".delete-badge");
-        if (deleteBtn) {
-          deleteBtn.addEventListener("click", (e) => {
-            e.stopPropagation();
-            if (publicWebsites.find(w => w.id === websiteId)) { showToast("Te strani ni mogoče izbrisati!"); } else { showDeleteConfirmation(website); }
-          });
-        }
-      });
-    }
-
-    function toggleDeleteMode() { deleteMode = !deleteMode; renderWebsites(); }
-    
-    function showAddModal() {
-      const modal = document.getElementById("modal-container");
-      modal.innerHTML = `
-        <div class="modal-backdrop fixed inset-0 bg-black bg-opacity-50 flex items-center justify-center p-4 z-50">
-          <div class="rounded-2xl shadow-2xl max-w-md w-full p-6" style="background-color: ${config.surface_color};">
-            <h2 class="font-bold mb-6" style="font-size: ${config.font_size * 1.5}px; color: ${config.text_color};">Dodaj stran</h2>
-            <form id="add-website-form">
-              <div class="mb-4"><label class="block mb-2 font-semibold">Ime</label><input type="text" id="website-name" required class="w-full px-4 py-3 rounded-xl border-2 border-opacity-20 bg-transparent text-white"></div>
-              <div class="mb-4"><label class="block mb-2 font-semibold">URL</label><input type="url" id="website-url" required class="w-full px-4 py-3 rounded-xl border-2 border-opacity-20 bg-transparent text-white"></div>
-              <div class="flex gap-3"><button type="submit" class="flex-1 px-6 py-3 rounded-xl text-white font-semibold shadow-lg bg-blue-600">Shrani</button><button type="button" id="cancel-btn" class="flex-1 px-6 py-3 rounded-xl text-white font-semibold shadow-lg bg-gray-600">Prekliči</button></div>
-            </form>
+  function showDeleteConfirm(item) {
+    const modal = document.getElementById('modal-container');
+    modal.innerHTML = `
+      <div class="modal-backdrop">
+        <div class="modal-box">
+          <h2>Izbriši?</h2>
+          <p class="modal-desc">Odstranim <strong>${item.name}</strong>?</p>
+          <div class="modal-btns">
+            <button class="btn btn-primary" id="c-yes" style="background:#e53935">Da, izbriši</button>
+            <button class="btn btn-ghost" id="c-no">Prekliči</button>
           </div>
         </div>
-      `;
-      document.getElementById("add-website-form").addEventListener("submit", (e) => {
-        e.preventDefault();
-        const name = document.getElementById("website-name").value;
-        let url = document.getElementById("website-url").value;
-        if (!url.startsWith("http")) url = "https://" + url;
-        saveLocalData({ id: "private_" + Date.now(), name, url, icon: "🌐", color: "#4ecdc4", createdAt: new Date().toISOString() });
-        modal.innerHTML = "";
-      });
-      // This was the broken line, now fixed:
-      document.getElementById("cancel-btn").addEventListener("click", () => modal.innerHTML = "");
-    }
-    
-    function showDeleteConfirmation(w) {
-       const modal = document.getElementById("modal-container");
-       modal.innerHTML = `<div class="modal-backdrop fixed inset-0 bg-black bg-opacity-50 flex items-center justify-center p-4 z-50"><div class="rounded-2xl shadow-2xl p-6 bg-gray-800 text-white"><p>Izbriši ${w.name}?</p><button id="conf-del" class="bg-red-500 px-4 py-2 rounded mr-2">Da</button><button id="canc-del" class="bg-gray-600 px-4 py-2 rounded">Ne</button></div></div>`;
-       document.getElementById("conf-del").onclick = () => { deleteLocalData(w.id); modal.innerHTML = ""; };
-       document.getElementById("canc-del").onclick = () => modal.innerHTML = "";
-    }
-    
-    function showToast(msg) {
-        const t = document.createElement("div"); t.className = "toast px-6 py-3 rounded-xl shadow-2xl fixed top-6 left-1/2 -translate-x-1/2 bg-gray-800 text-white"; t.innerText = msg;
-        document.getElementById("toast-container").appendChild(t);
-        setTimeout(() => t.remove(), 3000);
-    }
+      </div>`;
+    document.getElementById('c-yes').onclick = () => {
+      const custom = loadCustom().filter(w => w.id !== item.id);
+      saveCustom(custom);
+      modal.innerHTML = '';
+      if (custom.length === 0) deleteMode = false;
+      render();
+      showToast('Stran izbrisana.');
+    };
+    document.getElementById('c-no').onclick = () => modal.innerHTML = '';
+  }
 
-    loadData();
-  </script>
- </body>
+  function showToast(msg) {
+    const t = document.createElement('div');
+    t.className = 'toast'; t.textContent = msg;
+    document.getElementById('toast-container').appendChild(t);
+    setTimeout(() => t.remove(), 2800);
+  }
+
+  render();
+</script>
+</body>
 </html>
