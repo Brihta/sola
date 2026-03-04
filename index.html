@@ -479,6 +479,376 @@
       line-height: 0;
       margin-bottom: -2px;
     }
+
+    /* ─── CHAT FAB ─── */
+    #chat-fab {
+      position: fixed;
+      bottom: 28px;
+      right: 24px;
+      width: 64px;
+      height: 64px;
+      border-radius: 22px;
+      background: linear-gradient(145deg, var(--green-lt), var(--green-dk));
+      border: none;
+      cursor: pointer;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      box-shadow:
+        0 4px 0 rgba(0,0,0,0.18),
+        0 8px 28px rgba(61,122,82,0.45);
+      transition: transform 0.2s cubic-bezier(.34,1.56,.64,1), box-shadow 0.2s ease;
+      z-index: 900;
+      overflow: hidden;
+    }
+
+    #chat-fab::before {
+      content: '';
+      position: absolute;
+      top: 0; left: 0; right: 0;
+      height: 45%;
+      background: linear-gradient(180deg, rgba(255,255,255,0.22) 0%, rgba(255,255,255,0) 100%);
+      border-radius: 22px 22px 0 0;
+      pointer-events: none;
+    }
+
+    #chat-fab:hover {
+      transform: translateY(-5px) scale(1.06);
+      box-shadow: 0 8px 0 rgba(0,0,0,0.14), 0 16px 36px rgba(61,122,82,0.5);
+    }
+
+    #chat-fab:active {
+      transform: scale(0.92);
+      box-shadow: 0 1px 0 rgba(0,0,0,0.12), 0 4px 12px rgba(61,122,82,0.3);
+    }
+
+    #chat-fab svg {
+      width: 28px;
+      height: 28px;
+      filter: drop-shadow(0 1px 2px rgba(0,0,0,0.2));
+    }
+
+    /* Notification dot */
+    .fab-dot {
+      position: absolute;
+      top: 9px;
+      right: 9px;
+      width: 10px;
+      height: 10px;
+      background: var(--amber);
+      border-radius: 50%;
+      border: 2px solid white;
+      animation: pulse 2s ease-in-out infinite;
+    }
+
+    /* ─── CHAT PANEL ─── */
+    #chat-panel {
+      position: fixed;
+      inset: 0;
+      z-index: 950;
+      display: flex;
+      align-items: flex-end;
+      justify-content: center;
+      padding: 0;
+      pointer-events: none;
+      opacity: 0;
+      transition: opacity 0.25s ease;
+    }
+
+    #chat-panel.open {
+      pointer-events: auto;
+      opacity: 1;
+    }
+
+    .chat-backdrop {
+      position: absolute;
+      inset: 0;
+      background: rgba(10,26,18,0.45);
+      backdrop-filter: blur(18px) saturate(160%);
+      -webkit-backdrop-filter: blur(18px) saturate(160%);
+    }
+
+    .chat-sheet {
+      position: relative;
+      z-index: 1;
+      width: 100%;
+      max-width: 680px;
+      max-height: 82vh;
+      background: rgba(255,255,255,0.97);
+      backdrop-filter: blur(40px);
+      border-radius: 28px 28px 0 0;
+      display: flex;
+      flex-direction: column;
+      box-shadow: 0 -8px 48px rgba(0,0,0,0.18), 0 0 0 1px rgba(0,0,0,0.06);
+      transform: translateY(100%);
+      transition: transform 0.38s cubic-bezier(.32,1.2,.64,1);
+      overflow: hidden;
+    }
+
+    #chat-panel.open .chat-sheet {
+      transform: translateY(0);
+    }
+
+    .chat-header {
+      padding: 20px 24px 16px;
+      display: flex;
+      align-items: center;
+      gap: 14px;
+      border-bottom: 1.5px solid var(--gray-2);
+      flex-shrink: 0;
+    }
+
+    .chat-header-icon {
+      width: 42px;
+      height: 42px;
+      border-radius: 13px;
+      background: linear-gradient(145deg, var(--green-lt), var(--green-dk));
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      box-shadow: 0 3px 0 rgba(0,0,0,0.14), 0 6px 16px rgba(61,122,82,0.35);
+      flex-shrink: 0;
+      overflow: hidden;
+      position: relative;
+    }
+
+    .chat-header-icon::before {
+      content: '';
+      position: absolute;
+      top: 0; left: 0; right: 0;
+      height: 45%;
+      background: linear-gradient(180deg, rgba(255,255,255,0.22) 0%, transparent 100%);
+      border-radius: 13px 13px 0 0;
+    }
+
+    .chat-header-icon svg {
+      width: 20px;
+      height: 20px;
+    }
+
+    .chat-header-text { flex: 1; }
+
+    .chat-header-text h3 {
+      font-size: 1.05rem;
+      font-weight: 800;
+      color: var(--text);
+      letter-spacing: -0.3px;
+    }
+
+    .chat-live-badge {
+      display: inline-flex;
+      align-items: center;
+      gap: 5px;
+      background: rgba(245,166,35,0.15);
+      border: 1px solid rgba(245,166,35,0.3);
+      border-radius: 100px;
+      padding: 2px 9px;
+      font-size: 0.65rem;
+      font-weight: 800;
+      letter-spacing: 1px;
+      text-transform: uppercase;
+      color: var(--amber-dk);
+      margin-top: 3px;
+    }
+
+    .chat-live-dot {
+      width: 5px; height: 5px;
+      background: var(--amber);
+      border-radius: 50%;
+      animation: pulse 2s ease-in-out infinite;
+    }
+
+    .chat-close {
+      width: 34px; height: 34px;
+      border-radius: 50%;
+      background: var(--gray-1);
+      border: none;
+      cursor: pointer;
+      font-size: 1.1rem;
+      color: var(--gray-4);
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      transition: background 0.15s, transform 0.15s;
+      font-weight: 700;
+    }
+
+    .chat-close:hover { background: var(--gray-2); transform: scale(1.1); }
+
+    .chat-feed {
+      flex: 1;
+      overflow-y: auto;
+      padding: 16px 24px;
+      display: flex;
+      flex-direction: column;
+      gap: 10px;
+    }
+
+    .chat-feed:empty::after {
+      content: 'Še ni sporočil. Dodaj prvo! 👇';
+      color: var(--gray-3);
+      font-size: 0.88rem;
+      font-weight: 600;
+      text-align: center;
+      padding: 32px 0;
+    }
+
+    .feed-item {
+      display: flex;
+      align-items: center;
+      gap: 14px;
+      padding: 14px 16px;
+      background: var(--gray-1);
+      border-radius: var(--radius-md);
+      border: 1.5px solid transparent;
+      cursor: pointer;
+      text-decoration: none;
+      color: inherit;
+      transition: border-color 0.15s, background 0.15s, transform 0.15s cubic-bezier(.34,1.56,.64,1), box-shadow 0.15s;
+      animation: popIn 0.4s cubic-bezier(.34,1.56,.64,1) both;
+      position: relative;
+    }
+
+    .feed-item:hover {
+      border-color: rgba(61,122,82,0.25);
+      background: var(--green-bg);
+      transform: translateX(4px);
+      box-shadow: var(--shadow-sm);
+    }
+
+    .feed-item-dot {
+      width: 8px; height: 8px;
+      border-radius: 50%;
+      background: var(--green);
+      flex-shrink: 0;
+    }
+
+    .feed-item-text { flex: 1; min-width: 0; }
+
+    .feed-link-label {
+      font-size: 0.82rem;
+      font-weight: 800;
+      color: var(--green);
+      font-family: 'Plus Jakarta Sans', monospace;
+      letter-spacing: -0.2px;
+    }
+
+    .feed-separator {
+      color: var(--gray-3);
+      margin: 0 4px;
+      font-weight: 500;
+    }
+
+    .feed-desc {
+      font-size: 0.88rem;
+      font-weight: 600;
+      color: var(--text);
+    }
+
+    .feed-item-arrow {
+      color: var(--gray-3);
+      font-size: 0.8rem;
+      flex-shrink: 0;
+      transition: color 0.15s, transform 0.15s;
+    }
+
+    .feed-item:hover .feed-item-arrow {
+      color: var(--green);
+      transform: translateX(3px);
+    }
+
+    .feed-delete-btn {
+      position: absolute;
+      top: 8px; right: 8px;
+      width: 20px; height: 20px;
+      background: #ff3b30;
+      border: none;
+      border-radius: 50%;
+      color: white;
+      font-size: 12px;
+      font-weight: 800;
+      cursor: pointer;
+      display: none;
+      align-items: center;
+      justify-content: center;
+      line-height: 1;
+      box-shadow: 0 2px 6px rgba(255,59,48,0.35);
+    }
+
+    .chat-feed.editing .feed-delete-btn { display: flex; }
+    .chat-feed.editing .feed-item { padding-right: 34px; }
+
+    .chat-footer {
+      padding: 14px 24px 20px;
+      border-top: 1.5px solid var(--gray-2);
+      flex-shrink: 0;
+      display: flex;
+      gap: 8px;
+    }
+
+    .chat-input-wrap {
+      flex: 1;
+      display: flex;
+      flex-direction: column;
+      gap: 6px;
+    }
+
+    .chat-input {
+      width: 100%;
+      padding: 11px 14px;
+      border-radius: var(--radius-sm);
+      border: 1.5px solid var(--gray-2);
+      font-family: 'Plus Jakarta Sans', sans-serif;
+      font-size: 0.88rem;
+      font-weight: 600;
+      color: var(--text);
+      background: var(--gray-1);
+      outline: none;
+      transition: border-color 0.15s, box-shadow 0.15s;
+    }
+
+    .chat-input:focus {
+      border-color: var(--green);
+      background: white;
+      box-shadow: 0 0 0 3px rgba(61,122,82,0.1);
+    }
+
+    .chat-send-btn {
+      width: 44px;
+      height: 44px;
+      border-radius: var(--radius-sm);
+      background: var(--green);
+      border: none;
+      cursor: pointer;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      align-self: flex-end;
+      box-shadow: 0 4px 14px rgba(61,122,82,0.35);
+      transition: transform 0.15s cubic-bezier(.34,1.56,.64,1), box-shadow 0.15s;
+      flex-shrink: 0;
+    }
+
+    .chat-send-btn:hover { transform: scale(1.08); box-shadow: 0 6px 18px rgba(61,122,82,0.45); }
+    .chat-send-btn:active { transform: scale(0.92); }
+
+    .chat-edit-toggle {
+      font-size: 0.72rem;
+      color: var(--gray-3);
+      background: none;
+      border: none;
+      cursor: pointer;
+      font-family: 'Plus Jakarta Sans', sans-serif;
+      font-weight: 700;
+      padding: 4px 6px;
+      border-radius: 6px;
+      transition: color 0.15s, background 0.15s;
+      text-transform: uppercase;
+      letter-spacing: 0.8px;
+    }
+
+    .chat-edit-toggle:hover { color: var(--gray-4); background: var(--gray-1); }
+    .chat-edit-toggle.active { color: var(--green); }
   </style>
 </head>
 <body>
@@ -543,6 +913,46 @@
 
 <div id="modal-container"></div>
 <div id="toast-container"></div>
+
+<!-- CHAT FAB -->
+<button id="chat-fab" title="Aktualne povezave" aria-label="Odpri feed">
+  <div class="fab-dot"></div>
+  <svg viewBox="0 0 28 28" fill="none" xmlns="http://www.w3.org/2000/svg">
+    <path d="M4 6a2 2 0 0 1 2-2h16a2 2 0 0 1 2 2v12a2 2 0 0 1-2 2H9.5L4 24V6z" fill="rgba(255,255,255,0.95)" stroke="rgba(255,255,255,0.5)" stroke-width="0.5"/>
+    <path d="M9 11h10M9 15h6" stroke="rgba(61,122,82,0.8)" stroke-width="2" stroke-linecap="round"/>
+  </svg>
+</button>
+
+<!-- CHAT PANEL -->
+<div id="chat-panel" role="dialog" aria-modal="true" aria-label="Aktualne povezave">
+  <div class="chat-backdrop" id="chat-backdrop"></div>
+  <div class="chat-sheet">
+    <div class="chat-header">
+      <div class="chat-header-icon">
+        <svg viewBox="0 0 20 20" fill="none" xmlns="http://www.w3.org/2000/svg">
+          <path d="M3 4a1.5 1.5 0 0 1 1.5-1.5h11A1.5 1.5 0 0 1 17 4v9a1.5 1.5 0 0 1-1.5 1.5H7L3 17.5V4z" fill="rgba(255,255,255,0.95)"/>
+          <path d="M6.5 8h7M6.5 11h4.5" stroke="rgba(61,122,82,0.8)" stroke-width="1.5" stroke-linecap="round"/>
+        </svg>
+      </div>
+      <div class="chat-header-text">
+        <h3>Aktualne povezave</h3>
+        <div class="chat-live-badge"><span class="chat-live-dot"></span>V živo</div>
+      </div>
+      <button class="chat-edit-toggle" id="chat-edit-toggle">Uredi</button>
+      <button class="chat-close" id="chat-close" aria-label="Zapri">&#x2715;</button>
+    </div>
+    <div class="chat-feed" id="chat-feed"></div>
+    <div class="chat-footer">
+      <div class="chat-input-wrap">
+        <input class="chat-input" id="chat-url" type="url" placeholder="https://..." autocomplete="off">
+        <input class="chat-input" id="chat-desc" type="text" placeholder="Opis (npr. Froggy gets dressed)" autocomplete="off">
+      </div>
+      <button class="chat-send-btn" id="chat-send" title="Dodaj">
+        <svg width="18" height="18" viewBox="0 0 18 18" fill="none"><path d="M2 9h14M9 2l7 7-7 7" stroke="white" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round"/></svg>
+      </button>
+    </div>
+  </div>
+</div>
 
 <script>
   const STORAGE_KEY = "brihta_custom_links";
@@ -669,6 +1079,106 @@
   }
 
   render();
+
+  // ─── CHAT FEED ───
+  const CHAT_KEY = "brihta_chat_feed";
+  let chatEditing = false;
+
+  function loadFeed() {
+    try { return JSON.parse(localStorage.getItem(CHAT_KEY) || "[]"); } catch { return []; }
+  }
+  function saveFeed(arr) { localStorage.setItem(CHAT_KEY, JSON.stringify(arr)); }
+
+  function shortenUrl(url) {
+    // Always limit display to max 12 chars
+    return url.length <= 12 ? url : url.substring(0, 12);
+  }
+
+  function renderFeed() {
+    const feed = document.getElementById('chat-feed');
+    const items = loadFeed();
+    feed.classList.toggle('editing', chatEditing);
+    feed.innerHTML = '';
+    if (items.length === 0) { feed.innerHTML = ''; return; }
+    items.forEach((item, idx) => {
+      const a = document.createElement('a');
+      a.className = 'feed-item';
+      a.href = item.url;
+      a.target = '_blank';
+      a.rel = 'noopener noreferrer';
+      a.innerHTML = `
+        <div class="feed-item-dot"></div>
+        <div class="feed-item-text">
+          <span class="feed-link-label">${shortenUrl(item.url)}</span><span class="feed-separator"> — </span><span class="feed-desc">${item.desc}</span>
+        </div>
+        <span class="feed-item-arrow">&#8250;</span>
+        <button class="feed-delete-btn" data-idx="${idx}" title="Izbri&#353;">&#xD7;</button>
+      `;
+      a.querySelector('.feed-delete-btn').addEventListener('click', e => {
+        e.preventDefault(); e.stopPropagation();
+        const arr = loadFeed();
+        arr.splice(idx, 1);
+        saveFeed(arr);
+        renderFeed();
+      });
+      feed.appendChild(a);
+    });
+  }
+
+  function openChat() {
+    const panel = document.getElementById('chat-panel');
+    panel.classList.add('open');
+    document.getElementById('chat-url').focus();
+    renderFeed();
+  }
+
+  function closeChat() {
+    document.getElementById('chat-panel').classList.remove('open');
+    chatEditing = false;
+    document.getElementById('chat-edit-toggle').classList.remove('active');
+    document.getElementById('chat-edit-toggle').textContent = 'Uredi';
+    renderFeed();
+  }
+
+  document.getElementById('chat-fab').addEventListener('click', openChat);
+  document.getElementById('chat-close').addEventListener('click', closeChat);
+  document.getElementById('chat-backdrop').addEventListener('click', closeChat);
+
+  document.getElementById('chat-edit-toggle').addEventListener('click', () => {
+    chatEditing = !chatEditing;
+    const btn = document.getElementById('chat-edit-toggle');
+    btn.classList.toggle('active', chatEditing);
+    btn.textContent = chatEditing ? 'Kon&#269;ano' : 'Uredi';
+    renderFeed();
+  });
+
+  document.getElementById('chat-send').addEventListener('click', () => {
+    let url = document.getElementById('chat-url').value.trim();
+    const desc = document.getElementById('chat-desc').value.trim();
+    if (!url || !desc) { showToast('&#9888;&#65039; Izpolni oba polji!'); return; }
+    if (!url.startsWith('http')) url = 'https://' + url;
+    const arr = loadFeed();
+    arr.push({ url, desc, ts: Date.now() });
+    saveFeed(arr);
+    document.getElementById('chat-url').value = '';
+    document.getElementById('chat-desc').value = '';
+    renderFeed();
+    showToast('Povezava dodana! &#128279;');
+    // Remove dot once something added
+    const dot = document.querySelector('.fab-dot');
+    if (dot) dot.style.display = 'none';
+  });
+
+  document.getElementById('chat-desc').addEventListener('keydown', e => {
+    if (e.key === 'Enter') document.getElementById('chat-send').click();
+  });
+
+  // Show dot if feed has items
+  (function() {
+    const items = loadFeed();
+    const dot = document.querySelector('.fab-dot');
+    if (!items.length && dot) dot.style.display = 'none';
+  })();
 </script>
 </body>
 </html>
