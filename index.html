@@ -1073,7 +1073,7 @@
   function showToast(msg) {
     const t = document.createElement('div');
     t.className = 'toast';
-    t.textContent = msg;
+    t.innerHTML = msg;
     document.getElementById('toast-container').appendChild(t);
     setTimeout(() => t.remove(), 2800);
   }
@@ -1088,7 +1088,7 @@
   //   3. Copy your database URL (looks like: https://YOUR-PROJECT-default-rtdb.firebaseio.com)
   //   4. Paste it below replacing the placeholder:
   //
-  const FIREBASE_URL = "https://brihta-455eb-default-rtdb.firebaseio.com";
+  const FIREBASE_URL = "https://brihta-455eb-default-rtdb.europe-west1.firebasedatabase.app";
   //
   // That's it — the chat will instantly sync across every device!
   // ─────────────────────────────────────────────────────────────────────────
