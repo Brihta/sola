@@ -1080,27 +1080,36 @@
 
   render();
 
-  // ─── CHAT FEED ───
-  const CHAT_KEY = "brihta_chat_feed";
-  let chatEditing = false;
+  // ─── CHAT FEED — Firebase Realtime Database (shared across all devices) ───
+  //
+  // ⚙️  SETUP (one-time, 2 minutes):
+  //   1. Go to https://console.firebase.google.com  →  "Add project"  (free Spark plan)
+  //   2. In your project: Build → Realtime Database → Create database → Start in TEST mode
+  //   3. Copy your database URL (looks like: https://YOUR-PROJECT-default-rtdb.firebaseio.com)
+  //   4. Paste it below replacing the placeholder:
+  //
+  const FIREBASE_URL = "https://brihta-455eb-default-rtdb.firebaseio.com";
+  //
+  // That's it — the chat will instantly sync across every device!
+  // ─────────────────────────────────────────────────────────────────────────
 
-  function loadFeed() {
-    try { return JSON.parse(localStorage.getItem(CHAT_KEY) || "[]"); } catch { return []; }
-  }
-  function saveFeed(arr) { localStorage.setItem(CHAT_KEY, JSON.stringify(arr)); }
+  const DB = `${FIREBASE_URL}/brihta_feed`;
+  let chatEditing = false;
+  let liveItems = [];   // kept in memory, updated by SSE stream
+  let sseSource = null;
 
   function shortenUrl(url) {
-    // Always limit display to max 12 chars
     return url.length <= 12 ? url : url.substring(0, 12);
   }
 
+  // ── Render the in-memory list ──
   function renderFeed() {
     const feed = document.getElementById('chat-feed');
-    const items = loadFeed();
     feed.classList.toggle('editing', chatEditing);
     feed.innerHTML = '';
-    if (items.length === 0) { feed.innerHTML = ''; return; }
-    items.forEach((item, idx) => {
+    if (!liveItems.length) return;
+    // Show newest first
+    [...liveItems].reverse().forEach(item => {
       const a = document.createElement('a');
       a.className = 'feed-item';
       a.href = item.url;
@@ -1109,27 +1118,107 @@
       a.innerHTML = `
         <div class="feed-item-dot"></div>
         <div class="feed-item-text">
-          <span class="feed-link-label">${shortenUrl(item.url)}</span><span class="feed-separator"> — </span><span class="feed-desc">${item.desc}</span>
+          <span class="feed-link-label">${shortenUrl(item.url)}</span><span class="feed-separator"> — </span><span class="feed-desc">${escHtml(item.desc)}</span>
         </div>
         <span class="feed-item-arrow">&#8250;</span>
-        <button class="feed-delete-btn" data-idx="${idx}" title="Izbri&#353;">&#xD7;</button>
+        <button class="feed-delete-btn" data-key="${item._key}" title="Izbri&#353;">&#xD7;</button>
       `;
-      a.querySelector('.feed-delete-btn').addEventListener('click', e => {
+      a.querySelector('.feed-delete-btn').addEventListener('click', async e => {
         e.preventDefault(); e.stopPropagation();
-        const arr = loadFeed();
-        arr.splice(idx, 1);
-        saveFeed(arr);
-        renderFeed();
+        await deleteItem(item._key);
       });
       feed.appendChild(a);
     });
+    // Update FAB dot
+    const dot = document.querySelector('.fab-dot');
+    if (dot) dot.style.display = liveItems.length ? '' : 'none';
   }
 
+  function escHtml(s) {
+    return s.replace(/&/g,'&amp;').replace(/</g,'&lt;').replace(/>/g,'&gt;').replace(/"/g,'&quot;');
+  }
+
+  // ── Firebase REST helpers ──
+  async function addItem(url, desc) {
+    const res = await fetch(`${DB}.json`, {
+      method: 'POST',
+      headers: { 'Content-Type': 'application/json' },
+      body: JSON.stringify({ url, desc, ts: Date.now() })
+    });
+    return res.ok;
+  }
+
+  async function deleteItem(key) {
+    await fetch(`${DB}/${key}.json`, { method: 'DELETE' });
+  }
+
+  // ── Server-Sent Events: real-time listener ──
+  function startLiveSync() {
+    if (!FIREBASE_URL || FIREBASE_URL.includes('YOUR-PROJECT')) {
+      // Firebase not configured yet — show setup notice in feed
+      const feed = document.getElementById('chat-feed');
+      feed.innerHTML = `<div style="padding:20px 8px;text-align:center;color:var(--gray-3);font-size:0.82rem;font-weight:600;line-height:1.6">
+        &#9881; <strong style="color:var(--gray-4)">Firebase ni nastavljen.</strong><br>
+        Odpri index.html in nastavi<br><code style="background:var(--gray-2);padding:2px 6px;border-radius:6px;font-size:0.78rem">FIREBASE_URL</code> v kodi.
+      </div>`;
+      return;
+    }
+
+    if (sseSource) sseSource.close();
+
+    sseSource = new EventSource(`${DB}.json?accept=text/event-stream`);
+
+    sseSource.addEventListener('put', e => {
+      try {
+        const data = JSON.parse(e.data);
+        if (data.path === '/') {
+          // Full snapshot
+          liveItems = data.data
+            ? Object.entries(data.data).map(([k, v]) => ({ _key: k, ...v })).sort((a,b) => a.ts - b.ts)
+            : [];
+        } else {
+          // Single item added or removed
+          const key = data.path.replace('/', '');
+          if (data.data === null) {
+            liveItems = liveItems.filter(i => i._key !== key);
+          } else {
+            const exists = liveItems.find(i => i._key === key);
+            if (!exists) liveItems.push({ _key: key, ...data.data });
+          }
+        }
+        renderFeed();
+      } catch(err) { /* ignore parse errors */ }
+    });
+
+    sseSource.addEventListener('patch', e => {
+      // Refresh fully on patch
+      fetchOnce();
+    });
+
+    sseSource.onerror = () => {
+      // On disconnect, retry after 3s
+      sseSource.close();
+      setTimeout(startLiveSync, 3000);
+    };
+  }
+
+  async function fetchOnce() {
+    try {
+      const res = await fetch(`${DB}.json`);
+      const data = await res.json();
+      liveItems = data
+        ? Object.entries(data).map(([k, v]) => ({ _key: k, ...v })).sort((a,b) => a.ts - b.ts)
+        : [];
+      renderFeed();
+    } catch(e) {}
+  }
+
+  // ── Panel open/close ──
   function openChat() {
     const panel = document.getElementById('chat-panel');
     panel.classList.add('open');
     document.getElementById('chat-url').focus();
-    renderFeed();
+    startLiveSync();
   }
 
   function closeChat() {
@@ -1137,6 +1226,7 @@
     chatEditing = false;
     document.getElementById('chat-edit-toggle').classList.remove('active');
     document.getElementById('chat-edit-toggle').textContent = 'Uredi';
+    if (sseSource) { sseSource.close(); sseSource = null; }
     renderFeed();
   }
 
@@ -1152,32 +1242,33 @@
     renderFeed();
   });
 
-  document.getElementById('chat-send').addEventListener('click', () => {
+  document.getElementById('chat-send').addEventListener('click', async () => {
     let url = document.getElementById('chat-url').value.trim();
     const desc = document.getElementById('chat-desc').value.trim();
     if (!url || !desc) { showToast('&#9888;&#65039; Izpolni oba polji!'); return; }
     if (!url.startsWith('http')) url = 'https://' + url;
-    const arr = loadFeed();
-    arr.push({ url, desc, ts: Date.now() });
-    saveFeed(arr);
-    document.getElementById('chat-url').value = '';
-    document.getElementById('chat-desc').value = '';
-    renderFeed();
-    showToast('Povezava dodana! &#128279;');
-    // Remove dot once something added
-    const dot = document.querySelector('.fab-dot');
-    if (dot) dot.style.display = 'none';
+    const btn = document.getElementById('chat-send');
+    btn.disabled = true;
+    const ok = await addItem(url, desc);
+    btn.disabled = false;
+    if (ok) {
+      document.getElementById('chat-url').value = '';
+      document.getElementById('chat-desc').value = '';
+      showToast('Povezava dodana! &#128279;');
+    } else {
+      showToast('&#10060; Napaka — preveri Firebase URL.');
+    }
   });
 
   document.getElementById('chat-desc').addEventListener('keydown', e => {
     if (e.key === 'Enter') document.getElementById('chat-send').click();
   });
 
-  // Show dot if feed has items
+  // Init FAB dot: hide if Firebase not yet configured
   (function() {
-    const items = loadFeed();
     const dot = document.querySelector('.fab-dot');
-    if (!items.length && dot) dot.style.display = 'none';
+    if (dot && FIREBASE_URL.includes('YOUR-PROJECT')) dot.style.display = 'none';
+    else if (dot) dot.style.display = '';
   })();
 </script>
 </body>
