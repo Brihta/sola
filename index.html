@@ -4,46 +4,107 @@
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
   <title>Brihta — Učni portal</title>
-  <link href="https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@400;500;600;700;800;900&display=swap" rel="stylesheet">
+  <link href="https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:ital,wght@0,400;0,500;0,600;0,700;0,800;0,900;1,400&display=swap" rel="stylesheet">
   <style>
     *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
 
     :root {
-      --green:     #3d7a52;
-      --green-lt:  #4e9966;
+      --green:     #2d6a44;
+      --green-lt:  #3d8a58;
       --green-dk:  #1a3a2a;
-      --green-bg:  #f0f7f3;
+      --green-bg:  #edf7f1;
       --amber:     #f5a623;
       --amber-dk:  #e8902a;
       --white:     #ffffff;
-      --gray-1:    #f5f5f7;
-      --gray-2:    #e8e8ed;
+      --page-bg:   #f2f2f7;
+      --card-bg:   #ffffff;
+      --gray-1:    #f2f2f7;
+      --gray-2:    #e5e5ea;
       --gray-3:    #aeaeb2;
       --gray-4:    #636366;
-      --text:      #1d1d1f;
-      --shadow-sm: 0 2px 8px rgba(0,0,0,0.08);
-      --shadow-md: 0 8px 24px rgba(0,0,0,0.10);
-      --shadow-lg: 0 20px 48px rgba(0,0,0,0.14);
+      --gray-5:    #3a3a3c;
+      --text:      #1c1c1e;
+      --shadow-xs: 0 1px 4px rgba(0,0,0,0.06);
+      --shadow-sm: 0 2px 12px rgba(0,0,0,0.07);
+      --shadow-md: 0 8px 28px rgba(0,0,0,0.10);
+      --shadow-lg: 0 20px 56px rgba(0,0,0,0.14);
       --radius-xl: 24px;
-      --radius-lg: 18px;
-      --radius-md: 14px;
-      --radius-sm: 10px;
-      --max-w: 720px;
+      --radius-lg: 20px;
+      --radius-md: 16px;
+      --radius-sm: 12px;
+      --max-w: 700px;
     }
 
     html { scroll-behavior: smooth; }
 
     body {
-      font-family: 'Plus Jakarta Sans', -apple-system, sans-serif;
-      background: var(--white);
+      font-family: 'Plus Jakarta Sans', -apple-system, BlinkMacSystemFont, sans-serif;
+      background: var(--page-bg);
       color: var(--text);
       min-height: 100vh;
       -webkit-font-smoothing: antialiased;
     }
 
-    /* ─── HERO HEADER ─── */
+    /* ─── NAV ─── */
+    .top-nav {
+      position: sticky;
+      top: 0;
+      z-index: 100;
+      background: rgba(26,58,42,0.92);
+      backdrop-filter: blur(24px) saturate(180%);
+      -webkit-backdrop-filter: blur(24px) saturate(180%);
+      border-bottom: 1px solid rgba(255,255,255,0.08);
+    }
+
+    .top-nav-inner {
+      max-width: var(--max-w);
+      margin: 0 auto;
+      padding: 0 20px;
+      height: 52px;
+      display: flex;
+      align-items: center;
+      gap: 10px;
+    }
+
+    .nav-brand {
+      font-size: 1.05rem;
+      font-weight: 800;
+      color: #fff;
+      letter-spacing: -0.4px;
+      display: flex;
+      align-items: center;
+      gap: 8px;
+    }
+
+    .nav-brand-dot {
+      color: var(--amber);
+    }
+
+    .nav-pill {
+      display: inline-flex;
+      align-items: center;
+      gap: 5px;
+      background: rgba(245,166,35,0.18);
+      border: 1px solid rgba(245,166,35,0.3);
+      border-radius: 100px;
+      padding: 3px 10px;
+      font-size: 0.65rem;
+      font-weight: 700;
+      letter-spacing: 0.9px;
+      text-transform: uppercase;
+      color: var(--amber);
+    }
+
+    .nav-dot {
+      width: 5px; height: 5px;
+      background: var(--amber);
+      border-radius: 50%;
+      animation: pulse 2s ease-in-out infinite;
+    }
+
+    /* ─── HERO ─── */
     .hero {
-      background: linear-gradient(160deg, #1a3a2a 0%, #2d5a3d 45%, #3d7a52 100%);
+      background: linear-gradient(150deg, #0f2318 0%, #1a3a2a 40%, #2d6a44 100%);
       padding: 0 24px 0;
       position: relative;
       overflow: hidden;
@@ -53,17 +114,17 @@
       content: '';
       position: absolute; inset: 0;
       background:
-        radial-gradient(ellipse 80% 60% at 70% 50%, rgba(245,166,35,0.08) 0%, transparent 70%),
-        radial-gradient(ellipse 50% 80% at 10% 100%, rgba(61,122,82,0.3) 0%, transparent 60%);
+        radial-gradient(ellipse 70% 100% at 80% 60%, rgba(245,166,35,0.10) 0%, transparent 65%),
+        radial-gradient(ellipse 60% 80% at 5% 100%, rgba(61,138,88,0.35) 0%, transparent 60%),
+        radial-gradient(ellipse 40% 60% at 50% -10%, rgba(255,255,255,0.04) 0%, transparent 60%);
       pointer-events: none;
     }
 
-    /* Subtle dot grid */
     .hero::after {
       content: '';
       position: absolute; inset: 0;
-      background-image: radial-gradient(circle, rgba(255,255,255,0.07) 1px, transparent 1px);
-      background-size: 28px 28px;
+      background-image: radial-gradient(circle, rgba(255,255,255,0.055) 1px, transparent 1px);
+      background-size: 32px 32px;
       pointer-events: none;
     }
 
@@ -71,7 +132,7 @@
       max-width: var(--max-w);
       margin: 0 auto;
       display: flex;
-      align-items: center;
+      align-items: flex-end;
       gap: 0;
       position: relative;
       z-index: 1;
@@ -79,109 +140,108 @@
 
     .hero-logo-wrap {
       flex-shrink: 0;
-      width: 200px;
-      height: 200px;
+      width: 188px;
+      height: 188px;
       display: flex;
       align-items: flex-end;
       justify-content: center;
-      position: relative;
     }
 
     .hero-logo-wrap img {
-      width: 200px;
-      height: 200px;
+      width: 188px;
+      height: 188px;
       object-fit: contain;
       object-position: bottom center;
-      /* filter: drop-shadow(0 8px 24px rgba(0,0,0,0.3)); */;
-      animation: heroOwlIn 0.7s cubic-bezier(.34,1.56,.64,1) both;
+      animation: heroOwlIn 0.75s cubic-bezier(.34,1.56,.64,1) both;
     }
 
     @keyframes heroOwlIn {
-      from { opacity: 0; transform: translateY(20px) scale(0.9); }
+      from { opacity: 0; transform: translateY(24px) scale(0.88); }
       to   { opacity: 1; transform: translateY(0) scale(1); }
     }
 
     .hero-text {
       flex: 1;
-      padding: 36px 0 36px 28px;
-      animation: heroTextIn 0.6s ease both 0.15s;
+      padding: 40px 0 36px 24px;
+      animation: heroTextIn 0.55s ease both 0.12s;
     }
 
     @keyframes heroTextIn {
-      from { opacity: 0; transform: translateX(16px); }
+      from { opacity: 0; transform: translateX(20px); }
       to   { opacity: 1; transform: translateX(0); }
     }
 
-    .hero-badge {
-      display: inline-flex;
-      align-items: center;
-      gap: 6px;
-      background: rgba(245,166,35,0.18);
-      border: 1px solid rgba(245,166,35,0.35);
-      border-radius: 100px;
-      padding: 4px 12px;
-      font-size: 0.7rem;
+    .hero-label {
+      font-size: 0.68rem;
       font-weight: 700;
-      letter-spacing: 1px;
+      letter-spacing: 1.6px;
       text-transform: uppercase;
-      color: var(--amber);
-      margin-bottom: 12px;
-    }
-
-    .hero-badge-dot {
-      width: 6px; height: 6px;
-      background: var(--amber);
-      border-radius: 50%;
-      animation: pulse 2s ease-in-out infinite;
-    }
-
-    @keyframes pulse {
-      0%, 100% { opacity: 1; transform: scale(1); }
-      50%       { opacity: 0.5; transform: scale(0.7); }
+      color: rgba(255,255,255,0.45);
+      margin-bottom: 10px;
     }
 
     .hero-title {
-      font-size: clamp(2.6rem, 6vw, 3.8rem);
+      font-size: clamp(2.8rem, 7vw, 4rem);
       font-weight: 900;
       color: #fff;
-      line-height: 1;
-      letter-spacing: -1.5px;
+      line-height: 0.95;
+      letter-spacing: -2px;
     }
 
-    .hero-title span {
-      background: linear-gradient(90deg, #f5a623, #ffd080);
+    .hero-title-accent {
+      background: linear-gradient(95deg, #f5a623 0%, #ffd47a 100%);
       -webkit-background-clip: text;
       -webkit-text-fill-color: transparent;
       background-clip: text;
     }
 
     .hero-sub {
-      margin-top: 8px;
-      font-size: 0.95rem;
+      margin-top: 12px;
+      font-size: 0.88rem;
       font-weight: 500;
-      color: rgba(255,255,255,0.6);
-      letter-spacing: 0.2px;
+      color: rgba(255,255,255,0.5);
+      line-height: 1.4;
+    }
+
+    /* ─── HERO WAVE ─── */
+    .hero-wave {
+      display: block;
+      width: 100%;
+      overflow: hidden;
+      line-height: 0;
+      margin-bottom: -2px;
     }
 
     /* ─── MAIN ─── */
     main {
       max-width: var(--max-w);
       margin: 0 auto;
-      padding: 40px 20px 80px;
+      padding: 28px 16px 100px;
+      display: flex;
+      flex-direction: column;
+      gap: 12px;
     }
 
-    /* ─── SECTION HEADERS ─── */
-    .section-header {
+    /* ─── SECTION CARD ─── */
+    .section-card {
+      background: var(--card-bg);
+      border-radius: var(--radius-lg);
+      padding: 20px 20px 24px;
+      box-shadow: var(--shadow-sm);
+      border: 1px solid rgba(0,0,0,0.04);
+    }
+
+    .section-card-header {
       display: flex;
       align-items: center;
       justify-content: space-between;
-      margin-bottom: 20px;
+      margin-bottom: 22px;
     }
 
-    .section-title {
-      font-size: 0.72rem;
+    .section-card-title {
+      font-size: 0.68rem;
       font-weight: 800;
-      letter-spacing: 1.8px;
+      letter-spacing: 1.6px;
       text-transform: uppercase;
       color: var(--gray-3);
     }
@@ -190,12 +250,11 @@
     .app-grid {
       display: grid;
       grid-template-columns: repeat(4, 1fr);
-      gap: 20px;
-      margin-bottom: 44px;
+      gap: 18px;
     }
 
-    @media (max-width: 480px) {
-      .app-grid { grid-template-columns: repeat(3, 1fr); gap: 16px; }
+    @media (max-width: 400px) {
+      .app-grid { grid-template-columns: repeat(3, 1fr); gap: 14px; }
     }
 
     /* ─── APP ICON ─── */
@@ -203,27 +262,27 @@
       display: flex;
       flex-direction: column;
       align-items: center;
-      gap: 10px;
+      gap: 9px;
       cursor: pointer;
       position: relative;
       animation: popIn 0.5s cubic-bezier(.34,1.56,.64,1) both;
     }
 
-    .app-icon:nth-child(1) { animation-delay: 0.05s; }
-    .app-icon:nth-child(2) { animation-delay: 0.10s; }
-    .app-icon:nth-child(3) { animation-delay: 0.15s; }
-    .app-icon:nth-child(4) { animation-delay: 0.20s; }
-    .app-icon:nth-child(5) { animation-delay: 0.25s; }
-    .app-icon:nth-child(6) { animation-delay: 0.30s; }
+    .app-icon:nth-child(1) { animation-delay: 0.04s; }
+    .app-icon:nth-child(2) { animation-delay: 0.09s; }
+    .app-icon:nth-child(3) { animation-delay: 0.14s; }
+    .app-icon:nth-child(4) { animation-delay: 0.19s; }
+    .app-icon:nth-child(5) { animation-delay: 0.24s; }
+    .app-icon:nth-child(6) { animation-delay: 0.29s; }
 
     @keyframes popIn {
-      from { opacity: 0; transform: scale(0.75) translateY(12px); }
+      from { opacity: 0; transform: scale(0.72) translateY(14px); }
       to   { opacity: 1; transform: scale(1) translateY(0); }
     }
 
     .app-icon-box {
-      width: 76px;
-      height: 76px;
+      width: 80px;
+      height: 80px;
       border-radius: 22px;
       display: flex;
       align-items: center;
@@ -232,9 +291,9 @@
       position: relative;
       overflow: hidden;
       box-shadow:
-        0 4px 0 rgba(0,0,0,0.12),
-        0 6px 18px rgba(0,0,0,0.12);
-      transition: transform 0.2s cubic-bezier(.34,1.56,.64,1), box-shadow 0.2s ease;
+        0 4px 0 rgba(0,0,0,0.13),
+        0 7px 20px rgba(0,0,0,0.14);
+      transition: transform 0.22s cubic-bezier(.34,1.56,.64,1), box-shadow 0.22s ease;
     }
 
     /* Gloss shine */
@@ -242,26 +301,26 @@
       content: '';
       position: absolute;
       top: 0; left: 0; right: 0;
-      height: 45%;
-      background: linear-gradient(180deg, rgba(255,255,255,0.28) 0%, rgba(255,255,255,0) 100%);
+      height: 42%;
+      background: linear-gradient(180deg, rgba(255,255,255,0.30) 0%, rgba(255,255,255,0) 100%);
       border-radius: 22px 22px 0 0;
       pointer-events: none;
     }
 
     .app-icon:hover .app-icon-box {
-      transform: translateY(-5px) scale(1.06);
-      box-shadow: 0 8px 0 rgba(0,0,0,0.10), 0 14px 32px rgba(0,0,0,0.16);
+      transform: translateY(-6px) scale(1.07);
+      box-shadow: 0 10px 0 rgba(0,0,0,0.10), 0 18px 36px rgba(0,0,0,0.18);
     }
 
     .app-icon:active .app-icon-box {
-      transform: scale(0.92) translateY(0);
-      box-shadow: 0 1px 0 rgba(0,0,0,0.10), 0 2px 8px rgba(0,0,0,0.10);
+      transform: scale(0.91) translateY(0);
+      box-shadow: 0 1px 0 rgba(0,0,0,0.10), 0 3px 10px rgba(0,0,0,0.10);
     }
 
     .app-icon-label {
-      font-size: 0.78rem;
+      font-size: 0.73rem;
       font-weight: 700;
-      color: var(--text);
+      color: var(--gray-5);
       text-align: center;
       line-height: 1.25;
       max-width: 80px;
@@ -298,23 +357,30 @@
       50%       { transform: rotate(2.5deg); }
     }
 
-    /* ─── TOOLBAR ─── */
+    /* ─── TOOLBAR CARD ─── */
+    .toolbar-card {
+      background: var(--card-bg);
+      border-radius: var(--radius-lg);
+      padding: 18px 20px;
+      box-shadow: var(--shadow-sm);
+      border: 1px solid rgba(0,0,0,0.04);
+    }
+
     .toolbar {
       display: flex;
       gap: 10px;
       flex-wrap: wrap;
-      margin-top: 4px;
     }
 
     .btn {
       display: inline-flex;
       align-items: center;
-      gap: 6px;
-      padding: 12px 22px;
+      gap: 7px;
+      padding: 11px 22px;
       border-radius: 100px;
       font-family: 'Plus Jakarta Sans', sans-serif;
       font-weight: 700;
-      font-size: 0.88rem;
+      font-size: 0.86rem;
       border: none;
       cursor: pointer;
       transition: transform 0.15s cubic-bezier(.34,1.56,.64,1), box-shadow 0.15s ease, opacity 0.15s;
@@ -327,38 +393,31 @@
     .btn-primary {
       background: var(--green);
       color: #fff;
-      box-shadow: 0 4px 14px rgba(61,122,82,0.35);
+      box-shadow: 0 4px 16px rgba(45,106,68,0.35);
     }
-    .btn-primary:hover { box-shadow: 0 8px 24px rgba(61,122,82,0.4); }
+    .btn-primary:hover { box-shadow: 0 8px 26px rgba(45,106,68,0.42); }
 
     .btn-ghost {
       background: var(--gray-1);
-      color: var(--gray-4);
-      box-shadow: var(--shadow-sm);
+      color: var(--gray-5);
+      box-shadow: var(--shadow-xs);
     }
     .btn-ghost:hover { background: var(--gray-2); }
 
     .note {
-      font-size: 0.73rem;
+      font-size: 0.71rem;
       color: var(--gray-3);
-      margin-top: 14px;
+      margin-top: 12px;
       font-weight: 500;
       display: flex;
       align-items: center;
       gap: 5px;
     }
 
-    /* ─── DIVIDER ─── */
-    .divider {
-      height: 1px;
-      background: var(--gray-2);
-      margin: 36px 0;
-    }
-
     /* ─── MODAL ─── */
     .modal-backdrop {
       position: fixed; inset: 0;
-      background: rgba(0,0,0,0.35);
+      background: rgba(0,0,0,0.38);
       backdrop-filter: blur(20px) saturate(180%);
       -webkit-backdrop-filter: blur(20px) saturate(180%);
       display: flex;
@@ -372,36 +431,36 @@
     @keyframes fadeIn { from { opacity: 0; } to { opacity: 1; } }
 
     .modal-box {
-      background: rgba(255,255,255,0.95);
+      background: rgba(255,255,255,0.97);
       backdrop-filter: blur(40px);
       -webkit-backdrop-filter: blur(40px);
       border-radius: var(--radius-xl);
       padding: 32px;
       max-width: 400px;
       width: 100%;
-      box-shadow: 0 32px 80px rgba(0,0,0,0.22), 0 0 0 1px rgba(0,0,0,0.06);
-      animation: slideUp 0.3s cubic-bezier(.34,1.4,.64,1);
+      box-shadow: 0 32px 80px rgba(0,0,0,0.24), 0 0 0 1px rgba(0,0,0,0.06);
+      animation: slideUp 0.28s cubic-bezier(.34,1.4,.64,1);
     }
 
     @keyframes slideUp {
-      from { opacity: 0; transform: translateY(30px) scale(0.96); }
+      from { opacity: 0; transform: translateY(32px) scale(0.95); }
       to   { opacity: 1; transform: translateY(0) scale(1); }
     }
 
     .modal-box h2 {
-      font-size: 1.4rem;
+      font-size: 1.35rem;
       font-weight: 800;
       color: var(--text);
       margin-bottom: 24px;
       letter-spacing: -0.5px;
     }
 
-    .modal-field { margin-bottom: 14px; }
+    .modal-field { margin-bottom: 13px; }
 
     .modal-field label {
       display: block;
       font-weight: 700;
-      font-size: 0.72rem;
+      font-size: 0.68rem;
       color: var(--gray-3);
       margin-bottom: 6px;
       text-transform: uppercase;
@@ -410,11 +469,11 @@
 
     .modal-field input {
       width: 100%;
-      padding: 13px 16px;
+      padding: 12px 15px;
       border-radius: var(--radius-md);
       border: 1.5px solid var(--gray-2);
       font-family: 'Plus Jakarta Sans', sans-serif;
-      font-size: 0.95rem;
+      font-size: 0.94rem;
       font-weight: 600;
       color: var(--text);
       background: var(--gray-1);
@@ -425,20 +484,20 @@
     .modal-field input:focus {
       border-color: var(--green);
       background: white;
-      box-shadow: 0 0 0 4px rgba(61,122,82,0.1);
+      box-shadow: 0 0 0 4px rgba(45,106,68,0.1);
     }
 
     .modal-btns {
       display: flex;
       gap: 10px;
-      margin-top: 24px;
+      margin-top: 22px;
     }
 
     .modal-desc {
       font-size: 0.9rem;
       color: var(--gray-4);
       margin-bottom: 24px;
-      line-height: 1.5;
+      line-height: 1.55;
     }
 
     /* ─── TOAST ─── */
@@ -458,11 +517,11 @@
     .toast {
       background: var(--green-dk);
       color: white;
-      padding: 13px 22px;
+      padding: 12px 22px;
       border-radius: 100px;
       font-weight: 700;
-      font-size: 0.88rem;
-      box-shadow: 0 8px 24px rgba(0,0,0,0.2);
+      font-size: 0.86rem;
+      box-shadow: 0 8px 28px rgba(0,0,0,0.22);
       animation: toastIn 0.35s cubic-bezier(.34,1.56,.64,1) both,
                  toastOut 0.3s ease 2.5s both;
       white-space: nowrap;
@@ -471,24 +530,15 @@
     @keyframes toastIn  { from { opacity:0; transform: translateY(16px) scale(0.9); } to { opacity:1; transform:translateY(0) scale(1); } }
     @keyframes toastOut { from { opacity:1; } to { opacity:0; transform:translateY(8px); } }
 
-    /* ─── HERO FOOTER WAVE ─── */
-    .hero-wave {
-      display: block;
-      width: 100%;
-      overflow: hidden;
-      line-height: 0;
-      margin-bottom: -2px;
-    }
-
     /* ─── CHAT FAB ─── */
     #chat-fab {
       position: fixed;
       bottom: 28px;
-      right: 24px;
-      width: 64px;
-      height: 64px;
-      border-radius: 22px;
-      background: linear-gradient(145deg, var(--green-lt), var(--green-dk));
+      right: 22px;
+      width: 62px;
+      height: 62px;
+      border-radius: 20px;
+      background: linear-gradient(150deg, var(--green-lt), var(--green-dk));
       border: none;
       cursor: pointer;
       display: flex;
@@ -496,8 +546,8 @@
       justify-content: center;
       box-shadow:
         0 4px 0 rgba(0,0,0,0.18),
-        0 8px 28px rgba(61,122,82,0.45);
-      transition: transform 0.2s cubic-bezier(.34,1.56,.64,1), box-shadow 0.2s ease;
+        0 10px 32px rgba(45,106,68,0.48);
+      transition: transform 0.22s cubic-bezier(.34,1.56,.64,1), box-shadow 0.22s ease;
       z-index: 900;
       overflow: hidden;
     }
@@ -506,39 +556,41 @@
       content: '';
       position: absolute;
       top: 0; left: 0; right: 0;
-      height: 45%;
+      height: 44%;
       background: linear-gradient(180deg, rgba(255,255,255,0.22) 0%, rgba(255,255,255,0) 100%);
-      border-radius: 22px 22px 0 0;
+      border-radius: 20px 20px 0 0;
       pointer-events: none;
     }
 
     #chat-fab:hover {
       transform: translateY(-5px) scale(1.06);
-      box-shadow: 0 8px 0 rgba(0,0,0,0.14), 0 16px 36px rgba(61,122,82,0.5);
+      box-shadow: 0 8px 0 rgba(0,0,0,0.14), 0 18px 40px rgba(45,106,68,0.52);
     }
 
     #chat-fab:active {
-      transform: scale(0.92);
-      box-shadow: 0 1px 0 rgba(0,0,0,0.12), 0 4px 12px rgba(61,122,82,0.3);
+      transform: scale(0.91);
+      box-shadow: 0 1px 0 rgba(0,0,0,0.12), 0 4px 12px rgba(45,106,68,0.3);
     }
 
     #chat-fab svg {
-      width: 28px;
-      height: 28px;
+      width: 27px;
+      height: 27px;
       filter: drop-shadow(0 1px 2px rgba(0,0,0,0.2));
     }
 
-    /* Notification dot */
     .fab-dot {
       position: absolute;
-      top: 9px;
-      right: 9px;
-      width: 10px;
-      height: 10px;
+      top: 9px; right: 9px;
+      width: 10px; height: 10px;
       background: var(--amber);
       border-radius: 50%;
       border: 2px solid white;
       animation: pulse 2s ease-in-out infinite;
+    }
+
+    @keyframes pulse {
+      0%, 100% { opacity: 1; transform: scale(1); }
+      50%       { opacity: 0.5; transform: scale(0.72); }
     }
 
     /* ─── CHAT PANEL ─── */
@@ -564,8 +616,8 @@
       position: absolute;
       inset: 0;
       background: rgba(10,26,18,0.45);
-      backdrop-filter: blur(18px) saturate(160%);
-      -webkit-backdrop-filter: blur(18px) saturate(160%);
+      backdrop-filter: blur(20px) saturate(160%);
+      -webkit-backdrop-filter: blur(20px) saturate(160%);
     }
 
     .chat-sheet {
@@ -579,7 +631,7 @@
       border-radius: 28px 28px 0 0;
       display: flex;
       flex-direction: column;
-      box-shadow: 0 -8px 48px rgba(0,0,0,0.18), 0 0 0 1px rgba(0,0,0,0.06);
+      box-shadow: 0 -8px 56px rgba(0,0,0,0.18), 0 0 0 1px rgba(0,0,0,0.05);
       transform: translateY(100%);
       transition: transform 0.38s cubic-bezier(.32,1.2,.64,1);
       overflow: hidden;
@@ -589,24 +641,35 @@
       transform: translateY(0);
     }
 
+    /* drag handle */
+    .chat-sheet::before {
+      content: '';
+      display: block;
+      width: 38px;
+      height: 4px;
+      background: var(--gray-2);
+      border-radius: 100px;
+      margin: 12px auto 0;
+      flex-shrink: 0;
+    }
+
     .chat-header {
-      padding: 20px 24px 16px;
+      padding: 14px 20px 14px;
       display: flex;
       align-items: center;
-      gap: 14px;
-      border-bottom: 1.5px solid var(--gray-2);
+      gap: 13px;
+      border-bottom: 1px solid var(--gray-2);
       flex-shrink: 0;
     }
 
     .chat-header-icon {
-      width: 42px;
-      height: 42px;
-      border-radius: 13px;
-      background: linear-gradient(145deg, var(--green-lt), var(--green-dk));
+      width: 40px; height: 40px;
+      border-radius: 12px;
+      background: linear-gradient(150deg, var(--green-lt), var(--green-dk));
       display: flex;
       align-items: center;
       justify-content: center;
-      box-shadow: 0 3px 0 rgba(0,0,0,0.14), 0 6px 16px rgba(61,122,82,0.35);
+      box-shadow: 0 3px 0 rgba(0,0,0,0.14), 0 6px 16px rgba(45,106,68,0.35);
       flex-shrink: 0;
       overflow: hidden;
       position: relative;
@@ -616,20 +679,19 @@
       content: '';
       position: absolute;
       top: 0; left: 0; right: 0;
-      height: 45%;
+      height: 44%;
       background: linear-gradient(180deg, rgba(255,255,255,0.22) 0%, transparent 100%);
-      border-radius: 13px 13px 0 0;
+      border-radius: 12px 12px 0 0;
     }
 
     .chat-header-icon svg {
-      width: 20px;
-      height: 20px;
+      width: 20px; height: 20px;
     }
 
     .chat-header-text { flex: 1; }
 
     .chat-header-text h3 {
-      font-size: 1.05rem;
+      font-size: 1.0rem;
       font-weight: 800;
       color: var(--text);
       letter-spacing: -0.3px;
@@ -639,13 +701,13 @@
       display: inline-flex;
       align-items: center;
       gap: 5px;
-      background: rgba(245,166,35,0.15);
-      border: 1px solid rgba(245,166,35,0.3);
+      background: rgba(245,166,35,0.14);
+      border: 1px solid rgba(245,166,35,0.28);
       border-radius: 100px;
       padding: 2px 9px;
-      font-size: 0.65rem;
+      font-size: 0.62rem;
       font-weight: 800;
-      letter-spacing: 1px;
+      letter-spacing: 0.9px;
       text-transform: uppercase;
       color: var(--amber-dk);
       margin-top: 3px;
@@ -659,12 +721,12 @@
     }
 
     .chat-close {
-      width: 34px; height: 34px;
+      width: 32px; height: 32px;
       border-radius: 50%;
       background: var(--gray-1);
       border: none;
       cursor: pointer;
-      font-size: 1.1rem;
+      font-size: 1rem;
       color: var(--gray-4);
       display: flex;
       align-items: center;
@@ -678,26 +740,26 @@
     .chat-feed {
       flex: 1;
       overflow-y: auto;
-      padding: 16px 24px;
+      padding: 14px 20px;
       display: flex;
       flex-direction: column;
-      gap: 10px;
+      gap: 8px;
     }
 
     .chat-feed:empty::after {
       content: 'Še ni sporočil. Dodaj prvo! 👇';
       color: var(--gray-3);
-      font-size: 0.88rem;
+      font-size: 0.86rem;
       font-weight: 600;
       text-align: center;
-      padding: 32px 0;
+      padding: 36px 0;
     }
 
     .feed-item {
       display: flex;
       align-items: center;
-      gap: 14px;
-      padding: 14px 16px;
+      gap: 13px;
+      padding: 13px 15px;
       background: var(--gray-1);
       border-radius: var(--radius-md);
       border: 1.5px solid transparent;
@@ -710,14 +772,14 @@
     }
 
     .feed-item:hover {
-      border-color: rgba(61,122,82,0.25);
+      border-color: rgba(45,106,68,0.22);
       background: var(--green-bg);
       transform: translateX(4px);
-      box-shadow: var(--shadow-sm);
+      box-shadow: var(--shadow-xs);
     }
 
     .feed-item-dot {
-      width: 8px; height: 8px;
+      width: 7px; height: 7px;
       border-radius: 50%;
       background: var(--green);
       flex-shrink: 0;
@@ -726,10 +788,9 @@
     .feed-item-text { flex: 1; min-width: 0; }
 
     .feed-link-label {
-      font-size: 0.82rem;
+      font-size: 0.8rem;
       font-weight: 800;
       color: var(--green);
-      font-family: 'Plus Jakarta Sans', monospace;
       letter-spacing: -0.2px;
     }
 
@@ -740,7 +801,7 @@
     }
 
     .feed-desc {
-      font-size: 0.88rem;
+      font-size: 0.86rem;
       font-weight: 600;
       color: var(--text);
     }
@@ -779,8 +840,8 @@
     .chat-feed.editing .feed-item { padding-right: 34px; }
 
     .chat-footer {
-      padding: 14px 24px 20px;
-      border-top: 1.5px solid var(--gray-2);
+      padding: 12px 20px 20px;
+      border-top: 1px solid var(--gray-2);
       flex-shrink: 0;
       display: flex;
       gap: 8px;
@@ -795,11 +856,11 @@
 
     .chat-input {
       width: 100%;
-      padding: 11px 14px;
+      padding: 10px 13px;
       border-radius: var(--radius-sm);
       border: 1.5px solid var(--gray-2);
       font-family: 'Plus Jakarta Sans', sans-serif;
-      font-size: 0.88rem;
+      font-size: 0.86rem;
       font-weight: 600;
       color: var(--text);
       background: var(--gray-1);
@@ -810,12 +871,11 @@
     .chat-input:focus {
       border-color: var(--green);
       background: white;
-      box-shadow: 0 0 0 3px rgba(61,122,82,0.1);
+      box-shadow: 0 0 0 3px rgba(45,106,68,0.1);
     }
 
     .chat-send-btn {
-      width: 44px;
-      height: 44px;
+      width: 42px; height: 42px;
       border-radius: var(--radius-sm);
       background: var(--green);
       border: none;
@@ -824,23 +884,23 @@
       align-items: center;
       justify-content: center;
       align-self: flex-end;
-      box-shadow: 0 4px 14px rgba(61,122,82,0.35);
+      box-shadow: 0 4px 14px rgba(45,106,68,0.35);
       transition: transform 0.15s cubic-bezier(.34,1.56,.64,1), box-shadow 0.15s;
       flex-shrink: 0;
     }
 
-    .chat-send-btn:hover { transform: scale(1.08); box-shadow: 0 6px 18px rgba(61,122,82,0.45); }
-    .chat-send-btn:active { transform: scale(0.92); }
+    .chat-send-btn:hover { transform: scale(1.08); box-shadow: 0 6px 20px rgba(45,106,68,0.45); }
+    .chat-send-btn:active { transform: scale(0.91); }
 
     .chat-edit-toggle {
-      font-size: 0.72rem;
+      font-size: 0.7rem;
       color: var(--gray-3);
       background: none;
       border: none;
       cursor: pointer;
       font-family: 'Plus Jakarta Sans', sans-serif;
       font-weight: 700;
-      padding: 4px 6px;
+      padding: 4px 7px;
       border-radius: 6px;
       transition: color 0.15s, background 0.15s;
       text-transform: uppercase;
@@ -853,6 +913,14 @@
 </head>
 <body>
 
+<!-- TOP NAV -->
+<nav class="top-nav">
+  <div class="top-nav-inner">
+    <span class="nav-brand">Brihta<span class="nav-brand-dot">.</span></span>
+    <span class="nav-pill"><span class="nav-dot"></span>Učni portal</span>
+  </div>
+</nav>
+
 <!-- HERO -->
 <header class="hero">
   <div class="hero-inner">
@@ -860,54 +928,51 @@
       <img src="Brihta.svg" alt="Brihta maskota">
     </div>
     <div class="hero-text">
-      <div class="hero-badge">
-        <span class="hero-badge-dot"></span>
-        Učni portal
-      </div>
-      <div class="hero-title">Brihta<span>.</span></div>
-      <div class="hero-sub">Osnovna šola · Predmeti &amp; orodja</div>
+      <div class="hero-label">Osnovna šola</div>
+      <div class="hero-title">Predmeti<br><span class="hero-title-accent">&amp; orodja</span></div>
+      <div class="hero-sub">Vse na enem mestu<br>za učitelje in učence.</div>
     </div>
   </div>
 </header>
-<svg class="hero-wave" viewBox="0 0 1440 36" xmlns="http://www.w3.org/2000/svg" preserveAspectRatio="none">
-  <path d="M0,36 C360,0 1080,0 1440,36 L1440,36 L0,36 Z" fill="#ffffff"/>
+<svg class="hero-wave" viewBox="0 0 1440 40" xmlns="http://www.w3.org/2000/svg" preserveAspectRatio="none">
+  <path d="M0,40 C360,0 1080,0 1440,40 L1440,40 L0,40 Z" fill="#f2f2f7"/>
 </svg>
 
 <main>
 
   <!-- PREDMETI -->
-  <section>
-    <div class="section-header">
-      <span class="section-title">Predmeti</span>
+  <div class="section-card">
+    <div class="section-card-header">
+      <span class="section-card-title">Predmeti</span>
     </div>
     <div class="app-grid" id="subjects-grid"></div>
-  </section>
-
-  <div class="divider"></div>
+  </div>
 
   <!-- ORODJA -->
-  <section>
-    <div class="section-header">
-      <span class="section-title">Učiteljeva orodja</span>
+  <div class="section-card">
+    <div class="section-card-header">
+      <span class="section-card-title">Učiteljeva orodja</span>
     </div>
     <div class="app-grid" id="tools-grid"></div>
-  </section>
+  </div>
 
   <!-- TOOLBAR -->
-  <div class="toolbar">
-    <button class="btn btn-primary" id="add-btn">
-      <svg width="14" height="14" viewBox="0 0 14 14" fill="none"><path d="M7 1v12M1 7h12" stroke="white" stroke-width="2.2" stroke-linecap="round"/></svg>
-      Dodaj stran
-    </button>
-    <button class="btn btn-ghost" id="edit-btn">
-      <svg width="14" height="14" viewBox="0 0 14 14" fill="none"><path d="M9.5 1.5l3 3L4 13H1v-3L9.5 1.5z" stroke="currentColor" stroke-width="1.6" stroke-linejoin="round"/></svg>
-      Uredi
-    </button>
+  <div class="toolbar-card">
+    <div class="toolbar">
+      <button class="btn btn-primary" id="add-btn">
+        <svg width="13" height="13" viewBox="0 0 14 14" fill="none"><path d="M7 1v12M1 7h12" stroke="white" stroke-width="2.4" stroke-linecap="round"/></svg>
+        Dodaj stran
+      </button>
+      <button class="btn btn-ghost" id="edit-btn">
+        <svg width="13" height="13" viewBox="0 0 14 14" fill="none"><path d="M9.5 1.5l3 3L4 13H1v-3L9.5 1.5z" stroke="currentColor" stroke-width="1.6" stroke-linejoin="round"/></svg>
+        Uredi
+      </button>
+    </div>
+    <p class="note">
+      <svg width="11" height="11" viewBox="0 0 12 12" fill="none"><circle cx="6" cy="6" r="5" stroke="#aeaeb2" stroke-width="1.2"/><path d="M6 5.5v3M6 4h.01" stroke="#aeaeb2" stroke-width="1.2" stroke-linecap="round"/></svg>
+      Dodane strani se shranijo lokalno na tej napravi.
+    </p>
   </div>
-  <p class="note">
-    <svg width="12" height="12" viewBox="0 0 12 12" fill="none"><circle cx="6" cy="6" r="5" stroke="#aeaeb2" stroke-width="1.2"/><path d="M6 5.5v3M6 4h.01" stroke="#aeaeb2" stroke-width="1.2" stroke-linecap="round"/></svg>
-    Dodane strani se shranijo lokalno na tej napravi.
-  </p>
 
 </main>
 
@@ -919,7 +984,7 @@
   <div class="fab-dot"></div>
   <svg viewBox="0 0 28 28" fill="none" xmlns="http://www.w3.org/2000/svg">
     <path d="M4 6a2 2 0 0 1 2-2h16a2 2 0 0 1 2 2v12a2 2 0 0 1-2 2H9.5L4 24V6z" fill="rgba(255,255,255,0.95)" stroke="rgba(255,255,255,0.5)" stroke-width="0.5"/>
-    <path d="M9 11h10M9 15h6" stroke="rgba(61,122,82,0.8)" stroke-width="2" stroke-linecap="round"/>
+    <path d="M9 11h10M9 15h6" stroke="rgba(45,106,68,0.8)" stroke-width="2" stroke-linecap="round"/>
   </svg>
 </button>
 
@@ -931,7 +996,7 @@
       <div class="chat-header-icon">
         <svg viewBox="0 0 20 20" fill="none" xmlns="http://www.w3.org/2000/svg">
           <path d="M3 4a1.5 1.5 0 0 1 1.5-1.5h11A1.5 1.5 0 0 1 17 4v9a1.5 1.5 0 0 1-1.5 1.5H7L3 17.5V4z" fill="rgba(255,255,255,0.95)"/>
-          <path d="M6.5 8h7M6.5 11h4.5" stroke="rgba(61,122,82,0.8)" stroke-width="1.5" stroke-linecap="round"/>
+          <path d="M6.5 8h7M6.5 11h4.5" stroke="rgba(45,106,68,0.8)" stroke-width="1.5" stroke-linecap="round"/>
         </svg>
       </div>
       <div class="chat-header-text">
@@ -967,7 +1032,7 @@
   const builtinTools = [
     { id:"t_bing", name:"Bingo",             url:"https://nicki89-blip.github.io/bingo/", icon:"🎲", color:"#af52de" },
     { id:"t_clnp", name:"Pospravimo razred", url:"https://larakin.my.canva.site/cleanup", icon:"🧹", color:"#ff9500" },
-    { id:"t_clnp", name:"Ustvarjanje skupin", url:"https://brihta.github.io/group_maker/", icon: "🗂️", color: "#6366f1" },
+    { id:"t_grp",  name:"Ustvarjanje skupin", url:"https://brihta.github.io/group_maker/", icon:"👥", color:"#5e5ce6" },
   ];
 
   let deleteMode = false;
@@ -1009,8 +1074,8 @@
     renderGrid('tools-grid', [...builtinTools, ...loadCustom()]);
     const editBtn = document.getElementById('edit-btn');
     editBtn.innerHTML = deleteMode
-      ? `<svg width="14" height="14" viewBox="0 0 14 14" fill="none"><path d="M2 7l4 4 6-6" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"/></svg> Končano`
-      : `<svg width="14" height="14" viewBox="0 0 14 14" fill="none"><path d="M9.5 1.5l3 3L4 13H1v-3L9.5 1.5z" stroke="currentColor" stroke-width="1.6" stroke-linejoin="round"/></svg> Uredi`;
+      ? `<svg width="13" height="13" viewBox="0 0 14 14" fill="none"><path d="M2 7l4 4 6-6" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"/></svg> Končano`
+      : `<svg width="13" height="13" viewBox="0 0 14 14" fill="none"><path d="M9.5 1.5l3 3L4 13H1v-3L9.5 1.5z" stroke="currentColor" stroke-width="1.6" stroke-linejoin="round"/></svg> Uredi`;
   }
 
   document.getElementById('edit-btn').addEventListener('click', () => { deleteMode = !deleteMode; render(); });
@@ -1083,34 +1148,22 @@
   render();
 
   // ─── CHAT FEED — Firebase Realtime Database (shared across all devices) ───
-  //
-  // ⚙️  SETUP (one-time, 2 minutes):
-  //   1. Go to https://console.firebase.google.com  →  "Add project"  (free Spark plan)
-  //   2. In your project: Build → Realtime Database → Create database → Start in TEST mode
-  //   3. Copy your database URL (looks like: https://YOUR-PROJECT-default-rtdb.firebaseio.com)
-  //   4. Paste it below replacing the placeholder:
-  //
   const FIREBASE_URL = "https://brihta-455eb-default-rtdb.europe-west1.firebasedatabase.app";
-  //
-  // That's it — the chat will instantly sync across every device!
-  // ─────────────────────────────────────────────────────────────────────────
 
   const DB = `${FIREBASE_URL}/brihta_feed`;
   let chatEditing = false;
-  let liveItems = [];   // kept in memory, updated by SSE stream
+  let liveItems = [];
   let sseSource = null;
 
   function shortenUrl(url) {
     return url.length <= 12 ? url : url.substring(0, 12);
   }
 
-  // ── Render the in-memory list ──
   function renderFeed() {
     const feed = document.getElementById('chat-feed');
     feed.classList.toggle('editing', chatEditing);
     feed.innerHTML = '';
     if (!liveItems.length) return;
-    // Show newest first
     [...liveItems].reverse().forEach(item => {
       const a = document.createElement('a');
       a.className = 'feed-item';
@@ -1131,7 +1184,6 @@
       });
       feed.appendChild(a);
     });
-    // Update FAB dot
     const dot = document.querySelector('.fab-dot');
     if (dot) dot.style.display = liveItems.length ? '' : 'none';
   }
@@ -1140,7 +1192,6 @@
     return s.replace(/&/g,'&amp;').replace(/</g,'&lt;').replace(/>/g,'&gt;').replace(/"/g,'&quot;');
   }
 
-  // ── Firebase REST helpers ──
   async function addItem(url, desc) {
     const res = await fetch(`${DB}.json`, {
       method: 'POST',
@@ -1154,10 +1205,8 @@
     await fetch(`${DB}/${key}.json`, { method: 'DELETE' });
   }
 
-  // ── Server-Sent Events: real-time listener ──
   function startLiveSync() {
     if (!FIREBASE_URL || FIREBASE_URL.includes('YOUR-PROJECT')) {
-      // Firebase not configured yet — show setup notice in feed
       const feed = document.getElementById('chat-feed');
       feed.innerHTML = `<div style="padding:20px 8px;text-align:center;color:var(--gray-3);font-size:0.82rem;font-weight:600;line-height:1.6">
         &#9881; <strong style="color:var(--gray-4)">Firebase ni nastavljen.</strong><br>
@@ -1174,12 +1223,10 @@
       try {
         const data = JSON.parse(e.data);
         if (data.path === '/') {
-          // Full snapshot
           liveItems = data.data
             ? Object.entries(data.data).map(([k, v]) => ({ _key: k, ...v })).sort((a,b) => a.ts - b.ts)
             : [];
         } else {
-          // Single item added or removed
           const key = data.path.replace('/', '');
           if (data.data === null) {
             liveItems = liveItems.filter(i => i._key !== key);
@@ -1189,16 +1236,12 @@
           }
         }
         renderFeed();
-      } catch(err) { /* ignore parse errors */ }
+      } catch(err) {}
     });
 
-    sseSource.addEventListener('patch', e => {
-      // Refresh fully on patch
-      fetchOnce();
-    });
+    sseSource.addEventListener('patch', e => { fetchOnce(); });
 
     sseSource.onerror = () => {
-      // On disconnect, retry after 3s
       sseSource.close();
       setTimeout(startLiveSync, 3000);
     };
@@ -1215,7 +1258,6 @@
     } catch(e) {}
   }
 
-  // ── Panel open/close ──
   function openChat() {
     const panel = document.getElementById('chat-panel');
     panel.classList.add('open');
@@ -1266,7 +1308,6 @@
     if (e.key === 'Enter') document.getElementById('chat-send').click();
   });
 
-  // Init FAB dot: hide if Firebase not yet configured
   (function() {
     const dot = document.querySelector('.fab-dot');
     if (dot && FIREBASE_URL.includes('YOUR-PROJECT')) dot.style.display = 'none';
