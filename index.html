@@ -257,6 +257,21 @@
       .app-grid { grid-template-columns: repeat(3, 1fr); gap: 14px; }
     }
 
+    @media (max-width: 520px) {
+      .hero-logo-wrap,
+      .hero-logo-wrap img {
+        width: 130px;
+        height: 130px;
+      }
+      .hero-text {
+        padding: 20px 0 20px 14px;
+      }
+      .hero-title {
+        font-size: clamp(1.6rem, 7.5vw, 2.4rem);
+        letter-spacing: -1px;
+      }
+    }
+
     /* ─── APP ICON ─── */
     .app-icon {
       display: flex;
