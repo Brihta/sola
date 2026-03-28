@@ -132,33 +132,32 @@
       max-width: var(--max-w);
       margin: 0 auto;
       display: flex;
-      flex-direction: column;
       align-items: center;
-      text-align: center;
+      justify-content: center;
+      gap: 16px;
       position: relative;
       z-index: 1;
-      padding: 40px 0 36px;
+      padding: 18px 0 14px;
     }
 
     .hero-logo-wrap {
       flex-shrink: 0;
-      width: 240px;
-      height: 240px;
+      width: 64px;
+      height: 64px;
       display: flex;
       align-items: center;
       justify-content: center;
-      margin-bottom: 20px;
     }
 
     .hero-logo-wrap img {
-      width: 240px;
-      height: 240px;
+      width: 64px;
+      height: 64px;
       object-fit: contain;
       animation: heroOwlIn 0.75s cubic-bezier(.34,1.56,.64,1) both;
     }
 
     @keyframes heroOwlIn {
-      from { opacity: 0; transform: translateY(24px) scale(0.88); }
+      from { opacity: 0; transform: translateY(12px) scale(0.88); }
       to   { opacity: 1; transform: translateY(0) scale(1); }
     }
 
@@ -168,39 +167,14 @@
     }
 
     @keyframes heroTextIn {
-      from { opacity: 0; transform: translateY(16px); }
+      from { opacity: 0; transform: translateY(8px); }
       to   { opacity: 1; transform: translateY(0); }
     }
 
-    .hero-label {
-      font-size: 0.68rem;
-      font-weight: 700;
-      letter-spacing: 1.6px;
-      text-transform: uppercase;
-      color: rgba(255,255,255,0.45);
-      margin-bottom: 10px;
-    }
-
-    .hero-title {
-      font-size: clamp(2.8rem, 7vw, 4rem);
-      font-weight: 900;
-      color: #fff;
-      line-height: 0.95;
-      letter-spacing: -2px;
-    }
-
-    .hero-title-accent {
-      background: linear-gradient(95deg, #f5a623 0%, #ffd47a 100%);
-      -webkit-background-clip: text;
-      -webkit-text-fill-color: transparent;
-      background-clip: text;
-    }
-
     .hero-sub {
-      margin-top: 12px;
       font-size: 0.88rem;
       font-weight: 500;
-      color: rgba(255,255,255,0.5);
+      color: rgba(255,255,255,0.55);
       line-height: 1.4;
     }
 
@@ -946,8 +920,6 @@
       <img src="Brihta.svg" alt="Brihta maskota">
     </div>
     <div class="hero-text">
-      <div class="hero-label">Osnovna šola</div>
-      <div class="hero-title">Predmeti<br><span class="hero-title-accent">&amp; orodja</span></div>
       <div class="hero-sub">Vse na enem mestu<br>za učitelje in učence.</div>
     </div>
   </div>
