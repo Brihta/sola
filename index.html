@@ -624,7 +624,7 @@ function stranNadzorna() {
   const ime = imeZaPozdrav();
   const danes = VSI.filter(p => nova(p));
   const sporocilo = danes.length
-    ? `Danes je novo pri: ${danes.map(p => p.ime).join(', ')}!`
+    ? `Novo gradivo pri: ${danes.map(p => p.ime).join(', ')}!`
     : 'Danes še ni novih gradiv. Pokukaj v prejšnja!';
   $main.innerHTML = `
     <section class="hello">
