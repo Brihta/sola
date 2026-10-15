@@ -4,12 +4,42 @@
   "gasilci": [],
   "matematika-3": [],
   "racunalnistvo-4": [],
-  "racunalnistvo-5": [],
-  "racunalnistvo-6": [],
+  "racunalnistvo-5": [
+   {
+    "ime": "Prijava in varno geslo delovni list",
+    "vrsta": "word",
+    "datum": "2026-10-15T08:00:00+02:00",
+    "pot": "gradiva/racunalnistvo-5/2026-10-15 Prijava_in_varno_geslo_delovni_list.docx",
+    "velikost": 10638
+   },
+   {
+    "ime": "Prijava in varno geslo zapis",
+    "vrsta": "word",
+    "datum": "2026-10-15T08:00:00+02:00",
+    "pot": "gradiva/racunalnistvo-5/2026-10-15 Prijava_in_varno_geslo_zapis.docx",
+    "velikost": 9274
+   }
+  ],
+  "racunalnistvo-6": [
+   {
+    "ime": "Robot in programer delovni list",
+    "vrsta": "word",
+    "datum": "2026-10-15T08:00:00+02:00",
+    "pot": "gradiva/racunalnistvo-6/2026-10-15 Robot_in_programer_delovni_list.docx",
+    "velikost": 11243
+   },
+   {
+    "ime": "Robot in programer zapis",
+    "vrsta": "word",
+    "datum": "2026-10-15T08:00:00+02:00",
+    "pot": "gradiva/racunalnistvo-6/2026-10-15 Robot_in_programer_zapis.docx",
+    "velikost": 9510
+   }
+  ],
   "racunalnistvo-6-9": [],
   "rokodelnica": [],
   "slovenscina-3": [],
   "svetovni-popotniki": []
  },
- "posodobljeno": "2026-10-15T10:01:42+02:00"
+ "posodobljeno": "2026-10-15T08:05:50+00:00"
 }
