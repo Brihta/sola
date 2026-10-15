@@ -60,7 +60,7 @@ Gradiva so dostopna brez prijave. Prijava je potrebna samo za kvize.
 V Supabase → SQL Editor zaženi:
 1. `supabase_kvizi.sql` (tabele in funkcije),
 2. `supabase_kvizi_ucitelj.sql` (učiteljske seje, objava s strani),
-3. `kvizi/NASTAVI_SKRIVNOST.sql` — samo če uporabljaš tudi skripto (spodaj).
+3. `~/.config/brihta-sola/NASTAVI_SKRIVNOST.sql` — samo ob novi skrivnosti za skripto.
 
 ### Kako objavim kviz (na strani)
 
@@ -75,12 +75,17 @@ Na strani kviza (kot učitelj) vidiš rezultate in imaš gumba **Uredi kviz** in
 Prva vrstica `Predmet: racunalnistvo-6` (neobvezna) sama izbere predmet — tako
 lahko asistent pripravi kviz, ki ga samo prilepiš.
 
-### Objava z računalnika (skripta, neobvezno)
+### Objava z računalnika (tajnik v zavihku Code ali skripta)
 
-Kvize lahko imaš tudi kot datoteke v `kvizi/<predmet>/` **samo na tem računalniku**
-(mapa ni na GitHubu, ker so v njih pravilni odgovori, repozitorij pa je javen).
-`python3 scripts/kvizi.py` jih preveri in objavi. Skripta skrije samo svoje
-kvize, ki jih ni več v mapi; kvizov, objavljenih na strani, se ne dotika.
+Kvizi kot datoteke so v `~/Documents/Brihta-kvizi/<predmet>/*.txt` — ZUNAJ
+repozitorija (ta je javen, v kvizih so odgovori), na stalnem mestu, da jih najde
+vsaka seja na tem Macu. Skrivnost za objavo je v `~/.config/brihta-sola/`.
+`python3 scripts/kvizi.py` kvize preveri in objavi; skrije samo svoje kvize,
+ki jih ni več v mapi, kvizov s strani se ne dotika. Nove skrivnosti nikoli ne
+ustvari sama (samo z `--nova-skrivnost`).
+
+Asistent »tajnik« (zavihek Code, mapa `Nino - Služba/tajnik`) to naredi sam;
+navodila so v njegovem `CLAUDE.md`, za seje v tem repozitoriju pa v `CLAUDE.md` tukaj.
 
 ### Oblika kviza
 

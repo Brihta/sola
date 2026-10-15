@@ -1,10 +1,15 @@
 #!/usr/bin/env python3
-"""Objavi kvize iz kvizi/<predmet>/*.txt v Supabase.
+"""Objavi kvize iz ~/Documents/Brihta-kvizi/<predmet>/*.txt v Supabase.
 
-Mapa kvizi/ NI na GitHubu (.gitignore), ker so v datotekah pravilni odgovori.
+Kvizi in skrivnost so ZUNAJ repozitorija (repozitorij je javen, v kvizih so
+pravilni odgovori), na stalnem mestu, da jih najde vsaka seja na tem Macu —
+tudi tista, ki dela v ločeni kopiji (worktree) repozitorija.
 
-    python3 scripts/kvizi.py            preveri in objavi vse kvize
-    python3 scripts/kvizi.py --preveri  samo preveri, nič ne pošlje
+    python3 scripts/kvizi.py                 preveri in objavi vse kvize
+    python3 scripts/kvizi.py --preveri       samo preveri, nič ne pošlje
+    python3 scripts/kvizi.py --nova-skrivnost  ustvari novo skrivnost (redko!)
+
+Poti lahko spremeniš z BRIHTA_KVIZI (mapa s kvizi) in BRIHTA_SKRIVNOST (datoteka).
 
 Oblika datoteke (podrobneje v README.md):
 
@@ -43,10 +48,10 @@ import urllib.error
 import urllib.request
 
 KOREN = os.path.dirname(os.path.dirname(os.path.abspath(__file__)))
-KVIZI = os.path.join(KOREN, "kvizi")
+KVIZI = os.environ.get("BRIHTA_KVIZI") or os.path.expanduser("~/Documents/Brihta-kvizi")
 GRADIVA = os.path.join(KOREN, "gradiva")
-SKRIVNOST = os.path.join(KOREN, ".kviz-skrivnost")
-NASTAVI_SQL = os.path.join(KVIZI, "NASTAVI_SKRIVNOST.sql")
+SKRIVNOST = os.environ.get("BRIHTA_SKRIVNOST") or os.path.expanduser("~/.config/brihta-sola/kviz-skrivnost")
+NASTAVI_SQL = os.path.join(os.path.dirname(SKRIVNOST), "NASTAVI_SKRIVNOST.sql")
 
 SUPABASE_URL = "https://ldczgbajbarlgwqzcggh.supabase.co"
 SUPABASE_KEY = "sb_publishable_888IYcEb-nSmGO0d67hEwA_rBFuXnv8"
@@ -66,10 +71,10 @@ def slug(t):
 
 
 def preberi(pot):
-    """Vrne (naslov, opis, vprasanja[]); vprasanje = dict(besedilo, vrstice[(st, vrsta, ...)])."""
+    """Vrne (predmet, naslov, opis, vprasanja[]); vprasanje = dict(besedilo, vrstice[(st, vrsta, ...)])."""
     with open(pot, encoding="utf-8-sig") as f:
         vrstice = f.read().splitlines()
-    naslov = opis = None
+    predmet = naslov = opis = None
     vprasanja = []
     trenutno = None
     for st, surovo in enumerate(vrstice, 1):
@@ -77,9 +82,12 @@ def preberi(pot):
         if not v or v.startswith("#"):
             continue
         if trenutno is None and not vprasanja:
-            m = re.match(r"^(naslov|opis)\s*:\s*(.*)$", v, re.I)
+            m = re.match(r"^(predmet|naslov|opis)\s*:\s*(.*)$", v, re.I)
             if m:
-                if m.group(1).lower() == "naslov":
+                kaj = m.group(1).lower()
+                if kaj == "predmet":
+                    predmet = m.group(2).strip().lower()
+                elif kaj == "naslov":
                     naslov = m.group(2).strip()
                 else:
                     opis = m.group(2).strip()
@@ -105,7 +113,7 @@ def preberi(pot):
         if trenutno["odg"]:
             raise Napaka(f"vrstica {st}: ne razumem »{v}« (odgovor se začne z +, -, =, številko ali ima »levo = desno«)")
         trenutno["besedilo"] += "\n" + v  # vprašanje v več vrsticah
-    return naslov, opis, vprasanja
+    return predmet, naslov, opis, vprasanja
 
 
 def zgradi(id_kviza, vprasanja):
@@ -173,6 +181,7 @@ def predmeti():
 def nalozi_vse():
     kvizi, napake = [], []
     if not os.path.isdir(KVIZI):
+        napake.append(f"ni mape s kvizi: {KVIZI}")
         return kvizi, napake
     znani = predmeti()
     for predmet in sorted(os.listdir(KVIZI)):
@@ -180,7 +189,7 @@ def nalozi_vse():
         if not os.path.isdir(mapa) or predmet.startswith((".", "_")):
             continue
         if predmet not in znani:
-            napake.append(f"kvizi/{predmet}: ni tak predmet (možni: {', '.join(sorted(znani))})")
+            napake.append(f"{predmet}: ni tak predmet (možni: {', '.join(sorted(znani))})")
             continue
         for ime in sorted(os.listdir(mapa)):
             if not ime.lower().endswith(".txt") or ime.startswith((".", "_")):
@@ -189,12 +198,14 @@ def nalozi_vse():
             osnova = os.path.splitext(ime)[0]
             id_kviza = f"{predmet}/{slug(osnova)}"
             try:
-                naslov, opis, vpr = preberi(pot)
+                v_predmet, naslov, opis, vpr = preberi(pot)
+                if v_predmet and v_predmet != predmet:
+                    raise Napaka(f"v datoteki piše »Predmet: {v_predmet}«, datoteka pa je v mapi {predmet}")
                 if not vpr:
                     raise Napaka("ni nobenega vprašanja (vprašanje se začne z »?«)")
                 javno, kljuc = zgradi(id_kviza, vpr)
             except Napaka as e:
-                napake.append(f"kvizi/{predmet}/{ime}: {e}")
+                napake.append(f"{predmet}/{ime}: {e}")
                 continue
             kvizi.append({
                 "id": id_kviza, "predmet": predmet,
@@ -214,16 +225,21 @@ def skrivnost():
     if os.path.isfile(SKRIVNOST):
         with open(SKRIVNOST) as f:
             return f.read().strip()
+    if "--nova-skrivnost" not in sys.argv:
+        # Nova skrivnost bi zamenjala delujočo, zato je nikoli ne ustvarimo sami.
+        raise SystemExit(f"Ni skrivnosti v {SKRIVNOST}. Ta skripta deluje samo na Ninovem Macu. "
+                         "Ne ustvarjaj nove skrivnosti; daj kviz Ninu.")
     s = secrets.token_urlsafe(32)
+    os.makedirs(os.path.dirname(SKRIVNOST), mode=0o700, exist_ok=True)
     with open(SKRIVNOST, "w") as f:
         f.write(s + "\n")
-    os.makedirs(KVIZI, exist_ok=True)
+    os.chmod(SKRIVNOST, 0o600)
     with open(NASTAVI_SQL, "w", encoding="utf-8") as f:
         f.write("-- Zaženi enkrat v Supabase → SQL Editor (po supabase_kvizi.sql).\n"
                 "-- Ta datoteka NI na GitHubu. Ne pošiljaj je nikomur.\n"
                 "insert into app_config (key, value) values ('sola_kviz_skrivnost', '"
                 + s + "')\n  on conflict (key) do update set value = excluded.value;\n")
-    print("Ustvaril sem novo skrivnost. Zaženi kvizi/NASTAVI_SKRIVNOST.sql v Supabase → SQL Editor.")
+    print(f"Ustvaril sem novo skrivnost. Zaženi {NASTAVI_SQL} v Supabase → SQL Editor.")
     return s
 
 
@@ -239,7 +255,7 @@ def objavi(kvizi):
     except urllib.error.HTTPError as e:
         besedilo = e.read().decode(errors="replace")
         if "NAPACNA_SKRIVNOST" in besedilo:
-            raise SystemExit("Supabase ne pozna te skrivnosti. Zaženi kvizi/NASTAVI_SKRIVNOST.sql v SQL Editorju.")
+            raise SystemExit(f"Supabase ne pozna te skrivnosti. Zaženi {NASTAVI_SQL} v SQL Editorju.")
         if "sola_kviz_objavi" in besedilo and e.code == 404:
             raise SystemExit("V Supabase še ni kvizov. Najprej zaženi supabase_kvizi.sql v SQL Editorju.")
         raise SystemExit(f"Napaka Supabase ({e.code}): {besedilo}")
