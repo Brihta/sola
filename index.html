@@ -333,6 +333,22 @@
     .bars .b { height: 10px; background: var(--line); border-radius: 999px; overflow: hidden; }
     .bars .b i { display: block; height: 100%; background: linear-gradient(90deg, var(--c1), var(--c2)); border-radius: 999px; }
 
+    /* ─── Nov kviz ─── */
+    .banner-btn { margin-left: auto; align-self: flex-start; background: rgba(255,255,255,.95); border: 0; color: var(--ink); }
+    .editor { display: grid; grid-template-columns: minmax(0, 1fr) minmax(0, 1fr); gap: 26px; align-items: start; }
+    .ed-right { position: sticky; top: 84px; max-height: calc(100vh - 100px); overflow-y: auto; padding: 2px 6px 20px 2px; }
+    .editor textarea {
+      width: 100%; min-height: 460px; resize: vertical; font: 15px/1.55 ui-monospace, 'SF Mono', Menlo, Consolas, monospace;
+      padding: 14px 16px; border: 2px solid var(--line); border-radius: var(--r-md); background: #fffdf9; color: var(--ink);
+    }
+    .editor textarea:focus { outline: none; border-color: var(--accent); box-shadow: 0 0 0 4px rgba(108,92,231,.15); }
+    .sel { width: 100%; font: inherit; font-weight: 700; padding: 11px 12px; border: 2px solid var(--line); border-radius: var(--r-md); background: #fffdf9; color: var(--ink); }
+    .ed-actions { display: flex; align-items: center; gap: 12px; flex-wrap: wrap; margin-top: 6px; }
+    .ed-actions .msg { margin: 0 auto 0 0; }
+    .ed-actions #nk-objavi { margin-left: auto; }
+    .ed-right .q { padding: 16px; }
+    @media (max-width: 960px) { .editor { grid-template-columns: minmax(0, 1fr); } .ed-right { position: static; max-height: none; } .editor textarea { min-height: 320px; } }
+
     /* ─── Sheets (subjects, account) ─── */
     .scrim { position: fixed; inset: 0; z-index: 60; background: rgba(31,35,64,.38); backdrop-filter: blur(3px); -webkit-backdrop-filter: blur(3px); opacity: 0; pointer-events: none; transition: opacity .2s; }
     body.tray-open .scrim { opacity: 1; pointer-events: auto; }
@@ -571,12 +587,13 @@ const hrefGradiva = (p, g) => `#/p/${p.id}/${encodeURIComponent(kljuc(g))}`;
 
 /* ─── Računi (isti kot v Brihta-MAT; ista domena, zato tudi ista prijava) ─── */
 const KLJUC_UCENEC = 'brihta_profile_v1';
-const KLJUC_UCITELJ = 'brihta_teacher_v1';
+/* Učitelj: seja s strežnika (poteče po 12 urah), ne več samo ID — glej supabase_kvizi_ucitelj.sql. */
+const KLJUC_UCITELJ = 'sola_ucitelj_v2';
 const ZIVALI = ['🐘','🦁','🦊','🐊','🐬','🦉','🐸','🐢','🦒','🐧','🐝','🐙'];
 const EMOJIJI = ['🦉','🚀','🦄','🐉','🌟','⚡','🎮','🍕','🦖','🐱','🐶','🦁','🌈','🎨','⚽','🦋'];
 let ucenec = null, ucitelj = null;
 try { const u = JSON.parse(preberi(KLJUC_UCENEC) || 'null'); if (u && u.id && u.username) ucenec = u; } catch (e) {}
-try { const t = JSON.parse(preberi(KLJUC_UCITELJ) || 'null'); if (t && t.id && t.username) ucitelj = t; } catch (e) {}
+try { const t = JSON.parse(preberi(KLJUC_UCITELJ) || 'null'); if (t && t.seja && t.username && new Date(t.potece) > new Date()) ucitelj = t; } catch (e) {}
 function shraniRacun() {
   try {
     if (ucenec) localStorage.setItem(KLJUC_UCENEC, JSON.stringify(ucenec)); else localStorage.removeItem(KLJUC_UCENEC);
@@ -684,9 +701,10 @@ function vrsticaGradiva(p, g) {
 function okvirPredmeta(p, zavihek, vsebina, stranska, zadnjaDrobtina) {
   const s = p.stars;
   drobtine([['Domov', '#/'], ...(s ? [[s.ime, `#/${s.id}`]] : []), [p.ime, `#/p/${p.id}`], ...(zadnjaDrobtina ? [[zadnjaDrobtina]] : [])]);
-  const pas = zavihek === 'gradivo' || zavihek === 'kviz' ? '' : `<section class="banner" style="${barve(p)}">
+  const pas = ['gradivo', 'kviz', 'urejevalnik'].includes(zavihek) ? '' : `<section class="banner" style="${barve(p)}">
       <div class="banner-top"><span class="emoji" aria-hidden="true">${p.emoji}</span>
-        <div><h1>${esc(p.ime)}</h1><p>${esc(p.opis || p.koda)}</p></div></div>
+        <div><h1>${esc(p.ime)}</h1><p>${esc(p.opis || p.koda)}</p></div>
+        ${ucitelj ? `<a class="btn banner-btn" href="#/p/${p.id}/nov-kviz">＋ Nov kviz</a>` : ''}</div>
       ${s ? `<div class="banner-sw">${s.otroci.filter(o => o !== p).map(o => `<a href="#/p/${o.id}">${o.emoji} ${esc(o.kratko)}</a>`).join('')}</div>` : ''}
       <nav class="tabs" aria-label="Zavihki">
         <a href="#/p/${p.id}" class="${zavihek === 'domov' ? 'active' : ''}">Domov</a>
@@ -970,7 +988,7 @@ function resujKviz(p, g, vpr, h) {
 async function rezultatiKviza(p, g, h) {
   okvirKviza(p, g, '<p class="note">Nalagam rezultate …</p>');
   const [rez, kv] = await Promise.all([
-    rpc('sola_kviz_rezultati', { p_teacher_id: ucitelj.id, p_kviz: g.id }),
+    rpc('sola_kviz_rezultati', { p_seja: ucitelj.seja, p_kviz: g.id }),
     rpc('sola_kviz', { p_id: g.id }),
   ]);
   if (!enakaStran(h)) return;
@@ -994,18 +1012,208 @@ async function rezultatiKviza(p, g, h) {
         <td class="cells hide-m">${celice(r)}</td><td class="m hide-m">${casOddaje(r.oddano)}</td>
         <td><button class="btn" type="button" data-ponastavi="${esc(r.student_id)}" data-ime="${esc(r.ime)}" title="Izbriše oddajo, da lahko učenec kviz reši znova">Ponastavi</button></td></tr>`).join('')}
       </tbody></table>` : '<div class="empty"><img src="brihta.png" alt=""><strong>Še nobene oddaje</strong>Ko učenci oddajo kviz, se pokažejo tukaj.</div>'}
-    <div style="margin:18px 0 30px"><button class="btn" type="button" id="r-osvezi">↻ Osveži</button></div>
+    <div style="margin:18px 0 30px;display:flex;gap:8px;flex-wrap:wrap"><button class="btn" type="button" id="r-osvezi">↻ Osveži</button>
+      <a class="btn" href="#/p/${p.id}/uredi/${encodeURIComponent(g.id)}">✏️ Uredi kviz</a>
+      <button class="btn" type="button" id="r-skrij">🙈 Skrij kviz</button></div>
     ${vpr.length ? `<div class="sec-h"><h2>Predogled vprašanj</h2></div>${htmlVprasanj(vpr, true)}` : ''}`;
   const stranska = `<div class="box"><h3>👨‍🏫 Učiteljski pogled</h3><p class="note" style="margin:0">Učenci tukaj rešujejo kviz. Po oddaji vidijo samo svoje točke.</p></div>
     ${vpr.length ? `<div class="box"><h3>Uspešnost po vprašanjih</h3><ul class="bars">${poVpr.map((x, i) => `<li><span>Vprašanje ${i + 1}</span><span class="b"><i style="width:${n ? x : 0}%"></i></span><b>${n ? x + '%' : '–'}</b></li>`).join('')}</ul></div>` : ''}`;
   okvirKviza(p, g, vsebina, stranska);
   document.getElementById('r-osvezi').addEventListener('click', () => rezultatiKviza(p, g, h));
+  document.getElementById('r-skrij').addEventListener('click', async () => {
+    if (!confirm(`Skrijem kviz »${g.ime}«? Učenci ga ne bodo več videli, oddaje ostanejo.`)) return;
+    await rpc('sola_kviz_skrij', { p_seja: ucitelj.seja, p_id: g.id });
+    await naloziKvize();
+    location.hash = `#/p/${p.id}`;
+  });
   $main.querySelectorAll('[data-ponastavi]').forEach(b => b.addEventListener('click', async () => {
     if (!confirm(`Izbrišem oddajo učenca ${b.dataset.ime}? Kviz bo lahko rešil znova.`)) return;
     b.disabled = true;
-    await rpc('sola_kviz_ponastavi', { p_teacher_id: ucitelj.id, p_kviz: g.id, p_student: b.dataset.ponastavi });
+    await rpc('sola_kviz_ponastavi', { p_seja: ucitelj.seja, p_kviz: g.id, p_student: b.dataset.ponastavi });
     rezultatiKviza(p, g, h);
   }));
+}
+
+/* ─── Nov kviz (učitelj) ───
+   Enaka pravila kot scripts/kvizi.py. Brskalnik besedilo razčleni in pošlje
+   javni del (premešan, brez odgovorov) in ključ; ocenjuje strežnik. */
+const PRIMER_KVIZA = `Naslov: Naprave računalnika
+Opis: Reši sam. Imaš en poskus.
+
+? Katera naprava je vhodna?
+- zaslon
++ tipkovnica
+- zvočnik
+
+? Kateri od teh so vhodne naprave?
++ miška
++ mikrofon
+- tiskalnik
+
+? Kako se imenuje naprava, s katero premikamo kazalec?
+= miška
+= računalniška miška
+
+? Poveži napravo z njeno nalogo.
+tipkovnica = pisanje
+zaslon = prikaz slike
+zvočnik = predvajanje zvoka
+
+? Razvrsti od najmanjšega do največjega.
+1. bit
+2. bajt
+3. kilobajt`;
+
+function slugKviza(t) {
+  return t.normalize('NFKD').replace(/[̀-ͯ]/g, '').toLowerCase().replace(/[^a-z0-9]+/g, '-').replace(/^-+|-+$/g, '') || 'kviz';
+}
+function premesaj(seznam, seme) {
+  let h = 1779033703;
+  for (const c of seme) h = Math.imul(h ^ c.charCodeAt(0), 3432918353), h = h << 13 | h >>> 19;
+  const rnd = () => { h = Math.imul(h ^ h >>> 16, 2246822507); h = Math.imul(h ^ h >>> 13, 3266489909); return ((h ^= h >>> 16) >>> 0) / 4294967296; };
+  const a = seznam.slice();
+  for (let i = a.length - 1; i > 0; i--) { const j = Math.floor(rnd() * (i + 1)); [a[i], a[j]] = [a[j], a[i]]; }
+  return a;
+}
+/* Vrne { predmet, naslov, opis, vprasanja: [{t, b, ...}], kljuc: [...], napake: ['vrstica 3: …'] } */
+function razcleniKviz(besedilo, seme) {
+  const napake = [], vpr = [];
+  let predmet = null, naslov = null, opis = null, q = null;
+  besedilo.replace(/\r/g, '').split('\n').forEach((surovo, i) => {
+    const st = i + 1, v = surovo.trim();
+    if (!v || v.startsWith('#')) return;
+    if (!q && !vpr.length) {
+      const m = v.match(/^(predmet|naslov|opis)\s*:\s*(.*)$/i);
+      if (m) { const k = m[1].toLowerCase(); if (k === 'predmet') predmet = m[2].trim(); else if (k === 'naslov') naslov = m[2].trim(); else opis = m[2].trim(); return; }
+    }
+    if (v.startsWith('?')) { q = { st, b: v.slice(1).trim(), odg: [] }; vpr.push(q); return; }
+    if (!q) { napake.push(`vrstica ${st}: pred prvim vprašanjem (vprašanje se začne z »?«)`); return; }
+    let m;
+    if ((m = v.match(/^([+\-=])\s*(.+)$/))) return void q.odg.push({ st, v: m[1], a: m[2].trim() });
+    if ((m = v.match(/^(\d+)[.)]\s*(.+)$/))) return void q.odg.push({ st, v: '#', n: +m[1], a: m[2].trim() });
+    if ((m = v.match(/^(.+?)\s+=\s+(.+)$/))) return void q.odg.push({ st, v: '<>', a: m[1].trim(), d: m[2].trim() });
+    if (q.odg.length) napake.push(`vrstica ${st}: ne razumem »${v}« (odgovor se začne s +, -, =, številko ali ima obliko »levo = desno«)`);
+    else q.b += '\n' + v;
+  });
+  if (!naslov) napake.unshift('manjka vrstica »Naslov: …«');
+  if (!vpr.length) napake.push('ni nobenega vprašanja (vprašanje se začne z »?«)');
+  const javno = [], kljuc = [];
+  vpr.forEach((q, n) => {
+    const s = `vprašanje ${n + 1} (vrstica ${q.st})`, vrste = new Set(q.odg.map(o => o.v));
+    const enaki = a => new Set(a).size !== a.length;
+    if (!q.b) return napake.push(`${s}: vprašanje brez besedila`);
+    if (!q.odg.length) return napake.push(`${s}: ni odgovorov`);
+    if ([...vrste].every(x => x === '+' || x === '-')) {
+      const vsi = q.odg.map(o => o.a), prav = q.odg.filter(o => o.v === '+').map(o => o.a);
+      if (!prav.length) return napake.push(`${s}: ni pravilnega odgovora (označi ga s +)`);
+      if (vsi.length < 2) return napake.push(`${s}: izbira potrebuje vsaj dva odgovora`);
+      if (enaki(vsi)) return napake.push(`${s}: dva enaka odgovora`);
+      const t = prav.length === 1 ? 'izbira' : 'vec';
+      javno.push({ t, b: q.b, m: premesaj(vsi, seme + n) }); kljuc.push({ t, p: prav });
+    } else if (vrste.size === 1 && vrste.has('=')) {
+      javno.push({ t: 'kratek', b: q.b }); kljuc.push({ t: 'kratek', p: q.odg.map(o => o.a) });
+    } else if (vrste.size === 1 && vrste.has('<>')) {
+      const l = q.odg.map(o => o.a), d = q.odg.map(o => o.d);
+      if (l.length < 2) return napake.push(`${s}: povezovanje potrebuje vsaj dva para`);
+      if (enaki(l)) return napake.push(`${s}: leva stran se ponovi`);
+      javno.push({ t: 'povezi', b: q.b, l, d: premesaj([...new Set(d)].sort(), seme + n) }); kljuc.push({ t: 'povezi', p: q.odg.map(o => [o.a, o.d]) });
+    } else if (vrste.size === 1 && vrste.has('#')) {
+      const ur = q.odg.slice().sort((a, b) => a.n - b.n).map(o => o.a);
+      if (ur.length < 2) return napake.push(`${s}: razvrščanje potrebuje vsaj dva elementa`);
+      if (enaki(ur)) return napake.push(`${s}: dva enaka elementa`);
+      let m = ur;
+      for (let k = 0; k < 10 && m.join('\u0000') === ur.join('\u0000'); k++) m = premesaj(ur, seme + n + 'x' + k);
+      javno.push({ t: 'vrstni', b: q.b, m }); kljuc.push({ t: 'vrstni', p: ur });
+    } else napake.push(`${s}: pri enem vprašanju so pomešane različne vrste odgovorov`);
+  });
+  return { predmet, naslov, opis, vprasanja: javno, kljuc, napake };
+}
+
+/* Predogled: vprašanja, kot jih vidi učenec, z že izpolnjenimi pravilnimi odgovori. */
+function predogledKviza(el, k) {
+  el.innerHTML = htmlVprasanj(k.vprasanja, true);
+  k.kljuc.forEach((x, i) => {
+    if (x.t === 'izbira' || x.t === 'vec') el.querySelectorAll(`input[name=q${i}]`).forEach(inp => { inp.checked = x.p.includes(inp.value); });
+    else if (x.t === 'kratek') el.querySelector(`input[data-q="${i}"]`).value = x.p.join('  ·  ');
+    else if (x.t === 'povezi') el.querySelectorAll(`select[data-q="${i}"]`).forEach(s => { s.value = x.p[+s.dataset.l][1]; });
+    else if (x.t === 'vrstni') { const ol = el.querySelector(`ol[data-q="${i}"]`); x.p.forEach(v => ol.appendChild([...ol.children].find(li => li.dataset.v === v))); }
+  });
+}
+
+async function stranNovKviz(p, urejamId) {
+  if (!ucitelj) { location.replace(`#/p/${p.id}`); odpriPredal('racun'); return; }
+  const h = location.hash;
+  let vir = '', izvorDatoteka = false;
+  if (urejamId) {
+    okvirPredmeta(p, 'kviz', '<p class="note">Nalagam kviz …</p>', null, 'Uredi kviz');
+    const r = await rpc('sola_kviz_vir', { p_seja: ucitelj.seja, p_id: urejamId });
+    if (!enakaStran(h)) return;
+    const x = Array.isArray(r) && r[0];
+    if (!x) { okvirPredmeta(p, 'kviz', `<div class="empty"><img src="brihta.png" alt=""><strong>Ups!</strong>Kviza ni mogoče odpreti. Se moraš morda znova prijaviti?</div>`, null, 'Uredi kviz'); return; }
+    izvorDatoteka = !x.vir;
+    vir = x.vir || '';
+  }
+  const moznosti = VSI.map(o => `<option value="${o.id}"${o.id === p.id ? ' selected' : ''}>${o.emoji} ${esc(o.ime)}</option>`).join('');
+  okvirPredmeta(p, 'urejevalnik', `
+    <div class="vhead"><a class="btn" href="#/p/${p.id}" aria-label="Nazaj">${SVG.prev}</a>${tile('kviz', 'sm')}<h1>${urejamId ? 'Uredi kviz' : 'Nov kviz'}</h1></div>
+    ${izvorDatoteka ? '<div class="help">Ta kviz je bil objavljen iz datoteke na računalniku, zato njegovega besedila tukaj ni. Prilepi ga znova.</div>' : ''}
+    <div class="editor">
+      <div class="ed-left">
+        <div class="field"><label for="nk-predmet">Predmet</label><select id="nk-predmet" class="sel"${urejamId ? ' disabled' : ''}>${moznosti}</select></div>
+        <div class="field"><label for="nk-vir">Besedilo kviza <small class="note">— prilepi, kar ti je dal asistent</small></label>
+          <textarea id="nk-vir" spellcheck="false" placeholder="Naslov: …&#10;&#10;? Vprašanje&#10;- napačen odgovor&#10;+ pravilen odgovor">${esc(vir)}</textarea></div>
+        <div id="nk-napake"></div>
+        <div class="ed-actions">
+          ${urejamId ? '' : '<button class="btn" type="button" id="nk-primer">Vstavi primer</button>'}
+          <span class="msg" id="nk-msg"></span>
+          <button class="btn btn-go btn-big" type="button" id="nk-objavi">Objavi 🚀</button>
+        </div>
+      </div>
+      <div class="ed-right">
+        <div class="sec-h"><h2>Predogled</h2><small class="note" id="nk-povzetek"></small></div>
+        <div id="nk-predogled"></div>
+      </div>
+    </div>`, null, urejamId ? 'Uredi kviz' : 'Nov kviz');
+  const $vir = document.getElementById('nk-vir'), $pred = document.getElementById('nk-predmet');
+  let zadnji = null;
+  function osvezi() {
+    const k = razcleniKviz($vir.value, urejamId || $pred.value + '/');
+    if (k.predmet && !urejamId) {
+      const x = VSI.find(o => o.id === k.predmet.toLowerCase());
+      if (x) $pred.value = x.id; else k.napake.unshift(`neznan predmet »${k.predmet}« (izberi ga zgoraj)`);
+    }
+    zadnji = { ...k, id: urejamId || `${$pred.value}/${slugKviza(k.naslov || '')}`, predmet: urejamId ? urejamId.split('/')[0] : $pred.value };
+    const prazno = !$vir.value.trim();
+    document.getElementById('nk-napake').innerHTML = k.napake.length && !prazno
+      ? `<div class="help"><b>Popravi:</b><ul style="margin:6px 0 0;padding-left:20px">${k.napake.map(n => `<li>${esc(n)}</li>`).join('')}</ul></div>` : '';
+    document.getElementById('nk-objavi').disabled = !!k.napake.length;
+    document.getElementById('nk-povzetek').textContent = k.vprasanja.length ? `${k.naslov || 'brez naslova'} · ${k.vprasanja.length} vpr.` : '';
+    const $p = document.getElementById('nk-predogled');
+    $p.style.cssText = barve(najdi(zadnji.predmet) || p);
+    if (k.vprasanja.length) predogledKviza($p, k);
+    else $p.innerHTML = '<div class="empty">Tukaj se pokaže kviz, kot ga vidijo učenci, s pravilnimi odgovori.</div>';
+  }
+  $vir.addEventListener('input', osvezi);
+  $pred.addEventListener('change', osvezi);
+  const prim = document.getElementById('nk-primer');
+  if (prim) prim.addEventListener('click', () => { $vir.value = PRIMER_KVIZA; osvezi(); $vir.focus(); });
+  osvezi();
+  if (!urejamId) $vir.focus();
+  document.getElementById('nk-objavi').addEventListener('click', async () => {
+    const k = zadnji, msg = document.getElementById('nk-msg');
+    if (!k || k.napake.length) return;
+    if (!urejamId && KVIZI.some(x => x.id === k.id) && !confirm(`Kviz »${k.naslov}« pri tem predmetu že obstaja. Ga zamenjam z novim besedilom?`)) return;
+    const btn = document.getElementById('nk-objavi'); btn.disabled = true; btn.textContent = 'Objavljam …'; msg.textContent = '';
+    const r = await rpc('sola_kviz_shrani', { p_seja: ucitelj.seja, p_vir: $vir.value,
+      p_kviz: { id: k.id, predmet: k.predmet, naslov: k.naslov, opis: k.opis || '', vprasanja: k.vprasanja, kljuc: k.kljuc } });
+    btn.disabled = false; btn.textContent = 'Objavi 🚀';
+    if (r !== 'NOV' && r !== 'POSODOBLJEN') {
+      msg.textContent = r === NEDOSEGLJIVO ? 'Strežnik ni dosegljiv.' : r === 'NAPACEN_KVIZ' ? 'Kviz ni pravilen.' : 'Objava ni uspela. Se moraš znova prijaviti?';
+      return;
+    }
+    await naloziKvize();
+    location.hash = `#/p/${k.predmet}/${encodeURIComponent('kviz:' + k.id)}`;
+  });
 }
 
 /* ─── Račun: prijava, nov račun, učitelj ─── */
@@ -1048,10 +1256,10 @@ function izrisiRacun(pogled) {
     $b.innerHTML = `<div class="who"><span class="big">${ucitelj ? '👨‍🏫' : esc(ucenec.emoji || '🦉')}</span>
         <div><strong>${esc(ucitelj ? ucitelj.username : (ucenec.display_name || ucenec.username))}</strong>
         <small>${ucitelj ? 'Učitelj' : 'Uporabniško ime: ' + esc(ucenec.username)}</small></div></div>
-      ${ucenec ? `<p class="note">Rešenih kvizov: <b>${oddanih}</b></p>` : '<p class="note">Odpri kviz in videl boš rezultate učencev.</p>'}
+      ${ucenec ? `<p class="note">Rešenih kvizov: <b>${oddanih}</b></p>` : '<p class="note">Pri vsakem predmetu imaš gumb <b>＋ Nov kviz</b>. Ko odpreš kviz, vidiš rezultate učencev. Prijava velja 12 ur.</p>'}
       <button class="btn btn-block" type="button" id="a-odjava">Odjava</button>
       <p class="note" style="text-align:center">Isti račun velja tudi za Brihta-MAT.</p>`;
-    document.getElementById('a-odjava').addEventListener('click', () => { ucenec = null; ucitelj = null; MOJE = {}; poPrijavi(); });
+    document.getElementById('a-odjava').addEventListener('click', () => { if (ucitelj) rpc('sola_ucitelj_odjava', { p_seja: ucitelj.seja }); ucenec = null; ucitelj = null; MOJE = {}; poPrijavi(); });
     return;
   }
   if (pogled === 'nov') {
@@ -1108,13 +1316,16 @@ function izrisiRacun(pogled) {
       const msg = document.getElementById('u-msg');
       if (!mail || !pass) return void (msg.textContent = 'Vpiši e-naslov in geslo.');
       const btn = document.getElementById('u-ok'); btn.disabled = true; btn.textContent = 'Preverjam …';
-      const r = await rpc('login_teacher_email', { p_email: mail, p_password: pass });
+      const r = await rpc('sola_ucitelj_prijava', { p_email: mail, p_password: pass });
       btn.disabled = false; btn.textContent = 'Prijava';
       if (r === NEDOSEGLJIVO) return void (msg.textContent = 'Strežnik ni dosegljiv.');
-      if (!Array.isArray(r) || !r.length) return void (msg.textContent = 'Napačen e-naslov ali geslo.');
-      if (!r[0].approved) return void (msg.textContent = 'Račun še ni potrjen.');
-      if (r[0].must_change) return void (msg.textContent = 'Najprej se prijavi v Brihta-MAT in zamenjaj začetno geslo.');
-      ucitelj = { id: r[0].id, username: r[0].username, email: r[0].email, mustChange: false };
+      const x = Array.isArray(r) && r[0];
+      if (!x || x.napaka === 'NAPACNO' || !x.seja) {
+        return void (msg.textContent = x && x.napaka === 'NEPOTRJEN' ? 'Račun še ni potrjen.'
+          : x && x.napaka === 'ZAMENJAJ_GESLO' ? 'Najprej se prijavi v Brihta-MAT in zamenjaj začetno geslo.'
+          : 'Napačen e-naslov ali geslo.');
+      }
+      ucitelj = { seja: x.seja, username: x.username, potece: x.potece };
       ucenec = null; MOJE = {};
       poPrijavi();
     });
@@ -1187,6 +1398,8 @@ function usmeri() {
     const p = najdi(deli[1]);
     if (!p || p.otroci) return stranNadzorna();
     if (deli[2] === 'datoteke') return stranDatoteke(p);
+    if (deli[2] === 'nov-kviz') return stranNovKviz(p);
+    if (deli[2] === 'uredi' && deli[3]) return stranNovKviz(p, decodeURIComponent(deli.slice(3).join('/')));
     if (deli[2]) return stranGradivo(p, decodeURIComponent(deli.slice(2).join('/')));
     return stranPredmet(p);
   }
@@ -1209,7 +1422,12 @@ document.addEventListener('visibilitychange', async () => {
 
 napolniPredal();
 posodobiNav();
-Promise.all([naloziGradiva(), naloziKvize(), naloziMoje()]).then(usmeri);
+const preveriUcitelja = async () => {
+  if (!ucitelj) return;
+  const r = await rpc('sola_ucitelj_preveri', { p_seja: ucitelj.seja });
+  if (r === false || r === null) { ucitelj = null; shraniRacun(); posodobiNav(); }
+};
+Promise.all([naloziGradiva(), naloziKvize(), naloziMoje(), preveriUcitelja()]).then(usmeri);
 </script>
 </body>
 </html>

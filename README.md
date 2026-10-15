@@ -50,7 +50,8 @@ prikaže Microsoftov pregledovalnik.
 Učenci se prijavijo z **istim računom kot v Brihta-MAT** (uporabniško ime +
 4 živali). Kdor računa nima, ga ustvari na strani. Ker sta obe strani na
 brihta.github.io, je prijava skupna: kdor je prijavljen v Brihta-MAT, je tudi tukaj.
-Učitelj se prijavi z e-naslovom (»Prijava za učitelje«), odpre kviz in vidi rezultate.
+Učitelj se prijavi z e-naslovom (»Prijava za učitelje«). Prijava velja 12 ur
+(seja na strežniku), odjava jo takoj prekliče.
 
 Gradiva so dostopna brez prijave. Prijava je potrebna samo za kvize.
 
@@ -58,21 +59,33 @@ Gradiva so dostopna brez prijave. Prijava je potrebna samo za kvize.
 
 V Supabase → SQL Editor zaženi:
 1. `supabase_kvizi.sql` (tabele in funkcije),
-2. `kvizi/NASTAVI_SKRIVNOST.sql` (samo na tem računalniku; ne pošiljaj ga nikomur).
+2. `supabase_kvizi_ucitelj.sql` (učiteljske seje, objava s strani),
+3. `kvizi/NASTAVI_SKRIVNOST.sql` — samo če uporabljaš tudi skripto (spodaj).
 
-### Kako objavim kviz
+### Kako objavim kviz (na strani)
 
-Kvizi so v mapi `kvizi/<predmet>/` **samo na tem računalniku** (niso na
-GitHubu, ker so v njih pravilni odgovori, repozitorij pa je javen).
+1. Prijavi se kot učitelj in odpri predmet.
+2. Klikni **＋ Nov kviz**, prilepi besedilo kviza (ali »Vstavi primer«).
+   Desno vidiš predogled s pravilnimi odgovori; napake so naštete z vrsticami.
+3. Klikni **Objavi**. Kviz je takoj pri učencih.
 
-1. Naredi besedilno datoteko `kvizi/racunalnistvo-5/Scratch ponovitev.txt`
-   (primer z vsemi vrstami vprašanj: `kvizi/racunalnistvo-5/_Primer kviza.txt`).
-2. Poženi `python3 scripts/kvizi.py` — preveri vse kvize in jih objavi.
-   Na strani so takoj (brez čakanja na GitHub).
+Na strani kviza (kot učitelj) vidiš rezultate in imaš gumba **Uredi kviz** in
+**Skrij kviz**. Pravilni odgovori so samo v bazi, ocenjuje strežnik.
 
-Ali pa Claudu reci: »naredi kviz za Računalništvo 5 s temi vprašanji …«.
+Prva vrstica `Predmet: racunalnistvo-6` (neobvezna) sama izbere predmet — tako
+lahko asistent pripravi kviz, ki ga samo prilepiš.
+
+### Objava z računalnika (skripta, neobvezno)
+
+Kvize lahko imaš tudi kot datoteke v `kvizi/<predmet>/` **samo na tem računalniku**
+(mapa ni na GitHubu, ker so v njih pravilni odgovori, repozitorij pa je javen).
+`python3 scripts/kvizi.py` jih preveri in objavi. Skripta skrije samo svoje
+kvize, ki jih ni več v mapi; kvizov, objavljenih na strani, se ne dotika.
+
+### Oblika kviza
 
 ```
+Predmet: racunalnistvo-5
 Naslov: Scratch – ponovitev
 Opis: Imaš en poskus.
 
