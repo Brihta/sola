@@ -5,421 +5,501 @@
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
   <title>Brihta — Šola</title>
   <link rel="icon" href="brihta.png">
+  <meta name="theme-color" content="#fff8ef">
   <link rel="preconnect" href="https://fonts.googleapis.com">
   <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-  <link href="https://fonts.googleapis.com/css2?family=Lato:ital,wght@0,400;0,700;0,900;1,400&display=swap" rel="stylesheet">
+  <link href="https://fonts.googleapis.com/css2?family=Fredoka:wght@500;600;700&family=Nunito:wght@400;600;700;800&display=swap" rel="stylesheet">
   <style>
     *, *::before, *::after { box-sizing: border-box; }
     :root {
-      --nav: #2d3b45;
-      --nav-hover: #3d4f5c;
-      --nav-w: 84px;
-      --blue: #0374b5;
-      --blue-dk: #02578a;
-      --text: #2d3b45;
-      --muted: #6b7780;
-      --line: #c7cdd1;
-      --line-lt: #e8eaec;
-      --bg: #ffffff;
-      --bg-soft: #f5f5f5;
-      --green: #0b874b;
-      --red: #e0061f;
+      --bg: #fff8ef;
+      --surface: #ffffff;
+      --ink: #1f2340;
+      --muted: #6b6f8a;
+      --line: #efe6d8;
+      --line-2: #e4d9c7;
+      --accent: #6c5ce7;
+      --accent-2: #a855f7;
+      --accent-ink: #4b3fd1;
+      --good: #16a34a;
+      --bad: #e11d48;
+      --sun: #ffb020;
+      --r-xl: 28px; --r-lg: 20px; --r-md: 14px; --r-sm: 10px;
+      --shadow: 0 1px 2px rgba(31,35,64,.05), 0 10px 30px -14px rgba(31,35,64,.28);
+      --shadow-up: 0 2px 4px rgba(31,35,64,.06), 0 22px 40px -18px rgba(31,35,64,.38);
+      --head: 'Fredoka', 'Nunito', system-ui, sans-serif;
     }
     html, body { margin: 0; }
     body {
-      font-family: 'Lato', 'Helvetica Neue', Helvetica, Arial, sans-serif;
-      color: var(--text);
-      background: var(--bg);
-      font-size: 16px;
-      line-height: 1.5;
+      font-family: 'Nunito', system-ui, -apple-system, 'Segoe UI', sans-serif;
+      color: var(--ink);
+      background-color: var(--bg);
+      background-image: radial-gradient(rgba(31,35,64,.07) 1.2px, transparent 1.3px);
+      background-size: 22px 22px;
+      font-size: 16px; line-height: 1.5;
       -webkit-font-smoothing: antialiased;
+      min-height: 100vh;
     }
-    a { color: var(--blue); text-decoration: none; }
-    a:hover { text-decoration: underline; }
+    a { color: var(--accent-ink); }
     button { font: inherit; color: inherit; }
-    h1, h2, h3 { font-weight: 400; margin: 0; }
+    h1, h2, h3 { font-family: var(--head); font-weight: 600; margin: 0; line-height: 1.15; letter-spacing: -.01em; }
+    :focus-visible { outline: 3px solid var(--accent); outline-offset: 2px; border-radius: 8px; }
+    @media (prefers-reduced-motion: reduce) { *, *::before, *::after { animation: none !important; transition: none !important; } }
 
-    /* ─── Global navigation (Canvas left rail) ─── */
-    .gnav {
-      position: fixed; inset: 0 auto 0 0; width: var(--nav-w); z-index: 50;
-      background: var(--nav);
-      display: flex; flex-direction: column; align-items: stretch;
+    /* ─── Top bar ─── */
+    .top {
+      position: sticky; top: 0; z-index: 50;
+      background: rgba(255,248,239,.82);
+      backdrop-filter: blur(14px) saturate(160%); -webkit-backdrop-filter: blur(14px) saturate(160%);
+      border-bottom: 1px solid rgba(228,217,199,.7);
     }
-    .gnav-logo { display: flex; justify-content: center; padding: 14px 0 12px; }
-    .gnav-logo img { width: 58px; height: 58px; display: block; }
-    .gnav-item {
-      display: flex; flex-direction: column; align-items: center; gap: 4px;
-      padding: 12px 4px; border: 0; background: none; cursor: pointer;
-      color: #fff; font-size: 12px; text-align: center; line-height: 1.2;
-      text-decoration: none !important;
+    .top-in { max-width: 1180px; margin: 0 auto; padding: 10px 20px; display: flex; align-items: center; gap: 12px; }
+    .brand { display: flex; align-items: center; gap: 10px; text-decoration: none; color: var(--ink); margin-right: auto; }
+    .brand img { width: 46px; height: 46px; display: block; filter: drop-shadow(0 4px 8px rgba(31,35,64,.18)); transition: transform .25s; }
+    .brand:hover img { transform: rotate(-8deg) scale(1.05); }
+    .brand b { font-family: var(--head); font-size: 1.45rem; font-weight: 700; letter-spacing: -.02em; }
+    .brand b span { color: var(--accent); }
+    .pill-btn {
+      display: inline-flex; align-items: center; gap: 8px; height: 44px; padding: 0 16px;
+      border-radius: 999px; border: 1.5px solid var(--line-2); background: var(--surface);
+      font-weight: 800; cursor: pointer; text-decoration: none; color: var(--ink);
+      transition: transform .15s, box-shadow .15s, border-color .15s;
     }
-    .gnav-item svg { width: 26px; height: 26px; }
-    .gnav-item:hover { background: var(--nav-hover); }
-    .gnav-item.active { background: #fff; color: var(--blue); }
-    .gnav-item:focus-visible { outline: 2px solid #fff; outline-offset: -4px; }
+    .pill-btn:hover { transform: translateY(-1px); box-shadow: var(--shadow); border-color: #d5c7b0; }
+    .pill-btn svg { width: 20px; height: 20px; }
+    .pill-btn.active { border-color: var(--accent); box-shadow: 0 0 0 3px rgba(108,92,231,.18); }
+    .avatar { width: 32px; height: 32px; border-radius: 50%; display: inline-flex; align-items: center; justify-content: center; font-size: 18px; background: linear-gradient(135deg, #ffe7c2, #ffd1e8); margin-left: -8px; }
+    .acct-name { max-width: 120px; overflow: hidden; text-overflow: ellipsis; white-space: nowrap; }
+    .trail { max-width: 1180px; margin: 0 auto; padding: 14px 20px 0; font-size: .9rem; color: var(--muted); display: flex; flex-wrap: wrap; gap: 6px; align-items: center; min-height: 20px; }
+    .trail a { color: var(--muted); text-decoration: none; font-weight: 700; }
+    .trail a:hover { color: var(--ink); }
+    .trail .sep { opacity: .5; }
+    .trail .cur { color: var(--ink); font-weight: 700; overflow: hidden; text-overflow: ellipsis; white-space: nowrap; max-width: 60vw; }
 
-    /* Courses tray */
-    .tray-back { position: fixed; inset: 0; z-index: 60; background: rgba(0,0,0,.25); opacity: 0; pointer-events: none; transition: opacity .2s; }
-    .tray {
-      position: fixed; top: 0; bottom: 0; left: var(--nav-w); width: 320px; max-width: calc(100vw - var(--nav-w));
-      z-index: 61; background: #fff; box-shadow: 4px 0 16px rgba(0,0,0,.18);
-      transform: translateX(calc(-100% - var(--nav-w))); transition: transform .22s ease;
-      padding: 22px 24px; overflow-y: auto; visibility: hidden;
-    }
-    .tray.open { transform: none; visibility: visible; }
-    body.tray-open .tray-back { opacity: 1; pointer-events: auto; }
-    .gnav-avatar {
-      width: 30px; height: 30px; border-radius: 50%; background: #fff; color: var(--text);
-      display: flex; align-items: center; justify-content: center; font-size: 17px; line-height: 1;
-      border: 2px solid rgba(255,255,255,.6);
-    }
-    .gnav-item.active .gnav-avatar { border-color: var(--blue); }
-    .gnav-item .gnav-name { max-width: 72px; overflow: hidden; text-overflow: ellipsis; white-space: nowrap; }
-
-    /* Account tray / forms */
-    .acct-who { display: flex; align-items: center; gap: 14px; margin: 10px 0 18px; }
-    .acct-who .big { width: 64px; height: 64px; border-radius: 50%; background: var(--bg-soft); border: 1px solid var(--line); display: flex; align-items: center; justify-content: center; font-size: 34px; }
-    .acct-who strong { display: block; font-size: 1.15rem; }
-    .acct-who small { color: var(--muted); }
-    .field { margin-bottom: 14px; }
-    .field label { display: block; font-weight: 700; font-size: .9rem; margin-bottom: 4px; }
-    .field input[type=text], .field input[type=email], .field input[type=password], .field input:not([type]) {
-      width: 100%; font: inherit; padding: 8px 10px; border: 1px solid var(--line); border-radius: 4px; color: var(--text);
-    }
-    .field input:focus { outline: 2px solid var(--blue); outline-offset: -1px; border-color: var(--blue); }
-    .msg { min-height: 1.4em; font-size: .9rem; margin: 8px 0; color: var(--red); }
-    .msg.ok { color: var(--green); }
-    .help { background: #fff8e5; border: 1px solid #f2d37a; border-radius: 4px; padding: 10px 12px; font-size: .88rem; margin: 6px 0 10px; }
-    .linkbtn { background: none; border: 0; padding: 6px 0; color: var(--blue); cursor: pointer; display: block; font-size: .95rem; text-align: left; }
-    .linkbtn:hover { text-decoration: underline; }
-    .btn-block { width: 100%; justify-content: center; }
-    .animals-slots { display: flex; gap: 8px; margin-bottom: 8px; }
-    .animals-slots span { width: 46px; height: 46px; border: 2px dashed var(--line); border-radius: 8px; display: flex; align-items: center; justify-content: center; font-size: 26px; }
-    .animals-slots span.full { border-style: solid; border-color: var(--blue); background: #eef6fb; }
-    .animals { display: grid; grid-template-columns: repeat(6, 1fr); gap: 6px; }
-    .animals button, .emojis button {
-      font-size: 24px; padding: 6px 0; border: 1px solid var(--line); border-radius: 6px; background: #fff; cursor: pointer; line-height: 1.2;
-    }
-    .animals button:hover, .emojis button:hover { background: var(--bg-soft); }
-    .emojis { display: grid; grid-template-columns: repeat(8, 1fr); gap: 4px; }
-    .emojis button { font-size: 20px; padding: 4px 0; }
-    .emojis button.on { border-color: var(--blue); background: #eef6fb; box-shadow: inset 0 0 0 1px var(--blue); }
-    .animals-row { display: flex; justify-content: space-between; align-items: center; font-size: .85rem; color: var(--muted); margin-top: 6px; }
-    .reg-user { font-size: 1.6rem; font-weight: 900; letter-spacing: .02em; background: var(--bg-soft); border: 1px solid var(--line); border-radius: 6px; padding: 8px 12px; text-align: center; margin: 8px 0 12px; }
-
-    /* ─── Quiz ─── */
-    .q { border: 1px solid var(--line); border-radius: 4px; margin-bottom: 22px; overflow: hidden; }
-    .q-head { background: var(--bg-soft); border-bottom: 1px solid var(--line); padding: 10px 14px; display: flex; justify-content: space-between; font-weight: 700; }
-    .q-head span:last-child { font-weight: 400; color: var(--muted); font-size: .9rem; }
-    .q-body { padding: 16px 14px; }
-    .q-text { margin: 0 0 14px; white-space: pre-line; font-size: 1.05rem; }
-    .opt { display: flex; align-items: center; gap: 12px; padding: 10px 8px; border-top: 1px solid var(--line-lt); cursor: pointer; border-radius: 2px; }
-    .opt:hover { background: #f5f8fa; }
-    .opt input { width: 18px; height: 18px; accent-color: var(--blue); flex-shrink: 0; margin: 0; }
-    .q-body input.short { font: inherit; padding: 8px 10px; border: 1px solid var(--line); border-radius: 4px; width: 100%; max-width: 360px; }
-    .match { display: grid; grid-template-columns: minmax(0, 1fr) minmax(0, 1fr); gap: 10px 16px; align-items: center; }
-    .match .l { padding: 8px 10px; background: var(--bg-soft); border-radius: 4px; }
-    .match select { font: inherit; padding: 8px; border: 1px solid var(--line); border-radius: 4px; width: 100%; background: #fff; color: var(--text); }
-    .order { list-style: none; margin: 0; padding: 0; counter-reset: o; }
-    .order li { display: flex; align-items: center; gap: 10px; border: 1px solid var(--line); border-radius: 4px; padding: 6px 8px; margin-bottom: 6px; background: #fff; }
-    .order li::before { counter-increment: o; content: counter(o) "."; font-weight: 700; color: var(--muted); width: 22px; text-align: right; }
-    .order li span { flex: 1; }
-    .order button { border: 1px solid var(--line); background: var(--bg-soft); border-radius: 4px; width: 34px; height: 30px; cursor: pointer; font-size: 14px; }
-    .order button:disabled { opacity: .35; cursor: default; }
-    .quiz-foot { display: flex; justify-content: flex-end; align-items: center; gap: 14px; border-top: 1px solid var(--line); padding-top: 16px; margin-bottom: 40px; }
-    .quiz-foot .saved { color: var(--muted); font-size: .85rem; margin-right: auto; }
-    .result { border: 1px solid var(--line); border-radius: 6px; padding: 30px 20px; text-align: center; margin-bottom: 24px; }
-    .result .score { font-size: 3rem; font-weight: 900; line-height: 1.1; margin: 6px 0; }
-    .result p { color: var(--muted); margin: 4px 0; }
-    .qnav li { align-items: center; }
-    .qnav .dot { width: 12px; height: 12px; border-radius: 50%; border: 2px solid var(--line); flex-shrink: 0; }
-    .qnav .dot.on { background: var(--green); border-color: var(--green); }
-    .tag { font-size: .75rem; font-weight: 700; padding: 2px 8px; border-radius: 999px; background: #e7f0f7; color: var(--blue-dk); flex-shrink: 0; white-space: nowrap; }
-    .rtable td.cells { white-space: nowrap; }
-    .rtable .c { display: inline-block; width: 14px; height: 14px; border-radius: 3px; margin-right: 2px; vertical-align: -2px; }
-    .rtable .c.y { background: var(--green); } .rtable .c.n { background: #e8b4b4; }
-    .stats { display: flex; gap: 26px; flex-wrap: wrap; margin: 0 0 18px; }
-    .stats div strong { display: block; font-size: 1.6rem; }
-    .stats div span { color: var(--muted); font-size: .85rem; }
-    .tray-head { display: flex; align-items: center; justify-content: space-between; border-bottom: 1px solid var(--line); padding-bottom: 12px; margin-bottom: 8px; }
-    .tray-head h2 { font-size: 1.4rem; font-weight: 700; }
-    .icon-btn { border: 0; background: none; cursor: pointer; padding: 6px; border-radius: 4px; display: inline-flex; }
-    .icon-btn:hover { background: var(--bg-soft); }
-    .icon-btn svg { width: 20px; height: 20px; }
-    .tray ul { list-style: none; margin: 0; padding: 0; }
-    .tray li a { display: block; padding: 10px 0; border-bottom: 1px solid var(--line-lt); font-size: 1rem; }
-    .tray li.sub a { padding-left: 18px; font-size: .95rem; }
-    .tray li .term { display: block; color: var(--muted); font-size: .8rem; }
-
-    /* ─── Layout ─── */
-    .app { margin-left: var(--nav-w); min-height: 100vh; }
-    .topbar {
-      display: flex; align-items: center; gap: 14px; min-height: 64px;
-      padding: 0 24px; border-bottom: 1px solid var(--line);
-    }
-    .crumbs { display: flex; align-items: center; flex-wrap: wrap; gap: 6px; font-size: 1.05rem; min-width: 0; }
-    .crumbs .sep { color: var(--muted); }
-    .crumbs .cur { color: var(--text); overflow: hidden; text-overflow: ellipsis; white-space: nowrap; }
-    .page { padding: 24px; max-width: 1360px; }
-    .page-title { font-size: 1.75rem; margin-bottom: 4px; }
-    .page-sub { color: var(--muted); margin: 0 0 22px; }
-    .rule { border: 0; border-top: 1px solid var(--line); margin: 0 0 24px; }
-
-    /* ─── Dashboard cards ─── */
-    .cards { display: grid; grid-template-columns: repeat(auto-fill, minmax(262px, 1fr)); gap: 32px 28px; }
-    .card {
-      background: #fff; border-radius: 4px; overflow: hidden; cursor: pointer;
-      box-shadow: 0 2px 5px rgba(0,0,0,.3); transition: box-shadow .15s, transform .15s;
-      display: flex; flex-direction: column; color: inherit; text-decoration: none !important;
-    }
-    .card:hover { box-shadow: 0 4px 14px rgba(0,0,0,.32); transform: translateY(-1px); }
-    .card:focus-visible { outline: 3px solid var(--blue); outline-offset: 3px; }
-    .card-hero { height: 146px; position: relative; display: flex; align-items: center; justify-content: center; overflow: hidden; }
-    .card-hero::before {
-      content: ''; position: absolute; inset: 0;
-      background-image: radial-gradient(circle, rgba(255,255,255,.16) 1.5px, transparent 1.6px);
-      background-size: 18px 18px;
-    }
-    .card-hero .emoji { font-size: 64px; position: relative; filter: drop-shadow(0 3px 6px rgba(0,0,0,.25)); }
-    .card-hero .badge {
-      position: absolute; top: 10px; right: 10px; background: #fff; color: var(--text);
-      font-size: .75rem; font-weight: 700; padding: 2px 9px; border-radius: 999px;
-    }
-    .card-body { padding: 12px 16px 6px; flex: 1; }
-    .card-name { font-weight: 700; font-size: 1rem; display: block; white-space: nowrap; overflow: hidden; text-overflow: ellipsis; }
-    .card-code { color: var(--muted); font-size: .875rem; display: block; }
-    .card-term { color: var(--muted); font-size: .75rem; display: block; margin-top: 2px; }
-    .card-foot { display: flex; gap: 18px; padding: 8px 16px 14px; color: var(--muted); font-size: .8rem; align-items: center; }
-    .card-foot svg { width: 20px; height: 20px; vertical-align: -5px; margin-right: 4px; }
-    .card-foot .hot { color: var(--red); font-weight: 700; }
-
-    .resume {
-      display: flex; align-items: center; gap: 14px; border: 1px solid var(--line); border-left: 6px solid var(--blue);
-      border-radius: 4px; padding: 12px 16px; margin-bottom: 28px; max-width: 720px;
-    }
-    .resume .txt { flex: 1; min-width: 0; }
-    .resume .txt small { color: var(--muted); display: block; font-size: .8rem; }
+    main { max-width: 1180px; margin: 0 auto; padding: 14px 20px 60px; }
 
     /* ─── Buttons ─── */
     .btn {
-      display: inline-flex; align-items: center; gap: 8px; border-radius: 4px; cursor: pointer;
-      padding: 8px 14px; font-size: 1rem; border: 1px solid var(--line); background: var(--bg-soft);
-      color: var(--text); text-decoration: none !important; white-space: nowrap;
+      display: inline-flex; align-items: center; justify-content: center; gap: 8px; cursor: pointer;
+      height: 44px; padding: 0 18px; border-radius: 999px; font-weight: 800; font-size: 1rem;
+      border: 1.5px solid var(--line-2); background: var(--surface); color: var(--ink); text-decoration: none; white-space: nowrap;
+      transition: transform .15s, box-shadow .15s, background .15s;
     }
-    .btn:hover { background: #e9eaeb; }
+    .btn:hover { transform: translateY(-1px); box-shadow: var(--shadow); }
+    .btn:active { transform: translateY(1px); }
+    .btn:disabled { opacity: .55; cursor: default; transform: none; box-shadow: none; }
     .btn svg { width: 18px; height: 18px; flex-shrink: 0; }
-    .btn-primary { background: var(--blue); border-color: var(--blue-dk); color: #fff; }
-    .btn-primary:hover { background: var(--blue-dk); }
-    .btn-big { font-size: 1.1rem; padding: 11px 20px; font-weight: 700; }
-
-    /* ─── Course layout ─── */
-    .course { display: grid; grid-template-columns: 200px minmax(0, 1fr) 280px; gap: 0 32px; padding: 24px; max-width: 1400px; }
-    .course.no-side { grid-template-columns: 200px minmax(0, 1fr); }
-    .cnav { list-style: none; margin: 0; padding: 0; }
-    .cnav a {
-      display: block; padding: 6px 10px; border-left: 3px solid transparent; margin-bottom: 2px; font-size: .95rem;
+    .btn-go {
+      border: 0; color: #fff; background: linear-gradient(135deg, var(--c1, var(--accent)), var(--c2, var(--accent-2)));
+      box-shadow: 0 8px 18px -8px var(--c1, var(--accent));
     }
-    .cnav a.active { border-left-color: var(--text); color: var(--text); font-weight: 700; text-decoration: none; }
-    .cnav-color { height: 6px; border-radius: 3px; margin: 0 0 14px 0; }
+    .btn-go:hover { box-shadow: 0 12px 24px -10px var(--c1, var(--accent)); }
+    .btn-big { height: 54px; padding: 0 26px; font-size: 1.1rem; }
+    .btn-block { width: 100%; }
 
-    .today { border: 1px solid var(--line); border-radius: 6px; overflow: hidden; margin-bottom: 30px; }
-    .today-head { padding: 10px 18px; color: #fff; font-weight: 700; font-size: .85rem; letter-spacing: .06em; text-transform: uppercase; display: flex; align-items: center; gap: 8px; }
-    .today-body { padding: 20px 18px; display: flex; align-items: center; gap: 18px; flex-wrap: wrap; }
-    .today-icon { width: 64px; height: 64px; flex-shrink: 0; border-radius: 8px; background: var(--bg-soft); display: flex; align-items: center; justify-content: center; }
-    .today-icon svg { width: 36px; height: 36px; }
-    .today-txt { flex: 1; min-width: 200px; }
-    .today-txt h2 { font-size: 1.5rem; font-weight: 700; line-height: 1.25; }
-    .today-txt p { margin: 4px 0 0; color: var(--muted); font-size: .9rem; }
-    .empty { border: 1px dashed var(--line); border-radius: 6px; padding: 34px 20px; text-align: center; color: var(--muted); }
-    .empty img { width: 90px; height: 90px; opacity: .9; display: block; margin: 0 auto 10px; }
+    /* ─── Dashboard ─── */
+    .hello {
+      position: relative; display: grid; grid-template-columns: minmax(0, 1fr) auto; gap: 20px; align-items: center;
+      background: linear-gradient(120deg, #2a2366 0%, #5b3fd6 55%, #a855f7 100%);
+      color: #fff; border-radius: var(--r-xl); padding: 30px 34px; overflow: hidden; margin: 6px 0 28px;
+      box-shadow: var(--shadow-up);
+    }
+    .hello::before, .hello::after { content: ''; position: absolute; border-radius: 50%; pointer-events: none; }
+    .hello::before { width: 260px; height: 260px; right: -60px; top: -110px; background: radial-gradient(circle, rgba(255,176,32,.55), transparent 70%); }
+    .hello::after { width: 220px; height: 220px; left: 30%; bottom: -150px; background: radial-gradient(circle, rgba(56,189,248,.45), transparent 70%); }
+    .hello > * { position: relative; }
+    .hello .date { font-weight: 800; text-transform: uppercase; letter-spacing: .08em; font-size: .78rem; opacity: .8; }
+    .hello h1 { font-size: clamp(1.9rem, 4.5vw, 2.8rem); margin: 4px 0 8px; }
+    .hello p { margin: 0; font-size: 1.08rem; opacity: .92; max-width: 560px; }
+    .hello .resume { margin-top: 16px; display: inline-flex; align-items: center; gap: 10px; background: rgba(255,255,255,.16); border: 1px solid rgba(255,255,255,.28); color: #fff; padding: 8px 8px 8px 16px; border-radius: 999px; text-decoration: none; font-weight: 800; transition: background .15s; }
+    .hello .resume:hover { background: rgba(255,255,255,.26); }
+    .hello .resume span { background: #fff; color: var(--accent-ink); border-radius: 999px; padding: 4px 12px; font-size: .9rem; white-space: nowrap; }
+    .owl { display: flex; align-items: flex-end; }
+    .owl img { width: 128px; height: 128px; filter: drop-shadow(0 10px 18px rgba(0,0,0,.3)); animation: bob 4s ease-in-out infinite; }
+    .bubble { background: #fff; color: var(--ink); border-radius: 18px 18px 4px 18px; padding: 10px 14px; font-weight: 700; font-size: .92rem; max-width: 220px; margin-bottom: 92px; margin-right: -14px; box-shadow: 0 8px 20px -10px rgba(0,0,0,.4); }
+    @keyframes bob { 50% { transform: translateY(-8px) rotate(2deg); } }
 
-    /* Modules */
-    .module { border: 1px solid var(--line); border-radius: 4px; margin-bottom: 22px; overflow: hidden; }
-    .module-head {
-      width: 100%; display: flex; align-items: center; gap: 10px; text-align: left;
-      background: var(--bg-soft); border: 0; border-bottom: 1px solid var(--line); padding: 12px 14px; cursor: pointer; font-weight: 700;
+    .sec-h { display: flex; align-items: baseline; gap: 10px; margin: 0 0 14px; }
+    .sec-h h2 { font-size: 1.5rem; }
+
+    .cards { display: grid; grid-template-columns: repeat(auto-fill, minmax(250px, 1fr)); gap: 22px; }
+    .card {
+      position: relative; display: flex; flex-direction: column; background: var(--surface); border-radius: var(--r-lg);
+      text-decoration: none; color: var(--ink); box-shadow: var(--shadow); overflow: hidden;
+      transition: transform .2s cubic-bezier(.2,.8,.3,1.4), box-shadow .2s;
     }
-    .module-head svg { width: 16px; height: 16px; transition: transform .15s; flex-shrink: 0; }
-    .module.closed .module-head { border-bottom: 0; }
-    .module.closed .module-head svg { transform: rotate(-90deg); }
-    .module.closed .module-items { display: none; }
-    .module-head .count { margin-left: auto; font-weight: 400; color: var(--muted); font-size: .85rem; }
-    .module-items { list-style: none; margin: 0; padding: 0; }
-    .item {
-      display: flex; align-items: center; gap: 14px; padding: 12px 14px; border-bottom: 1px solid var(--line-lt);
-      border-left: 4px solid transparent;
+    .card:hover { transform: translateY(-4px) rotate(-.6deg); box-shadow: var(--shadow-up); }
+    .card:hover .art .emoji { animation: wiggle .5s ease-in-out; }
+    .card.wide { grid-column: span 2; }
+    .card > a { color: inherit; text-decoration: none; display: block; }
+    .art {
+      position: relative; height: 150px; display: flex; align-items: center; justify-content: center; overflow: hidden;
+      background: linear-gradient(135deg, var(--c1), var(--c2));
     }
-    .item:last-child { border-bottom: 0; }
-    .item:hover { background: #f5f8fa; border-left-color: var(--blue); }
-    .item svg.ti { width: 24px; height: 24px; flex-shrink: 0; }
+    .art::before { content: ''; position: absolute; width: 180px; height: 180px; border-radius: 50%; background: rgba(255,255,255,.16); top: -70px; left: -50px; }
+    .art::after { content: ''; position: absolute; width: 120px; height: 120px; border-radius: 42% 58% 60% 40%; background: rgba(255,255,255,.12); bottom: -50px; right: -20px; }
+    .art .emoji { font-size: 74px; line-height: 1; position: relative; z-index: 1; filter: drop-shadow(0 8px 12px rgba(0,0,0,.25)); }
+    .art .new { position: absolute; top: 12px; right: 12px; z-index: 1; background: var(--sun); color: #3b2500; font-weight: 800; font-size: .78rem; padding: 4px 10px; border-radius: 999px; box-shadow: 0 4px 10px -4px rgba(0,0,0,.35); animation: pop .5s ease-out; }
+    @keyframes wiggle { 25% { transform: rotate(-10deg) scale(1.08); } 60% { transform: rotate(8deg) scale(1.08); } }
+    @keyframes pop { from { transform: scale(.4); opacity: 0; } }
+    .card-body { padding: 14px 18px 16px; display: flex; align-items: center; gap: 10px; }
+    .card-body h3 { font-size: 1.2rem; }
+    .card-body p { margin: 2px 0 0; color: var(--muted); font-size: .9rem; font-weight: 600; }
+    .card-body .go { margin-left: auto; width: 36px; height: 36px; border-radius: 50%; background: var(--bg); display: flex; align-items: center; justify-content: center; flex-shrink: 0; transition: background .2s, color .2s; }
+    .card:hover .go { background: var(--c1); color: #fff; }
+    .card-body .go svg { width: 18px; height: 18px; }
+    .chips { display: flex; flex-wrap: wrap; gap: 8px; padding: 0 18px 18px; }
+    .chip {
+      display: inline-flex; align-items: center; gap: 6px; padding: 8px 14px; border-radius: 999px; font-weight: 800; font-size: .92rem;
+      text-decoration: none; color: var(--ink); background: color-mix(in srgb, var(--c1) 12%, white); border: 1.5px solid color-mix(in srgb, var(--c1) 30%, white);
+      transition: transform .15s, background .15s, color .15s;
+    }
+    .chip:hover { transform: translateY(-2px); background: var(--c1); color: #fff; }
+    .chip .dot { width: 8px; height: 8px; border-radius: 50%; background: var(--sun); }
+
+    /* ─── Subject banner ─── */
+    .banner {
+      position: relative; border-radius: var(--r-xl); padding: 26px 30px 0; color: #fff; overflow: hidden; margin: 6px 0 26px;
+      background: linear-gradient(120deg, var(--c1), var(--c2)); box-shadow: var(--shadow-up);
+    }
+    .banner::before { content: ''; position: absolute; width: 320px; height: 320px; border-radius: 50%; background: rgba(255,255,255,.12); right: -80px; top: -140px; }
+    .banner::after { content: ''; position: absolute; inset: 0; background-image: radial-gradient(rgba(255,255,255,.18) 1.4px, transparent 1.5px); background-size: 20px 20px; mask-image: linear-gradient(90deg, transparent 40%, #000); -webkit-mask-image: linear-gradient(90deg, transparent 40%, #000); pointer-events: none; }
+    .banner > * { position: relative; z-index: 1; }
+    .banner-top { display: flex; align-items: center; gap: 18px; }
+    .banner .emoji { font-size: 64px; line-height: 1; filter: drop-shadow(0 8px 12px rgba(0,0,0,.25)); }
+    .banner h1 { font-size: clamp(1.7rem, 4vw, 2.4rem); }
+    .banner p { margin: 4px 0 0; font-weight: 700; opacity: .9; }
+    .banner-sw { margin: 16px 0 0; display: flex; flex-wrap: wrap; gap: 8px; }
+    .banner-sw a { color: #fff; text-decoration: none; font-weight: 800; font-size: .88rem; padding: 6px 12px; border-radius: 999px; background: rgba(255,255,255,.16); border: 1px solid rgba(255,255,255,.26); }
+    .banner-sw a:hover { background: rgba(255,255,255,.28); }
+    .tabs { display: flex; gap: 4px; margin-top: 20px; }
+    .tabs a { color: #fff; text-decoration: none; font-weight: 800; padding: 10px 18px 12px; border-radius: 16px 16px 0 0; opacity: .85; }
+    .tabs a:hover { opacity: 1; background: rgba(255,255,255,.12); }
+    .tabs a.active { background: var(--bg); color: var(--ink); opacity: 1; }
+
+    .layout { display: grid; grid-template-columns: minmax(0, 1fr) 300px; gap: 28px; align-items: start; }
+    .layout.solo { grid-template-columns: minmax(0, 1fr); }
+    .layout.ozko { max-width: 860px; margin: 0 auto; }
+    .side { position: sticky; top: 90px; display: grid; gap: 18px; }
+    .box { background: var(--surface); border-radius: var(--r-lg); padding: 18px 20px; box-shadow: var(--shadow); }
+    .box h3 { font-size: 1.1rem; margin-bottom: 10px; }
+    .box ul { list-style: none; margin: 0; padding: 0; }
+    .box li { padding: 6px 0; font-weight: 600; }
+    .note { color: var(--muted); font-size: .9rem; margin: 6px 0; }
+
+    /* Today hero */
+    .today {
+      position: relative; display: flex; align-items: center; gap: 20px; flex-wrap: wrap;
+      background: var(--surface); border-radius: var(--r-xl); padding: 24px; margin: 8px 0 30px; box-shadow: var(--shadow-up);
+      border: 2px solid color-mix(in srgb, var(--c1) 35%, white);
+    }
+    .today .label {
+      position: absolute; top: -13px; left: 22px; background: var(--sun); color: #3b2500; font-weight: 800; font-size: .78rem;
+      letter-spacing: .06em; text-transform: uppercase; padding: 4px 12px; border-radius: 999px; box-shadow: 0 4px 10px -4px rgba(0,0,0,.3);
+    }
+    .tile { width: 64px; height: 64px; flex-shrink: 0; border-radius: 18px; display: flex; align-items: center; justify-content: center; background: color-mix(in srgb, var(--t) 13%, white); color: var(--t); }
+    .tile svg { width: 34px; height: 34px; }
+    .tile.sm { width: 46px; height: 46px; border-radius: 14px; }
+    .tile.sm svg { width: 24px; height: 24px; }
+    .tile.xs { width: 34px; height: 34px; border-radius: 10px; }
+    .tile.xs svg { width: 18px; height: 18px; }
+    .today .txt { flex: 1; min-width: 200px; }
+    .today h2 { font-size: 1.6rem; }
+    .today p { margin: 4px 0 0; color: var(--muted); font-weight: 700; }
+
+    /* Weeks */
+    .week { margin-bottom: 26px; }
+    .week-h { display: flex; align-items: center; gap: 10px; width: 100%; background: none; border: 0; padding: 4px 2px 10px; cursor: pointer; text-align: left; }
+    .week-h h3 { font-size: 1.15rem; }
+    .week-h .count { background: var(--surface); border: 1.5px solid var(--line-2); border-radius: 999px; font-size: .8rem; font-weight: 800; padding: 1px 9px; color: var(--muted); }
+    .week-h .chev { margin-left: auto; width: 32px; height: 32px; border-radius: 50%; background: var(--surface); border: 1.5px solid var(--line-2); display: flex; align-items: center; justify-content: center; transition: transform .2s; }
+    .week-h .chev svg { width: 16px; height: 16px; }
+    .week.closed .chev { transform: rotate(-90deg); }
+    .week.closed .items { display: none; }
+    .items { list-style: none; margin: 0; padding: 0; display: grid; gap: 10px; }
+    .item a {
+      display: flex; align-items: center; gap: 14px; padding: 12px 16px 12px 12px; background: var(--surface); border-radius: var(--r-md);
+      text-decoration: none; color: var(--ink); box-shadow: 0 1px 2px rgba(31,35,64,.05); border: 1.5px solid transparent;
+      transition: transform .15s, border-color .15s, box-shadow .15s;
+    }
+    .item a:hover { transform: translateX(4px); border-color: color-mix(in srgb, var(--c1) 40%, white); box-shadow: var(--shadow); }
     .item .nm { flex: 1; min-width: 0; }
-    .item .nm a { font-size: 1rem; display: block; overflow: hidden; text-overflow: ellipsis; }
-    .item .meta { color: var(--muted); font-size: .8rem; }
-    .pill { font-size: .7rem; font-weight: 700; padding: 2px 8px; border-radius: 999px; background: var(--green); color: #fff; text-transform: uppercase; letter-spacing: .04em; flex-shrink: 0; }
+    .item .nm b { display: block; font-weight: 800; overflow: hidden; text-overflow: ellipsis; white-space: nowrap; }
+    .item .nm small { color: var(--muted); font-weight: 600; }
+    .item .arrow { width: 18px; height: 18px; color: var(--muted); flex-shrink: 0; }
+    .tag { font-size: .75rem; font-weight: 800; padding: 3px 10px; border-radius: 999px; flex-shrink: 0; white-space: nowrap; }
+    .tag.new { background: var(--sun); color: #3b2500; }
+    .tag.done { background: #dcfce7; color: #166534; }
 
-    /* Files table */
-    .ftable { width: 100%; border-collapse: collapse; }
-    .ftable th { text-align: left; font-size: .85rem; color: var(--muted); font-weight: 700; padding: 8px 10px; border-bottom: 1px solid var(--line); }
-    .ftable td { padding: 10px; border-bottom: 1px solid var(--line-lt); vertical-align: middle; font-size: .95rem; }
-    .ftable td.n { display: flex; align-items: center; gap: 10px; }
-    .ftable td.n svg { width: 22px; height: 22px; flex-shrink: 0; }
-    .ftable tr:hover td { background: #f5f8fa; }
-    .ftable .m { color: var(--muted); white-space: nowrap; }
+    .empty { background: var(--surface); border-radius: var(--r-xl); padding: 36px 24px; text-align: center; color: var(--muted); font-weight: 600; box-shadow: var(--shadow); }
+    .empty img { width: 104px; height: 104px; display: block; margin: 0 auto 12px; animation: bob 4s ease-in-out infinite; }
+    .empty strong { display: block; color: var(--ink); font-family: var(--head); font-size: 1.3rem; font-weight: 600; margin-bottom: 4px; }
 
-    /* Right sidebar */
-    .side h3 { font-size: 1rem; font-weight: 700; border-bottom: 1px solid var(--line); padding-bottom: 6px; margin-bottom: 10px; }
-    .side ul { list-style: none; margin: 0 0 26px; padding: 0; }
-    .side li { display: flex; gap: 10px; padding: 6px 0; font-size: .9rem; }
-    .side li svg { width: 20px; height: 20px; flex-shrink: 0; margin-top: 2px; }
-    .side li small { display: block; color: var(--muted); }
-    .side .switch a { display: block; padding: 4px 0; font-size: .9rem; }
+    /* Files list */
+    .ftable { width: 100%; border-collapse: separate; border-spacing: 0; background: var(--surface); border-radius: var(--r-lg); box-shadow: var(--shadow); overflow: hidden; }
+    .ftable th { text-align: left; font-size: .8rem; text-transform: uppercase; letter-spacing: .05em; color: var(--muted); font-weight: 800; padding: 12px 14px; background: #fffcf7; border-bottom: 1.5px solid var(--line); }
+    .ftable td { padding: 10px 14px; border-bottom: 1px solid var(--line); vertical-align: middle; }
+    .ftable tr:last-child td { border-bottom: 0; }
+    .ftable td.n a { display: flex; align-items: center; gap: 12px; color: var(--ink); font-weight: 800; text-decoration: none; }
+    .ftable td.n a:hover { color: var(--accent-ink); }
+    .ftable .m { color: var(--muted); white-space: nowrap; font-weight: 600; font-size: .92rem; }
 
     /* ─── Viewer ─── */
-    .viewer-head { display: flex; align-items: center; gap: 12px; flex-wrap: wrap; margin-bottom: 14px; }
-    .viewer-head > svg { width: 28px; height: 28px; flex-shrink: 0; }
-    .viewer-head h1 { font-size: 1.5rem; flex: 1; min-width: 200px; line-height: 1.3; }
-    .viewer-head .actions { display: flex; gap: 8px; flex-wrap: wrap; }
+    .vhead { display: flex; align-items: center; gap: 14px; flex-wrap: wrap; margin: 6px 0 16px; }
+    .vhead h1 { font-size: clamp(1.4rem, 3vw, 1.9rem); flex: 1; min-width: 200px; }
+    .vhead .actions { display: flex; gap: 8px; flex-wrap: wrap; }
     .frame {
-      border: 1px solid var(--line); border-radius: 4px; background: #e9ebed; overflow: hidden;
-      height: calc(100vh - 230px); min-height: 420px; display: flex; align-items: center; justify-content: center;
+      background: var(--surface); border-radius: var(--r-lg); box-shadow: var(--shadow-up); overflow: hidden; border: 6px solid var(--surface);
+      height: calc(100vh - 220px); min-height: 420px; display: flex; align-items: center; justify-content: center;
     }
-    .frame iframe { width: 100%; height: 100%; border: 0; background: #fff; }
-    .frame img { max-width: 100%; max-height: 100%; object-fit: contain; display: block; background: #fff; }
-    .frame video { max-width: 100%; max-height: 100%; }
+    .frame iframe { width: 100%; height: 100%; border: 0; background: #fff; border-radius: 14px; }
+    .frame img, .frame video { max-width: 100%; max-height: 100%; object-fit: contain; display: block; border-radius: 12px; }
     .frame:fullscreen { height: 100vh; border: 0; border-radius: 0; }
-    .frame .open-card { text-align: center; padding: 30px; background: #fff; border-radius: 6px; box-shadow: 0 2px 8px rgba(0,0,0,.12); max-width: 440px; margin: 16px; }
-    .frame .open-card svg { width: 54px; height: 54px; }
-    .frame .open-card p { color: var(--muted); word-break: break-all; }
-    .seq { display: flex; justify-content: space-between; gap: 12px; margin-top: 14px; border-top: 1px solid var(--line); padding-top: 14px; }
-    .note { color: var(--muted); font-size: .85rem; margin-top: 8px; }
+    .open-card { text-align: center; padding: 30px; max-width: 460px; }
+    .open-card .tile { margin: 0 auto 12px; }
+    .open-card h2 { margin-bottom: 4px; }
+    .open-card p { color: var(--muted); word-break: break-all; font-weight: 600; }
+    .seq { display: flex; justify-content: space-between; gap: 12px; margin-top: 18px; }
+
+    /* ─── Quiz ─── */
+    .progress {
+      position: sticky; top: 72px; z-index: 5; display: flex; align-items: center; gap: 14px; margin: 0 0 20px;
+      background: rgba(255,255,255,.92); backdrop-filter: blur(8px); -webkit-backdrop-filter: blur(8px);
+      border-radius: 999px; padding: 10px 18px; box-shadow: var(--shadow); font-weight: 800;
+    }
+    .progress .bar { flex: 1; height: 12px; background: var(--line); border-radius: 999px; overflow: hidden; }
+    .progress .bar i { display: block; height: 100%; width: 0; border-radius: 999px; background: linear-gradient(90deg, var(--c1), var(--c2)); transition: width .35s cubic-bezier(.2,.8,.3,1.2); }
+    .q { background: var(--surface); border-radius: var(--r-lg); padding: 22px 22px 20px; margin-bottom: 18px; box-shadow: var(--shadow); scroll-margin-top: 140px; }
+    .q-top { display: flex; align-items: flex-start; gap: 14px; margin-bottom: 16px; }
+    .q-num { width: 40px; height: 40px; flex-shrink: 0; border-radius: 13px; display: flex; align-items: center; justify-content: center; font-family: var(--head); font-weight: 700; font-size: 1.2rem; color: #fff; background: linear-gradient(135deg, var(--c1), var(--c2)); }
+    .q-text { margin: 6px 0 0; white-space: pre-line; font-size: 1.12rem; font-weight: 700; }
+    .q-hint { color: var(--muted); font-size: .85rem; font-weight: 700; margin: 2px 0 0; }
+    .opts { display: grid; grid-template-columns: repeat(auto-fit, minmax(200px, 1fr)); gap: 10px; }
+    .opt {
+      display: flex; align-items: center; gap: 12px; padding: 13px 14px; border-radius: var(--r-md); cursor: pointer;
+      border: 2px solid var(--line); background: #fffdf9; font-weight: 700; transition: border-color .15s, background .15s, transform .1s;
+    }
+    .opt:hover { border-color: color-mix(in srgb, var(--c1) 45%, white); }
+    .opt:active { transform: scale(.98); }
+    .opt input { appearance: none; -webkit-appearance: none; margin: 0; width: 24px; height: 24px; flex-shrink: 0; border: 2px solid var(--line-2); background: #fff; display: grid; place-content: center; cursor: pointer; transition: all .15s; }
+    .opt input[type=radio] { border-radius: 50%; }
+    .opt input[type=checkbox] { border-radius: 7px; }
+    .opt input::after { content: ''; width: 10px; height: 10px; border-radius: 50%; background: #fff; transform: scale(0); transition: transform .15s; }
+    .opt input[type=checkbox]::after { width: 12px; height: 7px; border-radius: 0; background: none; border-left: 3px solid #fff; border-bottom: 3px solid #fff; transform: rotate(-45deg) scale(0); margin-top: -3px; }
+    .opt input:checked { background: var(--c1); border-color: var(--c1); }
+    .opt input:checked::after { transform: scale(1); }
+    .opt input[type=checkbox]:checked::after { transform: rotate(-45deg) scale(1); }
+    .opt:has(input:checked) { border-color: var(--c1); background: color-mix(in srgb, var(--c1) 9%, white); }
+    .opt input:disabled { cursor: default; }
+    input.short { font: inherit; font-weight: 700; font-size: 1.1rem; padding: 12px 16px; border: 2px solid var(--line); border-radius: var(--r-md); width: 100%; max-width: 420px; background: #fffdf9; color: var(--ink); }
+    input.short:focus { outline: none; border-color: var(--c1); box-shadow: 0 0 0 4px color-mix(in srgb, var(--c1) 18%, transparent); }
+    .match { display: grid; grid-template-columns: minmax(0, 1fr) 28px minmax(0, 1fr); gap: 10px 8px; align-items: center; }
+    .match .l { padding: 12px 14px; background: color-mix(in srgb, var(--c1) 9%, white); border-radius: var(--r-md); font-weight: 800; }
+    .match .eq { text-align: center; color: var(--muted); font-weight: 800; }
+    .match select { font: inherit; font-weight: 700; padding: 12px; border: 2px solid var(--line); border-radius: var(--r-md); width: 100%; background: #fffdf9; color: var(--ink); cursor: pointer; }
+    .match select:focus { outline: none; border-color: var(--c1); }
+    .order { list-style: none; margin: 0; padding: 0; counter-reset: o; display: grid; gap: 8px; }
+    .order li { display: flex; align-items: center; gap: 10px; border: 2px solid var(--line); border-radius: var(--r-md); padding: 8px 8px 8px 12px; background: #fffdf9; font-weight: 700; transition: background .3s; }
+    .order li.moved { background: color-mix(in srgb, var(--c1) 12%, white); }
+    .order li::before { counter-increment: o; content: counter(o); width: 28px; height: 28px; border-radius: 9px; background: var(--line); display: flex; align-items: center; justify-content: center; font-weight: 800; font-size: .9rem; flex-shrink: 0; }
+    .order li span { flex: 1; }
+    .order button { border: 0; background: var(--bg); border-radius: 10px; width: 40px; height: 36px; cursor: pointer; font-size: 16px; font-weight: 800; }
+    .order button:hover:not(:disabled) { background: var(--c1); color: #fff; }
+    .order button:disabled { opacity: .3; cursor: default; }
+    .quiz-foot { display: flex; justify-content: flex-end; align-items: center; gap: 14px; flex-wrap: wrap; margin: 8px 0 40px; }
+    .quiz-foot .saved { color: var(--muted); font-size: .88rem; font-weight: 700; margin-right: auto; }
+    .msg { min-height: 1.4em; font-size: .92rem; font-weight: 700; margin: 8px 0; color: var(--bad); }
+
+    .result { position: relative; overflow: hidden; background: var(--surface); border-radius: var(--r-xl); padding: 34px 24px 30px; text-align: center; box-shadow: var(--shadow-up); margin-bottom: 22px; }
+    .ring { --p: 0; width: 170px; height: 170px; border-radius: 50%; margin: 6px auto 14px; display: grid; place-items: center; position: relative;
+      background: conic-gradient(var(--c1) calc(var(--p) * 1%), var(--line) 0); }
+    .ring::before { content: ''; position: absolute; inset: 14px; border-radius: 50%; background: var(--surface); }
+    .ring div { position: relative; font-family: var(--head); font-weight: 700; font-size: 2.6rem; line-height: 1; }
+    .ring small { display: block; font-family: 'Nunito', sans-serif; font-size: .9rem; color: var(--muted); font-weight: 800; margin-top: 4px; }
+    .result h2 { font-size: 1.8rem; margin-bottom: 4px; }
+    .result p { color: var(--muted); margin: 2px 0; font-weight: 700; }
+    .confetti { position: absolute; inset: 0; pointer-events: none; overflow: hidden; }
+    .confetti i { position: absolute; top: -12px; width: 9px; height: 14px; border-radius: 2px; opacity: 0; animation: fall var(--d) ease-in var(--w) forwards; }
+    @keyframes fall { 0% { opacity: 1; transform: translate(0, 0) rotate(0); } 100% { opacity: 0; transform: translate(var(--x), 420px) rotate(var(--r)); } }
+
+    .stats { display: grid; grid-template-columns: repeat(auto-fit, minmax(140px, 1fr)); gap: 14px; margin: 0 0 18px; }
+    .stat { background: var(--surface); border-radius: var(--r-lg); padding: 16px 18px; box-shadow: var(--shadow); }
+    .stat strong { display: block; font-family: var(--head); font-size: 2rem; font-weight: 700; line-height: 1.1; color: var(--c1); }
+    .stat span { color: var(--muted); font-weight: 700; font-size: .88rem; }
+    .cells { white-space: nowrap; }
+    .cell { display: inline-block; width: 16px; height: 16px; border-radius: 5px; margin-right: 3px; vertical-align: -3px; }
+    .cell.y { background: #22c55e; } .cell.n { background: #fecaca; }
+    .bars li { display: grid; grid-template-columns: 90px 1fr 44px; align-items: center; gap: 10px; }
+    .bars .b { height: 10px; background: var(--line); border-radius: 999px; overflow: hidden; }
+    .bars .b i { display: block; height: 100%; background: linear-gradient(90deg, var(--c1), var(--c2)); border-radius: 999px; }
+
+    /* ─── Sheets (subjects, account) ─── */
+    .scrim { position: fixed; inset: 0; z-index: 60; background: rgba(31,35,64,.38); backdrop-filter: blur(3px); -webkit-backdrop-filter: blur(3px); opacity: 0; pointer-events: none; transition: opacity .2s; }
+    body.tray-open .scrim { opacity: 1; pointer-events: auto; }
+    .sheet {
+      position: fixed; z-index: 61; top: 76px; right: max(20px, calc((100vw - 1180px) / 2 + 20px)); width: 400px; max-width: calc(100vw - 24px);
+      max-height: calc(100vh - 96px); overflow-y: auto; background: var(--surface); border-radius: var(--r-xl); padding: 22px 22px 24px;
+      box-shadow: 0 30px 60px -20px rgba(31,35,64,.45); visibility: hidden; opacity: 0; transform: translateY(-10px) scale(.97); transform-origin: top right;
+      transition: opacity .18s, transform .22s cubic-bezier(.2,.8,.3,1.2), visibility 0s .2s;
+    }
+    .sheet.open { visibility: visible; opacity: 1; transform: none; transition: opacity .18s, transform .22s cubic-bezier(.2,.8,.3,1.2); }
+    .sheet-h { display: flex; align-items: center; justify-content: space-between; margin-bottom: 14px; }
+    .sheet-h h2 { font-size: 1.5rem; }
+    .x { width: 38px; height: 38px; border-radius: 50%; border: 0; background: var(--bg); cursor: pointer; display: flex; align-items: center; justify-content: center; }
+    .x:hover { background: var(--line); }
+    .x svg { width: 18px; height: 18px; }
+    .subj-list { list-style: none; margin: 0; padding: 0; display: grid; gap: 4px; }
+    .subj-list a { display: flex; align-items: center; gap: 12px; padding: 8px 10px; border-radius: var(--r-md); text-decoration: none; color: var(--ink); font-weight: 800; }
+    .subj-list a:hover { background: var(--bg); }
+    .subj-list .ic { width: 40px; height: 40px; border-radius: 12px; display: flex; align-items: center; justify-content: center; font-size: 22px; background: linear-gradient(135deg, var(--c1), var(--c2)); flex-shrink: 0; }
+    .subj-list small { display: block; color: var(--muted); font-weight: 600; font-size: .8rem; }
+    .subj-list .sub a { padding: 6px 10px 6px 62px; font-weight: 700; }
+    .subj-list .sub .ic { display: none; }
+
+    .who { display: flex; align-items: center; gap: 14px; margin-bottom: 16px; background: linear-gradient(135deg, #f3efff, #fff1e0); border-radius: var(--r-lg); padding: 14px; }
+    .who .big { width: 64px; height: 64px; border-radius: 50%; background: #fff; display: flex; align-items: center; justify-content: center; font-size: 36px; box-shadow: var(--shadow); flex-shrink: 0; }
+    .who strong { display: block; font-family: var(--head); font-size: 1.3rem; font-weight: 600; }
+    .who small { color: var(--muted); font-weight: 700; }
+    .field { margin-bottom: 14px; }
+    .field label { display: block; font-weight: 800; font-size: .92rem; margin-bottom: 6px; }
+    .field input { width: 100%; font: inherit; font-weight: 700; padding: 11px 14px; border: 2px solid var(--line); border-radius: var(--r-md); color: var(--ink); background: #fffdf9; }
+    .field input:focus { outline: none; border-color: var(--accent); box-shadow: 0 0 0 4px rgba(108,92,231,.15); }
+    .help { background: #fff5d6; border-radius: var(--r-md); padding: 10px 14px; font-size: .9rem; font-weight: 600; margin: 6px 0 12px; }
+    .linkbtn { background: none; border: 0; padding: 8px 0; color: var(--accent-ink); cursor: pointer; display: block; font-weight: 800; text-align: left; }
+    .linkbtn:hover { text-decoration: underline; }
+    .slots { display: flex; gap: 8px; margin-bottom: 10px; }
+    .slots span { width: 52px; height: 52px; border: 2px dashed var(--line-2); border-radius: 14px; display: flex; align-items: center; justify-content: center; font-size: 28px; background: #fffdf9; }
+    .slots span.full { border-style: solid; border-color: var(--accent); background: #f3efff; }
+    .animals { display: grid; grid-template-columns: repeat(6, 1fr); gap: 6px; }
+    .animals button, .emojis button { font-size: 26px; padding: 6px 0; border: 2px solid var(--line); border-radius: 12px; background: #fff; cursor: pointer; line-height: 1.2; transition: transform .1s, border-color .15s; }
+    .animals button:hover, .emojis button:hover { border-color: var(--accent); transform: translateY(-2px); }
+    .animals button:active { transform: scale(.92); }
+    .emojis { display: grid; grid-template-columns: repeat(8, 1fr); gap: 4px; }
+    .emojis button { font-size: 20px; padding: 4px 0; }
+    .emojis button.on { border-color: var(--accent); background: #f3efff; }
+    .animals-row { display: flex; justify-content: space-between; align-items: center; font-size: .88rem; color: var(--muted); font-weight: 700; margin-top: 6px; }
+    .reg-user { font-family: var(--head); font-size: 2rem; font-weight: 700; background: #f3efff; border-radius: var(--r-md); padding: 10px 12px; text-align: center; margin: 8px 0 12px; color: var(--accent-ink); }
 
     /* ─── Responsive ─── */
-    @media (max-width: 1100px) {
-      .course { grid-template-columns: 180px minmax(0, 1fr); }
-      .side { grid-column: 2; margin-top: 10px; }
+    @media (max-width: 960px) {
+      .layout { grid-template-columns: minmax(0, 1fr); }
+      .side { position: static; }
+      .card.wide { grid-column: auto; }
     }
-    @media (max-width: 760px) {
-      :root { --nav-w: 0px; }
-      .gnav { inset: 0 0 auto 0; width: auto; height: 60px; flex-direction: row; align-items: center; padding: 0 8px; }
-      .gnav-logo { padding: 0 8px 0 0; }
-      .gnav-logo img { width: 44px; height: 44px; }
-      .gnav-item { flex-direction: row; padding: 8px 10px; border-radius: 4px; font-size: 13px; }
-      .gnav-item svg { width: 22px; height: 22px; }
-      #nav-dash span { display: none; }
-      .app { padding-top: 60px; }
-      .tray { left: 0; top: 60px; width: 100%; max-width: 100%; transform: translateX(-105%); }
-      .topbar { padding: 0 16px; min-height: 52px; }
-      .page { padding: 18px 16px; }
-      .course, .course.no-side { grid-template-columns: minmax(0, 1fr); padding: 16px; }
-      .side { grid-column: 1; }
-      .cnav { display: flex; gap: 6px; overflow-x: auto; margin-bottom: 18px; border-bottom: 1px solid var(--line); }
-      .cnav a { border-left: 0; border-bottom: 3px solid transparent; padding: 8px 10px; margin: 0; white-space: nowrap; }
-      .cnav a.active { border-bottom-color: var(--text); }
-      .cnav-color { display: none; }
-      .cards { grid-template-columns: minmax(0, 1fr); gap: 20px; }
+    @media (max-width: 640px) {
+      .top-in { padding: 8px 14px; gap: 8px; }
+      .brand img { width: 40px; height: 40px; }
+      .brand b { font-size: 1.25rem; }
+      .pill-btn { height: 42px; padding: 0 12px; }
+      .pill-btn .lbl, .acct-name { display: none; }
+      .avatar { margin-left: 0; }
+      .trail { padding: 10px 16px 0; }
+      main { padding: 10px 16px 50px; }
+      .hello { grid-template-columns: minmax(0, 1fr); padding: 24px 22px; }
+      .owl { display: none; }
+      .banner { padding: 20px 20px 0; }
+      .banner .emoji { font-size: 48px; }
+      .tabs a { padding: 9px 14px 11px; }
+      .cards { grid-template-columns: minmax(0, 1fr); gap: 16px; }
+      .art { height: 120px; }
+      .art .emoji { font-size: 60px; }
+      .today { padding: 24px 18px 18px; }
+      .today .btn { width: 100%; }
       .ftable .hide-m { display: none; }
-      .frame { height: calc(100vh - 260px); min-height: 360px; }
-      .viewer-head .actions .lbl { display: none; }
+      .frame { height: calc(100vh - 250px); min-height: 360px; }
+      .vhead .actions .lbl { display: none; }
+      .match { grid-template-columns: minmax(0, 1fr); gap: 6px; }
+      .match .eq { display: none; }
+      .match select { margin-bottom: 8px; }
+      .progress { top: 62px; }
+      .sheet { top: auto; bottom: 0; right: 0; left: 0; width: 100%; max-width: 100%; max-height: 88vh; border-radius: var(--r-xl) var(--r-xl) 0 0; transform: translateY(30px); transform-origin: bottom center; }
     }
   </style>
 </head>
 <body>
 
-<nav class="gnav" aria-label="Glavna navigacija">
-  <a class="gnav-logo" href="#/" title="Brihta"><img src="brihta.png" alt="Brihta"></a>
-  <button class="gnav-item" id="nav-acct" type="button" aria-expanded="false" aria-controls="acct">
-    <span class="gnav-avatar" id="nav-avatar">👤</span>
-    <span class="gnav-name" id="nav-name">Prijava</span>
-  </button>
-  <a class="gnav-item" id="nav-dash" href="#/">
-    <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8"><path d="M3.5 15a8.5 8.5 0 1 1 17 0"/><path d="M12 15l4-4.5" stroke-linecap="round"/><circle cx="12" cy="15" r="1.4" fill="currentColor"/><path d="M3.5 19h17" stroke-linecap="round"/></svg>
-    <span>Nadzorna plošča</span>
-  </a>
-  <button class="gnav-item" id="nav-courses" type="button" aria-expanded="false" aria-controls="tray">
-    <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8"><path d="M4 5.5A1.5 1.5 0 0 1 5.5 4H11v16H5.5A1.5 1.5 0 0 1 4 18.5z"/><path d="M13 4h5.5A1.5 1.5 0 0 1 20 5.5v13a1.5 1.5 0 0 1-1.5 1.5H13z"/></svg>
-    <span>Predmeti</span>
-  </button>
-</nav>
+<header class="top">
+  <div class="top-in">
+    <a class="brand" href="#/" aria-label="Brihta — domov"><img src="brihta.png" alt=""><b>Brihta<span>.</span></b></a>
+    <button class="pill-btn" id="nav-courses" type="button" aria-expanded="false" aria-controls="tray">
+      <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><rect x="3" y="3" width="7.5" height="7.5" rx="2"/><rect x="13.5" y="3" width="7.5" height="7.5" rx="2"/><rect x="3" y="13.5" width="7.5" height="7.5" rx="2"/><rect x="13.5" y="13.5" width="7.5" height="7.5" rx="2"/></svg>
+      <span class="lbl">Predmeti</span>
+    </button>
+    <button class="pill-btn" id="nav-acct" type="button" aria-expanded="false" aria-controls="acct">
+      <span class="avatar" id="nav-avatar">👤</span><span class="acct-name" id="nav-name">Prijava</span>
+    </button>
+  </div>
+</header>
+<nav class="trail" id="crumbs" aria-label="Kje sem"></nav>
+<main id="main"></main>
 
-<div class="tray-back" id="tray-back"></div>
-<aside class="tray" id="tray" aria-label="Predmeti">
-  <div class="tray-head">
-    <h2>Predmeti</h2>
-    <button class="icon-btn" id="tray-close" aria-label="Zapri"><svg viewBox="0 0 20 20" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"><path d="M5 5l10 10M15 5L5 15"/></svg></button>
-  </div>
-  <ul id="tray-list"></ul>
+<div class="scrim" id="tray-back"></div>
+<aside class="sheet" id="tray" aria-label="Predmeti">
+  <div class="sheet-h"><h2>Predmeti</h2><button class="x" data-zapri aria-label="Zapri"><svg viewBox="0 0 20 20" fill="none" stroke="currentColor" stroke-width="2.4" stroke-linecap="round"><path d="M5 5l10 10M15 5L5 15"/></svg></button></div>
+  <ul class="subj-list" id="tray-list"></ul>
 </aside>
-<aside class="tray" id="acct" aria-label="Račun">
-  <div class="tray-head">
-    <h2 id="acct-title">Prijava</h2>
-    <button class="icon-btn" data-zapri aria-label="Zapri"><svg viewBox="0 0 20 20" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"><path d="M5 5l10 10M15 5L5 15"/></svg></button>
-  </div>
+<aside class="sheet" id="acct" aria-label="Račun">
+  <div class="sheet-h"><h2 id="acct-title">Prijava</h2><button class="x" data-zapri aria-label="Zapri"><svg viewBox="0 0 20 20" fill="none" stroke="currentColor" stroke-width="2.4" stroke-linecap="round"><path d="M5 5l10 10M15 5L5 15"/></svg></button></div>
   <div id="acct-body"></div>
 </aside>
 
-<div class="app">
-  <header class="topbar"><div class="crumbs" id="crumbs"></div></header>
-  <main id="main"></main>
-</div>
-
 <script>
 /* ─── Predmeti ───
-   id = ime mape v gradiva/ */
+   id = ime mape v gradiva/ (in kvizi/). c1/c2 = barvi preliva. */
 const PREDMETI = [
-  { id: 'racunalnistvo', ime: 'Računalništvo', koda: 'RAČ', barva: '#0374b5', emoji: '💻',
+  { id: 'racunalnistvo', ime: 'Računalništvo', koda: 'RAČ', c1: '#6366f1', c2: '#a855f7', emoji: '💻',
     otroci: [
-      { id: 'racunalnistvo-4',   ime: 'Računalništvo 4',   koda: 'RAČ 4',   barva: '#008ee2', emoji: '🖱️', opis: '4. razred' },
-      { id: 'racunalnistvo-5',   ime: 'Računalništvo 5',   koda: 'RAČ 5',   barva: '#4554a4', emoji: '🧩', opis: '5. razred' },
-      { id: 'racunalnistvo-6',   ime: 'Računalništvo 6',   koda: 'RAČ 6',   barva: '#127a1b', emoji: '🤖', opis: '6. razred' },
-      { id: 'racunalnistvo-6-9', ime: 'Računalništvo 6–9', koda: 'RAČ 6–9', barva: '#65499d', emoji: '🧑‍💻', opis: 'od 6. do 9. razreda' },
+      { id: 'racunalnistvo-4',   ime: 'Računalništvo 4',   kratko: '4. razred',    koda: 'RAČ 4',   c1: '#0ea5e9', c2: '#6366f1', emoji: '🖱️', opis: '4. razred' },
+      { id: 'racunalnistvo-5',   ime: 'Računalništvo 5',   kratko: '5. razred',    koda: 'RAČ 5',   c1: '#a855f7', c2: '#ec4899', emoji: '🧩', opis: '5. razred' },
+      { id: 'racunalnistvo-6',   ime: 'Računalništvo 6',   kratko: '6. razred',    koda: 'RAČ 6',   c1: '#10b981', c2: '#0ea5e9', emoji: '🤖', opis: '6. razred' },
+      { id: 'racunalnistvo-6-9', ime: 'Računalništvo 6–9', kratko: '6.–9. razred', koda: 'RAČ 6–9', c1: '#f97316', c2: '#e11d48', emoji: '🧑‍💻', opis: 'od 6. do 9. razreda' },
     ] },
-  { id: 'gasilci',            ime: 'Gasilci',                  koda: 'GAS',   barva: '#d7263d', emoji: '🚒' },
-  { id: 'rokodelnica',        ime: 'Rokodelnica',              koda: 'ROK',   barva: '#bd5b14', emoji: '🧶' },
-  { id: 'svetovni-popotniki', ime: 'Svetovni popotniki',       koda: 'POP',   barva: '#0a8a8f', emoji: '🌍' },
-  { id: 'matematika-3',       ime: 'Matematika – 3. skupina',  koda: 'MAT 3', barva: '#e71f63', emoji: '🔢' },
-  { id: 'slovenscina-3',      ime: 'Slovenščina – 3. skupina', koda: 'SLJ 3', barva: '#8f3e97', emoji: '📖' },
-  { id: 'anglescina-3',       ime: 'Angleščina – 3. skupina',  koda: 'ANG 3', barva: '#00838a', emoji: '💬' },
+  { id: 'gasilci',            ime: 'Gasilci',                  koda: 'Interesna dejavnost', c1: '#ef4444', c2: '#f97316', emoji: '🚒' },
+  { id: 'rokodelnica',        ime: 'Rokodelnica',              koda: 'Interesna dejavnost', c1: '#f59e0b', c2: '#f43f5e', emoji: '🧶' },
+  { id: 'svetovni-popotniki', ime: 'Svetovni popotniki',       koda: 'Interesna dejavnost', c1: '#14b8a6', c2: '#0ea5e9', emoji: '🌍' },
+  { id: 'matematika-3',       ime: 'Matematika – 3. skupina',  koda: 'MAT · 3. skupina',    c1: '#f43f5e', c2: '#a855f7', emoji: '🔢' },
+  { id: 'slovenscina-3',      ime: 'Slovenščina – 3. skupina', koda: 'SLJ · 3. skupina',    c1: '#8b5cf6', c2: '#6366f1', emoji: '📖' },
+  { id: 'anglescina-3',       ime: 'Angleščina – 3. skupina',  koda: 'ANG · 3. skupina',    c1: '#06b6d4', c2: '#22c55e', emoji: '💬' },
 ];
 const VSI = [];
 PREDMETI.forEach(p => { if (p.otroci) p.otroci.forEach(o => { o.stars = p; VSI.push(o); }); else VSI.push(p); });
 const najdi = id => VSI.find(p => p.id === id) || PREDMETI.find(p => p.id === id);
+const barve = p => `--c1:${p.c1};--c2:${p.c2}`;
 
 /* ─── Ikone ─── */
 const IKONE = {
-  pdf:        ['#d0021b', '<path d="M6 2.5h8l4.5 4.5v14.5h-12.5z"/><path d="M14 2.5V7h4.5"/><text x="12.2" y="17.3" font-size="5.4" font-weight="900" text-anchor="middle" fill="currentColor" stroke="none" font-family="Lato,Arial">PDF</text>'],
-  slika:      ['#0b874b', '<rect x="3" y="4.5" width="18" height="15" rx="1.5"/><circle cx="8.5" cy="9.5" r="1.7"/><path d="M3.5 17.5l5.5-5 4 3.5 3-2.5 4.5 4"/>'],
-  word:       ['#2b579a', '<path d="M6 2.5h8l4.5 4.5v14.5h-12.5z"/><path d="M14 2.5V7h4.5"/><path d="M8.5 11l1.3 6 2.2-5 2.2 5 1.3-6" stroke-linejoin="round"/>'],
-  powerpoint: ['#c43e1c', '<path d="M6 2.5h8l4.5 4.5v14.5h-12.5z"/><path d="M14 2.5V7h4.5"/><path d="M10 18v-7h2.6a2 2 0 0 1 0 4H10"/>'],
-  excel:      ['#217346', '<path d="M6 2.5h8l4.5 4.5v14.5h-12.5z"/><path d="M14 2.5V7h4.5"/><path d="M9.5 11l5 7M14.5 11l-5 7"/>'],
-  html:       ['#e66000', '<rect x="2.5" y="4" width="19" height="16" rx="1.5"/><path d="M2.5 8h19"/><path d="M9.5 11.5l-2.5 2.5 2.5 2.5M14.5 11.5l2.5 2.5-2.5 2.5"/>'],
-  video:      ['#7d3f98', '<rect x="2.5" y="5" width="19" height="14" rx="2"/><path d="M10 9.2v5.6l4.6-2.8z" fill="currentColor"/>'],
-  zvok:       ['#7d3f98', '<path d="M9 17V6l10-2v11"/><circle cx="6.5" cy="17" r="2.5"/><circle cx="16.5" cy="15" r="2.5"/>'],
-  povezava:   ['#0374b5', '<path d="M10 14a4 4 0 0 0 5.7 0l3-3a4 4 0 0 0-5.7-5.7l-1 1"/><path d="M14 10a4 4 0 0 0-5.7 0l-3 3a4 4 0 0 0 5.7 5.7l1-1"/>'],
-  besedilo:   ['#6b7780', '<path d="M6 2.5h8l4.5 4.5v14.5h-12.5z"/><path d="M14 2.5V7h4.5M9 12h6M9 15h6M9 18h4"/>'],
-  datoteka:   ['#6b7780', '<path d="M6 2.5h8l4.5 4.5v14.5h-12.5z"/><path d="M14 2.5V7h4.5"/>'],
-  kviz:       ['#bf32a4', '<rect x="4.5" y="3.5" width="15" height="18" rx="1.5"/><path d="M9 2.5h6v2.5H9z"/><path d="M8 11l1.5 1.5L12 10M8 16.5l1.5 1.5L12 15.5M14 11.5h2.5M14 17h2.5"/>'],
+  kviz:       ['#c026d3', '<rect x="4.5" y="3.5" width="15" height="18" rx="2.5"/><path d="M9 2.5h6v2.5H9z"/><path d="M8 11l1.5 1.5L12 10M8 16.5l1.5 1.5L12 15.5M14 11.5h2.5M14 17h2.5"/>'],
+  pdf:        ['#e11d48', '<path d="M6 2.5h8l4.5 4.5v14.5h-12.5z"/><path d="M14 2.5V7h4.5"/><text x="12.2" y="17.3" font-size="5.4" font-weight="900" text-anchor="middle" fill="currentColor" stroke="none" font-family="Nunito,Arial">PDF</text>'],
+  slika:      ['#16a34a', '<rect x="3" y="4.5" width="18" height="15" rx="2.5"/><circle cx="8.5" cy="9.5" r="1.7"/><path d="M3.5 17.5l5.5-5 4 3.5 3-2.5 4.5 4"/>'],
+  word:       ['#2563eb', '<path d="M6 2.5h8l4.5 4.5v14.5h-12.5z"/><path d="M14 2.5V7h4.5"/><path d="M8.5 11l1.3 6 2.2-5 2.2 5 1.3-6" stroke-linejoin="round"/>'],
+  powerpoint: ['#ea580c', '<path d="M6 2.5h8l4.5 4.5v14.5h-12.5z"/><path d="M14 2.5V7h4.5"/><path d="M10 18v-7h2.6a2 2 0 0 1 0 4H10"/>'],
+  excel:      ['#15803d', '<path d="M6 2.5h8l4.5 4.5v14.5h-12.5z"/><path d="M14 2.5V7h4.5"/><path d="M9.5 11l5 7M14.5 11l-5 7"/>'],
+  html:       ['#f97316', '<rect x="2.5" y="4" width="19" height="16" rx="2.5"/><path d="M2.5 8h19"/><path d="M9.5 11.5l-2.5 2.5 2.5 2.5M14.5 11.5l2.5 2.5-2.5 2.5"/>'],
+  video:      ['#7c3aed', '<rect x="2.5" y="5" width="19" height="14" rx="3"/><path d="M10 9.2v5.6l4.6-2.8z" fill="currentColor"/>'],
+  zvok:       ['#7c3aed', '<path d="M9 17V6l10-2v11"/><circle cx="6.5" cy="17" r="2.5"/><circle cx="16.5" cy="15" r="2.5"/>'],
+  povezava:   ['#0284c7', '<path d="M10 14a4 4 0 0 0 5.7 0l3-3a4 4 0 0 0-5.7-5.7l-1 1"/><path d="M14 10a4 4 0 0 0-5.7 0l-3 3a4 4 0 0 0 5.7 5.7l1-1"/>'],
+  besedilo:   ['#64748b', '<path d="M6 2.5h8l4.5 4.5v14.5h-12.5z"/><path d="M14 2.5V7h4.5M9 12h6M9 15h6M9 18h4"/>'],
+  datoteka:   ['#64748b', '<path d="M6 2.5h8l4.5 4.5v14.5h-12.5z"/><path d="M14 2.5V7h4.5"/>'],
 };
 const IMENA_VRST = { kviz: 'Kviz', pdf: 'PDF', slika: 'Slika', word: 'Word', powerpoint: 'PowerPoint', excel: 'Excel', html: 'Spletna stran', video: 'Video', zvok: 'Posnetek', povezava: 'Povezava', besedilo: 'Besedilo', datoteka: 'Datoteka' };
-function ikona(vrsta, cls = 'ti') {
+function tile(vrsta, vel = '') {
   const [barva, pot] = IKONE[vrsta] || IKONE.datoteka;
-  return `<svg class="${cls}" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.6" stroke-linecap="round" style="color:${barva}" aria-hidden="true">${pot}</svg>`;
+  return `<span class="tile ${vel}" style="--t:${barva}"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" aria-hidden="true">${pot}</svg></span>`;
 }
 const SVG = {
-  chev: '<svg viewBox="0 0 16 16" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M4 6l4 4 4-4"/></svg>',
-  dl: '<svg viewBox="0 0 20 20" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><path d="M10 3v10M5.5 8.5L10 13l4.5-4.5M3.5 16.5h13"/></svg>',
-  ext: '<svg viewBox="0 0 20 20" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><path d="M11 3.5h5.5V9M16.5 3.5L9 11M14 12v4.5H3.5V6H8"/></svg>',
-  full: '<svg viewBox="0 0 20 20" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><path d="M3.5 8V3.5H8M12 3.5h4.5V8M16.5 12v4.5H12M8 16.5H3.5V12"/></svg>',
-  prev: '<svg viewBox="0 0 20 20" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M12.5 4.5L7 10l5.5 5.5"/></svg>',
-  next: '<svg viewBox="0 0 20 20" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M7.5 4.5L13 10l-5.5 5.5"/></svg>',
-  star: '<svg viewBox="0 0 20 20" fill="currentColor" width="16" height="16"><path d="M10 1.8l2.5 5.3 5.8.7-4.3 4 1.1 5.7L10 14.7l-5.1 2.8 1.1-5.7-4.3-4 5.8-.7z"/></svg>',
-  files: '<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.6" stroke-linejoin="round"><path d="M3 6.5A1.5 1.5 0 0 1 4.5 5H9l2 2h8.5A1.5 1.5 0 0 1 21 8.5v9a1.5 1.5 0 0 1-1.5 1.5h-15A1.5 1.5 0 0 1 3 17.5z"/></svg>',
-  sub: '<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.6" stroke-linejoin="round"><rect x="3" y="3" width="7.5" height="7.5" rx="1"/><rect x="13.5" y="3" width="7.5" height="7.5" rx="1"/><rect x="3" y="13.5" width="7.5" height="7.5" rx="1"/><rect x="13.5" y="13.5" width="7.5" height="7.5" rx="1"/></svg>',
+  chev: '<svg viewBox="0 0 16 16" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round"><path d="M4 6l4 4 4-4"/></svg>',
+  dl: '<svg viewBox="0 0 20 20" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M10 3v10M5.5 8.5L10 13l4.5-4.5M3.5 16.5h13"/></svg>',
+  ext: '<svg viewBox="0 0 20 20" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M11 3.5h5.5V9M16.5 3.5L9 11M14 12v4.5H3.5V6H8"/></svg>',
+  full: '<svg viewBox="0 0 20 20" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M3.5 8V3.5H8M12 3.5h4.5V8M16.5 12v4.5H12M8 16.5H3.5V12"/></svg>',
+  prev: '<svg viewBox="0 0 20 20" fill="none" stroke="currentColor" stroke-width="2.4" stroke-linecap="round" stroke-linejoin="round"><path d="M12.5 4.5L7 10l5.5 5.5"/></svg>',
+  next: '<svg viewBox="0 0 20 20" fill="none" stroke="currentColor" stroke-width="2.4" stroke-linecap="round" stroke-linejoin="round"><path d="M7.5 4.5L13 10l-5.5 5.5"/></svg>',
 };
 
 /* ─── Pomožne ─── */
 const esc = s => String(s ?? '').replace(/[&<>"']/g, c => ({ '&': '&amp;', '<': '&lt;', '>': '&gt;', '"': '&quot;', "'": '&#39;' }[c]));
 const DNI = ['nedelja', 'ponedeljek', 'torek', 'sreda', 'četrtek', 'petek', 'sobota'];
 const MES = ['jan.', 'feb.', 'mar.', 'apr.', 'maj', 'jun.', 'jul.', 'avg.', 'sep.', 'okt.', 'nov.', 'dec.'];
+const MESECI = ['januar', 'februar', 'marec', 'april', 'maj', 'junij', 'julij', 'avgust', 'september', 'oktober', 'november', 'december'];
 const dan0 = d => { const x = new Date(d); x.setHours(0, 0, 0, 0); return x; };
 const ponedeljek = d => { const x = dan0(d); x.setDate(x.getDate() - ((x.getDay() + 6) % 7)); return x; };
 const kratek = d => `${d.getDate()}. ${d.getMonth() + 1}.`;
@@ -487,6 +567,7 @@ const gradivaZa = id => [...(GRADIVA[id] || []), ...KVIZI.filter(k => k.predmet 
   .sort((a, b) => new Date(b.datum) - new Date(a.datum));
 const vsaZa = p => p.otroci ? p.otroci.flatMap(o => gradivaZa(o.id)) : gradivaZa(p.id);
 const kljuc = g => g.vrsta === 'kviz' ? 'kviz:' + g.id : (g.pot || g.url);
+const hrefGradiva = (p, g) => `#/p/${p.id}/${encodeURIComponent(kljuc(g))}`;
 
 /* ─── Računi (isti kot v Brihta-MAT; ista domena, zato tudi ista prijava) ─── */
 const KLJUC_UCENEC = 'brihta_profile_v1';
@@ -502,65 +583,71 @@ function shraniRacun() {
     if (ucitelj) localStorage.setItem(KLJUC_UCITELJ, JSON.stringify(ucitelj)); else localStorage.removeItem(KLJUC_UCITELJ);
   } catch (e) {}
 }
-const hrefGradiva = (p, g) => `#/p/${p.id}/${encodeURIComponent(kljuc(g))}`;
+const imeZaPozdrav = () => ucitelj ? ucitelj.username : ucenec ? (ucenec.display_name || ucenec.username) : '';
 
 /* ─── Izris ─── */
 const $main = document.getElementById('main');
 const $crumbs = document.getElementById('crumbs');
 function drobtine(deli) {
-  $crumbs.innerHTML = deli.map((d, i) => i === deli.length - 1
+  $crumbs.innerHTML = deli.length < 2 ? '' : deli.map((d, i) => i === deli.length - 1
     ? `<span class="cur">${esc(d[0])}</span>`
     : `<a href="${d[1]}">${esc(d[0])}</a><span class="sep">›</span>`).join('');
   document.title = (deli.length > 1 ? deli[deli.length - 1][0] + ' — ' : '') + 'Brihta — Šola';
 }
-function aktivniNav(dash) { document.getElementById('nav-dash').classList.toggle('active', dash); }
+const nova = p => vsaZa(p).filter(g => jeDanes(g.datum)).length;
+const PUSCICA = `<span class="go">${SVG.next}</span>`;
 
 function kartica(p) {
-  const href = p.otroci ? `#/${p.id}` : `#/p/${p.id}`;
-  const vsa = vsaZa(p), n = vsa.filter(g => jeDanes(g.datum)).length;
-  const term = p.otroci ? `${p.otroci.length} skupine` : (p.opis || 'Šolsko leto 2026/27');
-  return `<a class="card" href="${href}">
-    <div class="card-hero" style="background:${p.barva}">
-      <span class="emoji" aria-hidden="true">${p.emoji}</span>
-      ${n ? `<span class="badge">Novo danes</span>` : ''}
-    </div>
-    <div class="card-body">
-      <span class="card-name" style="color:${p.barva}">${esc(p.ime)}</span>
-      <span class="card-code">${esc(p.koda)}</span>
-      <span class="card-term">${esc(term)}</span>
-    </div>
-    <div class="card-foot">
-      <span>${p.otroci ? SVG.sub + 'Izberi skupino' : SVG.files + gradiv(vsa.length)}</span>
-    </div>
-  </a>`;
+  const n = nova(p);
+  const art = `<div class="art"><span class="emoji" aria-hidden="true">${p.emoji}</span>${n ? `<span class="new">✨ Novo danes</span>` : ''}</div>`;
+  if (p.otroci) {
+    return `<div class="card wide" style="${barve(p)}">
+      <a href="#/${p.id}">${art}
+        <div class="card-body"><div><h3>${esc(p.ime)}</h3><p>Izberi svoj razred</p></div>${PUSCICA}</div></a>
+      <div class="chips">${p.otroci.map(o => `<a class="chip" style="${barve(o)}" href="#/p/${o.id}">${o.emoji} ${esc(o.kratko)}${nova(o) ? '<span class="dot" title="Novo danes"></span>' : ''}</a>`).join('')}</div>
+    </div>`;
+  }
+  const vseh = vsaZa(p).length;
+  return `<a class="card" style="${barve(p)}" href="#/p/${p.id}">${art}
+    <div class="card-body"><div><h3>${esc(p.ime)}</h3><p>${vseh ? gradiv(vseh) : esc(p.opis || p.koda)}</p></div>${PUSCICA}</div></a>`;
+}
+
+function pozdrav() {
+  const h = new Date().getHours();
+  return h < 10 ? 'Dobro jutro' : h < 18 ? 'Živjo' : 'Dober večer';
 }
 
 function stranNadzorna() {
-  drobtine([['Nadzorna plošča']]);
-  aktivniNav(true);
+  drobtine([['Domov']]);
   const zadnji = najdi(preberi('sola_zadnji') || '');
-  $main.innerHTML = `<div class="page">
-    <h1 class="page-title">Nadzorna plošča</h1>
-    <p class="page-sub">Izberi svoj predmet. Tam te čaka gradivo za današnjo uro.</p>
-    <hr class="rule">
-    ${zadnji && !zadnji.otroci ? `<div class="resume">
-      <span style="font-size:28px" aria-hidden="true">${zadnji.emoji}</span>
-      <div class="txt"><small>Nazadnje odprto</small><strong>${esc(zadnji.ime)}</strong></div>
-      <a class="btn btn-primary" href="#/p/${zadnji.id}">Nadaljuj</a>
-    </div>` : ''}
-    <div class="cards">${PREDMETI.map(kartica).join('')}</div>
-  </div>`;
+  const d = new Date();
+  const ime = imeZaPozdrav();
+  const danes = VSI.filter(p => nova(p));
+  const sporocilo = danes.length
+    ? `Danes je novo pri: ${danes.map(p => p.ime).join(', ')}!`
+    : 'Danes še ni novih gradiv. Pokukaj v prejšnja!';
+  $main.innerHTML = `
+    <section class="hello">
+      <div>
+        <div class="date">${DNI[d.getDay()]}, ${d.getDate()}. ${MESECI[d.getMonth()]}</div>
+        <h1>${pozdrav()}${ime ? ', ' + esc(ime) : ''}! 👋</h1>
+        <p>Izberi predmet in poišči gradivo za današnjo uro.</p>
+        ${zadnji && !zadnji.otroci ? `<a class="resume" href="#/p/${zadnji.id}">${zadnji.emoji} Nadaljuj: ${esc(zadnji.ime)} <span>Odpri →</span></a>` : ''}
+      </div>
+      <div class="owl" aria-hidden="true"><div class="bubble">${esc(sporocilo)}</div><img src="brihta.png" alt=""></div>
+    </section>
+    <div class="sec-h"><h2>Tvoji predmeti</h2></div>
+    <div class="cards">${PREDMETI.map(kartica).join('')}</div>`;
 }
 
 function stranSkupina(p) {
-  drobtine([['Nadzorna plošča', '#/'], [p.ime]]);
-  aktivniNav(false);
-  $main.innerHTML = `<div class="page">
-    <h1 class="page-title">${p.emoji} ${esc(p.ime)}</h1>
-    <p class="page-sub">Izberi svojo skupino.</p>
-    <hr class="rule">
-    <div class="cards">${p.otroci.map(kartica).join('')}</div>
-  </div>`;
+  drobtine([['Domov', '#/'], [p.ime]]);
+  $main.innerHTML = `
+    <section class="banner" style="${barve(p)};padding-bottom:26px">
+      <div class="banner-top"><span class="emoji" aria-hidden="true">${p.emoji}</span>
+        <div><h1>${esc(p.ime)}</h1><p>V kateri razred hodiš?</p></div></div>
+    </section>
+    <div class="cards">${p.otroci.map(kartica).join('')}</div>`;
 }
 
 function poTednih(seznam) {
@@ -575,84 +662,76 @@ function poTednih(seznam) {
     const pon = new Date(k), pet = new Date(k); pet.setDate(pet.getDate() + 4);
     const raz = Math.round((ta - k) / (7 * 864e5));
     const obseg = `${kratek(pon)} – ${kratek(pet)}`;
-    const ime = raz === 0 ? `Ta teden (${obseg})` : raz === 1 ? `Prejšnji teden (${obseg})` : `Teden ${obseg} ${pon.getFullYear()}`;
-    return { ime, gradiva: g, odprt: raz <= 1 };
+    return { ime: raz === 0 ? 'Ta teden' : raz === 1 ? 'Prejšnji teden' : `Teden ${obseg}`, pod: raz <= 1 ? obseg : String(pon.getFullYear()), gradiva: g, odprt: raz <= 1 };
   });
 }
 
-function vrsticaGradiva(p, g) {
-  return `<li class="item">
-    ${ikona(g.vrsta)}
-    <div class="nm"><a href="${hrefGradiva(p, g)}">${esc(g.ime)}</a>
-      <span class="meta">${IMENA_VRST[g.vrsta] || 'Datoteka'} · ${kdaj(g.datum)}${g.velikost ? ' · ' + velikost(g.velikost) : ''}</span></div>
-    ${oznaka(g)}
-  </li>`;
-}
 function oznaka(g) {
   const o = g.vrsta === 'kviz' && MOJE[g.id];
-  if (o) return `<span class="tag">Oddano · ${o.tocke}/${o.vseh}</span>`;
-  return jeDanes(g.datum) ? '<span class="pill">Novo</span>' : '';
+  if (o) return `<span class="tag done">✓ ${o.tocke}/${o.vseh}</span>`;
+  return jeDanes(g.datum) ? '<span class="tag new">Novo</span>' : '';
+}
+function vrsticaGradiva(p, g) {
+  return `<li class="item"><a href="${hrefGradiva(p, g)}">
+    ${tile(g.vrsta, 'sm')}
+    <span class="nm"><b>${esc(g.ime)}</b><small>${IMENA_VRST[g.vrsta] || 'Datoteka'} · ${kdaj(g.datum)}${g.velikost ? ' · ' + velikost(g.velikost) : ''}</small></span>
+    ${oznaka(g)}<svg class="arrow" viewBox="0 0 20 20" fill="none" stroke="currentColor" stroke-width="2.4" stroke-linecap="round" stroke-linejoin="round"><path d="M7.5 4.5L13 10l-5.5 5.5"/></svg>
+  </a></li>`;
 }
 
+/* Okvir strani predmeta: barvni pas z zavihki (ne pri ogledu gradiva), nato vsebina
+   in po želji stranski stolpec. */
 function okvirPredmeta(p, zavihek, vsebina, stranska, zadnjaDrobtina) {
   const s = p.stars;
-  drobtine([['Nadzorna plošča', '#/'], ...(s ? [[s.ime, `#/${s.id}`]] : []), [p.ime, `#/p/${p.id}`], ...(zadnjaDrobtina ? [[zadnjaDrobtina]] : [])]);
-  aktivniNav(false);
-  $main.innerHTML = `<div class="course${stranska ? '' : ' no-side'}">
-    <nav aria-label="Navigacija predmeta">
-      <div class="cnav-color" style="background:${p.barva}"></div>
-      <ul class="cnav">
-        <li><a href="#/p/${p.id}" class="${zavihek === 'domov' ? 'active' : ''}">Domov</a></li>
-        <li><a href="#/p/${p.id}/datoteke" class="${zavihek === 'datoteke' ? 'active' : ''}">Datoteke</a></li>
-      </ul>
-    </nav>
-    <div>${vsebina}</div>
-    ${stranska ? `<aside class="side">${stranska}</aside>` : ''}
-  </div>`;
+  drobtine([['Domov', '#/'], ...(s ? [[s.ime, `#/${s.id}`]] : []), [p.ime, `#/p/${p.id}`], ...(zadnjaDrobtina ? [[zadnjaDrobtina]] : [])]);
+  const pas = zavihek === 'gradivo' || zavihek === 'kviz' ? '' : `<section class="banner" style="${barve(p)}">
+      <div class="banner-top"><span class="emoji" aria-hidden="true">${p.emoji}</span>
+        <div><h1>${esc(p.ime)}</h1><p>${esc(p.opis || p.koda)}</p></div></div>
+      ${s ? `<div class="banner-sw">${s.otroci.filter(o => o !== p).map(o => `<a href="#/p/${o.id}">${o.emoji} ${esc(o.kratko)}</a>`).join('')}</div>` : ''}
+      <nav class="tabs" aria-label="Zavihki">
+        <a href="#/p/${p.id}" class="${zavihek === 'domov' ? 'active' : ''}">Domov</a>
+        <a href="#/p/${p.id}/datoteke" class="${zavihek === 'datoteke' ? 'active' : ''}">Vsa gradiva</a>
+      </nav>
+    </section>`;
+  const ozko = zavihek === 'kviz' && !stranska;
+  $main.innerHTML = `${pas}<div class="layout${stranska ? '' : ' solo'}${ozko ? ' ozko' : ''}" style="${barve(p)}">
+    <div>${vsebina}</div>${stranska ? `<aside class="side">${stranska}</aside>` : ''}</div>`;
 }
 
 function stranPredmet(p) {
   shrani('sola_zadnji', p.id);
   const seznam = gradivaZa(p.id);
   const zadnje = seznam[0];
-  let vsebina = `<h1 class="page-title">${p.emoji} ${esc(p.ime)}</h1><p class="page-sub">${esc(p.koda)}${p.opis ? ' · ' + esc(p.opis) : ''}</p>`;
+  let vsebina = '';
   if (napaka) {
-    vsebina += `<div class="empty">Gradiv trenutno ni mogoče naložiti. Osveži stran.</div>`;
+    vsebina = `<div class="empty"><img src="brihta.png" alt=""><strong>Ups!</strong>Gradiv trenutno ni mogoče naložiti. Osveži stran.</div>`;
   } else if (!zadnje) {
-    vsebina += `<div class="empty"><img src="brihta.png" alt="">Tukaj še ni gradiv.<br>Ko jih učitelj objavi, se pokažejo tukaj.</div>`;
+    vsebina = `<div class="empty"><img src="brihta.png" alt=""><strong>Tukaj je še prazno</strong>Ko učitelj objavi gradivo, se pokaže tukaj.</div>`;
   } else {
-    vsebina += `<section class="today" aria-label="Zadnje gradivo">
-      <div class="today-head" style="background:${p.barva}">${SVG.star} ${jeDanes(zadnje.datum) ? 'Danes na uri' : 'Zadnje objavljeno'}</div>
-      <div class="today-body">
-        <div class="today-icon">${ikona(zadnje.vrsta, '')}</div>
-        <div class="today-txt"><h2>${esc(zadnje.ime)}</h2><p>${IMENA_VRST[zadnje.vrsta] || 'Datoteka'} · objavljeno ${kdaj(zadnje.datum)}</p></div>
-        <a class="btn btn-primary btn-big" href="${hrefGradiva(p, zadnje)}">Odpri</a>
-      </div>
-    </section>`;
-    vsebina += poTednih(seznam).map(t => `<section class="module${t.odprt ? '' : ' closed'}">
-      <button class="module-head" type="button" aria-expanded="${t.odprt}">${SVG.chev}<span>${esc(t.ime)}</span><span class="count">${t.gradiva.length}</span></button>
-      <ul class="module-items">${t.gradiva.map(g => vrsticaGradiva(p, g)).join('')}</ul>
-    </section>`).join('');
+    vsebina = `<section class="today" aria-label="Zadnje gradivo">
+        <span class="label">${jeDanes(zadnje.datum) ? '⭐ Danes na uri' : 'Zadnje objavljeno'}</span>
+        ${tile(zadnje.vrsta)}
+        <div class="txt"><h2>${esc(zadnje.ime)}</h2><p>${IMENA_VRST[zadnje.vrsta] || 'Datoteka'} · ${kdaj(zadnje.datum)}</p></div>
+        <a class="btn btn-go btn-big" href="${hrefGradiva(p, zadnje)}">${zadnje.vrsta === 'kviz' ? (MOJE[zadnje.id] ? 'Poglej rezultat' : 'Reši kviz') : 'Odpri'} ${SVG.next}</a>
+      </section>` +
+      poTednih(seznam).map(t => `<section class="week${t.odprt ? '' : ' closed'}">
+        <button class="week-h" type="button" aria-expanded="${t.odprt}"><h3>${esc(t.ime)}</h3><small class="note" style="margin:0">${esc(t.pod)}</small><span class="count">${t.gradiva.length}</span><span class="chev">${SVG.chev}</span></button>
+        <ul class="items">${t.gradiva.map(g => vrsticaGradiva(p, g)).join('')}</ul>
+      </section>`).join('');
   }
-  const danes = seznam.filter(g => jeDanes(g.datum));
-  let stranska = `<h3>Danes</h3><ul>${danes.length
-    ? danes.map(g => `<li>${ikona(g.vrsta)}<div><a href="${hrefGradiva(p, g)}">${esc(g.ime)}</a><small>${IMENA_VRST[g.vrsta] || ''}</small></div></li>`).join('')
-    : '<li style="color:var(--muted)">Danes še ni novih gradiv.</li>'}</ul>`;
-  if (p.stars) stranska += `<h3>Druge skupine</h3><div class="switch">${p.stars.otroci.filter(o => o !== p).map(o => `<a href="#/p/${o.id}">${esc(o.ime)}</a>`).join('')}</div>`;
-  okvirPredmeta(p, 'domov', vsebina, stranska);
-  $main.querySelectorAll('.module-head').forEach(b => b.addEventListener('click', () => {
+  okvirPredmeta(p, 'domov', vsebina, null);
+  $main.querySelectorAll('.week-h').forEach(b => b.addEventListener('click', () => {
     const m = b.parentElement; m.classList.toggle('closed'); b.setAttribute('aria-expanded', !m.classList.contains('closed'));
   }));
 }
 
 function stranDatoteke(p) {
   const seznam = gradivaZa(p.id);
-  const vsebina = `<h1 class="page-title">Datoteke</h1><p class="page-sub">${esc(p.ime)} · ${gradiv(seznam.length)}</p>
-    ${seznam.length ? `<table class="ftable"><thead><tr><th>Ime</th><th>Objavljeno</th><th class="hide-m">Vrsta</th><th class="hide-m">Velikost</th></tr></thead><tbody>
-      ${seznam.map(g => `<tr><td class="n">${ikona(g.vrsta)}<a href="${hrefGradiva(p, g)}">${esc(g.ime)}</a></td>
+  const vsebina = seznam.length ? `<table class="ftable"><thead><tr><th>Ime</th><th>Objavljeno</th><th class="hide-m">Vrsta</th><th class="hide-m">Velikost</th></tr></thead><tbody>
+      ${seznam.map(g => `<tr><td class="n"><a href="${hrefGradiva(p, g)}">${tile(g.vrsta, 'xs')}${esc(g.ime)}</a></td>
         <td class="m">${kdaj(g.datum)}</td><td class="m hide-m">${IMENA_VRST[g.vrsta] || ''}</td><td class="m hide-m">${velikost(g.velikost)}</td></tr>`).join('')}
-    </tbody></table>` : `<div class="empty"><img src="brihta.png" alt="">Tukaj še ni gradiv.</div>`}`;
-  okvirPredmeta(p, 'datoteke', vsebina, null, 'Datoteke');
+    </tbody></table>` : `<div class="empty"><img src="brihta.png" alt=""><strong>Tukaj je še prazno</strong>Ko učitelj objavi gradivo, se pokaže tukaj.</div>`;
+  okvirPredmeta(p, 'datoteke', vsebina, null, 'Vsa gradiva');
 }
 
 const OFFICE = ['word', 'powerpoint', 'excel'];
@@ -673,13 +752,14 @@ function stranGradivo(p, k) {
     notri = `<iframe src="https://view.officeapps.live.com/op/embed.aspx?src=${encodeURIComponent(url)}" title="${esc(g.ime)}" allowfullscreen></iframe>`;
     opomba = lokalno ? 'Predogled Word/PowerPoint datotek deluje šele na objavljeni strani. Uporabi »Prenesi«.' : 'Če se dokument ne prikaže, klikni »Prenesi«.';
   } else if (g.vrsta === 'povezava') {
-    notri = `<div class="open-card">${ikona('povezava', '')}<h2 style="margin:8px 0 4px">${esc(g.ime)}</h2><p>${esc(g.url)}</p><a class="btn btn-primary btn-big" href="${esc(g.url)}" target="_blank" rel="noopener">Odpri povezavo</a></div>`;
+    notri = `<div class="open-card">${tile('povezava')}<h2>${esc(g.ime)}</h2><p>${esc(g.url)}</p><a class="btn btn-go btn-big" href="${esc(g.url)}" target="_blank" rel="noopener">Odpri povezavo ${SVG.ext}</a></div>`;
   } else {
-    notri = `<div class="open-card">${ikona(g.vrsta, '')}<h2 style="margin:8px 0 4px">${esc(g.ime)}</h2><p>Te datoteke ni mogoče prikazati tukaj.</p><a class="btn btn-primary btn-big" href="${esc(url)}" download>Prenesi</a></div>`;
+    notri = `<div class="open-card">${tile(g.vrsta)}<h2>${esc(g.ime)}</h2><p>Te datoteke ni mogoče prikazati tukaj.</p><a class="btn btn-go btn-big" href="${esc(url)}" download>Prenesi ${SVG.dl}</a></div>`;
   }
   const starejse = seznam[i + 1], novejse = seznam[i - 1];
-  const vsebina = `<div class="viewer-head">
-      ${ikona(g.vrsta, '')}
+  const vsebina = `<div class="vhead">
+      <a class="btn" href="#/p/${p.id}" aria-label="Nazaj">${SVG.prev}</a>
+      ${tile(g.vrsta, 'sm')}
       <h1>${esc(g.ime)}</h1>
       <div class="actions">
         ${g.vrsta !== 'povezava' ? `<button class="btn" id="v-full" type="button" title="Čez cel zaslon">${SVG.full}<span class="lbl">Cel zaslon</span></button>` : ''}
@@ -693,7 +773,7 @@ function stranGradivo(p, k) {
       ${starejse ? `<a class="btn" href="${hrefGradiva(p, starejse)}">${SVG.prev} Prejšnje</a>` : '<span></span>'}
       ${novejse ? `<a class="btn" href="${hrefGradiva(p, novejse)}">Naslednje ${SVG.next}</a>` : '<span></span>'}
     </div>`;
-  okvirPredmeta(p, 'domov', vsebina, null, g.ime);
+  okvirPredmeta(p, 'gradivo', vsebina, null, g.ime);
   const fb = document.getElementById('v-full');
   if (fb) fb.addEventListener('click', () => {
     const f = document.getElementById('frame');
@@ -709,65 +789,85 @@ const osnutekKljuc = id => `sola_osnutek:${ucenec ? ucenec.id : ''}:${id}`;
 const tock = n => n === 1 ? 'točka' : n === 2 ? 'točki' : (n === 3 || n === 4) ? 'točke' : 'točk';
 const casOddaje = iso => { const d = new Date(iso); return `${kdaj(iso)} ob ${d.getHours()}.${String(d.getMinutes()).padStart(2, '0')}`; };
 
-function glavaKviza(g) {
-  return `<div class="viewer-head">${ikona('kviz', '')}<h1>${esc(g.ime)}</h1></div>
-    ${g.opis ? `<p class="page-sub">${esc(g.opis)}</p>` : ''}`;
+function glavaKviza(p, g) {
+  return `<div class="vhead"><a class="btn" href="#/p/${p.id}" aria-label="Nazaj">${SVG.prev}</a>${tile('kviz', 'sm')}<h1>${esc(g.ime)}</h1></div>
+    ${g.opis ? `<p class="note" style="font-size:1rem;margin:-6px 0 18px">${esc(g.opis)}</p>` : ''}`;
 }
+const okvirKviza = (p, g, vsebina, stranska) => okvirPredmeta(p, 'kviz', glavaKviza(p, g) + vsebina, stranska, g.ime);
 
 async function stranKviz(p, g) {
   const h = location.hash;
-  const glava = glavaKviza(g);
-  if (ucitelj) return rezultatiKviza(p, g, glava, h);
+  if (ucitelj) return rezultatiKviza(p, g, h);
   if (!ucenec) {
-    okvirPredmeta(p, 'domov', glava + `<div class="empty"><img src="brihta.png" alt="">
-      <p style="margin:0 0 14px">Za reševanje kviza se moraš prijaviti.<br>Uporabi isti račun kot pri <strong>Brihta-MAT</strong>.</p>
-      <button class="btn btn-primary btn-big" type="button" id="k-prijava">Prijava</button></div>`, null, g.ime);
+    okvirKviza(p, g, `<div class="empty"><img src="brihta.png" alt=""><strong>Najprej se prijavi</strong>
+      <p style="margin:0 0 16px">Uporabi isti račun kot pri <b>Brihta-MAT</b>.</p>
+      <button class="btn btn-go btn-big" type="button" id="k-prijava">Prijava</button></div>`);
     document.getElementById('k-prijava').addEventListener('click', () => odpriPredal('racun'));
     return;
   }
   if (MOJE[g.id]) return izidKviza(p, g, MOJE[g.id]);
-  okvirPredmeta(p, 'domov', glava + '<p class="note">Nalagam kviz …</p>', null, g.ime);
+  okvirKviza(p, g, '<p class="note">Nalagam kviz …</p>');
   const r = await rpc('sola_kviz', { p_id: g.id });
   if (!enakaStran(h)) return;
   if (!Array.isArray(r) || !r.length) {
-    okvirPredmeta(p, 'domov', glava + `<div class="empty">${r === NEDOSEGLJIVO ? 'Strežnik ni dosegljiv. Preveri povezavo in osveži stran.' : 'Tega kviza ni več.'}</div>`, null, g.ime);
+    okvirKviza(p, g, `<div class="empty"><img src="brihta.png" alt=""><strong>Ups!</strong>${r === NEDOSEGLJIVO ? 'Strežnik ni dosegljiv. Preveri povezavo in osveži stran.' : 'Tega kviza ni več.'}</div>`);
     return;
   }
   resujKviz(p, g, r[0].vprasanja, h);
 }
 
+function konfeti(el) {
+  const barvice = ['#6366f1', '#a855f7', '#ec4899', '#ffb020', '#22c55e', '#0ea5e9', '#f43f5e'];
+  const c = document.createElement('div'); c.className = 'confetti';
+  for (let i = 0; i < 70; i++) {
+    const k = document.createElement('i');
+    k.style.left = Math.random() * 100 + '%';
+    k.style.background = barvice[i % barvice.length];
+    k.style.setProperty('--x', (Math.random() * 160 - 80) + 'px');
+    k.style.setProperty('--r', (Math.random() * 720 - 360) + 'deg');
+    k.style.setProperty('--d', (1.6 + Math.random() * 1.6) + 's');
+    k.style.setProperty('--w', (Math.random() * .6) + 's');
+    if (i % 3 === 0) k.style.borderRadius = '50%';
+    c.appendChild(k);
+  }
+  el.appendChild(c);
+}
+
 function izidKviza(p, g, o, svezje) {
   const odst = o.vseh ? Math.round(o.tocke / o.vseh * 100) : 0;
-  okvirPredmeta(p, 'domov', glavaKviza(g) + `<div class="result">
-      <div style="font-size:2.4rem" aria-hidden="true">${odst >= 80 ? '🏆' : odst >= 50 ? '👍' : '💪'}</div>
-      <p>${svezje ? 'Kviz je oddan.' : 'Ta kviz si že oddal/-a.'} Dosegel/-a si</p>
-      <div class="score">${o.tocke} / ${o.vseh}</div>
-      <p>${tock(o.vseh)} · oddano ${casOddaje(o.oddano)}</p>
-    </div>
-    <a class="btn" href="#/p/${p.id}">${SVG.prev} Nazaj na ${esc(p.ime)}</a>`, null, g.ime);
+  const [naslovIzida, emoji] = odst === 100 ? ['Popolno!', '🏆'] : odst >= 80 ? ['Odlično!', '🌟'] : odst >= 50 ? ['Dobro ti gre!', '👍'] : ['Ne obupaj!', '💪'];
+  okvirKviza(p, g, `<section class="result" id="izid">
+      <div class="ring" style="--p:${odst}"><div>${o.tocke}/${o.vseh}<small>${tock(o.vseh)}</small></div></div>
+      <h2>${emoji} ${naslovIzida}</h2>
+      <p>${svezje ? 'Kviz je oddan.' : 'Ta kviz si že rešil/-a.'} Oddano ${casOddaje(o.oddano)}.</p>
+    </section>
+    <a class="btn" href="#/p/${p.id}">${SVG.prev} Nazaj na ${esc(p.ime)}</a>`);
+  if (svezje && odst >= 50) konfeti(document.getElementById('izid'));
 }
 
 /* Izriše vprašanja. predogled = samo za ogled (učitelj), brez oddaje. */
 function htmlVprasanj(vpr, predogled) {
   const dis = predogled ? ' disabled' : '';
   return vpr.map((q, i) => {
-    let telo = '';
+    let telo = '', namig = '';
     if (q.t === 'izbira' || q.t === 'vec') {
       const tip = q.t === 'izbira' ? 'radio' : 'checkbox';
-      telo = (q.t === 'vec' ? '<p class="note" style="margin:-6px 0 8px">Označi vse pravilne odgovore.</p>' : '') +
-        q.m.map(m => `<label class="opt"><input type="${tip}" name="q${i}" value="${esc(m)}"${dis}><span>${esc(m)}</span></label>`).join('');
+      if (q.t === 'vec') namig = 'Označi vse pravilne odgovore.';
+      telo = `<div class="opts">${q.m.map(m => `<label class="opt"><input type="${tip}" name="q${i}" value="${esc(m)}"${dis}><span>${esc(m)}</span></label>`).join('')}</div>`;
     } else if (q.t === 'kratek') {
-      telo = `<input class="short" type="text" data-q="${i}" autocomplete="off" spellcheck="false" placeholder="Tvoj odgovor"${dis}>`;
+      telo = `<input class="short" type="text" data-q="${i}" autocomplete="off" spellcheck="false" placeholder="Napiši odgovor …"${dis}>`;
     } else if (q.t === 'povezi') {
-      telo = `<div class="match">${q.l.map((l, j) => `<div class="l">${esc(l)}</div>
+      namig = 'Vsakemu na levi izberi pravi par.';
+      telo = `<div class="match">${q.l.map((l, j) => `<div class="l">${esc(l)}</div><span class="eq">→</span>
         <select data-q="${i}" data-l="${j}" aria-label="${esc(l)}"${dis}><option value="">Izberi …</option>${q.d.map(d => `<option>${esc(d)}</option>`).join('')}</select>`).join('')}</div>`;
     } else if (q.t === 'vrstni') {
-      telo = `<p class="note" style="margin:-6px 0 8px">Uredi s puščicama ↑ ↓.</p><ol class="order" data-q="${i}">${q.m.map(m => `<li data-v="${esc(m)}"><span>${esc(m)}</span>
+      namig = 'Uredi s puščicama ↑ ↓.';
+      telo = `<ol class="order" data-q="${i}">${q.m.map(m => `<li data-v="${esc(m)}"><span>${esc(m)}</span>
         <button type="button" data-gor aria-label="Gor"${dis}>↑</button><button type="button" data-dol aria-label="Dol"${dis}>↓</button></li>`).join('')}</ol>`;
     }
     return `<section class="q" id="q${i}">
-      <div class="q-head"><span>Vprašanje ${i + 1}</span><span>1 ${tock(1)}</span></div>
-      <div class="q-body"><p class="q-text">${esc(q.b)}</p>${telo}</div>
+      <div class="q-top"><span class="q-num">${i + 1}</span><div><p class="q-text">${esc(q.b)}</p>${namig ? `<p class="q-hint">${namig}</p>` : ''}</div></div>
+      ${telo}
     </section>`;
   }).join('');
 }
@@ -778,12 +878,12 @@ function posodobiPuscice(ol) {
 }
 
 function resujKviz(p, g, vpr, h) {
-  const stranska = `<h3>Vprašanja</h3><ul class="qnav">${vpr.map((q, i) =>
-    `<li><span class="dot" id="dot${i}"></span><a href="#q${i}" data-skoci="${i}">Vprašanje ${i + 1}</a></li>`).join('')}</ul>`;
-  okvirPredmeta(p, 'domov', glavaKviza(g) + `<form id="kviz" novalidate>${htmlVprasanj(vpr)}
+  okvirKviza(p, g, `<div class="progress" aria-live="polite"><span id="k-st">0 / ${vpr.length}</span><span class="bar"><i id="k-bar"></i></span><span aria-hidden="true">🎯</span></div>
+    <form id="kviz" novalidate>${htmlVprasanj(vpr)}
     <div class="quiz-foot"><span class="saved" id="k-shranjeno"></span><span class="msg" id="k-msg"></span>
-      <button class="btn btn-primary btn-big" type="submit" id="k-oddaj">Oddaj kviz</button></div></form>`, stranska, g.ime);
+      <button class="btn btn-go btn-big" type="submit" id="k-oddaj">Oddaj kviz 🚀</button></div></form>`);
   const f = document.getElementById('kviz');
+  const premaknjeno = {};
 
   const zberi = () => vpr.map((q, i) => {
     if (q.t === 'izbira') { const x = f.querySelector(`input[name=q${i}]:checked`); return x ? x.value : null; }
@@ -792,16 +892,17 @@ function resujKviz(p, g, vpr, h) {
     if (q.t === 'povezi') { const o = {}; f.querySelectorAll(`select[data-q="${i}"]`).forEach(s => { if (s.value) o[q.l[+s.dataset.l]] = s.value; }); return o; }
     if (q.t === 'vrstni') return [...f.querySelector(`ol[data-q="${i}"]`).children].map(li => li.dataset.v);
   });
-  const odgovorjeno = (q, a) => q.t === 'vec' ? a.length > 0 : q.t === 'povezi' ? Object.keys(a).length === q.l.length
-    : q.t === 'vrstni' ? !!premaknjeno[vpr.indexOf(q)] : a != null;
-  const premaknjeno = {};
+  const odgovorjeno = (q, a, i) => q.t === 'vec' ? a.length > 0 : q.t === 'povezi' ? Object.keys(a).length === q.l.length
+    : q.t === 'vrstni' ? !!premaknjeno[i] : a != null;
 
   function osvezi(shraniOsnutek) {
     const a = zberi();
-    vpr.forEach((q, i) => document.getElementById('dot' + i).classList.toggle('on', odgovorjeno(q, a[i])));
+    const n = vpr.filter((q, i) => odgovorjeno(q, a[i], i)).length;
+    document.getElementById('k-st').textContent = `${n} / ${vpr.length}`;
+    document.getElementById('k-bar').style.width = (n / vpr.length * 100) + '%';
     if (shraniOsnutek) {
       shrani(osnutekKljuc(g.id), JSON.stringify({ a, premaknjeno }));
-      document.getElementById('k-shranjeno').textContent = 'Odgovori so shranjeni na tej napravi.';
+      document.getElementById('k-shranjeno').textContent = '💾 Odgovori so shranjeni na tej napravi.';
     }
   }
 
@@ -830,24 +931,22 @@ function resujKviz(p, g, vpr, h) {
   f.addEventListener('change', () => osvezi(true));
   f.addEventListener('click', e => {
     const b = e.target.closest('[data-gor],[data-dol]');
-    if (b) {
-      const li = b.closest('li'), ol = li.parentElement;
-      if (b.hasAttribute('data-gor') && li.previousElementSibling) ol.insertBefore(li, li.previousElementSibling);
-      if (b.hasAttribute('data-dol') && li.nextElementSibling) ol.insertBefore(li.nextElementSibling, li);
-      premaknjeno[+ol.dataset.q] = true;
-      posodobiPuscice(ol);
-      (b.disabled ? li.querySelector('button:not(:disabled)') : b)?.focus();
-      osvezi(true);
-    }
+    if (!b) return;
+    const li = b.closest('li'), ol = li.parentElement;
+    if (b.hasAttribute('data-gor') && li.previousElementSibling) ol.insertBefore(li, li.previousElementSibling);
+    if (b.hasAttribute('data-dol') && li.nextElementSibling) ol.insertBefore(li.nextElementSibling, li);
+    premaknjeno[+ol.dataset.q] = true;
+    li.classList.add('moved');
+    setTimeout(() => li.classList.remove('moved'), 400);
+    posodobiPuscice(ol);
+    (b.disabled ? li.querySelector('button:not(:disabled)') : b)?.focus();
+    osvezi(true);
   });
-  document.querySelectorAll('[data-skoci]').forEach(a => a.addEventListener('click', e => {
-    e.preventDefault(); document.getElementById('q' + a.dataset.skoci).scrollIntoView({ behavior: 'smooth', block: 'start' });
-  }));
 
   f.addEventListener('submit', async e => {
     e.preventDefault();
     const a = zberi();
-    const manjka = vpr.filter((q, i) => q.t !== 'vrstni' && !odgovorjeno(q, a[i])).length;
+    const manjka = vpr.filter((q, i) => q.t !== 'vrstni' && !odgovorjeno(q, a[i], i)).length;
     const vprasaj = manjka
       ? `Na ${manjka} ${manjka === 1 ? 'vprašanje' : manjka === 2 ? 'vprašanji' : manjka < 5 ? 'vprašanja' : 'vprašanj'} nisi odgovoril/-a. Vseeno oddam?`
       : 'Oddam kviz? Potem odgovorov ne moreš več spreminjati.';
@@ -856,7 +955,7 @@ function resujKviz(p, g, vpr, h) {
     btn.disabled = true; btn.textContent = 'Oddajam …'; msg.textContent = '';
     const r = await rpc('sola_kviz_oddaj', { p_student: ucenec.id, p_kviz: g.id, p_odgovori: a });
     if (!Array.isArray(r) || !r.length) {
-      btn.disabled = false; btn.textContent = 'Oddaj kviz';
+      btn.disabled = false; btn.textContent = 'Oddaj kviz 🚀';
       msg.textContent = r === NEDOSEGLJIVO ? 'Strežnik ni dosegljiv. Odgovori so shranjeni — poskusi znova.' : 'Oddaja ni uspela. Povej učitelju.';
       return;
     }
@@ -868,44 +967,44 @@ function resujKviz(p, g, vpr, h) {
   });
 }
 
-async function rezultatiKviza(p, g, glava, h) {
-  okvirPredmeta(p, 'domov', glava + '<p class="note">Nalagam rezultate …</p>', null, g.ime);
+async function rezultatiKviza(p, g, h) {
+  okvirKviza(p, g, '<p class="note">Nalagam rezultate …</p>');
   const [rez, kv] = await Promise.all([
     rpc('sola_kviz_rezultati', { p_teacher_id: ucitelj.id, p_kviz: g.id }),
     rpc('sola_kviz', { p_id: g.id }),
   ]);
   if (!enakaStran(h)) return;
   if (!Array.isArray(rez)) {
-    okvirPredmeta(p, 'domov', glava + `<div class="empty">${rez === NEDOSEGLJIVO ? 'Strežnik ni dosegljiv.' : 'Rezultatov ni mogoče naložiti.'}</div>`, null, g.ime);
+    okvirKviza(p, g, `<div class="empty"><img src="brihta.png" alt=""><strong>Ups!</strong>${rez === NEDOSEGLJIVO ? 'Strežnik ni dosegljiv.' : 'Rezultatov ni mogoče naložiti.'}</div>`);
     return;
   }
   const vpr = Array.isArray(kv) && kv.length ? kv[0].vprasanja : [];
   const n = rez.length;
   const povp = n ? Math.round(rez.reduce((s, r) => s + (r.vseh ? r.tocke / r.vseh : 0), 0) / n * 100) : 0;
   const poVpr = vpr.map((_, i) => n ? Math.round(rez.filter(r => r.pravilni && r.pravilni[i] === true).length / n * 100) : 0);
-  const celice = r => (r.pravilni || []).map((ok, i) => `<span class="c ${ok ? 'y' : 'n'}" title="Vprašanje ${i + 1}: ${ok ? 'pravilno' : 'napačno'}"></span>`).join('');
-  const vsebina = glava + `<div class="stats">
-      <div><strong>${n}</strong><span>${n === 1 ? 'oddaja' : n === 2 ? 'oddaji' : n < 5 ? 'oddaje' : 'oddaj'}</span></div>
-      <div><strong>${n ? povp + ' %' : '–'}</strong><span>povprečje</span></div>
-      ${vpr.length ? `<div><strong>${vpr.length}</strong><span>vprašanj</span></div>` : ''}
+  const celice = r => (r.pravilni || []).map((ok, i) => `<span class="cell ${ok ? 'y' : 'n'}" title="Vprašanje ${i + 1}: ${ok ? 'pravilno' : 'napačno'}"></span>`).join('');
+  const vsebina = `<div class="stats">
+      <div class="stat"><strong>${n}</strong><span>${n === 1 ? 'oddaja' : n === 2 ? 'oddaji' : n < 5 ? 'oddaje' : 'oddaj'}</span></div>
+      <div class="stat"><strong>${n ? povp + ' %' : '–'}</strong><span>povprečje</span></div>
+      ${vpr.length ? `<div class="stat"><strong>${vpr.length}</strong><span>vprašanj</span></div>` : ''}
     </div>
-    ${n ? `<table class="ftable rtable"><thead><tr><th>Učenec</th><th class="hide-m">Razred</th><th>Točke</th><th class="hide-m">Po vprašanjih</th><th class="hide-m">Oddano</th><th></th></tr></thead><tbody>
-      ${rez.map(r => `<tr><td>${esc(r.emoji || '🦉')} ${esc(r.ime)}<br><small class="m">${esc(r.username)}</small></td>
-        <td class="m hide-m">${esc(r.razred || '–')}</td><td><strong>${r.tocke}</strong> / ${r.vseh}</td>
+    ${n ? `<table class="ftable"><thead><tr><th>Učenec</th><th class="hide-m">Razred</th><th>Točke</th><th class="hide-m">Po vprašanjih</th><th class="hide-m">Oddano</th><th></th></tr></thead><tbody>
+      ${rez.map(r => `<tr><td><b>${esc(r.emoji || '🦉')} ${esc(r.ime)}</b><br><small class="m">${esc(r.username)}</small></td>
+        <td class="m hide-m">${esc(r.razred || '–')}</td><td><b>${r.tocke}</b> / ${r.vseh}</td>
         <td class="cells hide-m">${celice(r)}</td><td class="m hide-m">${casOddaje(r.oddano)}</td>
         <td><button class="btn" type="button" data-ponastavi="${esc(r.student_id)}" data-ime="${esc(r.ime)}" title="Izbriše oddajo, da lahko učenec kviz reši znova">Ponastavi</button></td></tr>`).join('')}
-      </tbody></table>` : '<div class="empty">Kviza še ni oddal nihče.</div>'}
-    <div style="margin:18px 0 30px"><button class="btn" type="button" id="r-osvezi">Osveži</button></div>
-    ${vpr.length ? `<h2 style="font-size:1.25rem;margin-bottom:12px">Predogled vprašanj</h2>${htmlVprasanj(vpr, true)}` : ''}`;
-  const stranska = `<h3>Učiteljski pogled</h3><p class="note" style="margin-top:0">Učenci tukaj vidijo kviz za reševanje. Po oddaji vidijo samo svoje točke.</p>
-    ${vpr.length ? `<h3>Uspešnost po vprašanjih</h3><ul>${poVpr.map((x, i) => `<li><span style="flex:1">Vprašanje ${i + 1}</span><strong>${n ? x + ' %' : '–'}</strong></li>`).join('')}</ul>` : ''}`;
-  okvirPredmeta(p, 'domov', vsebina, stranska, g.ime);
-  document.getElementById('r-osvezi').addEventListener('click', () => rezultatiKviza(p, g, glava, h));
+      </tbody></table>` : '<div class="empty"><img src="brihta.png" alt=""><strong>Še nobene oddaje</strong>Ko učenci oddajo kviz, se pokažejo tukaj.</div>'}
+    <div style="margin:18px 0 30px"><button class="btn" type="button" id="r-osvezi">↻ Osveži</button></div>
+    ${vpr.length ? `<div class="sec-h"><h2>Predogled vprašanj</h2></div>${htmlVprasanj(vpr, true)}` : ''}`;
+  const stranska = `<div class="box"><h3>👨‍🏫 Učiteljski pogled</h3><p class="note" style="margin:0">Učenci tukaj rešujejo kviz. Po oddaji vidijo samo svoje točke.</p></div>
+    ${vpr.length ? `<div class="box"><h3>Uspešnost po vprašanjih</h3><ul class="bars">${poVpr.map((x, i) => `<li><span>Vprašanje ${i + 1}</span><span class="b"><i style="width:${n ? x : 0}%"></i></span><b>${n ? x + '%' : '–'}</b></li>`).join('')}</ul></div>` : ''}`;
+  okvirKviza(p, g, vsebina, stranska);
+  document.getElementById('r-osvezi').addEventListener('click', () => rezultatiKviza(p, g, h));
   $main.querySelectorAll('[data-ponastavi]').forEach(b => b.addEventListener('click', async () => {
     if (!confirm(`Izbrišem oddajo učenca ${b.dataset.ime}? Kviz bo lahko rešil znova.`)) return;
     b.disabled = true;
     await rpc('sola_kviz_ponastavi', { p_teacher_id: ucitelj.id, p_kviz: g.id, p_student: b.dataset.ponastavi });
-    rezultatiKviza(p, g, glava, h);
+    rezultatiKviza(p, g, h);
   }));
 }
 
@@ -913,10 +1012,10 @@ async function rezultatiKviza(p, g, glava, h) {
 function izbiraZivali() {
   const el = document.createElement('div');
   let zap = [];
-  el.innerHTML = `<div class="animals-slots"></div><div class="animals">${ZIVALI.map((z, i) => `<button type="button" data-z="${i}" aria-label="${z}">${z}</button>`).join('')}</div>
+  el.innerHTML = `<div class="slots"></div><div class="animals">${ZIVALI.map((z, i) => `<button type="button" data-z="${i}" aria-label="${z}">${z}</button>`).join('')}</div>
     <div class="animals-row"><span class="kaj"></span><button type="button" class="linkbtn" data-pocisti>⌫ Počisti</button></div>`;
   const izris = () => {
-    el.querySelector('.animals-slots').innerHTML = [0, 1, 2, 3].map(i => `<span class="${zap[i] != null ? 'full' : ''}">${zap[i] != null ? ZIVALI[zap[i]] : ''}</span>`).join('');
+    el.querySelector('.slots').innerHTML = [0, 1, 2, 3].map(i => `<span class="${zap[i] != null ? 'full' : ''}">${zap[i] != null ? ZIVALI[zap[i]] : ''}</span>`).join('');
     el.querySelector('.kaj').textContent = zap.length < 4 ? `Izberi še ${4 - zap.length}` : '✓ Geslo izbrano';
   };
   el.addEventListener('click', e => {
@@ -944,26 +1043,26 @@ async function poPrijavi() {
 function izrisiRacun(pogled) {
   const $t = document.getElementById('acct-title'), $b = document.getElementById('acct-body');
   if (ucitelj || ucenec) {
-    $t.textContent = 'Račun';
+    $t.textContent = 'Moj račun';
     const oddanih = Object.keys(MOJE).length;
-    $b.innerHTML = `<div class="acct-who"><span class="big">${ucitelj ? '👨‍🏫' : esc(ucenec.emoji || '🦉')}</span>
+    $b.innerHTML = `<div class="who"><span class="big">${ucitelj ? '👨‍🏫' : esc(ucenec.emoji || '🦉')}</span>
         <div><strong>${esc(ucitelj ? ucitelj.username : (ucenec.display_name || ucenec.username))}</strong>
         <small>${ucitelj ? 'Učitelj' : 'Uporabniško ime: ' + esc(ucenec.username)}</small></div></div>
-      ${ucenec ? `<p class="note">Oddanih kvizov: ${oddanih}</p>` : '<p class="note">Odpri kviz in videl boš rezultate učencev.</p>'}
+      ${ucenec ? `<p class="note">Rešenih kvizov: <b>${oddanih}</b></p>` : '<p class="note">Odpri kviz in videl boš rezultate učencev.</p>'}
       <button class="btn btn-block" type="button" id="a-odjava">Odjava</button>
-      <p class="note">Isti račun velja tudi za Brihta-MAT.</p>`;
+      <p class="note" style="text-align:center">Isti račun velja tudi za Brihta-MAT.</p>`;
     document.getElementById('a-odjava').addEventListener('click', () => { ucenec = null; ucitelj = null; MOJE = {}; poPrijavi(); });
     return;
   }
   if (pogled === 'nov') {
     $t.textContent = 'Nov račun';
-    $b.innerHTML = `<div class="help">⚠️ Nov račun ustvari <strong>samo, če ga še nimaš</strong> (tudi pri Brihta-MAT).
+    $b.innerHTML = `<div class="help">⚠️ Nov račun ustvari <b>samo, če ga še nimaš</b> (tudi pri Brihta-MAT).
         Če si geslo pozabil/-a, ti ga učitelj ponastavi.</div>
       <div class="field"><label for="n-ime">Tvoje ime</label><input id="n-ime" maxlength="20" autocomplete="off" placeholder="npr. Nina"></div>
       <div class="field"><label for="n-st">Tvoja najljubša številka</label><input id="n-st" inputmode="numeric" maxlength="3" autocomplete="off" placeholder="npr. 7"></div>
       <div class="field"><label>Izberi svoj emoji</label><div class="emojis">${EMOJIJI.map((x, i) => `<button type="button" data-e="${x}" class="${i ? '' : 'on'}">${x}</button>`).join('')}</div></div>
       <div class="field"><label>Geslo — izberi 4 živali in si zapomni vrstni red</label><div id="n-zivali"></div></div>
-      <button class="btn btn-primary btn-block" type="button" id="n-ok">Ustvari račun</button>
+      <button class="btn btn-go btn-block" type="button" id="n-ok">Ustvari račun</button>
       <div class="msg" id="n-msg"></div>
       <button class="linkbtn" type="button" data-pogled="prijava">← Že imam račun</button>`;
     const z = izbiraZivali(); document.getElementById('n-zivali').appendChild(z.el);
@@ -988,9 +1087,10 @@ function izrisiRacun(pogled) {
       }
       ucenec = { id: r[0].id, username: r[0].username, emoji: r[0].emoji, display_name: r[0].display_name };
       ucitelj = null; shraniRacun(); posodobiNav();
-      $b.innerHTML = `<p>Račun je ustvarjen. Tvoje uporabniško ime je</p><div class="reg-user">${esc(ucenec.username)}</div>
+      $t.textContent = 'Račun je ustvarjen 🎉';
+      $b.innerHTML = `<p>Tvoje uporabniško ime je</p><div class="reg-user">${esc(ucenec.username)}</div>
         <div class="help">📌 Dobro si ga zapomni (in svoje 4 živali) — rabil/-a ga boš za prijavo.</div>
-        <button class="btn btn-primary btn-block" type="button" id="n-naprej">Naprej</button>`;
+        <button class="btn btn-go btn-block" type="button" id="n-naprej">Naprej</button>`;
       document.getElementById('n-naprej').addEventListener('click', poPrijavi);
     });
   } else if (pogled === 'ucitelj') {
@@ -998,7 +1098,7 @@ function izrisiRacun(pogled) {
     $b.innerHTML = `<form id="u-form">
       <div class="field"><label for="u-mail">E-naslov</label><input id="u-mail" type="email" autocomplete="username" autocapitalize="none"></div>
       <div class="field"><label for="u-pass">Geslo</label><input id="u-pass" type="password" autocomplete="current-password"></div>
-      <button class="btn btn-primary btn-block" type="submit" id="u-ok">Prijava</button>
+      <button class="btn btn-go btn-block" type="submit" id="u-ok">Prijava</button>
       <div class="msg" id="u-msg"></div></form>
       <p class="note">Isti račun kot v Brihta-MAT. Novega učiteljskega računa ustvariš tam.</p>
       <button class="linkbtn" type="button" data-pogled="prijava">← Prijava za učence</button>`;
@@ -1020,12 +1120,12 @@ function izrisiRacun(pogled) {
     });
   } else {
     $t.textContent = 'Prijava';
-    $b.innerHTML = `<p class="note" style="margin-top:0">Prijavi se z računom, ki ga imaš pri <strong>Brihta-MAT</strong>.</p>
+    $b.innerHTML = `<p class="note" style="margin-top:0">Prijavi se z računom, ki ga imaš pri <b>Brihta-MAT</b>.</p>
       <div class="field"><label for="p-ime">Uporabniško ime</label><input id="p-ime" autocomplete="off" autocapitalize="none" spellcheck="false" placeholder="npr. nina7"></div>
       <div class="field"><label>Geslo — poklikaj svoje 4 živali</label><div id="p-zivali"></div></div>
-      <button class="btn btn-primary btn-block" type="button" id="p-ok">Prijava</button>
+      <button class="btn btn-go btn-block" type="button" id="p-ok">Prijava</button>
       <div class="msg" id="p-msg"></div><div id="p-pomoc"></div>
-      <button class="linkbtn" type="button" data-pogled="nov">Še nimam računa — ustvari novega</button>
+      <button class="linkbtn" type="button" data-pogled="nov">✨ Še nimam računa — ustvari novega</button>
       <button class="linkbtn" type="button" data-pogled="ucitelj">👨‍🏫 Prijava za učitelje</button>`;
     const z = izbiraZivali(); document.getElementById('p-zivali').appendChild(z.el);
     document.getElementById('p-ok').addEventListener('click', async () => {
@@ -1039,7 +1139,7 @@ function izrisiRacun(pogled) {
       if (r === NEDOSEGLJIVO) return void (msg.textContent = 'Strežnik ni dosegljiv. Preveri povezavo.');
       if (!Array.isArray(r) || !r.length) {
         msg.textContent = 'Napačno uporabniško ime ali geslo.';
-        document.getElementById('p-pomoc').innerHTML = '<div class="help">🙋 Si pozabil/-a geslo ali uporabniško ime? <strong>Povej učitelju</strong> — ponastavi ti ga. Ne delaj novega računa.</div>';
+        document.getElementById('p-pomoc').innerHTML = '<div class="help">🙋 Si pozabil/-a geslo ali uporabniško ime? <b>Povej učitelju</b> — ponastavi ti ga. Ne delaj novega računa.</div>';
         return;
       }
       ucenec = { id: r[0].id, username: r[0].username, emoji: r[0].emoji, display_name: r[0].display_name };
@@ -1051,12 +1151,12 @@ function izrisiRacun(pogled) {
   const prvi = $b.querySelector('input'); if (prvi) setTimeout(() => prvi.focus(), 230);
 }
 
-/* ─── Predal s predmeti ─── */
+/* ─── Okna: predmeti, račun ─── */
 function napolniPredal() {
   document.getElementById('tray-list').innerHTML = PREDMETI.map(p => p.otroci
-    ? `<li><a href="#/${p.id}">${p.emoji} ${esc(p.ime)}<span class="term">${p.otroci.length} skupine</span></a></li>` +
-      p.otroci.map(o => `<li class="sub"><a href="#/p/${o.id}">${esc(o.ime)}</a></li>`).join('')
-    : `<li><a href="#/p/${p.id}">${p.emoji} ${esc(p.ime)}<span class="term">${esc(p.koda)}</span></a></li>`).join('');
+    ? `<li><a href="#/${p.id}" style="${barve(p)}"><span class="ic">${p.emoji}</span><span>${esc(p.ime)}<small>${p.otroci.length} razredi</small></span></a></li>` +
+      p.otroci.map(o => `<li class="sub"><a href="#/p/${o.id}" style="${barve(o)}"><span class="ic">${o.emoji}</span><span>${o.emoji} ${esc(o.kratko)}</span></a></li>`).join('')
+    : `<li><a href="#/p/${p.id}" style="${barve(p)}"><span class="ic">${p.emoji}</span><span>${esc(p.ime)}<small>${esc(p.koda)}</small></span></a></li>`).join('');
 }
 const PREDALI = {
   predmeti: [document.getElementById('tray'), document.getElementById('nav-courses')],
@@ -1074,7 +1174,6 @@ function odpriPredal(ime) {
   if (ime === 'racun') izrisiRacun();
 }
 for (const [k, [, gumb]] of Object.entries(PREDALI)) gumb.addEventListener('click', () => odpriPredal(odprtPredal === k ? null : k));
-document.getElementById('tray-close').addEventListener('click', () => odpriPredal(null));
 document.querySelectorAll('[data-zapri]').forEach(b => b.addEventListener('click', () => odpriPredal(null)));
 document.getElementById('tray-back').addEventListener('click', () => odpriPredal(null));
 document.getElementById('tray-list').addEventListener('click', e => { if (e.target.closest('a')) odpriPredal(null); });
