@@ -38,23 +38,47 @@
   ],
   "racunalnistvo-6-9": [
    {
-    "ime": "Razgradnja in vzorci delovni list",
-    "vrsta": "word",
+    "ime": "Razgradnja in vzorci",
+    "vrsta": "ura",
     "datum": "2026-10-16T08:00:00+02:00",
-    "pot": "gradiva/racunalnistvo-6-9/2026-10-16 Razgradnja_in_vzorci_delovni_list.docx",
-    "velikost": 10336
-   },
-   {
-    "ime": "Razgradnja in vzorci zapis",
-    "vrsta": "word",
-    "datum": "2026-10-16T08:00:00+02:00",
-    "pot": "gradiva/racunalnistvo-6-9/2026-10-16 Razgradnja_in_vzorci_zapis.docx",
-    "velikost": 9865
+    "pot": "gradiva/racunalnistvo-6-9/2026-10-16 Razgradnja in vzorci",
+    "koraki": [
+     {
+      "ime": "Navodila",
+      "vrsta": "besedilo",
+      "pot": "gradiva/racunalnistvo-6-9/2026-10-16 Razgradnja in vzorci/1 Navodila.md",
+      "velikost": 651,
+      "besedilo": "## 🎯 Cilj ure\n\nVelik problem znam **razdeliti na manjše dele** in v ukazih **najti vzorec**, ki ga zapišem krajše z zanko.\n\n## ✅ Uspešen sem, če …\n\n- problem razdelim na vsaj 4 manjše dele,\n- v zaporedju najdem pravilo in ga zapišem,\n- ponavljajoče se ukaze zapišem z zanko »ponovi«.\n\n## 🗺️ Kaj bomo delali\n\n1. **Zapis:** preberi ga in ga prepiši v zvezek.\n2. **Razlaga:** poglej razlago, ki jo bo učitelj pokazal na tabli.\n3. **Delovni list:** reši ga sam ali v paru. ★ rešijo vsi, ★★ in ★★★ so za tiste, ki želijo več.\n4. **Kviz:** reši ga sam. Imaš en poskus.\n\nNa koncu se odjavi in pospravi svoje mesto.\n"
+     },
+     {
+      "ime": "Zapis",
+      "vrsta": "word",
+      "pot": "gradiva/racunalnistvo-6-9/2026-10-16 Razgradnja in vzorci/2 Zapis.docx",
+      "velikost": 9865
+     },
+     {
+      "ime": "Razlaga",
+      "vrsta": "pdf",
+      "pot": "gradiva/racunalnistvo-6-9/2026-10-16 Razgradnja in vzorci/3 Razlaga.pdf",
+      "velikost": 480395
+     },
+     {
+      "ime": "Delovni list",
+      "vrsta": "word",
+      "pot": "gradiva/racunalnistvo-6-9/2026-10-16 Razgradnja in vzorci/4 Delovni list.docx",
+      "velikost": 10336
+     },
+     {
+      "ime": "Kviz",
+      "vrsta": "kviz",
+      "kviz": "razgradnja-in-vzorci"
+     }
+    ]
    }
   ],
   "rokodelnica": [],
   "slovenscina-3": [],
   "svetovni-popotniki": []
  },
- "posodobljeno": "2026-10-15T19:48:34+02:00"
+ "posodobljeno": "2026-10-15T21:23:12+02:00"
 }

@@ -9,6 +9,10 @@ datoteke, za še neshranjene datoteke pa čas spremembe.
 Posebni primeri:
   *.url / *.link  vsebina je spletni naslov -> gradivo je povezava
   mapa/index.html cela mapa je eno HTML gradivo (z vsemi slikami ipd.)
+  mapa brez index.html je UČNA URA: vsaka datoteka v njej je en korak,
+                  po vrsti imen (»1 Navodila.md«, »2 Zapis.docx« …; številka se
+                  ne pokaže). *.md se prikaže kar na strani, *.kviz vsebuje
+                  naslov ali id kviza, ki je korak ure.
   .ime, _ime      skrito (ni objavljeno)
 """
 import datetime as dt
@@ -35,6 +39,7 @@ VRSTE = {
     "url": "povezava", "link": "povezava",
 }
 DATUM_V_IMENU = re.compile(r"^(\d{4}-\d{2}-\d{2})[ _-]*")
+STEVILKA_KORAKA = re.compile(r"^\d+[ ._-]+")
 
 
 def git_datum(pot):
@@ -73,12 +78,46 @@ def lepo_ime(osnova):
     return ime or osnova
 
 
+def korak(pot, rel, vnos):
+    osnova, konc = os.path.splitext(vnos)
+    konc = konc.lower().lstrip(".")
+    ime = STEVILKA_KORAKA.sub("", osnova).replace("_", " ").strip() or osnova
+    if konc == "kviz":
+        with open(pot, encoding="utf-8", errors="replace") as f:
+            ref = f.read().strip()
+        return {"ime": ime, "vrsta": "kviz", "kviz": ref} if ref else None
+    vrsta = VRSTE.get(konc, "datoteka")
+    if vrsta == "povezava":
+        url = preberi_url(pot)
+        return {"ime": ime, "vrsta": vrsta, "url": url} if url else None
+    z = {"ime": ime, "vrsta": vrsta, "pot": rel, "velikost": os.path.getsize(pot)}
+    if konc == "md":
+        with open(pot, encoding="utf-8", errors="replace") as f:
+            z["besedilo"] = f.read()
+    return z
+
+
+def ura(predmet, vnos, pot, rel):
+    koraki = []
+    for d in sorted(os.listdir(pot), key=lambda x: (int(m.group(0)) if (m := re.match(r"\d+", x)) else 999, x.lower())):
+        if d.startswith((".", "_")) or not os.path.isfile(os.path.join(pot, d)):
+            continue
+        k = korak(os.path.join(pot, d), f"{rel}/{d}", d)
+        if k:
+            koraki.append(k)
+    if not koraki:
+        return None
+    m = DATUM_V_IMENU.match(vnos)
+    datum = m.group(1) + "T08:00:00+02:00" if m else (datum_mape(rel) or mtime(pot))
+    return {"ime": lepo_ime(vnos), "vrsta": "ura", "datum": datum, "pot": rel, "koraki": koraki}
+
+
 def gradivo(predmet, vnos):
     pot = os.path.join(GRADIVA, predmet, vnos)
     rel = f"gradiva/{predmet}/{vnos}"
     if os.path.isdir(pot):
         if not os.path.isfile(os.path.join(pot, "index.html")):
-            return None
+            return ura(predmet, vnos, pot, rel)
         osnova, vrsta, velikost = vnos, "html", None
         rel_odpri = rel + "/index.html"
         datum = datum_mape(rel)

@@ -28,6 +28,25 @@ Vsak predmet ima svojo mapo v `gradiva/`:
 
 **Na računalniku:** kopiraj datoteko v mapo predmeta, nato commit in push.
 
+### Učna ura (priporočeno)
+
+Za vsako uro naredi **mapo** z datumom in naslovom ure, v njej pa datoteke s
+številko koraka na začetku. Učenci gredo skozi uro korak za korakom (gumb
+»Naprej«), opravljeni koraki dobijo kljukico.
+
+```
+gradiva/racunalnistvo-6-9/2026-10-16 Razgradnja in vzorci/
+  1 Navodila.md      cilj ure in kaj bomo delali (prikaže se kar na strani)
+  2 Zapis.docx       zapis, ki ga preberejo in prepišejo
+  3 Razlaga.pdf      učiteljeva razlaga (PDF ali slika)
+  4 Delovni list.docx
+  5 Kviz.kviz        v datoteki je samo naslov ali id kviza
+```
+
+Številka določa vrstni red in se ne pokaže. Kviz iz koraka se ne pokaže še
+posebej na seznamu gradiv. `1 Navodila.md` je Markdown (`## naslov`, `- točka`,
+`1. korak`, `**krepko**`).
+
 ### Pravila
 
 - **Ime datoteke je naslov**, ki ga vidijo učenci. Podčrtaji postanejo

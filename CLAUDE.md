@@ -79,10 +79,17 @@ pojem B = razlaga B
 
 ## Gradiva za uro
 
-Datoteko (PDF, Word, PowerPoint, slika, HTML …) kopiraj v
-`gradiva/<predmet>/`, po želji z datumom na začetku imena
-(`2026-10-20 Delovni list.docx`), nato commit in push na `main`. GitHub Action
-posodobi `gradiva.json`; gradivo je na strani v 1–2 minutah. Ime datoteke je
-naslov, ki ga vidijo učenci (podčrtaji postanejo presledki).
+Vsaka ura je MAPA `gradiva/<predmet>/<YYYY-MM-DD> <Naslov ure>/` s koraki, ki
+jih učenci prehodijo po vrsti:
+
+- `1 Navodila.md`: cilj ure (## 🎯 Cilj ure), kriteriji uspešnosti, kaj bomo delali (oštevilčeno);
+- `2 Zapis.docx`: zapis za zvezek;
+- `3 Razlaga.pdf`: razlaga učitelja (PDF prosojnic 1280×720, npr. iz HTML s headless Chrome `--print-to-pdf`);
+- `4 Delovni list.docx` (če je);
+- `5 Kviz.kviz`: ena vrstica, slug ali naslov kviza (slug = ime datoteke kviza, npr. `razgradnja-in-vzorci`).
+
+Številka določa vrstni red in se ne pokaže. Nato commit in push na `main`;
+GitHub Action posodobi `gradiva.json` (v 1–2 minutah). Posamezne datoteke
+neposredno v mapi predmeta še delujejo, a uro vedno objavi kot mapo.
 
 Več v README.md.

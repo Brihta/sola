@@ -259,7 +259,41 @@
     .open-card .tile { margin: 0 auto 12px; }
     .open-card h2 { margin-bottom: 4px; }
     .open-card p { color: var(--muted); word-break: break-all; font-weight: 600; }
-    .seq { display: flex; justify-content: space-between; gap: 12px; margin-top: 18px; }
+    .seq { display: flex; justify-content: space-between; gap: 12px; margin-top: 18px; flex-wrap: wrap; }
+
+    /* ─── Učna ura ─── */
+    .vhead h1 .sub { display: block; font-size: .9rem; font-weight: 700; color: var(--muted); letter-spacing: 0; margin-top: 2px; }
+    .steps { list-style: none; margin: 0 0 22px; padding: 0; display: flex; gap: 8px; counter-reset: s; }
+    .step { flex: 1; min-width: 0; position: relative; }
+    .step a { display: flex; align-items: center; gap: 10px; padding: 10px 12px; border-radius: var(--r-md); background: var(--surface); border: 2px solid var(--line); text-decoration: none; color: var(--ink); font-weight: 800; transition: transform .15s, border-color .15s; height: 100%; }
+    .step a:hover { transform: translateY(-2px); border-color: color-mix(in srgb, var(--c1) 45%, white); }
+    .step .n { width: 30px; height: 30px; flex-shrink: 0; border-radius: 50%; display: flex; align-items: center; justify-content: center; background: var(--line); font-weight: 900; font-size: .95rem; }
+    .step .t { overflow: hidden; text-overflow: ellipsis; white-space: nowrap; font-size: .95rem; }
+    .step.done .n { background: #22c55e; color: #fff; font-size: 0; }
+    .step.done .n::after { content: '✓'; font-size: .95rem; }
+    .step.now a { border-color: var(--c1); background: color-mix(in srgb, var(--c1) 9%, white); }
+    .step.now .n { background: linear-gradient(135deg, var(--c1), var(--c2)); color: #fff; }
+    .steps.mini { flex-basis: 100%; margin: 4px 0 0; }
+    .steps.mini .step a { padding: 7px 10px; }
+    .steps.mini .n { width: 26px; height: 26px; font-size: .85rem; }
+    .step-h { margin-bottom: 12px; }
+    .step-h h2 { font-size: 1.5rem; flex: 1; min-width: 160px; }
+    .badge { background: color-mix(in srgb, var(--c1) 14%, white); color: color-mix(in srgb, var(--c1) 70%, black); font-weight: 800; font-size: .8rem; text-transform: uppercase; letter-spacing: .05em; padding: 5px 12px; border-radius: 999px; }
+    .md { background: var(--surface); border-radius: var(--r-xl); padding: 26px 32px; box-shadow: var(--shadow-up); font-size: 1.12rem; }
+    .md h2, .md h3, .md h4 { font-size: 1.35rem; margin: 22px 0 8px; }
+    .md > :first-child { margin-top: 0; }
+    .md p { margin: 0 0 10px; }
+    .md ul, .md ol { margin: 0 0 10px; padding-left: 26px; }
+    .md li { margin: 4px 0; }
+    .md li::marker { color: var(--c1); font-weight: 900; }
+    .open-card.wide { max-width: none; background: var(--surface); border-radius: var(--r-xl); box-shadow: var(--shadow-up); padding: 34px 24px; }
+    .open-card.wide p { word-break: normal; }
+    @media (max-width: 640px) {
+      .steps { flex-wrap: wrap; }
+      .step { flex: 1 1 calc(50% - 4px); }
+      .md { padding: 20px 18px; }
+      .seq .btn-big { width: 100%; }
+    }
 
     /* ─── Quiz ─── */
     .progress {
@@ -484,6 +518,7 @@ const barve = p => `--c1:${p.c1};--c2:${p.c2}`;
 
 /* ─── Ikone ─── */
 const IKONE = {
+  ura:        ['#f59e0b', '<path d="M4 5.5h7a2 2 0 0 1 2 2v12a1.5 1.5 0 0 0-1.5-1.5H4z"/><path d="M20 5.5h-5a2 2 0 0 0-2 2v12a1.5 1.5 0 0 1 1.5-1.5H20z"/><path d="M15.5 9.5l1 1 2-2"/>'],
   kviz:       ['#c026d3', '<rect x="4.5" y="3.5" width="15" height="18" rx="2.5"/><path d="M9 2.5h6v2.5H9z"/><path d="M8 11l1.5 1.5L12 10M8 16.5l1.5 1.5L12 15.5M14 11.5h2.5M14 17h2.5"/>'],
   pdf:        ['#e11d48', '<path d="M6 2.5h8l4.5 4.5v14.5h-12.5z"/><path d="M14 2.5V7h4.5"/><text x="12.2" y="17.3" font-size="5.4" font-weight="900" text-anchor="middle" fill="currentColor" stroke="none" font-family="Nunito,Arial">PDF</text>'],
   slika:      ['#16a34a', '<rect x="3" y="4.5" width="18" height="15" rx="2.5"/><circle cx="8.5" cy="9.5" r="1.7"/><path d="M3.5 17.5l5.5-5 4 3.5 3-2.5 4.5 4"/>'],
@@ -497,7 +532,7 @@ const IKONE = {
   besedilo:   ['#64748b', '<path d="M6 2.5h8l4.5 4.5v14.5h-12.5z"/><path d="M14 2.5V7h4.5M9 12h6M9 15h6M9 18h4"/>'],
   datoteka:   ['#64748b', '<path d="M6 2.5h8l4.5 4.5v14.5h-12.5z"/><path d="M14 2.5V7h4.5"/>'],
 };
-const IMENA_VRST = { kviz: 'Kviz', pdf: 'PDF', slika: 'Slika', word: 'Word', powerpoint: 'PowerPoint', excel: 'Excel', html: 'Spletna stran', video: 'Video', zvok: 'Posnetek', povezava: 'Povezava', besedilo: 'Besedilo', datoteka: 'Datoteka' };
+const IMENA_VRST = { ura: 'Učna ura', kviz: 'Kviz', pdf: 'PDF', slika: 'Slika', word: 'Word', powerpoint: 'PowerPoint', excel: 'Excel', html: 'Spletna stran', video: 'Video', zvok: 'Posnetek', povezava: 'Povezava', besedilo: 'Besedilo', datoteka: 'Datoteka' };
 function tile(vrsta, vel = '') {
   const [barva, pot] = IKONE[vrsta] || IKONE.datoteka;
   return `<span class="tile ${vel}" style="--t:${barva}"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" aria-hidden="true">${pot}</svg></span>`;
@@ -579,7 +614,17 @@ async function naloziMoje() {
   const r = await rpc('sola_kviz_moje', { p_student: ucenec.id });
   if (Array.isArray(r)) r.forEach(o => { MOJE[o.kviz_id] = o; });
 }
-const gradivaZa = id => [...(GRADIVA[id] || []), ...KVIZI.filter(k => k.predmet === id)]
+/* Učna ura (mapa v gradiva/<predmet>/) ima korake; korak »kviz« kaže na kviz po id-ju ali naslovu.
+   Kviz, ki je korak ure, se ne pokaže še posebej na seznamu. */
+const ure = id => (GRADIVA[id] || []).filter(g => g.vrsta === 'ura');
+function kvizKoraka(id, ref) {
+  const r = String(ref || '').trim(), s = slugKviza(r);
+  return KVIZI.find(k => k.predmet === id && (k.id === r || k.id === id + '/' + r || slugKviza(k.ime) === s || k.id === id + '/' + s));
+}
+function uraKviza(id, kviz) {
+  return ure(id).find(u => u.koraki.some(k => k.vrsta === 'kviz' && kvizKoraka(id, k.kviz) === kviz));
+}
+const gradivaZa = id => [...(GRADIVA[id] || []), ...KVIZI.filter(k => k.predmet === id && !uraKviza(id, k))]
   .sort((a, b) => new Date(b.datum) - new Date(a.datum));
 const vsaZa = p => p.otroci ? p.otroci.flatMap(o => gradivaZa(o.id)) : gradivaZa(p.id);
 const kljuc = g => g.vrsta === 'kviz' ? 'kviz:' + g.id : (g.pot || g.url);
@@ -691,7 +736,7 @@ function oznaka(g) {
 function vrsticaGradiva(p, g) {
   return `<li class="item"><a href="${hrefGradiva(p, g)}">
     ${tile(g.vrsta, 'sm')}
-    <span class="nm"><b>${esc(g.ime)}</b><small>${IMENA_VRST[g.vrsta] || 'Datoteka'} · ${kdaj(g.datum)}${g.velikost ? ' · ' + velikost(g.velikost) : ''}</small></span>
+    <span class="nm"><b>${esc(g.ime)}</b><small>${IMENA_VRST[g.vrsta] || 'Datoteka'} · ${kdaj(g.datum)}${g.vrsta === 'ura' ? ' · ' + g.koraki.map(k => k.ime).join(' → ') : g.velikost ? ' · ' + velikost(g.velikost) : ''}</small></span>
     ${oznaka(g)}<svg class="arrow" viewBox="0 0 20 20" fill="none" stroke="currentColor" stroke-width="2.4" stroke-linecap="round" stroke-linejoin="round"><path d="M7.5 4.5L13 10l-5.5 5.5"/></svg>
   </a></li>`;
 }
@@ -726,11 +771,15 @@ function stranPredmet(p) {
   } else if (!zadnje) {
     vsebina = `<div class="empty"><img src="brihta.png" alt=""><strong>Tukaj je še prazno</strong>Ko učitelj objavi gradivo, se pokaže tukaj.</div>`;
   } else {
+    const jeUra = zadnje.vrsta === 'ura';
+    const gumb = zadnje.vrsta === 'kviz' ? (MOJE[zadnje.id] ? 'Poglej rezultat' : 'Reši kviz')
+      : jeUra ? (videniKoraki(zadnje).length ? 'Nadaljuj uro' : 'Začni uro') : 'Odpri';
     vsebina = `<section class="today" aria-label="Zadnje gradivo">
-        <span class="label">${jeDanes(zadnje.datum) ? '⭐ Danes na uri' : 'Zadnje objavljeno'}</span>
+        <span class="label">${jeDanes(zadnje.datum) ? '⭐ Danes na uri' : jeUra ? 'Zadnja ura' : 'Zadnje objavljeno'}</span>
         ${tile(zadnje.vrsta)}
         <div class="txt"><h2>${esc(zadnje.ime)}</h2><p>${IMENA_VRST[zadnje.vrsta] || 'Datoteka'} · ${kdaj(zadnje.datum)}</p></div>
-        <a class="btn btn-go btn-big" href="${hrefGradiva(p, zadnje)}">${zadnje.vrsta === 'kviz' ? (MOJE[zadnje.id] ? 'Poglej rezultat' : 'Reši kviz') : 'Odpri'} ${SVG.next}</a>
+        <a class="btn btn-go btn-big" href="${jeUra ? hrefKoraka(p, zadnje, naslednjiKorak(zadnje)) : hrefGradiva(p, zadnje)}">${gumb} ${SVG.next}</a>
+        ${jeUra ? `<ol class="steps mini">${zadnje.koraki.map((k, i) => korakPika(p, zadnje, k, i, -1)).join('')}</ol>` : ''}
       </section>` +
       poTednih(seznam).map(t => `<section class="week${t.odprt ? '' : ' closed'}">
         <button class="week-h" type="button" aria-expanded="${t.odprt}"><h3>${esc(t.ime)}</h3><small class="note" style="margin:0">${esc(t.pod)}</small><span class="count">${t.gradiva.length}</span><span class="chev">${SVG.chev}</span></button>
@@ -753,13 +802,125 @@ function stranDatoteke(p) {
 }
 
 const OFFICE = ['word', 'powerpoint', 'excel'];
-function stranGradivo(p, k) {
-  const seznam = gradivaZa(p.id);
+function stranGradivo(p, k, korak) {
+  const seznam = [...gradivaZa(p.id), ...KVIZI.filter(x => x.predmet === p.id && uraKviza(p.id, x))];
   const i = seznam.findIndex(g => kljuc(g) === k);
   if (i < 0) { location.replace(`#/p/${p.id}`); return; }
   shrani('sola_zadnji', p.id);
   if (seznam[i].vrsta === 'kviz') return stranKviz(p, seznam[i]);
+  if (seznam[i].vrsta === 'ura') return stranUra(p, seznam[i], korak);
   const g = seznam[i], url = naslov(g);
+  const { notri, opomba } = prikaz(g);
+  const starejse = seznam[i + 1], novejse = seznam[i - 1];
+  const vsebina = `<div class="vhead">
+      <a class="btn" href="#/p/${p.id}" aria-label="Nazaj">${SVG.prev}</a>
+      ${tile(g.vrsta, 'sm')}
+      <h1>${esc(g.ime)}</h1>
+      ${gumbiOgleda(g)}
+    </div>
+    <div class="frame" id="frame">${notri}</div>
+    ${opomba ? `<p class="note">${opomba}</p>` : ''}
+    <div class="seq">
+      ${starejse ? `<a class="btn" href="${hrefGradiva(p, starejse)}">${SVG.prev} Prejšnje</a>` : '<span></span>'}
+      ${novejse ? `<a class="btn" href="${hrefGradiva(p, novejse)}">Naslednje ${SVG.next}</a>` : '<span></span>'}
+    </div>`;
+  okvirPredmeta(p, 'gradivo', vsebina, null, g.ime);
+  poveziCelZaslon(url);
+}
+
+function gumbiOgleda(g) {
+  if (g.vrsta === 'kviz' || g.besedilo != null) return '';
+  const url = naslov(g);
+  return `<div class="actions">
+        ${g.vrsta !== 'povezava' ? `<button class="btn" id="v-full" type="button" title="Čez cel zaslon">${SVG.full}<span class="lbl">Cel zaslon</span></button>` : ''}
+        <a class="btn" href="${esc(url)}" target="_blank" rel="noopener" title="Odpri v novem zavihku">${SVG.ext}<span class="lbl">Nov zavihek</span></a>
+        ${g.pot ? `<a class="btn" href="${esc(url)}" download title="Prenesi">${SVG.dl}<span class="lbl">Prenesi</span></a>` : ''}
+      </div>`;
+}
+function poveziCelZaslon(url) {
+  const fb = document.getElementById('v-full');
+  if (fb) fb.addEventListener('click', () => {
+    const f = document.getElementById('frame');
+    if (f.requestFullscreen) f.requestFullscreen().catch(() => window.open(url, '_blank', 'noopener'));
+    else if (f.webkitRequestFullscreen) f.webkitRequestFullscreen();
+    else window.open(url, '_blank', 'noopener');
+  });
+}
+
+/* Zelo preprost Markdown za navodila ure: ## naslovi, seznami, **krepko**, odstavki. */
+function md(besedilo) {
+  const vrstica = t => esc(t).replace(/\*\*(.+?)\*\*/g, '<b>$1</b>').replace(/\*(.+?)\*/g, '<i>$1</i>');
+  let html = '', seznam = null;
+  const zapri = () => { if (seznam) { html += `</${seznam}>`; seznam = null; } };
+  for (const v of String(besedilo).split(/\r?\n/)) {
+    let m;
+    if (!v.trim()) { zapri(); continue; }
+    if ((m = v.match(/^(#{1,3})\s+(.*)/))) { zapri(); const n = Math.min(m[1].length + 1, 4); html += `<h${n}>${vrstica(m[2])}</h${n}>`; }
+    else if ((m = v.match(/^\s*[-*]\s+(.*)/))) { if (seznam !== 'ul') { zapri(); html += '<ul>'; seznam = 'ul'; } html += `<li>${vrstica(m[1])}</li>`; }
+    else if ((m = v.match(/^\s*\d+[.)]\s+(.*)/))) { if (seznam !== 'ol') { zapri(); html += '<ol>'; seznam = 'ol'; } html += `<li>${vrstica(m[1])}</li>`; }
+    else { zapri(); html += `<p>${vrstica(v)}</p>`; }
+  }
+  zapri();
+  return html;
+}
+
+/* ─── Učna ura: koraki eden za drugim ─── */
+const kljucUre = g => 'sola_ura:' + g.pot;
+function videniKoraki(g) { try { return JSON.parse(preberi(kljucUre(g)) || '[]'); } catch (e) { return []; } }
+function naslednjiKorak(g) {
+  const v = videniKoraki(g);
+  const i = g.koraki.findIndex((k, j) => !v.includes(j));
+  return i < 0 ? 0 : i;
+}
+const hrefKoraka = (p, g, i) => `${hrefGradiva(p, g)}/${i + 1}`;
+function korakOpravljen(p, g, k, i) {
+  if (k.vrsta === 'kviz') { const kv = kvizKoraka(p.id, k.kviz); return !!(kv && MOJE[kv.id]); }
+  return videniKoraki(g).includes(i);
+}
+function korakPika(p, g, k, i, zdaj) {
+  const stanje = i === zdaj ? ' now' : korakOpravljen(p, g, k, i) ? ' done' : '';
+  return `<li class="step${stanje}"><a href="${hrefKoraka(p, g, i)}"${i === zdaj ? ' aria-current="step"' : ''}><span class="n">${i + 1}</span><span class="t">${esc(k.ime)}</span></a></li>`;
+}
+function vsebinaKoraka(p, g, k) {
+  if (k.besedilo != null) return `<article class="md">${md(k.besedilo)}</article>`;
+  if (k.vrsta === 'kviz') {
+    const kv = kvizKoraka(p.id, k.kviz);
+    if (!kv) return `<div class="empty"><img src="brihta.png" alt=""><strong>Kviz še ni objavljen</strong>Ko ga učitelj objavi, se pokaže tukaj.</div>`;
+    const o = MOJE[kv.id];
+    return `<div class="open-card wide">${tile('kviz')}<h2>${esc(kv.ime)}</h2>
+      <p>${o ? `Kviz si že rešil: <b>${o.tocke}/${o.vseh}</b> ${tock(o.vseh)}.` : `${kv.vprasanj ? kv.vprasanj + ' vprašanj · ' : ''}${esc(kv.opis || 'Reši sam. Imaš en poskus.')}`}</p>
+      <a class="btn btn-go btn-big" href="${hrefGradiva(p, kv)}">${o ? 'Poglej rezultat' : 'Reši kviz'} ${SVG.next}</a></div>`;
+  }
+  const { notri, opomba } = prikaz(k);
+  return `<div class="frame" id="frame">${notri}</div>${opomba ? `<p class="note">${opomba}</p>` : ''}`;
+}
+function stranUra(p, g, korak) {
+  const n = g.koraki.length;
+  let i = parseInt(korak, 10) - 1;
+  if (!(i >= 0 && i < n)) { location.replace(hrefKoraka(p, g, naslednjiKorak(g))); return; }
+  const k = g.koraki[i];
+  const v = videniKoraki(g);
+  if (!v.includes(i)) { v.push(i); shrani(kljucUre(g), JSON.stringify(v)); }
+  const prej = g.koraki[i - 1], potem = g.koraki[i + 1];
+  const vsebina = `<div class="vhead">
+      <a class="btn" href="#/p/${p.id}" aria-label="Nazaj">${SVG.prev}</a>
+      ${tile('ura', 'sm')}
+      <h1>${esc(g.ime)}<small class="sub">Učna ura · ${kdaj(g.datum)}</small></h1>
+    </div>
+    <ol class="steps">${g.koraki.map((x, j) => korakPika(p, g, x, j, i)).join('')}</ol>
+    <div class="vhead step-h"><span class="badge">Korak ${i + 1} od ${n}</span><h2>${esc(k.ime)}</h2>${gumbiOgleda(k)}</div>
+    ${vsebinaKoraka(p, g, k)}
+    <div class="seq">
+      ${prej ? `<a class="btn" href="${hrefKoraka(p, g, i - 1)}">${SVG.prev} ${esc(prej.ime)}</a>` : '<span></span>'}
+      ${potem ? `<a class="btn btn-go btn-big" href="${hrefKoraka(p, g, i + 1)}">Naprej: ${esc(potem.ime)} ${SVG.next}</a>`
+        : `<a class="btn" href="#/p/${p.id}">Konec ure ✓</a>`}
+    </div>`;
+  okvirPredmeta(p, 'gradivo', vsebina, null, g.ime);
+  if (k.vrsta !== 'kviz' && k.besedilo == null) poveziCelZaslon(naslov(k));
+}
+
+function prikaz(g) {
+  const url = naslov(g);
   const lokalno = /^(localhost|127\.|\[::1\])/.test(location.hostname) || location.protocol === 'file:';
   let notri, opomba = '';
   if (g.vrsta === 'pdf' || g.vrsta === 'html' || g.vrsta === 'besedilo') notri = `<iframe src="${esc(url)}" title="${esc(g.ime)}" allowfullscreen></iframe>`;
@@ -774,31 +935,7 @@ function stranGradivo(p, k) {
   } else {
     notri = `<div class="open-card">${tile(g.vrsta)}<h2>${esc(g.ime)}</h2><p>Te datoteke ni mogoče prikazati tukaj.</p><a class="btn btn-go btn-big" href="${esc(url)}" download>Prenesi ${SVG.dl}</a></div>`;
   }
-  const starejse = seznam[i + 1], novejse = seznam[i - 1];
-  const vsebina = `<div class="vhead">
-      <a class="btn" href="#/p/${p.id}" aria-label="Nazaj">${SVG.prev}</a>
-      ${tile(g.vrsta, 'sm')}
-      <h1>${esc(g.ime)}</h1>
-      <div class="actions">
-        ${g.vrsta !== 'povezava' ? `<button class="btn" id="v-full" type="button" title="Čez cel zaslon">${SVG.full}<span class="lbl">Cel zaslon</span></button>` : ''}
-        <a class="btn" href="${esc(url)}" target="_blank" rel="noopener" title="Odpri v novem zavihku">${SVG.ext}<span class="lbl">Nov zavihek</span></a>
-        ${g.pot ? `<a class="btn" href="${esc(url)}" download title="Prenesi">${SVG.dl}<span class="lbl">Prenesi</span></a>` : ''}
-      </div>
-    </div>
-    <div class="frame" id="frame">${notri}</div>
-    ${opomba ? `<p class="note">${opomba}</p>` : ''}
-    <div class="seq">
-      ${starejse ? `<a class="btn" href="${hrefGradiva(p, starejse)}">${SVG.prev} Prejšnje</a>` : '<span></span>'}
-      ${novejse ? `<a class="btn" href="${hrefGradiva(p, novejse)}">Naslednje ${SVG.next}</a>` : '<span></span>'}
-    </div>`;
-  okvirPredmeta(p, 'gradivo', vsebina, null, g.ime);
-  const fb = document.getElementById('v-full');
-  if (fb) fb.addEventListener('click', () => {
-    const f = document.getElementById('frame');
-    if (f.requestFullscreen) f.requestFullscreen().catch(() => window.open(url, '_blank', 'noopener'));
-    else if (f.webkitRequestFullscreen) f.webkitRequestFullscreen();
-    else window.open(url, '_blank', 'noopener');
-  });
+  return { notri, opomba };
 }
 
 /* ─── Kviz ─── */
@@ -808,7 +945,9 @@ const tock = n => n === 1 ? 'točka' : n === 2 ? 'točki' : (n === 3 || n === 4)
 const casOddaje = iso => { const d = new Date(iso); return `${kdaj(iso)} ob ${d.getHours()}.${String(d.getMinutes()).padStart(2, '0')}`; };
 
 function glavaKviza(p, g) {
-  return `<div class="vhead"><a class="btn" href="#/p/${p.id}" aria-label="Nazaj">${SVG.prev}</a>${tile('kviz', 'sm')}<h1>${esc(g.ime)}</h1></div>
+  const u = uraKviza(p.id, g);
+  const nazaj = u ? hrefKoraka(p, u, u.koraki.findIndex(k => k.vrsta === 'kviz' && kvizKoraka(p.id, k.kviz) === g)) : `#/p/${p.id}`;
+  return `<div class="vhead"><a class="btn" href="${nazaj}" aria-label="Nazaj">${SVG.prev}</a>${tile('kviz', 'sm')}<h1>${esc(g.ime)}</h1></div>
     ${g.opis ? `<p class="note" style="font-size:1rem;margin:-6px 0 18px">${esc(g.opis)}</p>` : ''}`;
 }
 const okvirKviza = (p, g, vsebina, stranska) => okvirPredmeta(p, 'kviz', glavaKviza(p, g) + vsebina, stranska, g.ime);
@@ -1400,7 +1539,7 @@ function usmeri() {
     if (deli[2] === 'datoteke') return stranDatoteke(p);
     if (deli[2] === 'nov-kviz') return stranNovKviz(p);
     if (deli[2] === 'uredi' && deli[3]) return stranNovKviz(p, decodeURIComponent(deli.slice(3).join('/')));
-    if (deli[2]) return stranGradivo(p, decodeURIComponent(deli.slice(2).join('/')));
+    if (deli[2]) return stranGradivo(p, decodeURIComponent(deli[2]), deli[3]);
     return stranPredmet(p);
   }
   const p = deli[0] && najdi(deli[0]);
