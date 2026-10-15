@@ -1,1 +1,4 @@
 .DS_Store
+# Kvizi s pravilnimi odgovori ostanejo samo na tem računalniku.
+kvizi/
+.kviz-skrivnost

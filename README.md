@@ -45,6 +45,67 @@ Podprto: PDF, slike (PNG, JPG …), Word, PowerPoint, Excel, HTML, video, zvok,
 povezave. PDF, slike in HTML se odprejo kar na strani; Word in PowerPoint
 prikaže Microsoftov pregledovalnik.
 
+## Prijava in kvizi
+
+Učenci se prijavijo z **istim računom kot v Brihta-MAT** (uporabniško ime +
+4 živali). Kdor računa nima, ga ustvari na strani. Ker sta obe strani na
+brihta.github.io, je prijava skupna: kdor je prijavljen v Brihta-MAT, je tudi tukaj.
+Učitelj se prijavi z e-naslovom (»Prijava za učitelje«), odpre kviz in vidi rezultate.
+
+Gradiva so dostopna brez prijave. Prijava je potrebna samo za kvize.
+
+### Prvič (enkrat)
+
+V Supabase → SQL Editor zaženi:
+1. `supabase_kvizi.sql` (tabele in funkcije),
+2. `kvizi/NASTAVI_SKRIVNOST.sql` (samo na tem računalniku; ne pošiljaj ga nikomur).
+
+### Kako objavim kviz
+
+Kvizi so v mapi `kvizi/<predmet>/` **samo na tem računalniku** (niso na
+GitHubu, ker so v njih pravilni odgovori, repozitorij pa je javen).
+
+1. Naredi besedilno datoteko `kvizi/racunalnistvo-5/Scratch ponovitev.txt`
+   (primer z vsemi vrstami vprašanj: `kvizi/racunalnistvo-5/_Primer kviza.txt`).
+2. Poženi `python3 scripts/kvizi.py` — preveri vse kvize in jih objavi.
+   Na strani so takoj (brez čakanja na GitHub).
+
+Ali pa Claudu reci: »naredi kviz za Računalništvo 5 s temi vprašanji …«.
+
+```
+Naslov: Scratch – ponovitev
+Opis: Imaš en poskus.
+
+? Koliko je 2 + 3?          izbira: + pravilen, - napačen
+- 4
++ 5
+
+? Kateri so sesalci?        več pravilnih: več vrstic s +
++ pes
++ mačka
+- vrabec
+
+? Glavno mesto Slovenije?   kratek odgovor: = (lahko več možnih)
+= Ljubljana
+
+? Poveži.                   povezovanje: levo = desno
+Francija = Pariz
+Italija = Rim
+
+? Razvrsti od najmanjšega.  vrstni red: oštevilčeno v pravilnem vrstnem redu
+1. miška
+2. mačka
+3. slon
+```
+
+- Odgovori se učencem pokažejo premešani.
+- Kratki odgovori: velike/male črke, presledki in pika na koncu niso pomembni.
+- Vsako vprašanje je 1 točka. Učenec ima **en poskus** in po oddaji vidi samo
+  svoje točke. Na strani kviza lahko poskus izbrišeš (»Ponastavi«), da ga reši znova.
+- Kviz skriješ tako, da datoteko izbrišeš ali preimenuješ v `_ime.txt` in
+  znova poženeš skripto. Oddaje ostanejo.
+- Če kviz popraviš po tem, ko so ga učenci že oddali, njihove točke ostanejo stare.
+
 ## Kako deluje
 
 Ob vsakem pushu v `gradiva/` GitHub Action (`.github/workflows/gradiva.yml`)

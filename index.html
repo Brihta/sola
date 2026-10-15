@@ -66,8 +66,81 @@
       transform: translateX(calc(-100% - var(--nav-w))); transition: transform .22s ease;
       padding: 22px 24px; overflow-y: auto; visibility: hidden;
     }
-    body.tray-open .tray { transform: none; visibility: visible; }
+    .tray.open { transform: none; visibility: visible; }
     body.tray-open .tray-back { opacity: 1; pointer-events: auto; }
+    .gnav-avatar {
+      width: 30px; height: 30px; border-radius: 50%; background: #fff; color: var(--text);
+      display: flex; align-items: center; justify-content: center; font-size: 17px; line-height: 1;
+      border: 2px solid rgba(255,255,255,.6);
+    }
+    .gnav-item.active .gnav-avatar { border-color: var(--blue); }
+    .gnav-item .gnav-name { max-width: 72px; overflow: hidden; text-overflow: ellipsis; white-space: nowrap; }
+
+    /* Account tray / forms */
+    .acct-who { display: flex; align-items: center; gap: 14px; margin: 10px 0 18px; }
+    .acct-who .big { width: 64px; height: 64px; border-radius: 50%; background: var(--bg-soft); border: 1px solid var(--line); display: flex; align-items: center; justify-content: center; font-size: 34px; }
+    .acct-who strong { display: block; font-size: 1.15rem; }
+    .acct-who small { color: var(--muted); }
+    .field { margin-bottom: 14px; }
+    .field label { display: block; font-weight: 700; font-size: .9rem; margin-bottom: 4px; }
+    .field input[type=text], .field input[type=email], .field input[type=password], .field input:not([type]) {
+      width: 100%; font: inherit; padding: 8px 10px; border: 1px solid var(--line); border-radius: 4px; color: var(--text);
+    }
+    .field input:focus { outline: 2px solid var(--blue); outline-offset: -1px; border-color: var(--blue); }
+    .msg { min-height: 1.4em; font-size: .9rem; margin: 8px 0; color: var(--red); }
+    .msg.ok { color: var(--green); }
+    .help { background: #fff8e5; border: 1px solid #f2d37a; border-radius: 4px; padding: 10px 12px; font-size: .88rem; margin: 6px 0 10px; }
+    .linkbtn { background: none; border: 0; padding: 6px 0; color: var(--blue); cursor: pointer; display: block; font-size: .95rem; text-align: left; }
+    .linkbtn:hover { text-decoration: underline; }
+    .btn-block { width: 100%; justify-content: center; }
+    .animals-slots { display: flex; gap: 8px; margin-bottom: 8px; }
+    .animals-slots span { width: 46px; height: 46px; border: 2px dashed var(--line); border-radius: 8px; display: flex; align-items: center; justify-content: center; font-size: 26px; }
+    .animals-slots span.full { border-style: solid; border-color: var(--blue); background: #eef6fb; }
+    .animals { display: grid; grid-template-columns: repeat(6, 1fr); gap: 6px; }
+    .animals button, .emojis button {
+      font-size: 24px; padding: 6px 0; border: 1px solid var(--line); border-radius: 6px; background: #fff; cursor: pointer; line-height: 1.2;
+    }
+    .animals button:hover, .emojis button:hover { background: var(--bg-soft); }
+    .emojis { display: grid; grid-template-columns: repeat(8, 1fr); gap: 4px; }
+    .emojis button { font-size: 20px; padding: 4px 0; }
+    .emojis button.on { border-color: var(--blue); background: #eef6fb; box-shadow: inset 0 0 0 1px var(--blue); }
+    .animals-row { display: flex; justify-content: space-between; align-items: center; font-size: .85rem; color: var(--muted); margin-top: 6px; }
+    .reg-user { font-size: 1.6rem; font-weight: 900; letter-spacing: .02em; background: var(--bg-soft); border: 1px solid var(--line); border-radius: 6px; padding: 8px 12px; text-align: center; margin: 8px 0 12px; }
+
+    /* ─── Quiz ─── */
+    .q { border: 1px solid var(--line); border-radius: 4px; margin-bottom: 22px; overflow: hidden; }
+    .q-head { background: var(--bg-soft); border-bottom: 1px solid var(--line); padding: 10px 14px; display: flex; justify-content: space-between; font-weight: 700; }
+    .q-head span:last-child { font-weight: 400; color: var(--muted); font-size: .9rem; }
+    .q-body { padding: 16px 14px; }
+    .q-text { margin: 0 0 14px; white-space: pre-line; font-size: 1.05rem; }
+    .opt { display: flex; align-items: center; gap: 12px; padding: 10px 8px; border-top: 1px solid var(--line-lt); cursor: pointer; border-radius: 2px; }
+    .opt:hover { background: #f5f8fa; }
+    .opt input { width: 18px; height: 18px; accent-color: var(--blue); flex-shrink: 0; margin: 0; }
+    .q-body input.short { font: inherit; padding: 8px 10px; border: 1px solid var(--line); border-radius: 4px; width: 100%; max-width: 360px; }
+    .match { display: grid; grid-template-columns: minmax(0, 1fr) minmax(0, 1fr); gap: 10px 16px; align-items: center; }
+    .match .l { padding: 8px 10px; background: var(--bg-soft); border-radius: 4px; }
+    .match select { font: inherit; padding: 8px; border: 1px solid var(--line); border-radius: 4px; width: 100%; background: #fff; color: var(--text); }
+    .order { list-style: none; margin: 0; padding: 0; counter-reset: o; }
+    .order li { display: flex; align-items: center; gap: 10px; border: 1px solid var(--line); border-radius: 4px; padding: 6px 8px; margin-bottom: 6px; background: #fff; }
+    .order li::before { counter-increment: o; content: counter(o) "."; font-weight: 700; color: var(--muted); width: 22px; text-align: right; }
+    .order li span { flex: 1; }
+    .order button { border: 1px solid var(--line); background: var(--bg-soft); border-radius: 4px; width: 34px; height: 30px; cursor: pointer; font-size: 14px; }
+    .order button:disabled { opacity: .35; cursor: default; }
+    .quiz-foot { display: flex; justify-content: flex-end; align-items: center; gap: 14px; border-top: 1px solid var(--line); padding-top: 16px; margin-bottom: 40px; }
+    .quiz-foot .saved { color: var(--muted); font-size: .85rem; margin-right: auto; }
+    .result { border: 1px solid var(--line); border-radius: 6px; padding: 30px 20px; text-align: center; margin-bottom: 24px; }
+    .result .score { font-size: 3rem; font-weight: 900; line-height: 1.1; margin: 6px 0; }
+    .result p { color: var(--muted); margin: 4px 0; }
+    .qnav li { align-items: center; }
+    .qnav .dot { width: 12px; height: 12px; border-radius: 50%; border: 2px solid var(--line); flex-shrink: 0; }
+    .qnav .dot.on { background: var(--green); border-color: var(--green); }
+    .tag { font-size: .75rem; font-weight: 700; padding: 2px 8px; border-radius: 999px; background: #e7f0f7; color: var(--blue-dk); flex-shrink: 0; white-space: nowrap; }
+    .rtable td.cells { white-space: nowrap; }
+    .rtable .c { display: inline-block; width: 14px; height: 14px; border-radius: 3px; margin-right: 2px; vertical-align: -2px; }
+    .rtable .c.y { background: var(--green); } .rtable .c.n { background: #e8b4b4; }
+    .stats { display: flex; gap: 26px; flex-wrap: wrap; margin: 0 0 18px; }
+    .stats div strong { display: block; font-size: 1.6rem; }
+    .stats div span { color: var(--muted); font-size: .85rem; }
     .tray-head { display: flex; align-items: center; justify-content: space-between; border-bottom: 1px solid var(--line); padding-bottom: 12px; margin-bottom: 8px; }
     .tray-head h2 { font-size: 1.4rem; font-weight: 700; }
     .icon-btn { border: 0; background: none; cursor: pointer; padding: 6px; border-radius: 4px; display: inline-flex; }
@@ -232,6 +305,7 @@
       .gnav-logo img { width: 44px; height: 44px; }
       .gnav-item { flex-direction: row; padding: 8px 10px; border-radius: 4px; font-size: 13px; }
       .gnav-item svg { width: 22px; height: 22px; }
+      #nav-dash span { display: none; }
       .app { padding-top: 60px; }
       .tray { left: 0; top: 60px; width: 100%; max-width: 100%; transform: translateX(-105%); }
       .topbar { padding: 0 16px; min-height: 52px; }
@@ -253,6 +327,10 @@
 
 <nav class="gnav" aria-label="Glavna navigacija">
   <a class="gnav-logo" href="#/" title="Brihta"><img src="brihta.png" alt="Brihta"></a>
+  <button class="gnav-item" id="nav-acct" type="button" aria-expanded="false" aria-controls="acct">
+    <span class="gnav-avatar" id="nav-avatar">👤</span>
+    <span class="gnav-name" id="nav-name">Prijava</span>
+  </button>
   <a class="gnav-item" id="nav-dash" href="#/">
     <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8"><path d="M3.5 15a8.5 8.5 0 1 1 17 0"/><path d="M12 15l4-4.5" stroke-linecap="round"/><circle cx="12" cy="15" r="1.4" fill="currentColor"/><path d="M3.5 19h17" stroke-linecap="round"/></svg>
     <span>Nadzorna plošča</span>
@@ -270,6 +348,13 @@
     <button class="icon-btn" id="tray-close" aria-label="Zapri"><svg viewBox="0 0 20 20" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"><path d="M5 5l10 10M15 5L5 15"/></svg></button>
   </div>
   <ul id="tray-list"></ul>
+</aside>
+<aside class="tray" id="acct" aria-label="Račun">
+  <div class="tray-head">
+    <h2 id="acct-title">Prijava</h2>
+    <button class="icon-btn" data-zapri aria-label="Zapri"><svg viewBox="0 0 20 20" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"><path d="M5 5l10 10M15 5L5 15"/></svg></button>
+  </div>
+  <div id="acct-body"></div>
 </aside>
 
 <div class="app">
@@ -312,8 +397,9 @@ const IKONE = {
   povezava:   ['#0374b5', '<path d="M10 14a4 4 0 0 0 5.7 0l3-3a4 4 0 0 0-5.7-5.7l-1 1"/><path d="M14 10a4 4 0 0 0-5.7 0l-3 3a4 4 0 0 0 5.7 5.7l1-1"/>'],
   besedilo:   ['#6b7780', '<path d="M6 2.5h8l4.5 4.5v14.5h-12.5z"/><path d="M14 2.5V7h4.5M9 12h6M9 15h6M9 18h4"/>'],
   datoteka:   ['#6b7780', '<path d="M6 2.5h8l4.5 4.5v14.5h-12.5z"/><path d="M14 2.5V7h4.5"/>'],
+  kviz:       ['#bf32a4', '<rect x="4.5" y="3.5" width="15" height="18" rx="1.5"/><path d="M9 2.5h6v2.5H9z"/><path d="M8 11l1.5 1.5L12 10M8 16.5l1.5 1.5L12 15.5M14 11.5h2.5M14 17h2.5"/>'],
 };
-const IMENA_VRST = { pdf: 'PDF', slika: 'Slika', word: 'Word', powerpoint: 'PowerPoint', excel: 'Excel', html: 'Spletna stran', video: 'Video', zvok: 'Posnetek', povezava: 'Povezava', besedilo: 'Besedilo', datoteka: 'Datoteka' };
+const IMENA_VRST = { kviz: 'Kviz', pdf: 'PDF', slika: 'Slika', word: 'Word', powerpoint: 'PowerPoint', excel: 'Excel', html: 'Spletna stran', video: 'Video', zvok: 'Posnetek', povezava: 'Povezava', besedilo: 'Besedilo', datoteka: 'Datoteka' };
 function ikona(vrsta, cls = 'ti') {
   const [barva, pot] = IKONE[vrsta] || IKONE.datoteka;
   return `<svg class="${cls}" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.6" stroke-linecap="round" style="color:${barva}" aria-hidden="true">${pot}</svg>`;
@@ -368,9 +454,54 @@ async function naloziGradiva() {
     napaka = false;
   } catch (e) { napaka = true; }
 }
-const gradivaZa = id => GRADIVA[id] || [];
+/* Kvizi so v Supabase (pravilni odgovori ne smejo biti v javnem repozitoriju).
+   Stran jih pomeša med gradiva kot vrsto 'kviz'. */
+const SUPABASE = { url: 'https://ldczgbajbarlgwqzcggh.supabase.co', key: 'sb_publishable_888IYcEb-nSmGO0d67hEwA_rBFuXnv8' };
+const NEDOSEGLJIVO = { nedosegljivo: true };
+async function rpc(fn, params) {
+  try {
+    const r = await fetch(`${SUPABASE.url}/rest/v1/rpc/${fn}`, {
+      method: 'POST',
+      headers: { apikey: SUPABASE.key, Authorization: `Bearer ${SUPABASE.key}`, 'Content-Type': 'application/json' },
+      body: JSON.stringify(params || {}),
+    });
+    if (r.status >= 500) return NEDOSEGLJIVO;
+    if (!r.ok) return null;
+    const t = await r.text();
+    return t ? JSON.parse(t) : null;
+  } catch (e) { return NEDOSEGLJIVO; }
+}
+let KVIZI = [];
+let MOJE = {};            // kviz_id → {tocke, vseh, oddano}
+async function naloziKvize() {
+  const r = await rpc('sola_kvizi_seznam');
+  if (Array.isArray(r)) KVIZI = r.map(k => ({ vrsta: 'kviz', ime: k.naslov, opis: k.opis, id: k.id, predmet: k.predmet, datum: k.objavljeno, vprasanj: k.vprasanj }));
+}
+async function naloziMoje() {
+  MOJE = {};
+  if (!ucenec) return;
+  const r = await rpc('sola_kviz_moje', { p_student: ucenec.id });
+  if (Array.isArray(r)) r.forEach(o => { MOJE[o.kviz_id] = o; });
+}
+const gradivaZa = id => [...(GRADIVA[id] || []), ...KVIZI.filter(k => k.predmet === id)]
+  .sort((a, b) => new Date(b.datum) - new Date(a.datum));
 const vsaZa = p => p.otroci ? p.otroci.flatMap(o => gradivaZa(o.id)) : gradivaZa(p.id);
-const kljuc = g => g.pot || g.url;
+const kljuc = g => g.vrsta === 'kviz' ? 'kviz:' + g.id : (g.pot || g.url);
+
+/* ─── Računi (isti kot v Brihta-MAT; ista domena, zato tudi ista prijava) ─── */
+const KLJUC_UCENEC = 'brihta_profile_v1';
+const KLJUC_UCITELJ = 'brihta_teacher_v1';
+const ZIVALI = ['🐘','🦁','🦊','🐊','🐬','🦉','🐸','🐢','🦒','🐧','🐝','🐙'];
+const EMOJIJI = ['🦉','🚀','🦄','🐉','🌟','⚡','🎮','🍕','🦖','🐱','🐶','🦁','🌈','🎨','⚽','🦋'];
+let ucenec = null, ucitelj = null;
+try { const u = JSON.parse(preberi(KLJUC_UCENEC) || 'null'); if (u && u.id && u.username) ucenec = u; } catch (e) {}
+try { const t = JSON.parse(preberi(KLJUC_UCITELJ) || 'null'); if (t && t.id && t.username) ucitelj = t; } catch (e) {}
+function shraniRacun() {
+  try {
+    if (ucenec) localStorage.setItem(KLJUC_UCENEC, JSON.stringify(ucenec)); else localStorage.removeItem(KLJUC_UCENEC);
+    if (ucitelj) localStorage.setItem(KLJUC_UCITELJ, JSON.stringify(ucitelj)); else localStorage.removeItem(KLJUC_UCITELJ);
+  } catch (e) {}
+}
 const hrefGradiva = (p, g) => `#/p/${p.id}/${encodeURIComponent(kljuc(g))}`;
 
 /* ─── Izris ─── */
@@ -454,8 +585,13 @@ function vrsticaGradiva(p, g) {
     ${ikona(g.vrsta)}
     <div class="nm"><a href="${hrefGradiva(p, g)}">${esc(g.ime)}</a>
       <span class="meta">${IMENA_VRST[g.vrsta] || 'Datoteka'} · ${kdaj(g.datum)}${g.velikost ? ' · ' + velikost(g.velikost) : ''}</span></div>
-    ${jeDanes(g.datum) ? '<span class="pill">Novo</span>' : ''}
+    ${oznaka(g)}
   </li>`;
+}
+function oznaka(g) {
+  const o = g.vrsta === 'kviz' && MOJE[g.id];
+  if (o) return `<span class="tag">Oddano · ${o.tocke}/${o.vseh}</span>`;
+  return jeDanes(g.datum) ? '<span class="pill">Novo</span>' : '';
 }
 
 function okvirPredmeta(p, zavihek, vsebina, stranska, zadnjaDrobtina) {
@@ -525,6 +661,7 @@ function stranGradivo(p, k) {
   const i = seznam.findIndex(g => kljuc(g) === k);
   if (i < 0) { location.replace(`#/p/${p.id}`); return; }
   shrani('sola_zadnji', p.id);
+  if (seznam[i].vrsta === 'kviz') return stranKviz(p, seznam[i]);
   const g = seznam[i], url = naslov(g);
   const lokalno = /^(localhost|127\.|\[::1\])/.test(location.hostname) || location.protocol === 'file:';
   let notri, opomba = '';
@@ -566,6 +703,354 @@ function stranGradivo(p, k) {
   });
 }
 
+/* ─── Kviz ─── */
+const enakaStran = h => location.hash === h;
+const osnutekKljuc = id => `sola_osnutek:${ucenec ? ucenec.id : ''}:${id}`;
+const tock = n => n === 1 ? 'točka' : n === 2 ? 'točki' : (n === 3 || n === 4) ? 'točke' : 'točk';
+const casOddaje = iso => { const d = new Date(iso); return `${kdaj(iso)} ob ${d.getHours()}.${String(d.getMinutes()).padStart(2, '0')}`; };
+
+function glavaKviza(g) {
+  return `<div class="viewer-head">${ikona('kviz', '')}<h1>${esc(g.ime)}</h1></div>
+    ${g.opis ? `<p class="page-sub">${esc(g.opis)}</p>` : ''}`;
+}
+
+async function stranKviz(p, g) {
+  const h = location.hash;
+  const glava = glavaKviza(g);
+  if (ucitelj) return rezultatiKviza(p, g, glava, h);
+  if (!ucenec) {
+    okvirPredmeta(p, 'domov', glava + `<div class="empty"><img src="brihta.png" alt="">
+      <p style="margin:0 0 14px">Za reševanje kviza se moraš prijaviti.<br>Uporabi isti račun kot pri <strong>Brihta-MAT</strong>.</p>
+      <button class="btn btn-primary btn-big" type="button" id="k-prijava">Prijava</button></div>`, null, g.ime);
+    document.getElementById('k-prijava').addEventListener('click', () => odpriPredal('racun'));
+    return;
+  }
+  if (MOJE[g.id]) return izidKviza(p, g, MOJE[g.id]);
+  okvirPredmeta(p, 'domov', glava + '<p class="note">Nalagam kviz …</p>', null, g.ime);
+  const r = await rpc('sola_kviz', { p_id: g.id });
+  if (!enakaStran(h)) return;
+  if (!Array.isArray(r) || !r.length) {
+    okvirPredmeta(p, 'domov', glava + `<div class="empty">${r === NEDOSEGLJIVO ? 'Strežnik ni dosegljiv. Preveri povezavo in osveži stran.' : 'Tega kviza ni več.'}</div>`, null, g.ime);
+    return;
+  }
+  resujKviz(p, g, r[0].vprasanja, h);
+}
+
+function izidKviza(p, g, o, svezje) {
+  const odst = o.vseh ? Math.round(o.tocke / o.vseh * 100) : 0;
+  okvirPredmeta(p, 'domov', glavaKviza(g) + `<div class="result">
+      <div style="font-size:2.4rem" aria-hidden="true">${odst >= 80 ? '🏆' : odst >= 50 ? '👍' : '💪'}</div>
+      <p>${svezje ? 'Kviz je oddan.' : 'Ta kviz si že oddal/-a.'} Dosegel/-a si</p>
+      <div class="score">${o.tocke} / ${o.vseh}</div>
+      <p>${tock(o.vseh)} · oddano ${casOddaje(o.oddano)}</p>
+    </div>
+    <a class="btn" href="#/p/${p.id}">${SVG.prev} Nazaj na ${esc(p.ime)}</a>`, null, g.ime);
+}
+
+/* Izriše vprašanja. predogled = samo za ogled (učitelj), brez oddaje. */
+function htmlVprasanj(vpr, predogled) {
+  const dis = predogled ? ' disabled' : '';
+  return vpr.map((q, i) => {
+    let telo = '';
+    if (q.t === 'izbira' || q.t === 'vec') {
+      const tip = q.t === 'izbira' ? 'radio' : 'checkbox';
+      telo = (q.t === 'vec' ? '<p class="note" style="margin:-6px 0 8px">Označi vse pravilne odgovore.</p>' : '') +
+        q.m.map(m => `<label class="opt"><input type="${tip}" name="q${i}" value="${esc(m)}"${dis}><span>${esc(m)}</span></label>`).join('');
+    } else if (q.t === 'kratek') {
+      telo = `<input class="short" type="text" data-q="${i}" autocomplete="off" spellcheck="false" placeholder="Tvoj odgovor"${dis}>`;
+    } else if (q.t === 'povezi') {
+      telo = `<div class="match">${q.l.map((l, j) => `<div class="l">${esc(l)}</div>
+        <select data-q="${i}" data-l="${j}" aria-label="${esc(l)}"${dis}><option value="">Izberi …</option>${q.d.map(d => `<option>${esc(d)}</option>`).join('')}</select>`).join('')}</div>`;
+    } else if (q.t === 'vrstni') {
+      telo = `<p class="note" style="margin:-6px 0 8px">Uredi s puščicama ↑ ↓.</p><ol class="order" data-q="${i}">${q.m.map(m => `<li data-v="${esc(m)}"><span>${esc(m)}</span>
+        <button type="button" data-gor aria-label="Gor"${dis}>↑</button><button type="button" data-dol aria-label="Dol"${dis}>↓</button></li>`).join('')}</ol>`;
+    }
+    return `<section class="q" id="q${i}">
+      <div class="q-head"><span>Vprašanje ${i + 1}</span><span>1 ${tock(1)}</span></div>
+      <div class="q-body"><p class="q-text">${esc(q.b)}</p>${telo}</div>
+    </section>`;
+  }).join('');
+}
+
+function posodobiPuscice(ol) {
+  const li = [...ol.children];
+  li.forEach((x, j) => { x.querySelector('[data-gor]').disabled = j === 0; x.querySelector('[data-dol]').disabled = j === li.length - 1; });
+}
+
+function resujKviz(p, g, vpr, h) {
+  const stranska = `<h3>Vprašanja</h3><ul class="qnav">${vpr.map((q, i) =>
+    `<li><span class="dot" id="dot${i}"></span><a href="#q${i}" data-skoci="${i}">Vprašanje ${i + 1}</a></li>`).join('')}</ul>`;
+  okvirPredmeta(p, 'domov', glavaKviza(g) + `<form id="kviz" novalidate>${htmlVprasanj(vpr)}
+    <div class="quiz-foot"><span class="saved" id="k-shranjeno"></span><span class="msg" id="k-msg"></span>
+      <button class="btn btn-primary btn-big" type="submit" id="k-oddaj">Oddaj kviz</button></div></form>`, stranska, g.ime);
+  const f = document.getElementById('kviz');
+
+  const zberi = () => vpr.map((q, i) => {
+    if (q.t === 'izbira') { const x = f.querySelector(`input[name=q${i}]:checked`); return x ? x.value : null; }
+    if (q.t === 'vec') return [...f.querySelectorAll(`input[name=q${i}]:checked`)].map(x => x.value);
+    if (q.t === 'kratek') { const v = f.querySelector(`input[data-q="${i}"]`).value.trim(); return v || null; }
+    if (q.t === 'povezi') { const o = {}; f.querySelectorAll(`select[data-q="${i}"]`).forEach(s => { if (s.value) o[q.l[+s.dataset.l]] = s.value; }); return o; }
+    if (q.t === 'vrstni') return [...f.querySelector(`ol[data-q="${i}"]`).children].map(li => li.dataset.v);
+  });
+  const odgovorjeno = (q, a) => q.t === 'vec' ? a.length > 0 : q.t === 'povezi' ? Object.keys(a).length === q.l.length
+    : q.t === 'vrstni' ? !!premaknjeno[vpr.indexOf(q)] : a != null;
+  const premaknjeno = {};
+
+  function osvezi(shraniOsnutek) {
+    const a = zberi();
+    vpr.forEach((q, i) => document.getElementById('dot' + i).classList.toggle('on', odgovorjeno(q, a[i])));
+    if (shraniOsnutek) {
+      shrani(osnutekKljuc(g.id), JSON.stringify({ a, premaknjeno }));
+      document.getElementById('k-shranjeno').textContent = 'Odgovori so shranjeni na tej napravi.';
+    }
+  }
+
+  // Obnovi osnutek (npr. po nenamernem osveževanju strani).
+  try {
+    const o = JSON.parse(preberi(osnutekKljuc(g.id)) || 'null');
+    if (o && Array.isArray(o.a)) {
+      vpr.forEach((q, i) => {
+        const a = o.a[i];
+        if (a == null) return;
+        if (q.t === 'izbira' || q.t === 'vec') f.querySelectorAll(`input[name=q${i}]`).forEach(x => { x.checked = [].concat(a).includes(x.value); });
+        else if (q.t === 'kratek') f.querySelector(`input[data-q="${i}"]`).value = a;
+        else if (q.t === 'povezi') f.querySelectorAll(`select[data-q="${i}"]`).forEach(s => { const v = a[q.l[+s.dataset.l]]; if (v && q.d.includes(v)) s.value = v; });
+        else if (q.t === 'vrstni' && Array.isArray(a) && a.length === q.m.length && a.every(v => q.m.includes(v))) {
+          const ol = f.querySelector(`ol[data-q="${i}"]`);
+          a.forEach(v => ol.appendChild([...ol.children].find(li => li.dataset.v === v)));
+        }
+      });
+      Object.assign(premaknjeno, o.premaknjeno || {});
+    }
+  } catch (e) {}
+  f.querySelectorAll('ol.order').forEach(posodobiPuscice);
+  osvezi(false);
+
+  f.addEventListener('input', () => osvezi(true));
+  f.addEventListener('change', () => osvezi(true));
+  f.addEventListener('click', e => {
+    const b = e.target.closest('[data-gor],[data-dol]');
+    if (b) {
+      const li = b.closest('li'), ol = li.parentElement;
+      if (b.hasAttribute('data-gor') && li.previousElementSibling) ol.insertBefore(li, li.previousElementSibling);
+      if (b.hasAttribute('data-dol') && li.nextElementSibling) ol.insertBefore(li.nextElementSibling, li);
+      premaknjeno[+ol.dataset.q] = true;
+      posodobiPuscice(ol);
+      (b.disabled ? li.querySelector('button:not(:disabled)') : b)?.focus();
+      osvezi(true);
+    }
+  });
+  document.querySelectorAll('[data-skoci]').forEach(a => a.addEventListener('click', e => {
+    e.preventDefault(); document.getElementById('q' + a.dataset.skoci).scrollIntoView({ behavior: 'smooth', block: 'start' });
+  }));
+
+  f.addEventListener('submit', async e => {
+    e.preventDefault();
+    const a = zberi();
+    const manjka = vpr.filter((q, i) => q.t !== 'vrstni' && !odgovorjeno(q, a[i])).length;
+    const vprasaj = manjka
+      ? `Na ${manjka} ${manjka === 1 ? 'vprašanje' : manjka === 2 ? 'vprašanji' : manjka < 5 ? 'vprašanja' : 'vprašanj'} nisi odgovoril/-a. Vseeno oddam?`
+      : 'Oddam kviz? Potem odgovorov ne moreš več spreminjati.';
+    if (!confirm(vprasaj)) return;
+    const btn = document.getElementById('k-oddaj'), msg = document.getElementById('k-msg');
+    btn.disabled = true; btn.textContent = 'Oddajam …'; msg.textContent = '';
+    const r = await rpc('sola_kviz_oddaj', { p_student: ucenec.id, p_kviz: g.id, p_odgovori: a });
+    if (!Array.isArray(r) || !r.length) {
+      btn.disabled = false; btn.textContent = 'Oddaj kviz';
+      msg.textContent = r === NEDOSEGLJIVO ? 'Strežnik ni dosegljiv. Odgovori so shranjeni — poskusi znova.' : 'Oddaja ni uspela. Povej učitelju.';
+      return;
+    }
+    const o = { kviz_id: g.id, tocke: r[0].tocke, vseh: r[0].vseh, oddano: new Date().toISOString() };
+    if (!r[0].novo) { const m = await rpc('sola_kviz_moje', { p_student: ucenec.id }); const x = Array.isArray(m) && m.find(y => y.kviz_id === g.id); if (x) Object.assign(o, x); }
+    MOJE[g.id] = o;
+    try { localStorage.removeItem(osnutekKljuc(g.id)); } catch (e2) {}
+    if (enakaStran(h)) { window.scrollTo(0, 0); izidKviza(p, g, o, r[0].novo); }
+  });
+}
+
+async function rezultatiKviza(p, g, glava, h) {
+  okvirPredmeta(p, 'domov', glava + '<p class="note">Nalagam rezultate …</p>', null, g.ime);
+  const [rez, kv] = await Promise.all([
+    rpc('sola_kviz_rezultati', { p_teacher_id: ucitelj.id, p_kviz: g.id }),
+    rpc('sola_kviz', { p_id: g.id }),
+  ]);
+  if (!enakaStran(h)) return;
+  if (!Array.isArray(rez)) {
+    okvirPredmeta(p, 'domov', glava + `<div class="empty">${rez === NEDOSEGLJIVO ? 'Strežnik ni dosegljiv.' : 'Rezultatov ni mogoče naložiti.'}</div>`, null, g.ime);
+    return;
+  }
+  const vpr = Array.isArray(kv) && kv.length ? kv[0].vprasanja : [];
+  const n = rez.length;
+  const povp = n ? Math.round(rez.reduce((s, r) => s + (r.vseh ? r.tocke / r.vseh : 0), 0) / n * 100) : 0;
+  const poVpr = vpr.map((_, i) => n ? Math.round(rez.filter(r => r.pravilni && r.pravilni[i] === true).length / n * 100) : 0);
+  const celice = r => (r.pravilni || []).map((ok, i) => `<span class="c ${ok ? 'y' : 'n'}" title="Vprašanje ${i + 1}: ${ok ? 'pravilno' : 'napačno'}"></span>`).join('');
+  const vsebina = glava + `<div class="stats">
+      <div><strong>${n}</strong><span>${n === 1 ? 'oddaja' : n === 2 ? 'oddaji' : n < 5 ? 'oddaje' : 'oddaj'}</span></div>
+      <div><strong>${n ? povp + ' %' : '–'}</strong><span>povprečje</span></div>
+      ${vpr.length ? `<div><strong>${vpr.length}</strong><span>vprašanj</span></div>` : ''}
+    </div>
+    ${n ? `<table class="ftable rtable"><thead><tr><th>Učenec</th><th class="hide-m">Razred</th><th>Točke</th><th class="hide-m">Po vprašanjih</th><th class="hide-m">Oddano</th><th></th></tr></thead><tbody>
+      ${rez.map(r => `<tr><td>${esc(r.emoji || '🦉')} ${esc(r.ime)}<br><small class="m">${esc(r.username)}</small></td>
+        <td class="m hide-m">${esc(r.razred || '–')}</td><td><strong>${r.tocke}</strong> / ${r.vseh}</td>
+        <td class="cells hide-m">${celice(r)}</td><td class="m hide-m">${casOddaje(r.oddano)}</td>
+        <td><button class="btn" type="button" data-ponastavi="${esc(r.student_id)}" data-ime="${esc(r.ime)}" title="Izbriše oddajo, da lahko učenec kviz reši znova">Ponastavi</button></td></tr>`).join('')}
+      </tbody></table>` : '<div class="empty">Kviza še ni oddal nihče.</div>'}
+    <div style="margin:18px 0 30px"><button class="btn" type="button" id="r-osvezi">Osveži</button></div>
+    ${vpr.length ? `<h2 style="font-size:1.25rem;margin-bottom:12px">Predogled vprašanj</h2>${htmlVprasanj(vpr, true)}` : ''}`;
+  const stranska = `<h3>Učiteljski pogled</h3><p class="note" style="margin-top:0">Učenci tukaj vidijo kviz za reševanje. Po oddaji vidijo samo svoje točke.</p>
+    ${vpr.length ? `<h3>Uspešnost po vprašanjih</h3><ul>${poVpr.map((x, i) => `<li><span style="flex:1">Vprašanje ${i + 1}</span><strong>${n ? x + ' %' : '–'}</strong></li>`).join('')}</ul>` : ''}`;
+  okvirPredmeta(p, 'domov', vsebina, stranska, g.ime);
+  document.getElementById('r-osvezi').addEventListener('click', () => rezultatiKviza(p, g, glava, h));
+  $main.querySelectorAll('[data-ponastavi]').forEach(b => b.addEventListener('click', async () => {
+    if (!confirm(`Izbrišem oddajo učenca ${b.dataset.ime}? Kviz bo lahko rešil znova.`)) return;
+    b.disabled = true;
+    await rpc('sola_kviz_ponastavi', { p_teacher_id: ucitelj.id, p_kviz: g.id, p_student: b.dataset.ponastavi });
+    rezultatiKviza(p, g, glava, h);
+  }));
+}
+
+/* ─── Račun: prijava, nov račun, učitelj ─── */
+function izbiraZivali() {
+  const el = document.createElement('div');
+  let zap = [];
+  el.innerHTML = `<div class="animals-slots"></div><div class="animals">${ZIVALI.map((z, i) => `<button type="button" data-z="${i}" aria-label="${z}">${z}</button>`).join('')}</div>
+    <div class="animals-row"><span class="kaj"></span><button type="button" class="linkbtn" data-pocisti>⌫ Počisti</button></div>`;
+  const izris = () => {
+    el.querySelector('.animals-slots').innerHTML = [0, 1, 2, 3].map(i => `<span class="${zap[i] != null ? 'full' : ''}">${zap[i] != null ? ZIVALI[zap[i]] : ''}</span>`).join('');
+    el.querySelector('.kaj').textContent = zap.length < 4 ? `Izberi še ${4 - zap.length}` : '✓ Geslo izbrano';
+  };
+  el.addEventListener('click', e => {
+    const b = e.target.closest('[data-z]');
+    if (b && zap.length < 4) { zap.push(+b.dataset.z); izris(); }
+    if (e.target.closest('[data-pocisti]')) { zap = []; izris(); }
+  });
+  izris();
+  return { el, geslo: () => zap.length === 4 ? zap.join(',') : null };
+}
+
+function posodobiNav() {
+  document.getElementById('nav-avatar').textContent = ucitelj ? '👨‍🏫' : ucenec ? (ucenec.emoji || '🦉') : '👤';
+  document.getElementById('nav-name').textContent = ucitelj ? ucitelj.username : ucenec ? ucenec.username : 'Prijava';
+}
+
+async function poPrijavi() {
+  shraniRacun();
+  posodobiNav();
+  odpriPredal(null);
+  await naloziMoje();
+  usmeri();
+}
+
+function izrisiRacun(pogled) {
+  const $t = document.getElementById('acct-title'), $b = document.getElementById('acct-body');
+  if (ucitelj || ucenec) {
+    $t.textContent = 'Račun';
+    const oddanih = Object.keys(MOJE).length;
+    $b.innerHTML = `<div class="acct-who"><span class="big">${ucitelj ? '👨‍🏫' : esc(ucenec.emoji || '🦉')}</span>
+        <div><strong>${esc(ucitelj ? ucitelj.username : (ucenec.display_name || ucenec.username))}</strong>
+        <small>${ucitelj ? 'Učitelj' : 'Uporabniško ime: ' + esc(ucenec.username)}</small></div></div>
+      ${ucenec ? `<p class="note">Oddanih kvizov: ${oddanih}</p>` : '<p class="note">Odpri kviz in videl boš rezultate učencev.</p>'}
+      <button class="btn btn-block" type="button" id="a-odjava">Odjava</button>
+      <p class="note">Isti račun velja tudi za Brihta-MAT.</p>`;
+    document.getElementById('a-odjava').addEventListener('click', () => { ucenec = null; ucitelj = null; MOJE = {}; poPrijavi(); });
+    return;
+  }
+  if (pogled === 'nov') {
+    $t.textContent = 'Nov račun';
+    $b.innerHTML = `<div class="help">⚠️ Nov račun ustvari <strong>samo, če ga še nimaš</strong> (tudi pri Brihta-MAT).
+        Če si geslo pozabil/-a, ti ga učitelj ponastavi.</div>
+      <div class="field"><label for="n-ime">Tvoje ime</label><input id="n-ime" maxlength="20" autocomplete="off" placeholder="npr. Nina"></div>
+      <div class="field"><label for="n-st">Tvoja najljubša številka</label><input id="n-st" inputmode="numeric" maxlength="3" autocomplete="off" placeholder="npr. 7"></div>
+      <div class="field"><label>Izberi svoj emoji</label><div class="emojis">${EMOJIJI.map((x, i) => `<button type="button" data-e="${x}" class="${i ? '' : 'on'}">${x}</button>`).join('')}</div></div>
+      <div class="field"><label>Geslo — izberi 4 živali in si zapomni vrstni red</label><div id="n-zivali"></div></div>
+      <button class="btn btn-primary btn-block" type="button" id="n-ok">Ustvari račun</button>
+      <div class="msg" id="n-msg"></div>
+      <button class="linkbtn" type="button" data-pogled="prijava">← Že imam račun</button>`;
+    const z = izbiraZivali(); document.getElementById('n-zivali').appendChild(z.el);
+    let emoji = EMOJIJI[0];
+    $b.querySelector('.emojis').addEventListener('click', e => {
+      const b = e.target.closest('[data-e]'); if (!b) return;
+      $b.querySelectorAll('[data-e]').forEach(x => x.classList.toggle('on', x === b)); emoji = b.dataset.e;
+    });
+    document.getElementById('n-ok').addEventListener('click', async () => {
+      const ime = document.getElementById('n-ime').value.trim().slice(0, 20);
+      const st = document.getElementById('n-st').value.replace(/\D/g, '').slice(0, 3);
+      const msg = document.getElementById('n-msg');
+      if (!ime) return void (msg.textContent = 'Vpiši svoje ime.');
+      if (!st) return void (msg.textContent = 'Vpiši svojo najljubšo številko.');
+      if (!z.geslo()) return void (msg.textContent = 'Izberi vse 4 živali.');
+      const btn = document.getElementById('n-ok'); btn.disabled = true; btn.textContent = 'Ustvarjam …';
+      const r = await rpc('register_student', { p_name: ime, p_number: st, p_emoji: emoji, p_pin: z.geslo() });
+      if (!Array.isArray(r) || !r.length) {
+        btn.disabled = false; btn.textContent = 'Ustvari račun';
+        msg.textContent = r === NEDOSEGLJIVO ? 'Strežnik ni dosegljiv.' : 'Računa ni bilo mogoče ustvariti. Poskusi znova.';
+        return;
+      }
+      ucenec = { id: r[0].id, username: r[0].username, emoji: r[0].emoji, display_name: r[0].display_name };
+      ucitelj = null; shraniRacun(); posodobiNav();
+      $b.innerHTML = `<p>Račun je ustvarjen. Tvoje uporabniško ime je</p><div class="reg-user">${esc(ucenec.username)}</div>
+        <div class="help">📌 Dobro si ga zapomni (in svoje 4 živali) — rabil/-a ga boš za prijavo.</div>
+        <button class="btn btn-primary btn-block" type="button" id="n-naprej">Naprej</button>`;
+      document.getElementById('n-naprej').addEventListener('click', poPrijavi);
+    });
+  } else if (pogled === 'ucitelj') {
+    $t.textContent = 'Prijava za učitelje';
+    $b.innerHTML = `<form id="u-form">
+      <div class="field"><label for="u-mail">E-naslov</label><input id="u-mail" type="email" autocomplete="username" autocapitalize="none"></div>
+      <div class="field"><label for="u-pass">Geslo</label><input id="u-pass" type="password" autocomplete="current-password"></div>
+      <button class="btn btn-primary btn-block" type="submit" id="u-ok">Prijava</button>
+      <div class="msg" id="u-msg"></div></form>
+      <p class="note">Isti račun kot v Brihta-MAT. Novega učiteljskega računa ustvariš tam.</p>
+      <button class="linkbtn" type="button" data-pogled="prijava">← Prijava za učence</button>`;
+    document.getElementById('u-form').addEventListener('submit', async e => {
+      e.preventDefault();
+      const mail = document.getElementById('u-mail').value.trim().toLowerCase(), pass = document.getElementById('u-pass').value;
+      const msg = document.getElementById('u-msg');
+      if (!mail || !pass) return void (msg.textContent = 'Vpiši e-naslov in geslo.');
+      const btn = document.getElementById('u-ok'); btn.disabled = true; btn.textContent = 'Preverjam …';
+      const r = await rpc('login_teacher_email', { p_email: mail, p_password: pass });
+      btn.disabled = false; btn.textContent = 'Prijava';
+      if (r === NEDOSEGLJIVO) return void (msg.textContent = 'Strežnik ni dosegljiv.');
+      if (!Array.isArray(r) || !r.length) return void (msg.textContent = 'Napačen e-naslov ali geslo.');
+      if (!r[0].approved) return void (msg.textContent = 'Račun še ni potrjen.');
+      if (r[0].must_change) return void (msg.textContent = 'Najprej se prijavi v Brihta-MAT in zamenjaj začetno geslo.');
+      ucitelj = { id: r[0].id, username: r[0].username, email: r[0].email, mustChange: false };
+      ucenec = null; MOJE = {};
+      poPrijavi();
+    });
+  } else {
+    $t.textContent = 'Prijava';
+    $b.innerHTML = `<p class="note" style="margin-top:0">Prijavi se z računom, ki ga imaš pri <strong>Brihta-MAT</strong>.</p>
+      <div class="field"><label for="p-ime">Uporabniško ime</label><input id="p-ime" autocomplete="off" autocapitalize="none" spellcheck="false" placeholder="npr. nina7"></div>
+      <div class="field"><label>Geslo — poklikaj svoje 4 živali</label><div id="p-zivali"></div></div>
+      <button class="btn btn-primary btn-block" type="button" id="p-ok">Prijava</button>
+      <div class="msg" id="p-msg"></div><div id="p-pomoc"></div>
+      <button class="linkbtn" type="button" data-pogled="nov">Še nimam računa — ustvari novega</button>
+      <button class="linkbtn" type="button" data-pogled="ucitelj">👨‍🏫 Prijava za učitelje</button>`;
+    const z = izbiraZivali(); document.getElementById('p-zivali').appendChild(z.el);
+    document.getElementById('p-ok').addEventListener('click', async () => {
+      const ime = document.getElementById('p-ime').value.trim().toLowerCase();
+      const msg = document.getElementById('p-msg');
+      if (!ime) return void (msg.textContent = 'Vpiši uporabniško ime.');
+      if (!z.geslo()) return void (msg.textContent = 'Izberi vse 4 živali.');
+      const btn = document.getElementById('p-ok'); btn.disabled = true; btn.textContent = 'Preverjam …';
+      const r = await rpc('login_student', { p_username: ime, p_pin: z.geslo() });
+      btn.disabled = false; btn.textContent = 'Prijava';
+      if (r === NEDOSEGLJIVO) return void (msg.textContent = 'Strežnik ni dosegljiv. Preveri povezavo.');
+      if (!Array.isArray(r) || !r.length) {
+        msg.textContent = 'Napačno uporabniško ime ali geslo.';
+        document.getElementById('p-pomoc').innerHTML = '<div class="help">🙋 Si pozabil/-a geslo ali uporabniško ime? <strong>Povej učitelju</strong> — ponastavi ti ga. Ne delaj novega računa.</div>';
+        return;
+      }
+      ucenec = { id: r[0].id, username: r[0].username, emoji: r[0].emoji, display_name: r[0].display_name };
+      ucitelj = null;
+      poPrijavi();
+    });
+  }
+  $b.querySelectorAll('[data-pogled]').forEach(b => b.addEventListener('click', () => izrisiRacun(b.dataset.pogled)));
+  const prvi = $b.querySelector('input'); if (prvi) setTimeout(() => prvi.focus(), 230);
+}
+
 /* ─── Predal s predmeti ─── */
 function napolniPredal() {
   document.getElementById('tray-list').innerHTML = PREDMETI.map(p => p.otroci
@@ -573,17 +1058,27 @@ function napolniPredal() {
       p.otroci.map(o => `<li class="sub"><a href="#/p/${o.id}">${esc(o.ime)}</a></li>`).join('')
     : `<li><a href="#/p/${p.id}">${p.emoji} ${esc(p.ime)}<span class="term">${esc(p.koda)}</span></a></li>`).join('');
 }
-const $btnCourses = document.getElementById('nav-courses');
-function predal(odpri) {
-  document.body.classList.toggle('tray-open', odpri);
-  $btnCourses.classList.toggle('active', odpri);
-  $btnCourses.setAttribute('aria-expanded', odpri);
+const PREDALI = {
+  predmeti: [document.getElementById('tray'), document.getElementById('nav-courses')],
+  racun: [document.getElementById('acct'), document.getElementById('nav-acct')],
+};
+let odprtPredal = null;
+function odpriPredal(ime) {
+  odprtPredal = ime;
+  for (const [k, [predal, gumb]] of Object.entries(PREDALI)) {
+    predal.classList.toggle('open', k === ime);
+    gumb.classList.toggle('active', k === ime);
+    gumb.setAttribute('aria-expanded', k === ime);
+  }
+  document.body.classList.toggle('tray-open', !!ime);
+  if (ime === 'racun') izrisiRacun();
 }
-$btnCourses.addEventListener('click', () => predal(!document.body.classList.contains('tray-open')));
-document.getElementById('tray-close').addEventListener('click', () => predal(false));
-document.getElementById('tray-back').addEventListener('click', () => predal(false));
-document.getElementById('tray-list').addEventListener('click', e => { if (e.target.closest('a')) predal(false); });
-document.addEventListener('keydown', e => { if (e.key === 'Escape') predal(false); });
+for (const [k, [, gumb]] of Object.entries(PREDALI)) gumb.addEventListener('click', () => odpriPredal(odprtPredal === k ? null : k));
+document.getElementById('tray-close').addEventListener('click', () => odpriPredal(null));
+document.querySelectorAll('[data-zapri]').forEach(b => b.addEventListener('click', () => odpriPredal(null)));
+document.getElementById('tray-back').addEventListener('click', () => odpriPredal(null));
+document.getElementById('tray-list').addEventListener('click', e => { if (e.target.closest('a')) odpriPredal(null); });
+document.addEventListener('keydown', e => { if (e.key === 'Escape') odpriPredal(null); });
 
 /* ─── Usmerjanje ─── */
 function usmeri() {
@@ -606,14 +1101,16 @@ window.addEventListener('hashchange', usmeri);
 /* Ko se zavihek spet pokaže, preveri nova gradiva (ne med ogledom gradiva). */
 document.addEventListener('visibilitychange', async () => {
   if (document.hidden) return;
-  const prej = JSON.stringify(GRADIVA);
-  await naloziGradiva();
+  const stanje = () => JSON.stringify([GRADIVA, KVIZI, MOJE]);
+  const prej = stanje();
+  await Promise.all([naloziGradiva(), naloziKvize(), naloziMoje()]);
   const ogled = /^#\/p\/[^/]+\/(?!datoteke$)./.test(location.hash);
-  if (!ogled && JSON.stringify(GRADIVA) !== prej) usmeri();
+  if (!ogled && stanje() !== prej) usmeri();
 });
 
 napolniPredal();
-naloziGradiva().then(usmeri);
+posodobiNav();
+Promise.all([naloziGradiva(), naloziKvize(), naloziMoje()]).then(usmeri);
 </script>
 </body>
 </html>
