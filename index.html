@@ -244,6 +244,17 @@
     .ftable td.n a:hover { color: var(--accent-ink); }
     .ftable .m { color: var(--muted); white-space: nowrap; font-weight: 600; font-size: .92rem; }
 
+    /* Povezave na strani skupine */
+    .links { display: grid; grid-template-columns: repeat(auto-fill, minmax(280px, 1fr)); gap: 16px; }
+    .link { display: flex; align-items: center; gap: 14px; padding: 12px 16px 12px 12px; background: var(--surface); border-radius: var(--r-lg); box-shadow: var(--shadow); text-decoration: none; color: var(--ink); transition: transform .15s, box-shadow .15s; }
+    .link:hover { transform: translateY(-3px); box-shadow: var(--shadow-up); }
+    .ln-art { width: 88px; height: 60px; flex-shrink: 0; border-radius: 12px; overflow: hidden; display: flex; align-items: center; justify-content: center; font-size: 32px; background: linear-gradient(135deg, var(--c1), var(--c2)); }
+    .ln-art img { width: 100%; height: 100%; object-fit: cover; }
+    .link .nm { flex: 1; min-width: 0; }
+    .link .nm b { display: block; font-weight: 800; }
+    .link .nm small { color: var(--muted); font-weight: 600; }
+    .link > svg { width: 18px; height: 18px; color: var(--muted); flex-shrink: 0; }
+
     /* ─── Viewer ─── */
     .vhead { display: flex; align-items: center; gap: 14px; flex-wrap: wrap; margin: 6px 0 16px; }
     .vhead h1 { font-size: clamp(1.4rem, 3vw, 1.9rem); flex: 1; min-width: 200px; }
@@ -498,6 +509,12 @@
    id = ime mape v gradiva/ (in kvizi/). c1/c2 = barvi preliva. */
 const PREDMETI = [
   { id: 'racunalnistvo', ime: 'Računalništvo', koda: 'RAČ', c1: '#6366f1', c2: '#a855f7', emoji: '💻',
+    /* Povezave za vse razrede (stran »V kateri razred hodiš?«). slika = predogled. */
+    povezave: [
+      { ime: 'Brihta – matematika', opis: 'Vaje iz poštevanke in računanja', url: 'https://brihta.github.io/matematika/', emoji: '🦉', c1: '#6c5ce7', c2: '#a855f7' },
+      { ime: 'Potapljanje ladjic', opis: 'Igra za dva igralca', url: 'https://brihta.github.io/potapljanje-ladjic/', emoji: '🚢', c1: '#0a3d4a', c2: '#14b8a6' },
+      { ime: 'Slepo tipkanje', opis: 'Drža telesa in postavitev prstov', url: 'slike/slepo-tipkanje.jpg', slika: 'slike/slepo-tipkanje.jpg', c1: '#ef4444', c2: '#f97316' },
+    ],
     otroci: [
       { id: 'racunalnistvo-4',   ime: 'Računalništvo 4',   kratko: '4. razred',    koda: 'RAČ 4',   c1: '#0ea5e9', c2: '#6366f1', emoji: '🖱️', opis: '4. razred' },
       { id: 'racunalnistvo-5',   ime: 'Računalništvo 5',   kratko: '5. razred',    koda: 'RAČ 5',   c1: '#a855f7', c2: '#ec4899', emoji: '🧩', opis: '5. razred' },
@@ -709,7 +726,11 @@ function stranSkupina(p) {
       <div class="banner-top"><span class="emoji" aria-hidden="true">${p.emoji}</span>
         <div><h1>${esc(p.ime)}</h1><p>V kateri razred hodiš?</p></div></div>
     </section>
-    <div class="cards">${p.otroci.map(kartica).join('')}</div>`;
+    <div class="cards">${p.otroci.map(kartica).join('')}</div>
+    ${p.povezave ? `<div class="sec-h" style="margin-top:34px"><h2>Uporabne povezave</h2></div>
+    <div class="links">${p.povezave.map(l => `<a class="link" style="${barve(l)}" href="${esc(l.url)}" target="_blank" rel="noopener">
+      <span class="ln-art">${l.slika ? `<img src="${esc(l.slika)}" alt="">` : `<span aria-hidden="true">${l.emoji}</span>`}</span>
+      <span class="nm"><b>${esc(l.ime)}</b><small>${esc(l.opis)}</small></span>${SVG.ext}</a>`).join('')}</div>` : ''}`;
 }
 
 function poTednih(seznam) {
