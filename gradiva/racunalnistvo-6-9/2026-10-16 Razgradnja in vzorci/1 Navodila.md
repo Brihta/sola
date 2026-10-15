@@ -1,18 +1,22 @@
+## 🐢 Današnji izziv
+
+Želva v **Blockly Games** riše like in zvezde. Na stopnji 5 nariše **4 zvezde** samo z nekaj bloki. Kako? Danes to ugotoviš sam.
+
 ## 🎯 Cilj ure
 
-Velik problem znam **razdeliti na manjše dele** in v ukazih **najti vzorec**, ki ga zapišem krajše z zanko.
+Sliko **razgradim na manjše dele** in v njej **najdem vzorec**, ki ga zapišem z zanko *repeat*.
 
 ## ✅ Uspešen sem, če …
 
-- problem razdelim na vsaj 4 manjše dele,
-- v zaporedju najdem pravilo in ga zapišem,
-- ponavljajoče se ukaze zapišem z zanko »ponovi«.
+- rešim stopnje 1–5 (kdor zmore, tudi 6–9),
+- pred zagonom sosedu povem, **kaj se ponavlja** in **kolikokrat**,
+- znam razložiti, zakaj se želva pri zvezdi obrne za 144°.
 
 ## 🗺️ Kaj bomo delali
 
 1. **Zapis:** preberi ga in ga prepiši v zvezek.
-2. **Razlaga:** poglej razlago, ki jo bo učitelj pokazal na tabli.
-3. **Delovni list:** reši ga sam ali v paru. ★ rešijo vsi, ★★ in ★★★ so za tiste, ki želijo več.
+2. **Razlaga:** poglej, kako se stopnje rešijo z razgradnjo in vzorci.
+3. **Želva:** odpri Blockly Games in rešuj stopnje. Ob tem izpolnjuj delovni list »Načrt za želvo«.
 4. **Kviz:** reši ga sam. Imaš en poskus.
 
 Na koncu se odjavi in pospravi svoje mesto.

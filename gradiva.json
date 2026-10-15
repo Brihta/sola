@@ -47,26 +47,25 @@
       "ime": "Navodila",
       "vrsta": "besedilo",
       "pot": "gradiva/racunalnistvo-6-9/2026-10-16 Razgradnja in vzorci/1 Navodila.md",
-      "velikost": 651,
-      "besedilo": "## 🎯 Cilj ure\n\nVelik problem znam **razdeliti na manjše dele** in v ukazih **najti vzorec**, ki ga zapišem krajše z zanko.\n\n## ✅ Uspešen sem, če …\n\n- problem razdelim na vsaj 4 manjše dele,\n- v zaporedju najdem pravilo in ga zapišem,\n- ponavljajoče se ukaze zapišem z zanko »ponovi«.\n\n## 🗺️ Kaj bomo delali\n\n1. **Zapis:** preberi ga in ga prepiši v zvezek.\n2. **Razlaga:** poglej razlago, ki jo bo učitelj pokazal na tabli.\n3. **Delovni list:** reši ga sam ali v paru. ★ rešijo vsi, ★★ in ★★★ so za tiste, ki želijo več.\n4. **Kviz:** reši ga sam. Imaš en poskus.\n\nNa koncu se odjavi in pospravi svoje mesto.\n"
+      "velikost": 831,
+      "besedilo": "## 🐢 Današnji izziv\n\nŽelva v **Blockly Games** riše like in zvezde. Na stopnji 5 nariše **4 zvezde** samo z nekaj bloki. Kako? Danes to ugotoviš sam.\n\n## 🎯 Cilj ure\n\nSliko **razgradim na manjše dele** in v njej **najdem vzorec**, ki ga zapišem z zanko *repeat*.\n\n## ✅ Uspešen sem, če …\n\n- rešim stopnje 1–5 (kdor zmore, tudi 6–9),\n- pred zagonom sosedu povem, **kaj se ponavlja** in **kolikokrat**,\n- znam razložiti, zakaj se želva pri zvezdi obrne za 144°.\n\n## 🗺️ Kaj bomo delali\n\n1. **Zapis:** preberi ga in ga prepiši v zvezek.\n2. **Razlaga:** poglej, kako se stopnje rešijo z razgradnjo in vzorci.\n3. **Želva:** odpri Blockly Games in rešuj stopnje. Ob tem izpolnjuj delovni list »Načrt za želvo«.\n4. **Kviz:** reši ga sam. Imaš en poskus.\n\nNa koncu se odjavi in pospravi svoje mesto.\n"
      },
      {
       "ime": "Zapis",
-      "vrsta": "word",
-      "pot": "gradiva/racunalnistvo-6-9/2026-10-16 Razgradnja in vzorci/2 Zapis.docx",
-      "velikost": 9865
+      "vrsta": "pdf",
+      "pot": "gradiva/racunalnistvo-6-9/2026-10-16 Razgradnja in vzorci/2 Zapis.pdf",
+      "velikost": 118518
      },
      {
       "ime": "Razlaga",
       "vrsta": "pdf",
       "pot": "gradiva/racunalnistvo-6-9/2026-10-16 Razgradnja in vzorci/3 Razlaga.pdf",
-      "velikost": 477958
+      "velikost": 290255
      },
      {
-      "ime": "Delovni list",
-      "vrsta": "word",
-      "pot": "gradiva/racunalnistvo-6-9/2026-10-16 Razgradnja in vzorci/4 Delovni list.docx",
-      "velikost": 10336
+      "ime": "Želva v Blockly Games",
+      "vrsta": "povezava",
+      "url": "https://blockly.games/turtle?lang=en"
      },
      {
       "ime": "Kviz",
@@ -80,5 +79,5 @@
   "slovenscina-3": [],
   "svetovni-popotniki": []
  },
- "posodobljeno": "2026-10-15T19:25:01+00:00"
+ "posodobljeno": "2026-10-15T21:52:32+02:00"
 }
