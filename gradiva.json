@@ -36,10 +36,25 @@
     "velikost": 9510
    }
   ],
-  "racunalnistvo-6-9": [],
+  "racunalnistvo-6-9": [
+   {
+    "ime": "Razgradnja in vzorci delovni list",
+    "vrsta": "word",
+    "datum": "2026-10-16T08:00:00+02:00",
+    "pot": "gradiva/racunalnistvo-6-9/2026-10-16 Razgradnja_in_vzorci_delovni_list.docx",
+    "velikost": 10336
+   },
+   {
+    "ime": "Razgradnja in vzorci zapis",
+    "vrsta": "word",
+    "datum": "2026-10-16T08:00:00+02:00",
+    "pot": "gradiva/racunalnistvo-6-9/2026-10-16 Razgradnja_in_vzorci_zapis.docx",
+    "velikost": 9865
+   }
+  ],
   "rokodelnica": [],
   "slovenscina-3": [],
   "svetovni-popotniki": []
  },
- "posodobljeno": "2026-10-15T08:05:50+00:00"
+ "posodobljeno": "2026-10-15T19:48:34+02:00"
 }
