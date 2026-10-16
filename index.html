@@ -266,6 +266,10 @@
     .frame iframe { width: 100%; height: 100%; border: 0; background: #fff; border-radius: 14px; }
     .frame img, .frame video { max-width: 100%; max-height: 100%; object-fit: contain; display: block; border-radius: 12px; }
     .frame:fullscreen { height: 100vh; border: 0; border-radius: 0; }
+    .frame { position: relative; }
+    .fs-izhod { display: none; position: absolute; bottom: 18px; right: 22px; z-index: 5; box-shadow: var(--shadow-up); }
+    .frame:fullscreen .fs-izhod { display: inline-flex; }
+    .frame:-webkit-full-screen .fs-izhod { display: inline-flex; }
     .open-card { text-align: center; padding: 30px; max-width: 460px; }
     .open-card .tile { margin: 0 auto 12px; }
     .open-card h2 { margin-bottom: 4px; }
@@ -862,6 +866,14 @@ function poveziCelZaslon(url) {
   const fb = document.getElementById('v-full');
   if (fb) fb.addEventListener('click', () => {
     const f = document.getElementById('frame');
+    // Gumb za izhod: na interaktivni tabli ni tipke Esc, PDF pa ujame tudi tipkovnico.
+    if (!f.querySelector('.fs-izhod')) {
+      f.insertAdjacentHTML('beforeend', '<button class="btn btn-go btn-big fs-izhod" type="button">✕ Zapri cel zaslon</button>');
+      f.querySelector('.fs-izhod').addEventListener('click', () => {
+        if (document.exitFullscreen) document.exitFullscreen().catch(() => {});
+        else if (document.webkitExitFullscreen) document.webkitExitFullscreen();
+      });
+    }
     if (f.requestFullscreen) f.requestFullscreen().catch(() => window.open(url, '_blank', 'noopener'));
     else if (f.webkitRequestFullscreen) f.webkitRequestFullscreen();
     else window.open(url, '_blank', 'noopener');
