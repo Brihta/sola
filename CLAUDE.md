@@ -80,7 +80,7 @@ pojem B = razlaga B
 
 ## Gradiva za uro
 
-Vsaka ura je MAPA `gradiva/<predmet>/<YYYY-MM-DD> <Naslov ure>/` s koraki, ki
+Vsaka ura je MAPA `gradiva/<predmet>/<YYYY-MM-DD> <N>. ura <Naslov ure>/` s koraki, ki
 jih učenci prehodijo po vrsti:
 
 - `1 Navodila.md`: cilj ure (## 🎯 Cilj ure), kriteriji uspešnosti, kaj bomo delali (oštevilčeno);

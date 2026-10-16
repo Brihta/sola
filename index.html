@@ -853,13 +853,20 @@ function stranGradivo(p, k, korak) {
   poveziCelZaslon(url);
 }
 
-function gumbiOgleda(g) {
+/* Ime prenesene datoteke pri koraku ure: »6. ura Razgradnja in vzorci - Zapis.pdf«. */
+function imePrenosa(ura, k) {
+  const konc = (k.pot || '').match(/\.[^./]+$/);
+  return `${ura.ime} - ${k.ime}${konc ? konc[0] : ''}`.replace(/[\\/:*?"<>|]/g, '');
+}
+const atrPrenosa = ime => ime ? `download="${esc(ime)}"` : 'download';
+
+function gumbiOgleda(g, ime) {
   if (g.vrsta === 'kviz' || g.besedilo != null) return '';
   const url = naslov(g);
   return `<div class="actions">
         ${g.vrsta !== 'povezava' ? `<button class="btn" id="v-full" type="button" title="Čez cel zaslon">${SVG.full}<span class="lbl">Cel zaslon</span></button>` : ''}
         <a class="btn" href="${esc(url)}" target="_blank" rel="noopener" title="Odpri v novem zavihku">${SVG.ext}<span class="lbl">Nov zavihek</span></a>
-        ${g.pot ? `<a class="btn" href="${esc(url)}" download title="Prenesi">${SVG.dl}<span class="lbl">Prenesi</span></a>` : ''}
+        ${g.pot ? `<a class="btn" href="${esc(url)}" ${atrPrenosa(ime)} title="Prenesi">${SVG.dl}<span class="lbl">Prenesi</span></a>` : ''}
       </div>`;
 }
 function poveziCelZaslon(url) {
@@ -924,7 +931,7 @@ function vsebinaKoraka(p, g, k) {
       <p>${o ? `Kviz si že rešil: <b>${o.tocke}/${o.vseh}</b> ${tock(o.vseh)}.` : `${kv.vprasanj ? kv.vprasanj + ' vprašanj · ' : ''}${esc(kv.opis || 'Reši sam. Imaš en poskus.')}`}</p>
       <a class="btn btn-go btn-big" href="${hrefGradiva(p, kv)}">${o ? 'Poglej rezultat' : 'Reši kviz'} ${SVG.next}</a></div>`;
   }
-  const { notri, opomba } = prikaz(k);
+  const { notri, opomba } = prikaz(k, imePrenosa(g, k));
   return `<div class="frame" id="frame">${notri}</div>${opomba ? `<p class="note">${opomba}</p>` : ''}`;
 }
 function stranUra(p, g, korak) {
@@ -941,7 +948,7 @@ function stranUra(p, g, korak) {
       <h1>${esc(g.ime)}<small class="sub">Učna ura · ${kdaj(g.datum)}</small></h1>
     </div>
     <ol class="steps">${g.koraki.map((x, j) => korakPika(p, g, x, j, i)).join('')}</ol>
-    <div class="vhead step-h"><span class="badge">Korak ${i + 1} od ${n}</span><h2>${esc(k.ime)}</h2>${gumbiOgleda(k)}</div>
+    <div class="vhead step-h"><span class="badge">Korak ${i + 1} od ${n}</span><h2>${esc(k.ime)}</h2>${gumbiOgleda(k, imePrenosa(g, k))}</div>
     ${vsebinaKoraka(p, g, k)}
     <div class="seq">
       ${prej ? `<a class="btn" href="${hrefKoraka(p, g, i - 1)}">${SVG.prev} ${esc(prej.ime)}</a>` : '<span></span>'}
@@ -952,7 +959,7 @@ function stranUra(p, g, korak) {
   if (k.vrsta !== 'kviz' && k.besedilo == null) poveziCelZaslon(naslov(k));
 }
 
-function prikaz(g) {
+function prikaz(g, ime) {
   const url = naslov(g);
   const lokalno = /^(localhost|127\.|\[::1\])/.test(location.hostname) || location.protocol === 'file:';
   let notri, opomba = '';
@@ -966,7 +973,7 @@ function prikaz(g) {
   } else if (g.vrsta === 'povezava') {
     notri = `<div class="open-card">${tile('povezava')}<h2>${esc(g.ime)}</h2><p>${esc(g.url)}</p><a class="btn btn-go btn-big" href="${esc(g.url)}" target="_blank" rel="noopener">Odpri povezavo ${SVG.ext}</a></div>`;
   } else {
-    notri = `<div class="open-card">${tile(g.vrsta)}<h2>${esc(g.ime)}</h2><p>Te datoteke ni mogoče prikazati tukaj.</p><a class="btn btn-go btn-big" href="${esc(url)}" download>Prenesi ${SVG.dl}</a></div>`;
+    notri = `<div class="open-card">${tile(g.vrsta)}<h2>${esc(g.ime)}</h2><p>Te datoteke ni mogoče prikazati tukaj.</p><a class="btn btn-go btn-big" href="${esc(url)}" ${atrPrenosa(ime)}>Prenesi ${SVG.dl}</a></div>`;
   }
   return { notri, opomba };
 }

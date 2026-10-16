@@ -38,28 +38,28 @@
   ],
   "racunalnistvo-6-9": [
    {
-    "ime": "Razgradnja in vzorci",
+    "ime": "6. ura Razgradnja in vzorci",
     "vrsta": "ura",
     "datum": "2026-10-16T08:00:00+02:00",
-    "pot": "gradiva/racunalnistvo-6-9/2026-10-16 Razgradnja in vzorci",
+    "pot": "gradiva/racunalnistvo-6-9/2026-10-16 6. ura Razgradnja in vzorci",
     "koraki": [
      {
       "ime": "Navodila",
       "vrsta": "besedilo",
-      "pot": "gradiva/racunalnistvo-6-9/2026-10-16 Razgradnja in vzorci/1 Navodila.md",
+      "pot": "gradiva/racunalnistvo-6-9/2026-10-16 6. ura Razgradnja in vzorci/1 Navodila.md",
       "velikost": 831,
       "besedilo": "## 🐢 Današnji izziv\n\nŽelva v **Blockly Games** riše like in zvezde. Na stopnji 5 nariše **4 zvezde** samo z nekaj bloki. Kako? Danes to ugotoviš sam.\n\n## 🎯 Cilj ure\n\nSliko **razgradim na manjše dele** in v njej **najdem vzorec**, ki ga zapišem z zanko *repeat*.\n\n## ✅ Uspešen sem, če …\n\n- rešim stopnje 1–5 (kdor zmore, tudi 6–9),\n- pred zagonom sosedu povem, **kaj se ponavlja** in **kolikokrat**,\n- znam razložiti, zakaj se želva pri zvezdi obrne za 144°.\n\n## 🗺️ Kaj bomo delali\n\n1. **Zapis:** preberi ga in ga prepiši v zvezek.\n2. **Razlaga:** poglej, kako se stopnje rešijo z razgradnjo in vzorci.\n3. **Želva:** odpri Blockly Games in rešuj stopnje. Ob tem izpolnjuj delovni list »Načrt za želvo«.\n4. **Kviz:** reši ga sam. Imaš en poskus.\n\nNa koncu se odjavi in pospravi svoje mesto.\n"
      },
      {
       "ime": "Zapis",
       "vrsta": "pdf",
-      "pot": "gradiva/racunalnistvo-6-9/2026-10-16 Razgradnja in vzorci/2 Zapis.pdf",
+      "pot": "gradiva/racunalnistvo-6-9/2026-10-16 6. ura Razgradnja in vzorci/2 Zapis.pdf",
       "velikost": 118518
      },
      {
       "ime": "Razlaga",
       "vrsta": "pdf",
-      "pot": "gradiva/racunalnistvo-6-9/2026-10-16 Razgradnja in vzorci/3 Razlaga.pdf",
+      "pot": "gradiva/racunalnistvo-6-9/2026-10-16 6. ura Razgradnja in vzorci/3 Razlaga.pdf",
       "velikost": 290255
      },
      {
@@ -79,5 +79,5 @@
   "slovenscina-3": [],
   "svetovni-popotniki": []
  },
- "posodobljeno": "2026-10-15T21:52:32+02:00"
+ "posodobljeno": "2026-10-16T09:59:32+02:00"
 }
