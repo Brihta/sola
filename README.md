@@ -103,7 +103,7 @@ vsaka seja na tem Macu. Skrivnost za objavo je v `~/.config/brihta-sola/`.
 ki jih ni več v mapi, kvizov s strani se ne dotika. Nove skrivnosti nikoli ne
 ustvari sama (samo z `--nova-skrivnost`).
 
-Asistent »tajnik« (zavihek Code, mapa `Nino - Služba/tajnik`) to naredi sam;
+Asistent »tajnik« (zavihek Code, mapa `Shared_documents/Tajnik`) to naredi sam;
 navodila so v njegovem `CLAUDE.md`, za seje v tem repozitoriju pa v `CLAUDE.md` tukaj.
 
 ### Oblika kviza
@@ -139,6 +139,8 @@ Italija = Rim
 - Kratki odgovori: velike/male črke, presledki in pika na koncu niso pomembni.
 - Vsako vprašanje je 1 točka. Učenec ima **en poskus** in po oddaji vidi samo
   svoje točke. Na strani kviza lahko poskus izbrišeš (»Ponastavi«), da ga reši znova.
+  Če ima manj kot 50 %, se oddaja ne shrani in učenec dobi »Poskusi znova«
+  (`supabase_kvizi_ponovni_poskus.sql`).
 - Kviz skriješ tako, da datoteko izbrišeš ali preimenuješ v `_ime.txt` in
   znova poženeš skripto. Oddaje ostanejo.
 - Če kviz popraviš po tem, ko so ga učenci že oddali, njihove točke ostanejo stare.

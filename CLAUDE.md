@@ -75,7 +75,8 @@ pojem B = razlaga B
 
 - 5–8 vprašanj, vezanih na cilje ure, v slovenščini, primerno starosti razreda.
 - Brez osebnih podatkov (prava gesla, naslovi, imena sošolcev).
-- Učenec ima en poskus in po oddaji vidi samo svoje točke.
+- Učenec ima en poskus in po oddaji vidi samo svoje točke. Pod 50 % se oddaja
+  ne shrani: dobi »Poskusi znova« in reši ponovno.
 
 ## Gradiva za uro
 

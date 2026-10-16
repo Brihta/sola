@@ -1023,6 +1023,19 @@ function izidKviza(p, g, o, svezje) {
   if (svezje && odst >= 50) konfeti(document.getElementById('izid'));
 }
 
+function poskusiZnova(p, g, o) {
+  const odst = o.vseh ? Math.round(o.tocke / o.vseh * 100) : 0;
+  okvirKviza(p, g, `<section class="result" id="izid">
+      <div class="ring" style="--p:${odst}"><div>${o.tocke}/${o.vseh}<small>${tock(o.vseh)}</small></div></div>
+      <h2>🔁 Poskusi znova!</h2>
+      <p>Dosegel/-la si manj kot polovico točk, zato se ta poskus ne šteje.</p>
+      <p>Še enkrat preberi vprašanja in reši kviz znova.</p>
+      <button class="btn btn-go btn-big" type="button" id="k-znova" style="margin-top:16px">Reši znova ${SVG.next}</button>
+    </section>
+    <a class="btn" href="#/p/${p.id}">${SVG.prev} Nazaj na ${esc(p.ime)}</a>`);
+  document.getElementById('k-znova').addEventListener('click', () => { window.scrollTo(0, 0); stranKviz(p, g); });
+}
+
 /* Izriše vprašanja. predogled = samo za ogled (učitelj), brez oddaje. */
 function htmlVprasanj(vpr, predogled) {
   const dis = predogled ? ' disabled' : '';
@@ -1138,6 +1151,11 @@ function resujKviz(p, g, vpr, h) {
       return;
     }
     const o = { kviz_id: g.id, tocke: r[0].tocke, vseh: r[0].vseh, oddano: new Date().toISOString() };
+    if (r[0].ponovi) {  // manj kot 50 %: oddaja se ne shrani, učenec reši znova
+      try { localStorage.removeItem(osnutekKljuc(g.id)); } catch (e2) {}
+      if (enakaStran(h)) { window.scrollTo(0, 0); poskusiZnova(p, g, o); }
+      return;
+    }
     if (!r[0].novo) { const m = await rpc('sola_kviz_moje', { p_student: ucenec.id }); const x = Array.isArray(m) && m.find(y => y.kviz_id === g.id); if (x) Object.assign(o, x); }
     MOJE[g.id] = o;
     try { localStorage.removeItem(osnutekKljuc(g.id)); } catch (e2) {}
@@ -1176,7 +1194,7 @@ async function rezultatiKviza(p, g, h) {
       <a class="btn" href="#/p/${p.id}/uredi/${encodeURIComponent(g.id)}">✏️ Uredi kviz</a>
       <button class="btn" type="button" id="r-skrij">🙈 Skrij kviz</button></div>
     ${vpr.length ? `<div class="sec-h"><h2>Predogled vprašanj</h2></div>${htmlVprasanj(vpr, true)}` : ''}`;
-  const stranska = `<div class="box"><h3>👨‍🏫 Učiteljski pogled</h3><p class="note" style="margin:0">Učenci tukaj rešujejo kviz. Po oddaji vidijo samo svoje točke.</p></div>
+  const stranska = `<div class="box"><h3>👨‍🏫 Učiteljski pogled</h3><p class="note" style="margin:0">Učenci tukaj rešujejo kviz. Po oddaji vidijo samo svoje točke. Kdor ima manj kot 50 %, reši znova (ta poskus se ne shrani).</p></div>
     ${vpr.length ? `<div class="box"><h3>Uspešnost po vprašanjih</h3><ul class="bars">${poVpr.map((x, i) => `<li><span>Vprašanje ${i + 1}</span><span class="b"><i style="width:${n ? x : 0}%"></i></span><b>${n ? x + '%' : '–'}</b></li>`).join('')}</ul></div>` : ''}`;
   okvirKviza(p, g, vsebina, stranska);
   document.getElementById('r-osvezi').addEventListener('click', () => rezultatiKviza(p, g, h));
