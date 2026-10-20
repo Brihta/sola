@@ -520,7 +520,10 @@ const PREDMETI = [
       { ime: 'Slepo tipkanje', opis: 'Drža telesa in postavitev prstov', url: 'slike/slepo-tipkanje.jpg', slika: 'slike/slepo-tipkanje.jpg', c1: '#ef4444', c2: '#f97316' },
     ],
     otroci: [
-      { id: 'racunalnistvo-4',   ime: 'Računalništvo 4',   kratko: '4. razred',    koda: 'RAČ 4',   c1: '#0ea5e9', c2: '#6366f1', emoji: '🖱️', opis: '4. razred' },
+      { id: 'racunalnistvo-4',   ime: 'Računalništvo 4',   kratko: '4. razred',    koda: 'RAČ 4',   c1: '#0ea5e9', c2: '#6366f1', emoji: '🖱️', opis: '4. razred',
+        povezave: [
+          { ime: 'Brihta – matematika', opis: 'Vaje iz poštevanke in računanja', url: 'https://brihta.github.io/matematika/', emoji: '🦉', c1: '#6c5ce7', c2: '#a855f7' },
+        ] },
       { id: 'racunalnistvo-5',   ime: 'Računalništvo 5',   kratko: '5. razred',    koda: 'RAČ 5',   c1: '#a855f7', c2: '#ec4899', emoji: '🧩', opis: '5. razred' },
       { id: 'racunalnistvo-6',   ime: 'Računalništvo 6',   kratko: '6. razred',    koda: 'RAČ 6',   c1: '#10b981', c2: '#0ea5e9', emoji: '🤖', opis: '6. razred' },
       { id: 'racunalnistvo-6-9', ime: 'Računalništvo 6–9', kratko: '6.–9. razred', koda: 'RAČ 6–9', c1: '#f97316', c2: '#e11d48', emoji: '🧑‍💻', opis: 'od 6. do 9. razreda' },
@@ -731,10 +734,15 @@ function stranSkupina(p) {
         <div><h1>${esc(p.ime)}</h1><p>V kateri razred hodiš?</p></div></div>
     </section>
     <div class="cards">${p.otroci.map(kartica).join('')}</div>
-    ${p.povezave ? `<div class="sec-h" style="margin-top:34px"><h2>Uporabne povezave</h2></div>
+    ${povezaveHtml(p)}`;
+}
+
+/* Razdelek »Uporabne povezave« (skupina ali posamezen predmet z lastnostjo povezave). */
+function povezaveHtml(p) {
+  return p.povezave && p.povezave.length ? `<div class="sec-h" style="margin-top:34px"><h2>Uporabne povezave</h2></div>
     <div class="links">${p.povezave.map(l => `<a class="link" style="${barve(l)}" href="${esc(l.url)}" target="_blank" rel="noopener">
       <span class="ln-art">${l.slika ? `<img src="${esc(l.slika)}" alt="">` : `<span aria-hidden="true">${l.emoji}</span>`}</span>
-      <span class="nm"><b>${esc(l.ime)}</b><small>${esc(l.opis)}</small></span>${SVG.ext}</a>`).join('')}</div>` : ''}`;
+      <span class="nm"><b>${esc(l.ime)}</b><small>${esc(l.opis)}</small></span>${SVG.ext}</a>`).join('')}</div>` : '';
 }
 
 function poTednih(seznam) {
@@ -811,6 +819,7 @@ function stranPredmet(p) {
         <ul class="items">${t.gradiva.map(g => vrsticaGradiva(p, g)).join('')}</ul>
       </section>`).join('');
   }
+  vsebina += povezaveHtml(p);
   okvirPredmeta(p, 'domov', vsebina, null);
   $main.querySelectorAll('.week-h').forEach(b => b.addEventListener('click', () => {
     const m = b.parentElement; m.classList.toggle('closed'); b.setAttribute('aria-expanded', !m.classList.contains('closed'));
