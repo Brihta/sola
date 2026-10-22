@@ -3,23 +3,23 @@
   "anglescina-3": [],
   "gasilci": [
    {
-    "ime": "5. ura Tkalski vozel",
+    "ime": "5. ura Jamborski vozel",
     "vrsta": "ura",
     "datum": "2026-10-22T08:00:00+02:00",
-    "pot": "gradiva/gasilci/2026-10-22 5. ura Tkalski vozel",
+    "pot": "gradiva/gasilci/2026-10-22 5. ura Jamborski vozel",
     "koraki": [
      {
       "ime": "Navodila",
       "vrsta": "besedilo",
-      "pot": "gradiva/gasilci/2026-10-22 5. ura Tkalski vozel/1 Navodila.md",
-      "velikost": 971,
-      "besedilo": "## 🚒 Današnji izziv\n\nVrv je prekratka, zraven pa je samo tanjša vrvica. Kako ju povežeš, da drži? Danes se naučiš **tkalski vozel**.\n\n## 🎯 Cilj ure\n\nZ **tkalskim vozlom** povežem dve vrvi, tudi če sta različno debeli.\n\n## ✅ Uspešen sem, če …\n\n- debelejša vrv naredi lok, tanjša se ovije okoli njega,\n- sta prosta konca na **isti strani**,\n- vozel ob potegu drži,\n- znam korake povedati sošolcu.\n\n## 🗺️ Kaj bomo delali\n\n1. **Zbor:** postavimo se v vrsto, povelje mirno, pozdrav »Na pomoč!«\n2. **Ogled:** predstavitev gasilske brigade Maribor.\n3. **Ponovitev:** tesarski vozel na naslonjalu stola.\n4. **Tkalski vozel:** v paru, eden veže, drugi bere korake z delovnega lista in preveri.\n5. **Igra Najdaljša vrv:** ekipa poveže čim več vrvic. Šteje samo vrv, kjer so vsi vozli pravilni.\n\nNa koncu vrvice razvežemo, preštejemo in pospravimo.\n\n**Pravilo:** vrvi vežemo na mizi. Nikoli okoli sebe ali sošolca. Med seboj ne vlečemo.\n"
+      "pot": "gradiva/gasilci/2026-10-22 5. ura Jamborski vozel/1 Navodila.md",
+      "velikost": 1265,
+      "besedilo": "## 🚒 Današnji izziv\n\nGasilec mora vrv hitro privezati na drog, cev ali orodje in jo prav tako hitro odvezati. Kateri vozel to zmore? **Jamborski vozel.** Potem pa generalka: znaš zavezati **vse tri vozle**?\n\n## 🎯 Cilj ure\n\nNa drog zavežem **jamborski vozel** in vem, čemu ga gasilec uporabi. Pravilno zavežem **vse tri vozle**, ki smo se jih naučili.\n\n## ✅ Uspešen sem, če …\n\n- pri jamborskem vidim **dva ovoja in križ** spredaj in vozel ne zdrsne,\n- jamborski zavežem na različnih predmetih,\n- na generalki pravilno zavežem tesarski, tkalski in jamborski vozel,\n- napačen vozel sam popravim in poskusim znova.\n\n## 🗺️ Kaj bomo delali\n\n1. **Zbor:** postavimo se v vrsto, povelje mirno, pozdrav »Na pomoč!«\n2. **Iskra:** kaj bi gasilec privezal ali dvignil z vrvjo?\n3. **Jamborski vozel:** v paru na drogu, eden veže, drugi bere korake z delovnega lista in preveri.\n4. **Postaje:** jamborski na drogu, ročaju vedra in kosu cevi.\n5. **Generalka za štafeto:** ekipa veže vse tri vozle po vrsti, sodnik iz druge ekipe preveri. Šteje pravilnost, ne hitrost.\n\nNa koncu vrvice preštejemo, drogove in opremo pospravimo.\n\n**Pravilo:** vozel vežemo samo na drogu, stolu ali mizi. Nikoli okoli sebe ali sošolca. Na drog se ne naslanjamo.\n"
      },
      {
       "ime": "Delovni list",
       "vrsta": "word",
-      "pot": "gradiva/gasilci/2026-10-22 5. ura Tkalski vozel/2 Delovni list.docx",
-      "velikost": 10994
+      "pot": "gradiva/gasilci/2026-10-22 5. ura Jamborski vozel/2 Delovni list.docx",
+      "velikost": 11227
      }
     ]
    }
@@ -101,5 +101,5 @@
   "slovenscina-3": [],
   "svetovni-popotniki": []
  },
- "posodobljeno": "2026-10-22T07:12:41+00:00"
+ "posodobljeno": "2026-10-22T07:38:46+00:00"
 }
