@@ -1,7 +1,29 @@
 {
  "predmeti": {
   "anglescina-3": [],
-  "gasilci": [],
+  "gasilci": [
+   {
+    "ime": "4. ura Tkalski vozel",
+    "vrsta": "ura",
+    "datum": "2026-10-22T08:00:00+02:00",
+    "pot": "gradiva/gasilci/2026-10-22 4. ura Tkalski vozel",
+    "koraki": [
+     {
+      "ime": "Navodila",
+      "vrsta": "besedilo",
+      "pot": "gradiva/gasilci/2026-10-22 4. ura Tkalski vozel/1 Navodila.md",
+      "velikost": 971,
+      "besedilo": "## 🚒 Današnji izziv\n\nVrv je prekratka, zraven pa je samo tanjša vrvica. Kako ju povežeš, da drži? Danes se naučiš **tkalski vozel**.\n\n## 🎯 Cilj ure\n\nZ **tkalskim vozlom** povežem dve vrvi, tudi če sta različno debeli.\n\n## ✅ Uspešen sem, če …\n\n- debelejša vrv naredi lok, tanjša se ovije okoli njega,\n- sta prosta konca na **isti strani**,\n- vozel ob potegu drži,\n- znam korake povedati sošolcu.\n\n## 🗺️ Kaj bomo delali\n\n1. **Zbor:** postavimo se v vrsto, povelje mirno, pozdrav »Na pomoč!«\n2. **Ogled:** predstavitev gasilske brigade Maribor.\n3. **Ponovitev:** tesarski vozel na naslonjalu stola.\n4. **Tkalski vozel:** v paru, eden veže, drugi bere korake z delovnega lista in preveri.\n5. **Igra Najdaljša vrv:** ekipa poveže čim več vrvic. Šteje samo vrv, kjer so vsi vozli pravilni.\n\nNa koncu vrvice razvežemo, preštejemo in pospravimo.\n\n**Pravilo:** vrvi vežemo na mizi. Nikoli okoli sebe ali sošolca. Med seboj ne vlečemo.\n"
+     },
+     {
+      "ime": "Delovni list",
+      "vrsta": "word",
+      "pot": "gradiva/gasilci/2026-10-22 4. ura Tkalski vozel/2 Delovni list.docx",
+      "velikost": 10994
+     }
+    ]
+   }
+  ],
   "matematika-3": [],
   "racunalnistvo-4": [],
   "racunalnistvo-5": [
@@ -79,5 +101,5 @@
   "slovenscina-3": [],
   "svetovni-popotniki": []
  },
- "posodobljeno": "2026-10-16T09:59:32+02:00"
+ "posodobljeno": "2026-10-22T04:55:57+00:00"
 }
