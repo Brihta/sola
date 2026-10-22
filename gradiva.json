@@ -3,6 +3,27 @@
   "anglescina-3": [],
   "gasilci": [
    {
+    "ime": "5. ura Jamborski vozel",
+    "vrsta": "ura",
+    "datum": "2026-11-05T08:00:00+02:00",
+    "pot": "gradiva/gasilci/2026-11-05 5. ura Jamborski vozel",
+    "koraki": [
+     {
+      "ime": "Navodila",
+      "vrsta": "besedilo",
+      "pot": "gradiva/gasilci/2026-11-05 5. ura Jamborski vozel/1 Navodila.md",
+      "velikost": 971,
+      "besedilo": "## 🚒 Današnji izziv\n\nGasilec mora vrv hitro privezati na drog, cev ali orodje in jo prav tako hitro odvezati. Kateri vozel to zmore? **Jamborski vozel.**\n\n## 🎯 Cilj ure\n\nNa drog zavežem **jamborski vozel** in vem, čemu ga gasilec uporabi.\n\n## ✅ Uspešen sem, če …\n\n- vidim **dva ovoja in križ** spredaj,\n- gresta konca vsak na svojo stran,\n- vozel ob potegu ne zdrsne po drogu,\n- znam korake povedati sošolcu.\n\n## 🗺️ Kaj bomo delali\n\n1. **Zbor:** postavimo se v vrsto, povelje mirno, pozdrav »Na pomoč!«\n2. **Iskra:** kje gasilec privezuje vrv na drog ali orodje.\n3. **Ponovitev:** tkalski vozel na mizi.\n4. **Jamborski vozel:** v paru na drogu, eden veže, drugi bere korake z delovnega lista in preveri.\n5. **Igra Vozel na drogu:** trije poskusi, sodnik preveri. Šteje pravilnost, ne hitrost.\n\nNa koncu vrvice preštejemo, drogove pospravimo.\n\n**Pravilo:** vozel vežemo samo na drogu. Nikoli okoli sebe ali sošolca. Na drog se ne naslanjamo.\n"
+     },
+     {
+      "ime": "Delovni list",
+      "vrsta": "word",
+      "pot": "gradiva/gasilci/2026-11-05 5. ura Jamborski vozel/2 Delovni list.docx",
+      "velikost": 10924
+     }
+    ]
+   },
+   {
     "ime": "4. ura Tkalski vozel",
     "vrsta": "ura",
     "datum": "2026-10-22T08:00:00+02:00",
@@ -101,5 +122,5 @@
   "slovenscina-3": [],
   "svetovni-popotniki": []
  },
- "posodobljeno": "2026-10-22T04:55:57+00:00"
+ "posodobljeno": "2026-10-22T05:04:52+00:00"
 }
