@@ -69,32 +69,32 @@
       "ime": "Navodila",
       "vrsta": "besedilo",
       "pot": "gradiva/racunalnistvo-6-9/2026-10-23 7. ura Zapis algoritma/1 Navodila.md",
-      "velikost": 654,
-      "besedilo": "## 🎯 Cilj ure\n\nNapišem **algoritem**: natančna navodila, ki jih robot ali računalnik izvede brez napake.\n\n## ✅ Uspešen sem, če …\n\n- uredim korake v pravi vrstni red,\n- napišem program za robota in ga skrajšam z zanko,\n- preberem diagram poteka.\n\n## 🗺️ Kako delaš\n\n1. Vsak korak je ena stran. Beri in klikaj **na strani**.\n2. Ko rešiš nalogo, se odklene zeleni gumb **Naprej** na strani.\n3. Ko piše **🎉 Končano!**, klikni zeleni gumb **Naprej** pod okvirjem.\n4. Če se zatakneš, klikni **💡 Namig**. Po namigih lahko pogledaš rešitev.\n\nDelaš sam, s svojo hitrostjo. **★★ Izziv** na koncu je za tiste, ki želijo več.\n"
+      "velikost": 690,
+      "besedilo": "## 🎯 Cilj ure\n\nNapišem **algoritem**: natančna navodila, ki jih robot ali računalnik izvede brez napake.\n\n## ✅ Uspešen sem, če …\n\n- uredim korake v pravi vrstni red,\n- napišem program za robota in ga skrajšam z zanko,\n- preberem diagram poteka.\n\n## 🗺️ Kako delaš\n\n1. Vsak korak je ena stran. Beri in klikaj **na strani**.\n2. Ko rešiš nalogo, se odklene zeleni gumb **Naslednja naloga**.\n3. Ko piše **🎉 Končano!**, se odklene velik gumb **Naprej** spodaj desno. Z njim greš na naslednji korak.\n4. Če se zatakneš, klikni **💡 Namig**. Po namigih lahko pogledaš rešitev.\n\nDelaš sam, s svojo hitrostjo. **★★ Izziv** na koncu je za tiste, ki želijo več.\n"
      },
      {
       "ime": "Kaj je algoritem",
       "vrsta": "html",
       "pot": "gradiva/racunalnistvo-6-9/2026-10-23 7. ura Zapis algoritma/2 Kaj je algoritem.html",
-      "velikost": 33761
+      "velikost": 33974
      },
      {
       "ime": "Program za mrežo",
       "vrsta": "html",
       "pot": "gradiva/racunalnistvo-6-9/2026-10-23 7. ura Zapis algoritma/3 Program za mrežo.html",
-      "velikost": 34777
+      "velikost": 34993
      },
      {
       "ime": "Diagram poteka",
       "vrsta": "html",
       "pot": "gradiva/racunalnistvo-6-9/2026-10-23 7. ura Zapis algoritma/4 Diagram poteka.html",
-      "velikost": 33480
+      "velikost": 33696
      },
      {
       "ime": "Zapis v zvezek",
       "vrsta": "html",
       "pot": "gradiva/racunalnistvo-6-9/2026-10-23 7. ura Zapis algoritma/5 Zapis v zvezek.html",
-      "velikost": 196176
+      "velikost": 196392
      },
      {
       "ime": "Kviz",
@@ -105,7 +105,7 @@
       "ime": "Izziv Najdi največje",
       "vrsta": "html",
       "pot": "gradiva/racunalnistvo-6-9/2026-10-23 7. ura Zapis algoritma/7 Izziv Najdi največje.html",
-      "velikost": 32565
+      "velikost": 32781
      }
     ]
    },
@@ -151,5 +151,5 @@
   "slovenscina-3": [],
   "svetovni-popotniki": []
  },
- "posodobljeno": "2026-10-23T06:41:39+00:00"
+ "posodobljeno": "2026-10-23T06:48:44+00:00"
 }
