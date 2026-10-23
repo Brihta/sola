@@ -1,22 +1,18 @@
-## 🔢 Današnji izziv
-
-Mislim si število od 1 do 100. Kako bi igro **Ugani število** razložil računalniku tako natančno, da je ne bi mogel narobe razumeti?
-
 ## 🎯 Cilj ure
 
-Algoritem **zapišem natančno**: s koraki po vrsti, s psevdokodo ali z diagramom poteka.
+Napišem **algoritem**: natančna navodila, ki jih robot ali računalnik izvede brez napake.
 
 ## ✅ Uspešen sem, če …
 
-- zapišem algoritem, ki ga sosed izvede brez vprašanj,
-- algoritem **preberem sosedu**, preden ga izvede,
-- najdem **krajši zapis** z zanko »ponovi«.
+- uredim korake v pravi vrstni red,
+- napišem program za robota in ga skrajšam z zanko,
+- preberem diagram poteka.
 
-## 🗺️ Kaj bomo delali
+## 🗺️ Kako delaš
 
-1. **Zapis:** preberi ga in ga prepiši v zvezek.
-2. **Razlaga:** trije načini zapisa algoritma in diagram poteka.
-3. **Delovni list:** nalogo 2 delaš v paru, ostale po svoji ravni (★, ★★, ★★★).
-4. **Kviz:** reši ga sam. Imaš en poskus.
+1. Vsak korak je ena stran. Beri in klikaj **na strani**.
+2. Ko rešiš nalogo, se odklene zeleni gumb **Naprej** na strani.
+3. Ko piše **🎉 Končano!**, klikni zeleni gumb **Naprej** pod okvirjem.
+4. Če se zatakneš, klikni **💡 Namig**. Po namigih lahko pogledaš rešitev.
 
-Na koncu se odjavi in pospravi svoje mesto.
+Delaš sam, s svojo hitrostjo. **★★ Izziv** na koncu je za tiste, ki želijo več.
