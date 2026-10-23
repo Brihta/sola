@@ -69,31 +69,43 @@
       "ime": "Navodila",
       "vrsta": "besedilo",
       "pot": "gradiva/racunalnistvo-6-9/2026-10-23 7. ura Zapis algoritma/1 Navodila.md",
-      "velikost": 785,
-      "besedilo": "## 🔢 Današnji izziv\n\nMislim si število od 1 do 100. Kako bi igro **Ugani število** razložil računalniku tako natančno, da je ne bi mogel narobe razumeti?\n\n## 🎯 Cilj ure\n\nAlgoritem **zapišem natančno**: s koraki po vrsti, s psevdokodo ali z diagramom poteka.\n\n## ✅ Uspešen sem, če …\n\n- zapišem algoritem, ki ga sosed izvede brez vprašanj,\n- algoritem **preberem sosedu**, preden ga izvede,\n- najdem **krajši zapis** z zanko »ponovi«.\n\n## 🗺️ Kaj bomo delali\n\n1. **Zapis:** preberi ga in ga prepiši v zvezek.\n2. **Razlaga:** trije načini zapisa algoritma in diagram poteka.\n3. **Delovni list:** nalogo 2 delaš v paru, ostale po svoji ravni (★, ★★, ★★★).\n4. **Kviz:** reši ga sam. Imaš en poskus.\n\nNa koncu se odjavi in pospravi svoje mesto.\n"
+      "velikost": 654,
+      "besedilo": "## 🎯 Cilj ure\n\nNapišem **algoritem**: natančna navodila, ki jih robot ali računalnik izvede brez napake.\n\n## ✅ Uspešen sem, če …\n\n- uredim korake v pravi vrstni red,\n- napišem program za robota in ga skrajšam z zanko,\n- preberem diagram poteka.\n\n## 🗺️ Kako delaš\n\n1. Vsak korak je ena stran. Beri in klikaj **na strani**.\n2. Ko rešiš nalogo, se odklene zeleni gumb **Naprej** na strani.\n3. Ko piše **🎉 Končano!**, klikni zeleni gumb **Naprej** pod okvirjem.\n4. Če se zatakneš, klikni **💡 Namig**. Po namigih lahko pogledaš rešitev.\n\nDelaš sam, s svojo hitrostjo. **★★ Izziv** na koncu je za tiste, ki želijo več.\n"
      },
      {
-      "ime": "Zapis",
-      "vrsta": "word",
-      "pot": "gradiva/racunalnistvo-6-9/2026-10-23 7. ura Zapis algoritma/2 Zapis.docx",
-      "velikost": 124838
+      "ime": "Kaj je algoritem",
+      "vrsta": "html",
+      "pot": "gradiva/racunalnistvo-6-9/2026-10-23 7. ura Zapis algoritma/2 Kaj je algoritem.html",
+      "velikost": 33761
      },
      {
-      "ime": "Razlaga",
-      "vrsta": "pdf",
-      "pot": "gradiva/racunalnistvo-6-9/2026-10-23 7. ura Zapis algoritma/3 Razlaga.pdf",
-      "velikost": 165210
+      "ime": "Program za mrežo",
+      "vrsta": "html",
+      "pot": "gradiva/racunalnistvo-6-9/2026-10-23 7. ura Zapis algoritma/3 Program za mrežo.html",
+      "velikost": 34777
      },
      {
-      "ime": "Delovni list",
-      "vrsta": "word",
-      "pot": "gradiva/racunalnistvo-6-9/2026-10-23 7. ura Zapis algoritma/4 Delovni list.docx",
-      "velikost": 12514
+      "ime": "Diagram poteka",
+      "vrsta": "html",
+      "pot": "gradiva/racunalnistvo-6-9/2026-10-23 7. ura Zapis algoritma/4 Diagram poteka.html",
+      "velikost": 33480
+     },
+     {
+      "ime": "Zapis v zvezek",
+      "vrsta": "html",
+      "pot": "gradiva/racunalnistvo-6-9/2026-10-23 7. ura Zapis algoritma/5 Zapis v zvezek.html",
+      "velikost": 196176
      },
      {
       "ime": "Kviz",
       "vrsta": "kviz",
       "kviz": "zapis-algoritma"
+     },
+     {
+      "ime": "Izziv Najdi največje",
+      "vrsta": "html",
+      "pot": "gradiva/racunalnistvo-6-9/2026-10-23 7. ura Zapis algoritma/7 Izziv Najdi največje.html",
+      "velikost": 32565
      }
     ]
    },
@@ -139,5 +151,5 @@
   "slovenscina-3": [],
   "svetovni-popotniki": []
  },
- "posodobljeno": "2026-10-23T05:03:24+00:00"
+ "posodobljeno": "2026-10-23T06:41:39+00:00"
 }
