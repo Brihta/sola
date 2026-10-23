@@ -294,6 +294,10 @@
     .steps.mini { flex-basis: 100%; margin: 4px 0 0; }
     .steps.mini .step a { padding: 7px 10px; }
     .steps.mini .n { width: 26px; height: 26px; font-size: .85rem; }
+    .steps.mini .step.done .n { font-size: 0; }
+    .steps.mini .step.done .n::after { font-size: .85rem; }
+    .steps.mini { min-width: 0; max-width: 100%; flex-wrap: wrap; }
+    .steps.mini .step { flex: 1 1 130px; }
     .step-h { margin-bottom: 12px; }
     .step-h h2 { font-size: 1.5rem; flex: 1; min-width: 160px; }
     .badge { background: color-mix(in srgb, var(--c1) 14%, white); color: color-mix(in srgb, var(--c1) 70%, black); font-weight: 800; font-size: .8rem; text-transform: uppercase; letter-spacing: .05em; padding: 5px 12px; border-radius: 999px; }
