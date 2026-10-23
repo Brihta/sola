@@ -54,6 +54,10 @@ info(naslov, html)                       # razlaga; razredi: big, box, warn, sma
                   # diagram »Ugani število«; vozlišča: z i v e l m1 m2 b k
 {'type':'guess',  'title', 'intro', 'hints'}               # igra Ugani število 1 do 100
 {'type':'cards',  'title', 'n':8, 'hints'}                 # najdi največje med obrnjenimi kartami
+{'type':'keys',   'title', 'intro', 'keys':'asdfjklč', 'n':25, 'min':85, 'win', 'hints'}
+                  # pritisni označeno tipko; zaslonska tipkovnica z barvo prsta; ';' šteje kot č
+{'type':'type',   'title', 'intro', 'text':'...', 'min':90, 'save':True|'compare':True, 'win', 'hints'}
+                  # natipkaj vrstico; natančnost (Levenshtein) in hitrost; save = izhodišče, compare = primerjava z njim
 ```
 
 Vsak zaslon lahko ima še `stars` in `optional`. Na koncu vsake strani se sam doda

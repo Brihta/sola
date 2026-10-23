@@ -356,6 +356,97 @@
     return { solve: () => { cs.forEach((d, k) => { d.textContent = nums[k]; d.classList.add('up'); }); mem = Math.max(...nums); memEl.textContent = mem; ctrl.innerHTML = ''; } };
   };
 
+  /* ---------- tipkovnica (slovenska QWERTZ) ---------- */
+  const KB = [['q','w','e','r','t','z','u','i','o','p','š','đ'], ['a','s','d','f','g','h','j','k','l','č','ć','ž'], ['y','x','c','v','b','n','m',',','.','-']];
+  const FING = { q:'lm',a:'lm',y:'lm', w:'lp',s:'lp',x:'lp', e:'ls',d:'ls',c:'ls', r:'lk',f:'lk',v:'lk',t:'lk',g:'lk',b:'lk',
+    z:'dk',h:'dk',n:'dk',u:'dk',j:'dk',m:'dk', i:'ds',k:'ds',',':'ds', o:'dp',l:'dp','.':'dp', p:'dm','č':'dm','š':'dm','đ':'dm','ć':'dm','ž':'dm','-':'dm', ' ':'pa' };
+  const FNAME = { lm:'levi mezinec', lp:'levi prstanec', ls:'levi sredinec', lk:'levi kazalec', dk:'desni kazalec', ds:'desni sredinec', dp:'desni prstanec', dm:'desni mezinec', pa:'palec' };
+  // Če je na računalniku nastavljena angleška razporeditev, tipka Č pošlje »;«.
+  const norm = (k) => { k = (k || '').toLowerCase(); return k === ';' ? 'č' : k; };
+  function keyboard() {
+    const w = $(`<div class="kb"></div>`);
+    KB.forEach((row, r) => {
+      const d = $(`<div class="kbr r${r}"></div>`);
+      row.forEach((k) => d.appendChild($(`<span class="kk f-${FING[k]}${k === 'f' || k === 'j' ? ' bump' : ''}" data-k="${esc(k)}">${esc(k.toUpperCase())}</span>`)));
+      w.appendChild(d);
+    });
+    w.appendChild($(`<div class="kbr"><span class="kk f-pa space" data-k=" ">presledek</span></div>`));
+    w.mark = (k) => { w.querySelectorAll('.kk').forEach((e) => e.classList.toggle('hot', e.dataset.k === k)); };
+    return w;
+  }
+
+  // Pritisni označeno tipko. s.keys: niz dovoljenih tipk, s.n: koliko pravilnih, s.min: najmanjša natančnost v %.
+  TYPES.keys = (s, c) => {
+    const pool = (s.keys || 'asdfjklč').split('');
+    const need = s.n || 20, min = s.min || 85;
+    const w = $(`<div class="keys"><div class="target"><span class="tkey"></span><span class="tfing"></span></div>
+      <div class="kstat">Pravilno: <b class="ok">0</b> / ${need} &nbsp;·&nbsp; Narobe: <b class="no">0</b></div></div>`);
+    c.appendChild(w); const kb = keyboard(); c.appendChild(kb);
+    const tk = w.querySelector('.tkey'), tf = w.querySelector('.tfing'), okE = w.querySelector('.ok'), noE = w.querySelector('.no');
+    let ok = 0, no = 0, want = '', fin = false;
+    const pick = () => { let k; do { k = pool[Math.floor(Math.random() * pool.length)]; } while (k === want && pool.length > 1); want = k;
+      tk.textContent = k === ' ' ? '␣' : k.toUpperCase(); tf.textContent = FNAME[FING[k]]; if (s.showKb !== false) kb.mark(k); };
+    const onkey = (e) => {
+      if (fin || !document.body.contains(w)) { document.removeEventListener('keydown', onkey); return; }
+      if (e.key.length !== 1 && e.key !== ';') return;
+      e.preventDefault();
+      if (norm(e.key) === want) { ok++; okE.textContent = ok; tk.classList.remove('miss'); }
+      else { no++; noE.textContent = no; tk.classList.remove('miss'); void tk.offsetWidth; tk.classList.add('miss'); return; }
+      if (ok >= need) {
+        const acc = Math.round(100 * ok / (ok + no));
+        if (acc >= min) { fin = true; kb.mark(''); tk.textContent = '✓'; tf.textContent = ''; done(`✅ Natančnost: <b>${acc} %</b>. ${s.win || 'Odlično!'}`); }
+        else { feedback(`Natančnost je ${acc} %, potrebuješ vsaj ${min} %. Začni znova in počasneje. Natančnost je pomembnejša od hitrosti.`, 'bad'); ok = 0; no = 0; okE.textContent = 0; noE.textContent = 0; pick(); }
+        return;
+      }
+      pick();
+    };
+    document.addEventListener('keydown', onkey); pick();
+    feedback('Postavi prste na osnovno vrsto in pritisni označeno tipko. Ne glej na tipkovnico, glej sem.', '');
+    return { solve: () => { fin = true; document.removeEventListener('keydown', onkey); kb.mark(''); } };
+  };
+
+  // Natipkaj besedilo. s.text, s.min (%), s.save: shrani kot izhodišče, s.compare: primerjaj z izhodiščem.
+  const BKEY = 'brihta_tipkanje_izhodisce';
+  function lev(a, b) {
+    const m = a.length, n = b.length; let p = Array.from({ length: n + 1 }, (_, j) => j);
+    for (let i = 1; i <= m; i++) { const q = [i]; for (let j = 1; j <= n; j++) q[j] = Math.min(p[j] + 1, q[j - 1] + 1, p[j - 1] + (a[i - 1] === b[j - 1] ? 0 : 1)); p = q; }
+    return p[n];
+  }
+  TYPES.type = (s, c) => {
+    const min = s.min === undefined ? 90 : s.min;
+    const w = $(`<div class="typ"><div class="ttext"></div>
+      <textarea rows="2" spellcheck="false" autocomplete="off" autocapitalize="off" placeholder="Tipkaj tukaj …"></textarea>
+      <div class="row"><button class="btn go2">Preveri</button> <span class="small">ali pritisni Enter</span></div></div>`);
+    c.appendChild(w);
+    const tt = w.querySelector('.ttext'), ta = w.querySelector('textarea'), btn = w.querySelector('.go2');
+    tt.innerHTML = [...s.text].map((ch) => `<span>${ch === ' ' ? '&nbsp;' : esc(ch)}</span>`).join('');
+    const spans = tt.querySelectorAll('span');
+    let t0 = 0, fin = false;
+    ta.onpaste = (e) => { e.preventDefault(); feedback('Lepljenje ne šteje. Natipkaj sam/a. 🙂', 'hint'); };
+    ta.oninput = () => {
+      if (!t0 && ta.value) t0 = Date.now();
+      const v = ta.value.replace(/;/g, 'č').replace(/:/g, 'Č');
+      spans.forEach((sp, i) => { sp.className = i < v.length ? (v[i] === s.text[i] ? 'tg' : 'tb') : i === v.length ? 'tc' : ''; });
+    };
+    const check = () => {
+      if (fin) return;
+      const v = ta.value.replace(/\n/g, '').replace(/;/g, 'č').replace(/:/g, 'Č').trimEnd();
+      if (v.length < s.text.length * 0.8) { feedback('Natipkaj celo vrstico do konca, nato klikni Preveri.', 'hint'); return; }
+      const acc = Math.max(0, Math.round(100 * (1 - lev(v, s.text) / s.text.length)));
+      const sec = Math.max(1, (Date.now() - (t0 || Date.now())) / 1000);
+      const wpm = Math.round((v.length / 5) / (sec / 60));
+      let msg = `Natančnost: <b>${acc} %</b> &nbsp;·&nbsp; hitrost: <b>${wpm}</b> besed na minuto`;
+      if (s.save) { try { if (!localStorage.getItem(BKEY)) localStorage.setItem(BKEY, JSON.stringify({ acc, wpm })); } catch (e) {} }
+      if (s.compare) { let b = null; try { b = JSON.parse(localStorage.getItem(BKEY) || 'null'); } catch (e) {}
+        if (b) msg += `<br>Na začetku ure: <b>${b.acc} %</b> in <b>${b.wpm}</b> besed na minuto. ${acc >= b.acc ? 'Natančnost se je izboljšala ali ostala enaka. 💪' : 'Natančnost je nižja kot na začetku: upočasni in ne glej tipk.'}`; }
+      if (acc >= min) { fin = true; ta.disabled = true; btn.disabled = true; done('✅ ' + msg + (s.win ? '<br>' + s.win : '')); }
+      else { feedback(`${msg}<br>❌ Potrebuješ vsaj <b>${min} %</b>. Pobriši in poskusi znova, počasneje.`, 'bad'); ta.value = ''; t0 = 0; ta.oninput(); ta.focus(); }
+    };
+    btn.onclick = check; ta.onkeydown = (e) => { if (e.key === 'Enter') { e.preventDefault(); check(); } };
+    ta.oninput(); setTimeout(() => ta.focus(), 50);
+    return { solve: () => { fin = true; ta.value = s.text; ta.oninput(); ta.disabled = true; btn.disabled = true; } };
+  };
+
   tell('zacetek');
   show(cur);
 })();
