@@ -358,13 +358,14 @@
 
   /* ---------- tipkovnica (slovenska QWERTZ) ---------- */
   const KB = [['q','w','e','r','t','z','u','i','o','p','š','đ'], ['a','s','d','f','g','h','j','k','l','č','ć','ž'], ['y','x','c','v','b','n','m',',','.','-']];
-  const FING = { q:'lm',a:'lm',y:'lm', w:'lp',s:'lp',x:'lp', e:'ls',d:'ls',c:'ls', r:'lk',f:'lk',v:'lk',t:'lk',g:'lk',b:'lk',
+  const FING = { '1':'lm','2':'lp','3':'ls','4':'lk','5':'lk','6':'dk','7':'dk','8':'ds','9':'dp','0':'dm', q:'lm',a:'lm',y:'lm', w:'lp',s:'lp',x:'lp', e:'ls',d:'ls',c:'ls', r:'lk',f:'lk',v:'lk',t:'lk',g:'lk',b:'lk',
     z:'dk',h:'dk',n:'dk',u:'dk',j:'dk',m:'dk', i:'ds',k:'ds',',':'ds', o:'dp',l:'dp','.':'dp', p:'dm','č':'dm','š':'dm','đ':'dm','ć':'dm','ž':'dm','-':'dm', ' ':'pa' };
   const FNAME = { lm:'levi mezinec', lp:'levi prstanec', ls:'levi sredinec', lk:'levi kazalec', dk:'desni kazalec', ds:'desni sredinec', dp:'desni prstanec', dm:'desni mezinec', pa:'palec' };
   // Če je na računalniku nastavljena angleška razporeditev, tipka Č pošlje »;«.
   const norm = (k) => { k = (k || '').toLowerCase(); return k === ';' ? 'č' : k; };
-  function keyboard() {
+  function keyboard(digits) {
     const w = $(`<div class="kb"></div>`);
+    if (digits) { const d = $(`<div class="kbr rn"></div>`); '1234567890'.split('').forEach((k) => d.appendChild($(`<span class="kk f-${FING[k]}" data-k="${k}">${k}</span>`))); w.appendChild(d); }
     KB.forEach((row, r) => {
       const d = $(`<div class="kbr r${r}"></div>`);
       row.forEach((k) => d.appendChild($(`<span class="kk f-${FING[k]}${k === 'f' || k === 'j' ? ' bump' : ''}" data-k="${esc(k)}">${esc(k.toUpperCase())}</span>`)));
@@ -381,7 +382,7 @@
     const need = s.n || 20, min = s.min || 85;
     const w = $(`<div class="keys"><div class="target"><span class="tkey"></span><span class="tfing"></span></div>
       <div class="kstat">Pravilno: <b class="ok">0</b> / ${need} &nbsp;·&nbsp; Narobe: <b class="no">0</b></div></div>`);
-    c.appendChild(w); const kb = keyboard(); c.appendChild(kb);
+    c.appendChild(w); const kb = keyboard(s.digits || /[0-9]/.test(pool.join(''))); c.appendChild(kb);
     const tk = w.querySelector('.tkey'), tf = w.querySelector('.tfing'), okE = w.querySelector('.ok'), noE = w.querySelector('.no');
     let ok = 0, no = 0, want = '', fin = false;
     const pick = () => { let k; do { k = pool[Math.floor(Math.random() * pool.length)]; } while (k === want && pool.length > 1); want = k;
@@ -445,6 +446,40 @@
     btn.onclick = check; ta.onkeydown = (e) => { if (e.key === 'Enter') { e.preventDefault(); check(); } };
     ta.oninput(); setTimeout(() => ta.focus(), 50);
     return { solve: () => { fin = true; ta.value = s.text; ta.oninput(); ta.disabled = true; btn.disabled = true; } };
+  };
+
+  // Poštevanka s tipkanjem. s.tables: [2,3,...], s.n: koliko pravilnih, s.save/compare: čas
+  const TKEY = 'brihta_postevanka_cas';
+  TYPES.times = (s, c) => {
+    const tabs = s.tables || [2, 3, 4, 5], need = s.n || 10;
+    const w = $(`<div class="times"><div class="tq"></div>
+      <div class="row"><input type="text" inputmode="numeric" autocomplete="off" placeholder="?"><button class="btn go2">OK</button></div>
+      <div class="kstat">Pravilno: <b class="ok">0</b> / ${need} &nbsp;·&nbsp; Napak: <b class="no">0</b></div></div>`);
+    c.appendChild(w); const kb = keyboard(true); c.appendChild(kb);
+    const q = w.querySelector('.tq'), inp = w.querySelector('input'), okE = w.querySelector('.ok'), noE = w.querySelector('.no'), btn = w.querySelector('.go2');
+    let a = 0, b = 0, ok = 0, no = 0, t0 = 0, fin = false, last = '';
+    const next = () => { let k; do { a = tabs[Math.floor(Math.random() * tabs.length)]; b = 1 + Math.floor(Math.random() * 10); k = a + 'x' + b; } while (k === last); last = k;
+      q.innerHTML = `${a} · ${b} = <span class="qm">?</span>`; inp.value = ''; inp.focus(); };
+    const go = () => {
+      if (fin) return; const v = inp.value.trim(); if (!v) return;
+      if (!t0) t0 = Date.now();
+      if (parseInt(v, 10) === a * b) { ok++; okE.textContent = ok; feedback('✅ ' + a + ' · ' + b + ' = ' + (a * b), 'ok'); }
+      else { no++; noE.textContent = no; feedback(`❌ ${a} · ${b} = <b>${a * b}</b>, ne ${esc(v)}. Pogledaj zaslon, ne tipk.`, 'bad'); }
+      if (ok >= need) {
+        fin = true; inp.disabled = true; btn.disabled = true;
+        const sec = Math.round((Date.now() - t0) / 1000);
+        let msg = `Čas: <b>${sec} s</b> &nbsp;·&nbsp; napak: <b>${no}</b>.`;
+        if (s.save) { try { localStorage.setItem(TKEY, String(sec)); } catch (e) {} }
+        if (s.compare) { let p = null; try { p = parseInt(localStorage.getItem(TKEY), 10); } catch (e) {}
+          if (p) msg += ` Prej: <b>${p} s</b>. ${sec < p ? 'Hitrejši/a si! 🚀' : 'Tokrat počasneje, nič hudega: natančnost je pomembnejša.'}`; }
+        done('✅ ' + msg + (s.win ? '<br>' + s.win : ''));
+        return;
+      }
+      next();
+    };
+    btn.onclick = go; inp.onkeydown = (e) => { if (e.key === 'Enter') { e.preventDefault(); go(); } };
+    next(); feedback('Natipkaj rezultat s številkami v zgornji vrsti tipkovnice in pritisni Enter.', '');
+    return { solve: () => { fin = true; inp.disabled = true; btn.disabled = true; q.innerHTML = `${a} · ${b} = ${a * b}`; } };
   };
 
   tell('zacetek');

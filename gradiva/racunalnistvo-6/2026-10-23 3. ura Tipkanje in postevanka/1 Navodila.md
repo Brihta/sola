@@ -1,12 +1,12 @@
 ## 🎯 Cilj ure
 
-Začnem se učiti **slepo tipkanje**: tipkam z desetimi prsti in gledam zaslon, ne tipk.
+Utrjujem **slepo tipkanje** in se naučim tipkati **številke**. Ob tem utrdim **poštevanko**.
 
 ## ✅ Uspešen sem, če …
 
-- pravilno sedim za računalnikom,
-- brez gledanja najdem osnovno vrsto (izboklini na F in J),
-- natipkam vrstico z vsaj 90 % natančnostjo,
+- prste brez gledanja postavim na osnovno vrsto,
+- številke tipkam z zgornjo vrsto in pravim prstom,
+- poštevanko rešujem natančno in vse hitreje,
 - svoj rezultat primerjam s svojim izhodiščem, ne s sošolci.
 
 ## 🗺️ Kako delaš
@@ -16,4 +16,4 @@ Začnem se učiti **slepo tipkanje**: tipkam z desetimi prsti in gledam zaslon, 
 3. Ko piše **🎉 Končano!**, se odklene velik gumb **Naprej** spodaj desno. Z njim greš na naslednji korak.
 4. Če se zatakneš, klikni **💡 Namig**. Po namigih lahko pogledaš rešitev.
 
-Delaš sam, s svojo hitrostjo. Pripravi **zvezek**: z njim boš pokril/a roke in vanj napisal/a zapis. **★★ Izziv** na koncu je za tiste, ki želijo več.
+Delaš sam, s svojo hitrostjo. Pripravi **zvezek** za zapis. **★★ Izziv** na koncu je za tiste, ki želijo več.

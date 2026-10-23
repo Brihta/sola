@@ -56,6 +56,8 @@ info(naslov, html)                       # razlaga; razredi: big, box, warn, sma
 {'type':'cards',  'title', 'n':8, 'hints'}                 # najdi največje med obrnjenimi kartami
 {'type':'keys',   'title', 'intro', 'keys':'asdfjklč', 'n':25, 'min':85, 'win', 'hints'}
                   # pritisni označeno tipko; zaslonska tipkovnica z barvo prsta; ';' šteje kot č
+{'type':'times',  'title', 'intro', 'tables':[2,3,4,5], 'n':10, 'save':True|'compare':True, 'win', 'hints'}
+                  # poštevanka: natipkaj rezultat (številke zgoraj), meri čas in napake
 {'type':'type',   'title', 'intro', 'text':'...', 'min':90, 'save':True|'compare':True, 'win', 'hints'}
                   # natipkaj vrstico; natančnost (Levenshtein) in hitrost; save = izhodišče, compare = primerjava z njim
 ```
