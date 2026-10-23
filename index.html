@@ -939,6 +939,16 @@ function vsebinaKoraka(p, g, k) {
     const kv = kvizKoraka(p.id, k.kviz);
     if (!kv) return `<div class="empty"><img src="brihta.png" alt=""><strong>Kviz še ni objavljen</strong>Ko ga učitelj objavi, se pokaže tukaj.</div>`;
     const o = MOJE[kv.id];
+    const manjka = nereseniPred(g, g.koraki.indexOf(k));
+    if (!o && manjka.length) return `<div class="open-card wide">${tile('kviz')}<h2>🔒 Kviz se odpre, ko rešiš vse korake</h2>
+      <p>Še nisi končal/a:</p><p>${manjka.map(j => `<a class="btn" href="${hrefKoraka(p, g, j)}">${j + 1}. ${esc(g.koraki[j].ime)}</a>`).join(' ')}</p>
+      <p class="note">Korak je rešen, ko na njem piše 🎉 Končano!</p></div>`;
+    if (!o) {
+      /* Kviz se odpre sam, a samo prvič: gumb Nazaj na kvizu te vrne sem in ne odpre ga znova. */
+      const kljuc = 'sola_kviz_odprt:' + g.pot;
+      let ze = false; try { ze = sessionStorage.getItem(kljuc) === '1'; sessionStorage.setItem(kljuc, '1'); } catch (e) { ze = true; }
+      if (!ze) setTimeout(() => location.assign(hrefGradiva(p, kv)), 0);
+    }
     return `<div class="open-card wide">${tile('kviz')}<h2>${esc(kv.ime)}</h2>
       <p>${o ? `Kviz si že rešil: <b>${o.tocke}/${o.vseh}</b> ${tock(o.vseh)}.` : `${kv.vprasanj ? kv.vprasanj + ' vprašanj · ' : ''}${esc(kv.opis || 'Reši sam. Imaš en poskus.')}`}</p>
       <a class="btn btn-go btn-big" href="${hrefGradiva(p, kv)}">${o ? 'Poglej rezultat' : 'Reši kviz'} ${SVG.next}</a></div>`;
@@ -978,6 +988,11 @@ function stranUra(p, g, korak) {
 let trenutniKorak = null;
 const kljucResenih = g => 'sola_ura_reseno:' + g.pot;
 function reseniKoraki(g) { try { return JSON.parse(preberi(kljucResenih(g)) || '[]'); } catch (e) { return []; } }
+/* Interaktivni koraki pred korakom i, ki še niso rešeni (kviz ure se odpre šele, ko jih ni). */
+function nereseniPred(g, i) {
+  const r = reseniKoraki(g);
+  return g.koraki.slice(0, i).map((k, j) => j).filter(j => g.koraki[j].interaktivno && !r.includes(j));
+}
 function zakleniNaprej(da) {
   const b = document.getElementById('ura-naprej');
   if (!b) return;

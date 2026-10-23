@@ -94,6 +94,11 @@ def korak(pot, rel, vnos):
     if konc == "md":
         with open(pot, encoding="utf-8", errors="replace") as f:
             z["besedilo"] = f.read()
+    if vrsta == "html":
+        # Interaktivna stran (orodja/samostojna-ura) javi, kdaj je rešena; kviz ure čaka nanjo.
+        with open(pot, encoding="utf-8", errors="replace") as f:
+            if "brihta-korak" in f.read():
+                z["interaktivno"] = True
     return z
 
 
