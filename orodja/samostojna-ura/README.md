@@ -70,3 +70,11 @@ Stran ob nalaganju pošlje `postMessage({tip:'brihta-korak', stanje:'zacetek'})`
 ob koncu pa `stanje:'koncano'`. Brihta (`index.html`) do takrat zaklene oranžni
 gumb »Naprej« pod okvirjem. Strani brez tega sporočila gumba ne zaklenejo.
 Napredek je shranjen v brskalniku učenca (localStorage).
+
+## Kviz ure
+
+Korak `.kviz` se odklene šele, ko so rešeni **vsi interaktivni koraki pred
+njim** (`gradiva.py` jih označi z `interaktivno: true`, ker vsebujejo
+`brihta-korak`). Do takrat učenec vidi seznam nerešenih korakov s povezavami.
+Ko je odklenjen, se kviz ob prvem obisku odpre sam. Neobvezne izzive zato
+postavi ZA kviz.
