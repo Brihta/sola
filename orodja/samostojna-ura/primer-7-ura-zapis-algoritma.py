@@ -52,17 +52,17 @@ stran('3 Program za mrežo.html', 'Program za robota', [
 <div class="box big"><span class="tk loop">ponovi 3× (</span> <span class="tk">■</span> <span class="tk">↓</span> <span class="tk loop">)</span> <span class="tk">■</span></div>
 <p>To pomeni: 3-krat naredi »■ ↓«, nato še ■. Ponavljanju rečemo <b>zanka</b>.</p>
 <p class="warn">Zanko vedno zapri z gumbom <b>)</b>. Vse med »ponovi (« in »)« se ponavlja.</p>'''),
-    {'type': 'grid', 'title': 'Dolga vrsta, kratek program', 'intro': 'Pobarvaj 5 polj v vrsti. Uporabi <b>največ 4 ukaze</b>, zato potrebuješ zanko.',
-     'n': 5, 'target': [[0, k] for k in range(5)], 'loops': L, 'max': 4, 'solution': ['N4', 'P', 'R', ')', 'P'],
+    {'type': 'grid', 'title': 'Dolga vrsta, kratek program', 'intro': 'Pobarvaj 5 polj v vrsti. Uporabi <b>največ 5 ukazov</b>, zato potrebuješ zanko.',
+     'n': 5, 'target': [[0, k] for k in range(5)], 'loops': L, 'max': 5, 'solution': ['N4', 'P', 'R', ')', 'P'],
      'hints': ['Kaj se ponavlja? ■ →', 'Če ponoviš »■ →« 5-krat, robot pade z mreže. Ponovi 4-krat, na koncu dodaj še ■.', 'Rešitev ima obliko: ponovi 4× ( ■ → ) ■']},
-    {'type': 'grid', 'title': 'Stopnice', 'intro': 'Pobarvaj diagonalo. Uporabi <b>največ 5 ukazov</b>.',
-     'n': 5, 'target': [[k, k] for k in range(4)], 'loops': L, 'max': 5, 'solution': ['N3', 'P', 'R', 'D', ')', 'P'],
+    {'type': 'grid', 'title': 'Stopnice', 'intro': 'Pobarvaj diagonalo. Uporabi <b>največ 6 ukazov</b>.',
+     'n': 5, 'target': [[k, k] for k in range(4)], 'loops': L, 'max': 6, 'solution': ['N3', 'P', 'R', 'D', ')', 'P'],
      'hints': ['Na vsaki stopnici: pobarvaj, desno, dol.', 'ponovi 3× ( ■ → ↓ ) in na koncu še ■']},
     {'type': 'grid', 'title': '🐞 Najdi hrošča', 'intro': 'Ta program bi moral narisati diagonalo s 3 polji. Zaženi ga, poglej, kaj gre narobe, in ga popravi.',
      'n': 5, 'target': [[0, 0], [1, 1], [2, 2]], 'start': ['P', 'R', 'D', 'P', 'D', 'P'], 'solution': ['P', 'R', 'D', 'P', 'R', 'D', 'P'],
      'hints': ['Po prvem ■ gre robot → in ↓. Kaj naredi po drugem ■?', 'Po drugem ■ manjka →. Briši zadnja dva ukaza in napiši → ↓ ■.']},
-    {'type': 'grid', 'stars': '★★', 'optional': True, 'title': 'Okvir', 'intro': 'Pobarvaj rob kvadrata 3 × 3 (8 polj, sredina ostane prazna). Največ <b>12 ukazov</b>.',
-     'n': 5, 'target': [[0, 0], [0, 1], [0, 2], [1, 2], [2, 2], [2, 1], [2, 0], [1, 0]], 'loops': L, 'max': 12,
+    {'type': 'grid', 'stars': '★★', 'optional': True, 'title': 'Okvir', 'intro': 'Pobarvaj rob kvadrata 3 × 3 (8 polj, sredina ostane prazna). Največ <b>16 ukazov</b>.',
+     'n': 5, 'target': [[0, 0], [0, 1], [0, 2], [1, 2], [2, 2], [2, 1], [2, 0], [1, 0]], 'loops': L, 'max': 16,
      'solution': ['N2', 'P', 'R', ')', 'N2', 'P', 'D', ')', 'N2', 'P', 'L', ')', 'N2', 'P', 'U', ')'],
      'hints': ['Okvir ima 4 stranice. Vsaka je ena zanka.', 'Desno: ponovi 2× ( ■ → ). Nato enako navzdol, levo in gor.']},
 ], 'Znaš napisati algoritem za robota, ga skrajšati z zanko in najti hrošča.')

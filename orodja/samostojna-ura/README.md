@@ -49,6 +49,7 @@ info(naslov, html)                       # razlaga; razredi: big, box, warn, sma
 {'type':'grid',   'title', 'intro', 'n':5, 'target':[[vrstica,stolpec],...], 'solution':[...],
                   'loops':[2,3,4,5], 'max':4, 'start':[...], 'locked':True, 'win':'...', 'hints'}
                   # žetoni: 'R','L','D','U','P' (pobarvaj), 'N3' (ponovi 3× ( ), ')'
+                  # 'max' šteje VSAK gumb v programu, tudi ')' (kar učenec vidi, to se šteje)
 {'type':'trace',  'title', 'intro', 'path':[{'n':'z'},{'n':'e','a':'ne','q':'Ali je 65 = 40?','why':'...'},...], 'win'}
                   # diagram »Ugani število«; vozlišča: z i v e l m1 m2 b k
 {'type':'guess',  'title', 'intro', 'hints'}               # igra Ugani število 1 do 100

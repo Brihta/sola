@@ -185,10 +185,10 @@
     for (let r = 0; r < n; r++) for (let k = 0; k < n; k++) { const d = $(`<div class="cell${target.has(r + ',' + k) ? ' t' : ''}"></div>`); if (r === 0 && k === 0) d.dataset.s = 'S'; g.appendChild(d); cells.push(d); }
     let program = (s.start || []).slice(), running = false;
     const fixed = !!s.locked;
-    const count = () => program.filter((t) => t !== ')').length;
+    const count = () => program.length; // šteje vsak gumb v programu, tudi »)«
     function draw() {
       prog.innerHTML = program.length ? program.map((t) => `<span class="tk${t[0] === 'N' || t === ')' ? ' loop' : ''}">${tokLabel(t)}</span>`).join('') : '<span class="ph">Tvoj program je prazen. Klikaj ukaze spodaj.</span>';
-      cnt.innerHTML = `Ukazov: <b>${count()}</b>${s.max ? ` &nbsp;(največ ${s.max})` : ''}`;
+      cnt.innerHTML = `Ukazov: <b>${count()}</b>${s.max ? ` &nbsp;(največ ${s.max})` : ''} &nbsp;<span class="small">Šteje vsak gumb v programu, tudi »)«.</span>`;
     }
     const tb = ui.querySelector('.tools');
     if (!fixed) {
