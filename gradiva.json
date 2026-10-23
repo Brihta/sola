@@ -60,6 +60,44 @@
   ],
   "racunalnistvo-6-9": [
    {
+    "ime": "7. ura Zapis algoritma",
+    "vrsta": "ura",
+    "datum": "2026-10-23T08:00:00+02:00",
+    "pot": "gradiva/racunalnistvo-6-9/2026-10-23 7. ura Zapis algoritma",
+    "koraki": [
+     {
+      "ime": "Navodila",
+      "vrsta": "besedilo",
+      "pot": "gradiva/racunalnistvo-6-9/2026-10-23 7. ura Zapis algoritma/1 Navodila.md",
+      "velikost": 785,
+      "besedilo": "## 🔢 Današnji izziv\n\nMislim si število od 1 do 100. Kako bi igro **Ugani število** razložil računalniku tako natančno, da je ne bi mogel narobe razumeti?\n\n## 🎯 Cilj ure\n\nAlgoritem **zapišem natančno**: s koraki po vrsti, s psevdokodo ali z diagramom poteka.\n\n## ✅ Uspešen sem, če …\n\n- zapišem algoritem, ki ga sosed izvede brez vprašanj,\n- algoritem **preberem sosedu**, preden ga izvede,\n- najdem **krajši zapis** z zanko »ponovi«.\n\n## 🗺️ Kaj bomo delali\n\n1. **Zapis:** preberi ga in ga prepiši v zvezek.\n2. **Razlaga:** trije načini zapisa algoritma in diagram poteka.\n3. **Delovni list:** nalogo 2 delaš v paru, ostale po svoji ravni (★, ★★, ★★★).\n4. **Kviz:** reši ga sam. Imaš en poskus.\n\nNa koncu se odjavi in pospravi svoje mesto.\n"
+     },
+     {
+      "ime": "Zapis",
+      "vrsta": "word",
+      "pot": "gradiva/racunalnistvo-6-9/2026-10-23 7. ura Zapis algoritma/2 Zapis.docx",
+      "velikost": 124838
+     },
+     {
+      "ime": "Razlaga",
+      "vrsta": "pdf",
+      "pot": "gradiva/racunalnistvo-6-9/2026-10-23 7. ura Zapis algoritma/3 Razlaga.pdf",
+      "velikost": 165210
+     },
+     {
+      "ime": "Delovni list",
+      "vrsta": "word",
+      "pot": "gradiva/racunalnistvo-6-9/2026-10-23 7. ura Zapis algoritma/4 Delovni list.docx",
+      "velikost": 12514
+     },
+     {
+      "ime": "Kviz",
+      "vrsta": "kviz",
+      "kviz": "zapis-algoritma"
+     }
+    ]
+   },
+   {
     "ime": "6. ura Razgradnja in vzorci",
     "vrsta": "ura",
     "datum": "2026-10-16T08:00:00+02:00",
@@ -101,5 +139,5 @@
   "slovenscina-3": [],
   "svetovni-popotniki": []
  },
- "posodobljeno": "2026-10-22T07:38:46+00:00"
+ "posodobljeno": "2026-10-23T05:03:24+00:00"
 }
