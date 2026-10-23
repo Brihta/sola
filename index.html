@@ -94,6 +94,9 @@
       box-shadow: 0 8px 18px -8px var(--c1, var(--accent));
     }
     .btn-go:hover { box-shadow: 0 12px 24px -10px var(--c1, var(--accent)); }
+    .btn.zaklenjeno { opacity: .4; filter: grayscale(.7); cursor: not-allowed; box-shadow: none; }
+    .btn.tresi { animation: tresi .35s; }
+    @keyframes tresi { 25% { transform: translateX(-6px); } 75% { transform: translateX(6px); } }
     .btn-big { height: 54px; padding: 0 26px; font-size: 1.1rem; }
     .btn-block { width: 100%; }
 
@@ -961,12 +964,44 @@ function stranUra(p, g, korak) {
     ${vsebinaKoraka(p, g, k)}
     <div class="seq">
       ${prej ? `<a class="btn" href="${hrefKoraka(p, g, i - 1)}">${SVG.prev} ${esc(prej.ime)}</a>` : '<span></span>'}
-      ${potem ? `<a class="btn btn-go btn-big" href="${hrefKoraka(p, g, i + 1)}">Naprej: ${esc(potem.ime)} ${SVG.next}</a>`
-        : `<a class="btn" href="#/p/${p.id}">Konec ure ✓</a>`}
+      ${potem ? `<a class="btn btn-go btn-big" id="ura-naprej" href="${hrefKoraka(p, g, i + 1)}">Naprej: ${esc(potem.ime)} ${SVG.next}</a>`
+        : `<a class="btn" id="ura-naprej" href="#/p/${p.id}">Konec ure ✓</a>`}
     </div>`;
   okvirPredmeta(p, 'gradivo', vsebina, null, g.ime);
   if (k.vrsta !== 'kviz' && k.besedilo == null) poveziCelZaslon(naslov(k));
+  trenutniKorak = { g, i };
 }
+
+/* Interaktivna stran v koraku ure lahko zaklene gumb »Naprej«, dokler je učenec ne reši:
+   pošlje postMessage {tip:'brihta-korak', stanje:'zacetek'} ob nalaganju in {…, stanje:'koncano'} ob koncu.
+   Strani, ki ničesar ne pošljejo, gumba ne zaklenejo. */
+let trenutniKorak = null;
+const kljucResenih = g => 'sola_ura_reseno:' + g.pot;
+function reseniKoraki(g) { try { return JSON.parse(preberi(kljucResenih(g)) || '[]'); } catch (e) { return []; } }
+function zakleniNaprej(da) {
+  const b = document.getElementById('ura-naprej');
+  if (!b) return;
+  b.classList.toggle('zaklenjeno', da);
+  b.setAttribute('aria-disabled', da ? 'true' : 'false');
+  b.title = da ? 'Najprej dokončaj nalogo v okvirju zgoraj.' : '';
+}
+document.addEventListener('click', e => {
+  const b = e.target.closest && e.target.closest('#ura-naprej.zaklenjeno');
+  if (!b) return;
+  e.preventDefault();
+  b.classList.remove('tresi'); void b.offsetWidth; b.classList.add('tresi');
+}, true);
+window.addEventListener('message', e => {
+  const d = e.data;
+  if (!d || d.tip !== 'brihta-korak' || !trenutniKorak) return;
+  const f = document.querySelector('#frame iframe');
+  if (!f || e.source !== f.contentWindow) return;
+  const { g, i } = trenutniKorak, r = reseniKoraki(g);
+  if (d.stanje === 'koncano') {
+    if (!r.includes(i)) { r.push(i); shrani(kljucResenih(g), JSON.stringify(r)); }
+    zakleniNaprej(false);
+  } else if (d.stanje === 'zacetek') zakleniNaprej(!r.includes(i));
+});
 
 function prikaz(g, ime) {
   const url = naslov(g);

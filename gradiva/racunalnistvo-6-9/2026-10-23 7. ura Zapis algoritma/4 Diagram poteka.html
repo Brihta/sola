@@ -65,6 +65,7 @@ footer{display:flex;gap:10px;align-items:center;flex-wrap:wrap;border-top:3px so
   const load = () => { try { return parseInt(localStorage.getItem(KEY) || '0', 10) || 0; } catch (e) { return 0; } };
   const save = (v) => { try { localStorage.setItem(KEY, String(v)); } catch (e) {} };
 
+  const tell = (stanje) => { try { if (window.parent !== window) window.parent.postMessage({ tip: 'brihta-korak', stanje }, '*'); } catch (e) {} };
   const P = window.PAGE;
   const screens = P.screens.concat([{ type: 'end' }]);
   let cur = Math.min(load(), screens.length - 1);
@@ -80,7 +81,7 @@ footer{display:flex;gap:10px;align-items:center;flex-wrap:wrap;border-top:3px so
       <button class="btn hint" id="hint">💡 Namig</button>
       <button class="btn ghost" id="solve" hidden>Pokaži rešitev</button>
       <button class="btn ghost" id="skip" hidden>Preskoči</button>
-      <button class="btn go" id="next" disabled>Naprej ▶</button>
+      <button class="btn go" id="next" disabled>Naslednja naloga ▶</button>
     </footer>`;
   const card = document.getElementById('card');
   const bNext = document.getElementById('next'), bBack = document.getElementById('back');
@@ -146,9 +147,10 @@ footer{display:flex;gap:10px;align-items:center;flex-wrap:wrap;border-top:3px so
   TYPES.end = (s, c) => {
     c.appendChild($(`<div class="end"><div class="big">🎉</div><h2>Končano!</h2>
       <p>${esc(P.endText || 'Ta korak je opravljen.')}</p>
-      <p class="arrow">Klikni zeleni gumb <b>»Naprej«</b> pod tem okvirjem. ⬇</p>
+      <p class="arrow">Zdaj klikni velik gumb <b>»Naprej«</b> spodaj desno, pod tem okvirjem. ⬇</p>
       <button class="btn ghost" id="again">Začni ta korak znova</button></div>`));
     c.querySelector('#again').onclick = () => show(0);
+    tell('koncano');
   };
   TYPES.check = (s, c) => {
     c.appendChild($(`<div class="body">${s.html}</div>`));
@@ -412,6 +414,7 @@ footer{display:flex;gap:10px;align-items:center;flex-wrap:wrap;border-top:3px so
     return { solve: () => { cs.forEach((d, k) => { d.textContent = nums[k]; d.classList.add('up'); }); mem = Math.max(...nums); memEl.textContent = mem; ctrl.innerHTML = ''; } };
   };
 
+  tell('zacetek');
   show(cur);
 })();
 </script></body></html>
