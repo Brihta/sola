@@ -44,56 +44,56 @@
   ],
   "racunalnistvo-6": [
    {
-    "ime": "2. ura Slepo tipkanje",
+    "ime": "3. ura Tipkanje in postevanka",
     "vrsta": "ura",
     "datum": "2026-10-23T08:00:00+02:00",
-    "pot": "gradiva/racunalnistvo-6/2026-10-23 2. ura Slepo tipkanje",
+    "pot": "gradiva/racunalnistvo-6/2026-10-23 3. ura Tipkanje in postevanka",
     "koraki": [
      {
       "ime": "Navodila",
       "vrsta": "besedilo",
-      "pot": "gradiva/racunalnistvo-6/2026-10-23 2. ura Slepo tipkanje/1 Navodila.md",
-      "velikost": 846,
-      "besedilo": "## 🎯 Cilj ure\n\nZačnem se učiti **slepo tipkanje**: tipkam z desetimi prsti in gledam zaslon, ne tipk.\n\n## ✅ Uspešen sem, če …\n\n- pravilno sedim za računalnikom,\n- brez gledanja najdem osnovno vrsto (izboklini na F in J),\n- natipkam vrstico z vsaj 90 % natančnostjo,\n- svoj rezultat primerjam s svojim izhodiščem, ne s sošolci.\n\n## 🗺️ Kako delaš\n\n1. Vsak korak je ena stran. Beri in klikaj **na strani**.\n2. Ko rešiš nalogo, se odklene zeleni gumb **Naslednja naloga**.\n3. Ko piše **🎉 Končano!**, se odklene velik gumb **Naprej** spodaj desno. Z njim greš na naslednji korak.\n4. Če se zatakneš, klikni **💡 Namig**. Po namigih lahko pogledaš rešitev.\n\nDelaš sam, s svojo hitrostjo. Pripravi **zvezek**: z njim boš pokril/a roke in vanj napisal/a zapis. **★★ Izziv** na koncu je za tiste, ki želijo več.\n"
+      "pot": "gradiva/racunalnistvo-6/2026-10-23 3. ura Tipkanje in postevanka/1 Navodila.md",
+      "velikost": 821,
+      "besedilo": "## 🎯 Cilj ure\n\nUtrjujem **slepo tipkanje** in se naučim tipkati **številke**. Ob tem utrdim **poštevanko**.\n\n## ✅ Uspešen sem, če …\n\n- prste brez gledanja postavim na osnovno vrsto,\n- številke tipkam z zgornjo vrsto in pravim prstom,\n- poštevanko rešujem natančno in vse hitreje,\n- svoj rezultat primerjam s svojim izhodiščem, ne s sošolci.\n\n## 🗺️ Kako delaš\n\n1. Vsak korak je ena stran. Beri in klikaj **na strani**.\n2. Ko rešiš nalogo, se odklene zeleni gumb **Naslednja naloga**.\n3. Ko piše **🎉 Končano!**, se odklene velik gumb **Naprej** spodaj desno. Z njim greš na naslednji korak.\n4. Če se zatakneš, klikni **💡 Namig**. Po namigih lahko pogledaš rešitev.\n\nDelaš sam, s svojo hitrostjo. Pripravi **zvezek** za zapis. **★★ Izziv** na koncu je za tiste, ki želijo več.\n"
      },
      {
-      "ime": "Izziv koliko znas",
+      "ime": "Ogrevanje osnovna vrsta",
       "vrsta": "html",
-      "pot": "gradiva/racunalnistvo-6/2026-10-23 2. ura Slepo tipkanje/2 Izziv koliko znas.html",
-      "velikost": 41945,
+      "pot": "gradiva/racunalnistvo-6/2026-10-23 3. ura Tipkanje in postevanka/2 Ogrevanje osnovna vrsta.html",
+      "velikost": 44217,
       "interaktivno": true
      },
      {
-      "ime": "Drza in osnovna vrsta",
+      "ime": "Stevilke na tipkovnici",
       "vrsta": "html",
-      "pot": "gradiva/racunalnistvo-6/2026-10-23 2. ura Slepo tipkanje/3 Drza in osnovna vrsta.html",
-      "velikost": 43369,
+      "pot": "gradiva/racunalnistvo-6/2026-10-23 3. ura Tipkanje in postevanka/3 Stevilke na tipkovnici.html",
+      "velikost": 44900,
       "interaktivno": true
      },
      {
-      "ime": "Vaja osnovne vrste",
+      "ime": "Postevanka s tipkanjem",
       "vrsta": "html",
-      "pot": "gradiva/racunalnistvo-6/2026-10-23 2. ura Slepo tipkanje/4 Vaja osnovne vrste.html",
-      "velikost": 41792,
+      "pot": "gradiva/racunalnistvo-6/2026-10-23 3. ura Tipkanje in postevanka/4 Postevanka s tipkanjem.html",
+      "velikost": 44476,
       "interaktivno": true
      },
      {
       "ime": "Zapis v zvezek",
       "vrsta": "html",
-      "pot": "gradiva/racunalnistvo-6/2026-10-23 2. ura Slepo tipkanje/5 Zapis v zvezek.html",
-      "velikost": 40890,
+      "pot": "gradiva/racunalnistvo-6/2026-10-23 3. ura Tipkanje in postevanka/5 Zapis v zvezek.html",
+      "velikost": 43695,
       "interaktivno": true
      },
      {
       "ime": "Kviz",
       "vrsta": "kviz",
-      "kviz": "slepo-tipkanje-osnovna-vrsta"
+      "kviz": "tipkanje-in-postevanka"
      },
      {
-      "ime": "Izziv velike crke",
+      "ime": "Izziv vsa postevanka",
       "vrsta": "html",
-      "pot": "gradiva/racunalnistvo-6/2026-10-23 2. ura Slepo tipkanje/7 Izziv velike crke.html",
-      "velikost": 41119,
+      "pot": "gradiva/racunalnistvo-6/2026-10-23 3. ura Tipkanje in postevanka/7 Izziv vsa postevanka.html",
+      "velikost": 43632,
       "interaktivno": true
      }
     ]
@@ -211,5 +211,5 @@
   "slovenscina-3": [],
   "svetovni-popotniki": []
  },
- "posodobljeno": "2026-10-23T08:53:35+00:00"
+ "posodobljeno": "2026-10-23T09:10:00+00:00"
 }
