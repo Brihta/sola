@@ -76,25 +76,25 @@
       "ime": "Kaj je algoritem",
       "vrsta": "html",
       "pot": "gradiva/racunalnistvo-6-9/2026-10-23 7. ura Zapis algoritma/2 Kaj je algoritem.html",
-      "velikost": 33974
+      "velikost": 34064
      },
      {
       "ime": "Program za mrežo",
       "vrsta": "html",
       "pot": "gradiva/racunalnistvo-6-9/2026-10-23 7. ura Zapis algoritma/3 Program za mrežo.html",
-      "velikost": 34993
+      "velikost": 35084
      },
      {
       "ime": "Diagram poteka",
       "vrsta": "html",
       "pot": "gradiva/racunalnistvo-6-9/2026-10-23 7. ura Zapis algoritma/4 Diagram poteka.html",
-      "velikost": 33696
+      "velikost": 33786
      },
      {
       "ime": "Zapis v zvezek",
       "vrsta": "html",
       "pot": "gradiva/racunalnistvo-6-9/2026-10-23 7. ura Zapis algoritma/5 Zapis v zvezek.html",
-      "velikost": 196392
+      "velikost": 196482
      },
      {
       "ime": "Kviz",
@@ -105,7 +105,7 @@
       "ime": "Izziv Najdi največje",
       "vrsta": "html",
       "pot": "gradiva/racunalnistvo-6-9/2026-10-23 7. ura Zapis algoritma/7 Izziv Najdi največje.html",
-      "velikost": 32781
+      "velikost": 32871
      }
     ]
    },
@@ -151,5 +151,5 @@
   "slovenscina-3": [],
   "svetovni-popotniki": []
  },
- "posodobljeno": "2026-10-23T06:48:44+00:00"
+ "posodobljeno": "2026-10-23T08:15:46+00:00"
 }
