@@ -78,6 +78,15 @@ pojem B = razlaga B
 - Učenec ima en poskus in po oddaji vidi samo svoje točke. Pod 50 % se oddaja
   ne shrani: dobi »Poskusi znova« in reši ponovno.
 
+## Ure računalništva: samostojne interaktivne strani (obvezno od 23. 10. 2026)
+
+Pri VSEH urah računalništva (racunalnistvo-4, -5, -6, -6-9) so koraki ure
+samostojne HTML strani, ki jih učenci prehodijo sami, brez učitelja (do 25
+učencev, 11 do 14 let; učiteljeva razlaga in delo v paru za to ne delujeta).
+Ne delaj več Word zapisov, PDF prosojnic in delovnih listov za te ure.
+Orodje, pravila zasnove in primer so v `orodja/samostojna-ura/README.md`:
+preberi ga, preden začneš. Zgradi z `zgradi.py`, preveri s `preveri.py`.
+
 ## Gradiva za uro
 
 Vsaka ura je MAPA `gradiva/<predmet>/<YYYY-MM-DD> <N>. ura <Naslov ure>/` s koraki, ki
