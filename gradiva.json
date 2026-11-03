@@ -43,21 +43,21 @@
       "ime": "Robot na mrezi",
       "vrsta": "html",
       "pot": "gradiva/racunalnistvo-4/2026-11-10 4. ura Algoritem po prostoru/2 Robot na mrezi.html",
-      "velikost": 45945,
+      "velikost": 46037,
       "interaktivno": true
      },
      {
       "ime": "Bobrckove naloge",
       "vrsta": "html",
       "pot": "gradiva/racunalnistvo-4/2026-11-10 4. ura Algoritem po prostoru/3 Bobrckove naloge.html",
-      "velikost": 48057,
+      "velikost": 52404,
       "interaktivno": true
      },
      {
       "ime": "Zapis v zvezek",
       "vrsta": "html",
       "pot": "gradiva/racunalnistvo-4/2026-11-10 4. ura Algoritem po prostoru/4 Zapis v zvezek.html",
-      "velikost": 43564,
+      "velikost": 43656,
       "interaktivno": true
      },
      {
@@ -69,8 +69,13 @@
       "ime": "Izziv Kaca",
       "vrsta": "html",
       "pot": "gradiva/racunalnistvo-4/2026-11-10 4. ura Algoritem po prostoru/6 Izziv Kaca.html",
-      "velikost": 43933,
+      "velikost": 44025,
       "interaktivno": true
+     },
+     {
+      "ime": "Prava pola Bobrcek 2024-25",
+      "vrsta": "povezava",
+      "url": "https://ucilnica.acm.si/mod/resource/view.php?id=2855"
      }
     ]
    }
@@ -260,5 +265,5 @@
   "slovenscina-3": [],
   "svetovni-popotniki": []
  },
- "posodobljeno": "2026-11-03T10:04:29+00:00"
+ "posodobljeno": "2026-11-03T10:15:24+00:00"
 }
