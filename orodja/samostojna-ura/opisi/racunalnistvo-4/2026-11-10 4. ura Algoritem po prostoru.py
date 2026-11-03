@@ -49,7 +49,8 @@ stran('3 Bobrckove naloge.html', 'Vaja za Bobrček: A, B, C ali D?', [
     info('Kaj je Bobrček?', '''
 <p class="big"><b>Bobrček</b> je tekmovanje z ugankami za pametne glave. 🦫</p>
 <div class="box big">Pri vsaki nalogi: <b>preberi počasi</b>, poglej sliko, nato izberi <b>A, B, C ali D</b>.</div>
-<p>Naloge so take, kot so na tekmovanju. Pomagaj si s prstom na zaslonu.</p>'''),
+<p>Naloge so take, kot so na tekmovanju. Pomagaj si s prstom na zaslonu.</p>
+<div class="box">👆 Klikni odgovor, ki se ti zdi pravi.<br>❌ Če je narobe, ti stran pove, <b>zakaj</b>. Preberi in poskusi znova.<br>💡 Če ne veš, kako začeti, klikni <b>Namig</b>.</div>'''),
     {'type': 'choose', 'abcd': True, 'title': '1. Kam pride bober?', 'intro': 'Bober 🦫 gre po ukazih: <b>→ → ↓</b>. Kje se ustavi?' + mreza([
         ['🦫', '', '🍎'], ['', '🌳', '🪵'], ['🌸', '', '']]),
      'options': [ch('pri 🍎', why='Pri 🍎 je po dveh ukazih. Zadnji ukaz ↓ ga premakne še dol.'),

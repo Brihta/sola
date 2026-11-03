@@ -61,7 +61,7 @@
     bNext.hidden = s.type === 'end';
     if (s.stars) card.appendChild($(`<div class="stars">${s.stars} izziv</div>`));
     if (s.title) card.appendChild($(`<h2>${s.title}</h2>`));
-    if (s.intro) card.appendChild($(`<p class="intro">${s.intro}</p>`));
+    if (s.intro) card.appendChild($(`<div class="intro">${s.intro}</div>`));
     const R = TYPES[s.type];
     const r = R(s, card);
     solver = r && r.solve;
