@@ -104,7 +104,7 @@
 
   TYPES.choose = (s, c) => {
     const box = $('<div class="opts"></div>'); c.appendChild(box);
-    const btns = shuffle(s.options).map((o) => {
+    const btns = (s.abcd ? s.options.map((o, i) => ({ ...o, t: `<b>${'ABCDEFGH'[i]}</b> &nbsp;${o.t}` })) : shuffle(s.options)).map((o) => {
       const b = $(`<button class="opt">${o.t}</button>`);
       b.onclick = () => {
         if (o.ok) { btns.forEach((x) => (x.disabled = true)); b.classList.add('good'); done('✅ ' + (o.why || 'Pravilno!')); }

@@ -45,37 +45,63 @@ stran('2 Robot na mrezi.html', 'Robot na mreži', [
 ], 'Znaš napisati algoritem za robota in najti hrošča.')
 
 # ---------------- 3 Bobrckove naloge ----------------
-stran('3 Bobrckove naloge.html', 'Bobrčkove naloge', [
+stran('3 Bobrckove naloge.html', 'Vaja za Bobrček: A, B, C ali D?', [
     info('Kaj je Bobrček?', '''
 <p class="big"><b>Bobrček</b> je tekmovanje z ugankami za pametne glave. 🦫</p>
-<div class="box big">Pri vsaki nalogi: <b>preberi počasi</b>, poglej sliko, šele nato klikni.</div>
-<p>Zdaj boš rešil/a nekaj nalog, kakršne so na tekmovanju.</p>'''),
-    {'type': 'choose', 'title': 'Kam pride bober?', 'intro': 'Bober 🦫 gre po ukazih: <b>→ → ↓</b>. Kje se ustavi?' + mreza([
+<div class="box big">Pri vsaki nalogi: <b>preberi počasi</b>, poglej sliko, nato izberi <b>A, B, C ali D</b>.</div>
+<p>Naloge so take, kot so na tekmovanju. Pomagaj si s prstom na zaslonu.</p>'''),
+    {'type': 'choose', 'abcd': True, 'title': '1. Kam pride bober?', 'intro': 'Bober 🦫 gre po ukazih: <b>→ → ↓</b>. Kje se ustavi?' + mreza([
         ['🦫', '', '🍎'], ['', '🌳', '🪵'], ['🌸', '', '']]),
-     'options': [ch('pri 🪵', True, '→ → pride do 🍎, nato ↓ pride na 🪵.'),
-                 ch('pri 🍎', why='Pri 🍎 je po dveh ukazih. Zadnji ukaz ↓ ga premakne še dol.'),
-                 ch('pri 🌳', why='Do 🌳 bi prišel z → ↓. Ukazov je več.')],
+     'options': [ch('pri 🍎', why='Pri 🍎 je po dveh ukazih. Zadnji ukaz ↓ ga premakne še dol.'),
+                 ch('pri 🌳', why='Do 🌳 bi prišel z → ↓. Ukazov je več.'),
+                 ch('pri 🪵', True, '→ → pride do 🍎, nato ↓ pride na 🪵.'),
+                 ch('pri 🌸', why='🌸 je levo spodaj. Bober pa gre najprej desno.')],
      'hints': ['Pokaži s prstom na bobra in premikaj prst po vsakem ukazu.']},
-    {'type': 'choose', 'title': 'Pot okoli drevesa', 'intro': 'Bober 🦫 hoče do 🪵. Skozi drevo 🌳 ne more. Kateri program je pravi?' + mreza([
+    {'type': 'choose', 'abcd': True, 'title': '2. Pot okoli drevesa', 'intro': 'Bober 🦫 hoče do 🪵. Skozi drevo 🌳 ne more. Kateri program je pravi?' + mreza([
         ['🦫', '🌳', '🪵'], ['', '', '']]),
-     'options': [ch('↓ → → ↑', True, 'Bober gre dol, mimo drevesa in nazaj gor do debla.'),
-                 ch('→ →', why='Prvi → ga pelje naravnost v drevo.'),
-                 ch('↓ → →', why='Bober pride pod 🪵, manjka še ↑.')],
+     'options': [ch('→ →', why='Prvi → ga pelje naravnost v drevo.'),
+                 ch('↓ → →', why='Bober pride pod 🪵, manjka še ↑.'),
+                 ch('↓ → → ↑', True, 'Bober gre dol, mimo drevesa in nazaj gor do debla.'),
+                 ch('→ ↓ → ↑', why='Prvi → ga pelje v drevo.')],
      'hints': ['Drevo je desno od bobra. Najprej se mu umakni.', 'Pri vsakem programu sledi s prstom.']},
-    {'type': 'choose', 'title': 'Vzorec perlic', 'intro': 'Bobrica niza perlice po vzorcu:<p class="big">🔴 🟡 🟡 🔴 🟡 🟡 🔴 ❓</p>Katera perlica pride na mesto ❓?',
-     'options': [ch('🟡', True, 'Vzorec je 🔴 🟡 🟡 in se ponavlja. Za 🔴 pride 🟡.'),
-                 ch('🔴', why='Za vsako 🔴 prideta dve 🟡.'),
-                 ch('🔵', why='Modre perlice v vzorcu sploh ni.')],
-     'hints': ['Poišči del, ki se ponavlja.']},
-    {'type': 'order', 'title': 'Prečkam cesto', 'intro': 'Tudi to je algoritem. Uredi korake po vrsti.',
-     'items': ['Ustavim se ob robu ceste.', 'Pogledam levo.', 'Pogledam desno.', 'Še enkrat pogledam levo.', 'Ko je cesta prosta, grem čez.'],
-     'hints': ['Najprej se ustaviš.', 'Čez cesto greš šele na koncu.']},
-    {'type': 'choose', 'title': 'Na tekmovanju', 'intro': 'Na tekmovanju naloge ne znaš rešiti. Kaj narediš?',
-     'options': [ch('Jo preskočim in se k njej vrnem na koncu.', True, 'Tako je. Najprej reši tiste, ki jih znaš.'),
-                 ch('Vprašam soseda.', why='Na tekmovanju vsak rešuje sam.'),
-                 ch('Ugasnem računalnik.', why='Potem ne moreš rešiti nobene naloge več.')],
+    {'type': 'choose', 'abcd': True, 'title': '3. Robot pobira sladoled', 'intro': 'Robot 🤖 mora pobrati 🍓 in 🍫. Vsaka puščica je en pritisk na gumb. Najmanj koliko pritiskov potrebuje?' + mreza([
+        ['🤖', '', '🍓'], ['', '', ''], ['', '', '🍫']]),
+     'options': [ch('3', why='Samo do 🍓 potrebuje že 2 pritiska, do 🍫 pa še 2.'),
+                 ch('4', True, '→ → do 🍓, nato ↓ ↓ do 🍫. Skupaj 4.'),
+                 ch('5', why='Gre tudi s 4: → → ↓ ↓.'),
+                 ch('6', why='To je ovinek. Najkrajša pot je → → ↓ ↓.')],
+     'hints': ['Najprej pojdi do 🍓. Koliko puščic?', 'Od 🍓 do 🍫 gre robot samo dol.']},
+    {'type': 'choose', 'abcd': True, 'title': '4. Čarobna roža', 'intro': 'Vsako noč se roža spremeni:<p class="big">🌷 → 🌻 → 🌹 → 🌷 → …</p>Danes je 🌷. Kakšna bo čez <b>4 noči</b>?',
+     'options': [ch('🌷', why='Čez 3 noči je spet 🌷. Preštej še eno noč.'),
+                 ch('🌻', True, '1. noč 🌻, 2. noč 🌹, 3. noč 🌷, 4. noč 🌻.'),
+                 ch('🌹', why='🌹 je čez 2 noči.'),
+                 ch('🌼', why='Te rože v vrsti sploh ni.')],
+     'hints': ['Štej s prsti: 1. noč, 2. noč, 3. noč, 4. noč.']},
+    {'type': 'choose', 'abcd': True, 'title': '5. Darilo za bobra', 'intro': 'Bober želi žogo, ki je <b>velika</b>, ima <b>črte</b> in <b>ni rdeča</b>. Katero mu kupimo?',
+     'options': [ch('velika, rdeča, s črtami', why='Ta je rdeča, bober pa ne mara rdeče.'),
+                 ch('majhna, modra, s črtami', why='Ta je majhna, bober želi veliko.'),
+                 ch('velika, modra, s pikami', why='Ta ima pike, ne črt.'),
+                 ch('velika, modra, s črtami', True, 'Velika, s črtami in ni rdeča. Vsi trije pogoji držijo.')],
+     'hints': ['Preveri vse tri pogoje pri vsaki žogi. Če en ne drži, žoga odpade.']},
+    {'type': 'choose', 'abcd': True, 'title': '6. Ana briše risbo', 'intro': 'Ana riše po vrsti: 1. glavo ⚪, 2. oči 👀, 3. usta 👄, 4. lase. Nato <b>2-krat</b> klikne <b>Razveljavi</b> (vsak klik izbriše zadnjo potezo). Kaj ostane?',
+     'options': [ch('samo glava', why='To bi ostalo po 3 klikih.'),
+                 ch('glava in oči', True, 'Prvi klik izbriše lase, drugi usta. Ostaneta glava in oči.'),
+                 ch('glava, oči in usta', why='To bi ostalo po samo 1 kliku.'),
+                 ch('nič', why='Za to bi morala klikniti 4-krat.')],
+     'hints': ['Razveljavi briše od zadaj: najprej tisto, kar je narisala zadnje.']},
+    {'type': 'choose', 'abcd': True, 'stars': '★★', 'optional': True, 'title': '7. Igrače na traku', 'intro': 'Na traku so igrače:<p class="big">🧸 🚗 ⚽ 🎈</p>Mia <b>prvo vzame</b>, <b>naslednjo preskoči</b> (ta gre na konec traku), naslednjo vzame, naslednjo preskoči … Katera igrača ostane zadnja?',
+     'options': [ch('🧸', why='🧸 Mia vzame takoj na začetku.'),
+                 ch('🚗', why='🚗 gre najprej na konec, a Mia jo vzame v tretjem krogu.'),
+                 ch('⚽', why='⚽ vzame v drugem krogu.'),
+                 ch('🎈', True, 'Vzame 🧸, 🚗 na konec. Vzame ⚽, 🎈 na konec. Vzame 🚗. Ostane 🎈.')],
+     'hints': ['Nariši si igrače na list in jih prečrtuj.', 'Po prvem koraku je trak: ⚽ 🎈 🚗.']},
+    {'type': 'choose', 'abcd': True, 'title': '8. Na tekmovanju', 'intro': 'Na tekmovanju naloge ne znaš rešiti. Kaj narediš?',
+     'options': [ch('Vprašam soseda.', why='Na tekmovanju vsak rešuje sam.'),
+                 ch('Jo preskočim in se k njej vrnem na koncu.', True, 'Tako je. Najprej reši tiste, ki jih znaš.'),
+                 ch('Neham reševati.', why='Potem ne dobiš točk pri nalogah, ki jih znaš.'),
+                 ch('Obkrožim vse odgovore.', why='Tako je odgovor zagotovo napačen.')],
      'hints': ['Pomisli, kako dobiš največ točk.']},
-], 'Rešil/a si naloge v slogu Bobrčka.')
+], 'Rešil/a si vajo za Bobrček.')
 
 # ---------------- 4 Zapis v zvezek ----------------
 stran('4 Zapis v zvezek.html', 'Zapis v zvezek', [

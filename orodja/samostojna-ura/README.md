@@ -43,6 +43,7 @@ da jih lahko kasneje popraviš in znova zgradiš.
 ```python
 info(naslov, html)                       # razlaga; razredi: big, box, warn, small, sym o/r/d, tk, tk loop
 {'type':'choose', 'title', 'intro', 'options':[ch('besedilo', ok=True, why='...'), ...], 'hints':[...]}
+                  # 'abcd': True = možnosti ostanejo v danem vrstnem redu z oznakami A, B, C, D (kot na Bobrčku)
 {'type':'order',  'title', 'intro', 'items':[koraki v PRAVEM vrstnem redu], 'hints'}
 {'type':'match',  'title', 'pairs':[['levo','desno'], ...], 'hints'}
 {'type':'check',  'title', 'html', 'label':'Prepisal/a sem v zvezek.'}   # zapis v zvezek
