@@ -1,7 +1,7 @@
 <!doctype html><html lang="sl"><head><meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1"><title>Robot na mreži</title><style>:root{--ink:#1d2b3a;--mut:#5b6b7c;--blue:#2E5C8A;--sky:#EAF1F8;--sky2:#D6E4F0;--sun:#FFF4D6;--sunb:#C08A00;--ok:#1f8a4c;--okbg:#e5f6ec;--bad:#c0392b;--badbg:#fdecea;--cs:46px}
 *{box-sizing:border-box}
 html,body{margin:0;background:#fff;color:var(--ink);font:18px/1.45 system-ui,"Segoe UI",Arial,sans-serif}
-#app{max-width:1000px;margin:0 auto;padding:12px 18px 18px;display:flex;flex-direction:column;min-height:100vh}
+#app{max-width:1000px;margin:0 auto;padding:12px 18px 18px;display:flex;flex-direction:column}
 header{display:flex;align-items:center;gap:14px;flex-wrap:wrap;border-bottom:3px solid var(--sky2);padding-bottom:8px}
 header h1{font-size:22px;margin:0;color:var(--blue);flex:1}
 .dots{display:flex;gap:6px;align-items:center}.dot{width:14px;height:14px;border-radius:50%;background:#dfe6ee}.dot.ok{background:var(--ok)}.dot.now{outline:3px solid var(--blue);outline-offset:1px}.cnt{font-size:14px;color:var(--mut);margin-left:6px}
@@ -10,7 +10,7 @@ h2{margin:0 0 8px;font-size:26px}.intro{font-size:20px;margin:0 0 12px}.small{co
 .stars{display:inline-block;background:var(--sun);color:#7a5600;border:2px solid var(--sunb);border-radius:20px;padding:2px 12px;font-weight:700;font-size:14px;margin-bottom:8px}
 .body p{margin:0 0 12px}.body .box{background:var(--sky);border-radius:14px;padding:14px 18px;margin:10px 0}.body .warn{background:var(--sun);border-left:6px solid var(--sunb);border-radius:8px;padding:10px 14px}
 .big{font-size:22px}
-footer{display:flex;gap:10px;align-items:center;flex-wrap:wrap;border-top:3px solid var(--sky2);padding-top:10px}.sp{flex:1}
+footer{display:flex;gap:10px;align-items:center;flex-wrap:wrap;border-top:3px solid var(--sky2);padding:10px 0 6px;position:sticky;bottom:0;background:#fff;z-index:5}.sp{flex:1}
 .btn{font:inherit;font-size:17px;border:2px solid var(--blue);background:#fff;color:var(--blue);border-radius:12px;padding:8px 16px;cursor:pointer;font-weight:600}
 .btn:hover:not(:disabled){background:var(--sky)}.btn:disabled{opacity:.4;cursor:not-allowed}
 .btn.go{background:var(--ok);border-color:var(--ok);color:#fff;font-size:19px;padding:10px 22px}.btn.go:hover:not(:disabled){background:#176d3c}
