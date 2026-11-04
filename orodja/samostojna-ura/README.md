@@ -96,6 +96,13 @@ njim** (`gradiva.py` jih označi z `interaktivno: true`, ker vsebujejo
 Ko je odklenjen, se kviz ob prvem obisku odpre sam. Neobvezne izzive zato
 postavi ZA kviz.
 
+**Učitelj** (prijavljen kot učitelj) kviza nima nikoli zaklenjenega: na koraku
+Kviz vidi naslov, število vprašanj in gumb »📊 Oddaje učencev in vprašanja«
+(rezultati po učencih, povprečje, pravilnost po vprašanjih, Ponastavi, predogled
+vprašanj). Zaklep velja samo za učence. Zelena kljukica pri interaktivnem koraku
+pomeni, da je korak REŠEN (🎉 Končano!), ne le odprt, zato se kljukice in
+zaklep vedno ujemajo. Pri spremembah `index.html` tega ne pokvari.
+
 ## Naučeno iz prakse
 
 **4. razred, 4. ura Algoritem po prostoru (3. 11. 2026), ura je uspela:** učenci so
