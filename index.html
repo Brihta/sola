@@ -931,6 +931,8 @@ function naslednjiKorak(g) {
 const hrefKoraka = (p, g, i) => `${hrefGradiva(p, g)}/${i + 1}`;
 function korakOpravljen(p, g, k, i) {
   if (k.vrsta === 'kviz') { const kv = kvizKoraka(p.id, k.kviz); return !!(kv && MOJE[kv.id]); }
+  /* Interaktivni korak je opravljen šele, ko je rešen (🎉 Končano!), ne že, ko ga učenec odpre. */
+  if (k.interaktivno) return reseniKoraki(g).includes(i);
   return videniKoraki(g).includes(i);
 }
 function korakPika(p, g, k, i, zdaj) {
@@ -942,6 +944,10 @@ function vsebinaKoraka(p, g, k) {
   if (k.vrsta === 'kviz') {
     const kv = kvizKoraka(p.id, k.kviz);
     if (!kv) return `<div class="empty"><img src="brihta.png" alt=""><strong>Kviz še ni objavljen</strong>Ko ga učitelj objavi, se pokaže tukaj.</div>`;
+    /* Učitelj: brez zaklepa, takoj do oddaj učencev in predogleda vprašanj. */
+    if (ucitelj) return `<div class="open-card wide">${tile('kviz')}<h2>${esc(kv.ime)}</h2>
+      <p>👨‍🏫 Prijavljen si kot učitelj. ${kv.vprasanj ? kv.vprasanj + ' vprašanj.' : ''}</p>
+      <a class="btn btn-go btn-big" href="${hrefGradiva(p, kv)}">📊 Oddaje učencev in vprašanja ${SVG.next}</a></div>`;
     const o = MOJE[kv.id];
     const manjka = nereseniPred(g, g.koraki.indexOf(k));
     if (!o && manjka.length) return `<div class="open-card wide">${tile('kviz')}<h2>🔒 Kviz se odpre, ko rešiš vse korake</h2>
