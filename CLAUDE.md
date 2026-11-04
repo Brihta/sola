@@ -82,10 +82,12 @@ pojem B = razlaga B
 
 Pri VSEH urah računalništva (racunalnistvo-4, -5, -6, -6-9) so koraki ure
 samostojne HTML strani, ki jih učenci prehodijo sami, brez učitelja (do 25
-učencev, 11 do 14 let; učiteljeva razlaga in delo v paru za to ne delujeta).
+učencev; 4. r 9 do 10 let, ostali 11 do 14 let; učiteljeva razlaga in delo v paru za to ne delujeta).
 Ne delaj več Word zapisov, PDF prosojnic in delovnih listov za te ure.
 Orodje, pravila zasnove in primer so v `orodja/samostojna-ura/README.md`:
-preberi ga, preden začneš. Zgradi z `zgradi.py`, preveri s `preveri.py`.
+preberi ga, preden začneš (tudi razdelek »Naučeno iz prakse«). Zgradi z
+`zgradi.py`, preveri s `preveri.py` in poglej posnetke vseh nalog: naloga mora
+biti rešljiva samo iz tega, kar je na zaslonu.
 
 ## Gradiva za uro
 

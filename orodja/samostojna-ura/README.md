@@ -1,7 +1,7 @@
 # Samostojna ura: interaktivne strani za korake ure
 
-Ure računalništva so zgrajene tako, da jih učenci (11 do 14 let, okoli 25 v
-skupini) prehodijo **sami, s svojo hitrostjo, brez učitelja**. Vsak korak ure
+Ure računalništva so zgrajene tako, da jih učenci (4. razred 9 do 10 let,
+ostali 11 do 14 let, okoli 25 v skupini) prehodijo **sami, s svojo hitrostjo, brez učitelja**. Vsak korak ure
 je ena HTML stran, ki uči, preveri in odklene naslednji korak.
 
 ## Datoteke
@@ -31,18 +31,28 @@ da jih lahko kasneje popraviš in znova zgradiš.
 4. **Vsaka naloga ima 1 do 3 namige** (`hints`), od splošnega do skoraj rešitve.
    Po zadnjem se pokaže »Pokaži rešitev«, da nihče ne obtiči.
 5. **Brez dela v paru in brez učiteljeve razlage** kot pogoja za napredek.
-6. **Jezik za 11 let:** kratke povedi, »ti«, oblike »/a« (naredil/a).
+6. **Jezik za starost:** kratke povedi, »ti«, oblike »/a« (naredil/a). V 4. razredu
+   (9 do 10 let) še krajše: ena misel na poved, veliko emojijev in slik, brez zank
+   (zanka je v 4. r šele pri Scratchu), mreža 4 × 4.
 7. **Osnovna pot za vse v okoli 25 minutah.** Dodatno označi s `stars: '★★'` in
    `optional: True` (gumb »Preskoči«), ali kot zadnji korak ure »Izziv«.
 8. **Dejavnost pred teorijo:** pojem vpelji skozi igro ali izziv.
 9. Brez osebnih podatkov, brez zunanjih knjižnic in povezav (vse je v eni datoteki).
 10. Nikoli pomišljajev (— ali –); uporabi vejico, dvopičje, oklepaj.
+11. **Naloga se reši samo iz tega, kar je na zaslonu.** Vsi podatki (slika, vrsta,
+    pravilo) morajo biti vidni. Če učenec lahko le ugiba s klikanjem, je naloga
+    pokvarjena. `preveri.py` javi »NEPOPOLNO NAVODILO«, če se del uvoda ne prikaže.
+12. **Pred prvo nalogo izbire povej, kako se dela:** »Klikni odgovor. Če je narobe,
+    ti stran pove zakaj. Če ne veš, kako začeti, klikni Namig.«
+13. **Mlajšim (4. r) daj naloge, ki jih znajo prebrati v eni sapi.** Težko nalogo
+    (npr. igrače na traku) označi ★★ in `optional`, da jo lahko preskočijo.
 
 ## Vrste zaslonov
 
 ```python
 info(naslov, html)                       # razlaga; razredi: big, box, warn, small, sym o/r/d, tk, tk loop
 {'type':'choose', 'title', 'intro', 'options':[ch('besedilo', ok=True, why='...'), ...], 'hints':[...]}
+                  # intro sme vsebovati <p>, <div>, mrežo (je v <div class="intro">); preveri posnetke
                   # 'abcd': True = možnosti ostanejo v danem vrstnem redu z oznakami A, B, C, D (kot na Bobrčku)
 {'type':'order',  'title', 'intro', 'items':[koraki v PRAVEM vrstnem redu], 'hints'}
 {'type':'match',  'title', 'pairs':[['levo','desno'], ...], 'hints'}
@@ -85,3 +95,29 @@ njim** (`gradiva.py` jih označi z `interaktivno: true`, ker vsebujejo
 `brihta-korak`). Do takrat učenec vidi seznam nerešenih korakov s povezavami.
 Ko je odklenjen, se kviz ob prvem obisku odpre sam. Neobvezne izzive zato
 postavi ZA kviz.
+
+## Naučeno iz prakse
+
+**4. razred, 4. ura Algoritem po prostoru (3. 11. 2026), ura je uspela:** učenci so
+uživali in delali vsak s svojo hitrostjo. Kar je šlo narobe in je popravljeno:
+
+- Uvod naloge je bil v `<p>`; brskalnik je odvrgel vse od notranjega `<p>` naprej
+  (učenka ni videla igrač in pravila, zato je ugibala). Zdaj je uvod v `<div>`, in
+  `preveri.py` to preverja. Pri vsaki novi uri vseeno poglej posnetke VSEH nalog.
+- Gumbi so bili pripeti na dno okvirja (velik prazen pas pod kratkimi zasloni).
+  Zdaj so tik pod vsebino in pri dolgih nalogah prilepljeni na dno okna.
+- Mrežo s sliko v uvodu naredi iz `<span>` z `display:inline-grid` (glej funkcijo
+  `mreza()` v `opisi/racunalnistvo-4/2026-11-10 4. ura Algoritem po prostoru.py`).
+
+**Bobrček (ACM Bober, 2. do 5. r):**
+
+- Za 4. razred NI spletne vadnice; na bober.acm.si so vaje za goste šele od 6. r.
+  Tekmovanje za 2. do 5. r je na papirnatih polah (PDF), naloge niso vse ABCD.
+- Arhiv: https://tekmovanja.acm.si/?q=bober%2Fnaloge-re%C5%A1itve , pole po
+  razredih: https://ucilnica.acm.si/course/view.php?id=103 (4. r 2024/25: id=2855).
+- Pravih nalog NE prepisuj v repozitorij (je javen, licenca ni navedena). Napiši
+  izvirne naloge v istem slogu in dodaj povezavo na pravo polo kot `.url` korak.
+- Vaja za Bobrček je `choose` z `'abcd': True` (možnosti po vrsti z A, B, C, D, kot
+  na tekmovanju; učitelj jih lahko uporabi tudi za glasovanje v razredu).
+- Šolsko tekmovanje je novembra (2026: 9. do 20. 11.). Preveri, ali ima oddelek v
+  tem oknu sploh uro, in to Ninu povej takoj.

@@ -16,6 +16,17 @@ with sync_playwright() as p:
         while n < 20:
             n += 1
             pg.screenshot(path=str(shots / f'{f.stem[:6]}_{n:02d}.png'), full_page=True)
+            # navodilo (intro) se mora prikazati CELO: učenec nalogo reši samo iz tega, kar vidi
+            manjka = pg.evaluate('''() => {
+              const h = document.querySelector('main h2'), r = document.querySelector('main .intro');
+              if (!h || !r) return '';
+              const s = (window.PAGE.screens || []).find((x) => x.intro && x.title && h.textContent.trim() === x.title.replace(/<[^>]*>/g, '').trim());
+              if (!s) return '';
+              const d = document.createElement('div'); d.innerHTML = s.intro;
+              const z = (x) => x.replace(/\\s+/g, '');
+              return z(r.textContent).includes(z(d.textContent)) ? '' : h.textContent.trim();
+            }''')
+            if manjka: errs.append(f'NEPOPOLNO NAVODILO na zaslonu »{manjka}«: del uvoda se ne prikaže')
             if pg.locator('.end').count(): break
             nxt = pg.locator('#next')
             if nxt.is_disabled():
