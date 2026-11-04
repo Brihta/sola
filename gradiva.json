@@ -43,21 +43,21 @@
       "ime": "Robot na mrezi",
       "vrsta": "html",
       "pot": "gradiva/racunalnistvo-4/2026-11-10 4. ura Algoritem po prostoru/2 Robot na mrezi.html",
-      "velikost": 46041,
+      "velikost": 46077,
       "interaktivno": true
      },
      {
       "ime": "Bobrckove naloge",
       "vrsta": "html",
       "pot": "gradiva/racunalnistvo-4/2026-11-10 4. ura Algoritem po prostoru/3 Bobrckove naloge.html",
-      "velikost": 52608,
+      "velikost": 52644,
       "interaktivno": true
      },
      {
       "ime": "Zapis v zvezek",
       "vrsta": "html",
       "pot": "gradiva/racunalnistvo-4/2026-11-10 4. ura Algoritem po prostoru/4 Zapis v zvezek.html",
-      "velikost": 43660,
+      "velikost": 43696,
       "interaktivno": true
      },
      {
@@ -69,7 +69,7 @@
       "ime": "Izziv Kaca",
       "vrsta": "html",
       "pot": "gradiva/racunalnistvo-4/2026-11-10 4. ura Algoritem po prostoru/6 Izziv Kaca.html",
-      "velikost": 44029,
+      "velikost": 44065,
       "interaktivno": true
      },
      {
@@ -114,28 +114,28 @@
       "ime": "Ogrevanje osnovna vrsta",
       "vrsta": "html",
       "pot": "gradiva/racunalnistvo-6/2026-10-23 3. ura Tipkanje in postevanka/2 Ogrevanje osnovna vrsta.html",
-      "velikost": 44217,
+      "velikost": 44349,
       "interaktivno": true
      },
      {
       "ime": "Stevilke na tipkovnici",
       "vrsta": "html",
       "pot": "gradiva/racunalnistvo-6/2026-10-23 3. ura Tipkanje in postevanka/3 Stevilke na tipkovnici.html",
-      "velikost": 44900,
+      "velikost": 45032,
       "interaktivno": true
      },
      {
       "ime": "Postevanka s tipkanjem",
       "vrsta": "html",
       "pot": "gradiva/racunalnistvo-6/2026-10-23 3. ura Tipkanje in postevanka/4 Postevanka s tipkanjem.html",
-      "velikost": 44476,
+      "velikost": 44608,
       "interaktivno": true
      },
      {
       "ime": "Zapis v zvezek",
       "vrsta": "html",
       "pot": "gradiva/racunalnistvo-6/2026-10-23 3. ura Tipkanje in postevanka/5 Zapis v zvezek.html",
-      "velikost": 43695,
+      "velikost": 43827,
       "interaktivno": true
      },
      {
@@ -147,7 +147,7 @@
       "ime": "Izziv vsa postevanka",
       "vrsta": "html",
       "pot": "gradiva/racunalnistvo-6/2026-10-23 3. ura Tipkanje in postevanka/7 Izziv vsa postevanka.html",
-      "velikost": 43632,
+      "velikost": 43764,
       "interaktivno": true
      }
     ]
@@ -185,28 +185,28 @@
       "ime": "Kaj je algoritem",
       "vrsta": "html",
       "pot": "gradiva/racunalnistvo-6-9/2026-10-23 7. ura Zapis algoritma/2 Kaj je algoritem.html",
-      "velikost": 34064,
+      "velikost": 34100,
       "interaktivno": true
      },
      {
       "ime": "Program za mrežo",
       "vrsta": "html",
       "pot": "gradiva/racunalnistvo-6-9/2026-10-23 7. ura Zapis algoritma/3 Program za mrežo.html",
-      "velikost": 35084,
+      "velikost": 35120,
       "interaktivno": true
      },
      {
       "ime": "Diagram poteka",
       "vrsta": "html",
       "pot": "gradiva/racunalnistvo-6-9/2026-10-23 7. ura Zapis algoritma/4 Diagram poteka.html",
-      "velikost": 33786,
+      "velikost": 33822,
       "interaktivno": true
      },
      {
       "ime": "Zapis v zvezek",
       "vrsta": "html",
       "pot": "gradiva/racunalnistvo-6-9/2026-10-23 7. ura Zapis algoritma/5 Zapis v zvezek.html",
-      "velikost": 196482,
+      "velikost": 196518,
       "interaktivno": true
      },
      {
@@ -218,7 +218,7 @@
       "ime": "Izziv Najdi največje",
       "vrsta": "html",
       "pot": "gradiva/racunalnistvo-6-9/2026-10-23 7. ura Zapis algoritma/7 Izziv Najdi največje.html",
-      "velikost": 32871,
+      "velikost": 32907,
       "interaktivno": true
      }
     ]
@@ -265,5 +265,5 @@
   "slovenscina-3": [],
   "svetovni-popotniki": []
  },
- "posodobljeno": "2026-11-03T11:22:33+00:00"
+ "posodobljeno": "2026-11-04T03:40:34+00:00"
 }
