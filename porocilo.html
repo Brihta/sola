@@ -1,0 +1,190 @@
+<!doctype html>
+<html lang="sl">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width,initial-scale=1">
+<title>Poročilo o izdelkih</title>
+<style>
+  :root { --ink:#1d2b3a; --mut:#5b6b7c; --line:#d6e0ea; --ok:#1f8a4c; --okbg:#e5f6ec; --mid:#b7791f; --midbg:#fff4d6; --bad:#c0392b; --badbg:#fdecea; --blue:#2E5C8A; }
+  * { box-sizing: border-box; }
+  body { margin: 0; background: #eef2f6; color: var(--ink); font: 14px/1.4 system-ui, "Segoe UI", Arial, sans-serif; }
+  .bar { position: sticky; top: 0; z-index: 5; background: #fff; border-bottom: 1px solid var(--line); padding: 12px 20px; display: flex; gap: 12px; align-items: center; flex-wrap: wrap; }
+  .bar h1 { font-size: 18px; margin: 0; color: var(--blue); flex: 1; }
+  .bar input { font: inherit; padding: 7px 10px; border: 1px solid var(--line); border-radius: 8px; min-width: 320px; }
+  button { font: inherit; font-weight: 600; padding: 8px 14px; border-radius: 10px; border: 2px solid var(--blue); background: #fff; color: var(--blue); cursor: pointer; }
+  button.go { background: var(--blue); color: #fff; }
+  .msg { max-width: 720px; margin: 40px auto; background: #fff; border-radius: 14px; padding: 24px; text-align: center; }
+  .povzetek { max-width: 210mm; margin: 16px auto 0; background: #fff; border-radius: 12px; padding: 14px 18px; }
+  .povzetek table { width: 100%; border-collapse: collapse; }
+  .povzetek td, .povzetek th { border-bottom: 1px solid var(--line); padding: 4px 6px; text-align: left; }
+  .stran { width: 210mm; min-height: 297mm; margin: 16px auto; background: #fff; padding: 14mm 14mm 10mm; box-shadow: 0 2px 10px rgba(0,0,0,.08); }
+  .glava { display: flex; justify-content: space-between; align-items: flex-end; border-bottom: 3px solid var(--blue); padding-bottom: 6px; margin-bottom: 10px; }
+  .glava h2 { margin: 0; font-size: 24px; }
+  .glava .meta { text-align: right; color: var(--mut); font-size: 12px; }
+  h3 { font-size: 13px; margin: 10px 0 5px; color: var(--blue); text-transform: uppercase; letter-spacing: .04em; }
+  .cilji { display: grid; grid-template-columns: 1fr 1fr; gap: 6px; }
+  .cilj { border-radius: 8px; padding: 6px 10px; border: 1.5px solid; display: flex; justify-content: space-between; gap: 8px; }
+  .cilj.da { background: var(--okbg); border-color: var(--ok); }
+  .cilj.del { background: var(--midbg); border-color: var(--mid); }
+  .cilj.ne { background: var(--badbg); border-color: var(--bad); }
+  .cilj b { white-space: nowrap; }
+  table.naloge { width: 100%; border-collapse: collapse; font-size: 12.5px; }
+  table.naloge th, table.naloge td { border-bottom: 1px solid var(--line); padding: 2px 6px; text-align: left; }
+  table.naloge th { color: var(--mut); font-weight: 600; }
+  .slike { display: flex; flex-wrap: wrap; gap: 10px 14px; }
+  .slika { text-align: center; font-size: 11px; color: var(--mut); }
+  .slika svg { display: block; margin: 0 auto 2px; }
+  .slika.velika { font-size: 12px; }
+  .opomba { margin-top: 10px; font-size: 11px; color: var(--mut); }
+  .legenda { font-size: 11px; color: var(--mut); margin-top: 4px; }
+  @media print {
+    body { background: #fff; }
+    .bar, .povzetek, .msg { display: none !important; }
+    .stran { margin: 0; box-shadow: none; width: auto; min-height: 0; padding: 0; page-break-after: always; break-after: page; }
+    .stran:last-child { page-break-after: auto; break-after: auto; }
+    @page { size: A4; margin: 12mm; }
+  }
+</style>
+</head>
+<body>
+<div class="bar">
+  <h1>📄 Poročilo o izdelkih učencev</h1>
+  <input id="ura" placeholder="npr. racunalnistvo-3/2026-11-06-simetrija">
+  <button id="nalozi">Naloži</button>
+  <button class="go" id="tiskaj" disabled>🖨️ Natisni vse (PDF)</button>
+</div>
+<div id="vsebina"><div class="msg">Nalagam …</div></div>
+
+<script>
+const SUPABASE = { url: 'https://ldczgbajbarlgwqzcggh.supabase.co', key: 'sb_publishable_888IYcEb-nSmGO0d67hEwA_rBFuXnv8' };
+const BARVE = { R: '#ef4444', Y: '#facc15', G: '#22c55e', B: '#3b82f6', O: '#fb923c', P: '#a855f7', K: '#92400e', C: '#1f2937' };
+const STANJE = { sam: ['✅', 'sam/a'], namig: ['💡', 'z namigom'], resitev: ['👀', 'pogledal/a rešitev'], potrjeno: ['✅', 'potrdil/a'], ustvarjeno: ['🎨', 'ustvaril/a'] };
+const esc = s => String(s ?? '').replace(/[&<>"]/g, c => ({ '&': '&amp;', '<': '&lt;', '>': '&gt;', '"': '&quot;' }[c]));
+const vs = document.getElementById('vsebina');
+const polje = document.getElementById('ura');
+polje.value = new URLSearchParams(location.search).get('ura') || 'racunalnistvo-3/2026-11-06-simetrija';
+
+function ucitelj() {
+  try { const t = JSON.parse(localStorage.getItem('sola_ucitelj_v2') || 'null'); if (t && t.seja && new Date(t.potece) > new Date()) return t; } catch (e) {}
+  return null;
+}
+
+async function rpc(fn, params) {
+  const r = await fetch(`${SUPABASE.url}/rest/v1/rpc/${fn}`, { method: 'POST',
+    headers: { apikey: SUPABASE.key, Authorization: `Bearer ${SUPABASE.key}`, 'Content-Type': 'application/json' }, body: JSON.stringify(params) });
+  if (!r.ok) throw new Error(`${r.status} ${await r.text()}`);
+  return r.json();
+}
+
+/* Sličica mreže: dano (sivo obrobljeno), moje, os; napačna polja s ✕ */
+function mreza(p, cs) {
+  const W = p.w, H = p.h, V = p.os === 'v';
+  const zr = (r, q) => V ? [r, W - 1 - q] : [H - 1 - r, q];
+  let s = `<svg width="${W * cs + 2}" height="${H * cs + 2}" viewBox="-1 -1 ${W * cs + 2} ${H * cs + 2}" xmlns="http://www.w3.org/2000/svg">`;
+  s += `<rect x="0" y="0" width="${W * cs}" height="${H * cs}" fill="#fff" stroke="#9aa" stroke-width="1"/>`;
+  for (let r = 0; r < H; r++) for (let q = 0; q < W; q++) {
+    const d = p.dano[r][q], m = (p.moje && p.moje[r] || '')[q] || '.';
+    const k = d !== '.' ? d : m;
+    if (k !== '.') s += `<rect x="${q * cs}" y="${r * cs}" width="${cs}" height="${cs}" fill="${BARVE[k] || '#888'}"/>`;
+    if (!p.prosto && d === '.' && m !== '.') {
+      const [a, b] = zr(r, q), t = p.dano[a][b];
+      if (t !== m) s += `<path d="M${q * cs + 1} ${r * cs + 1}l${cs - 2} ${cs - 2}M${q * cs + cs - 1} ${r * cs + 1}l${-(cs - 2)} ${cs - 2}" stroke="#000" stroke-width="1.2"/>`;
+    }
+  }
+  for (let q = 1; q < W; q++) s += `<line x1="${q * cs}" y1="0" x2="${q * cs}" y2="${H * cs}" stroke="#e3e8ee" stroke-width=".5"/>`;
+  for (let r = 1; r < H; r++) s += `<line x1="0" y1="${r * cs}" x2="${W * cs}" y2="${r * cs}" stroke="#e3e8ee" stroke-width=".5"/>`;
+  s += V ? `<line x1="${W * cs / 2}" y1="-1" x2="${W * cs / 2}" y2="${H * cs + 1}" stroke="#e11d48" stroke-width="2" stroke-dasharray="4 2"/>`
+         : `<line x1="-1" y1="${H * cs / 2}" x2="${W * cs + 1}" y2="${H * cs / 2}" stroke="#e11d48" stroke-width="2" stroke-dasharray="4 2"/>`;
+  return s + '</svg>';
+}
+
+const barvLika = p => new Set((p.dano || []).join('').replace(/\./g, '')).size;
+
+/* Cilji ure, izpeljani iz vrst nalog: velja za vsako uro z nalogami »zrcali« in »choose«. */
+function cilji(naloge) {
+  const C = [
+    { ime: 'Prepozna simetrijo in os simetrije', f: n => n.vrsta === 'choose' },
+    { ime: 'Zrcali čez navpično os', f: n => n.vrsta === 'zrcali' && !n.prosto && n.os === 'v' },
+    { ime: 'Zrcali čez vodoravno os', f: n => n.vrsta === 'zrcali' && !n.prosto && n.os === 'h' },
+    { ime: 'Pri zrcaljenju upošteva barve', f: n => n.vrsta === 'zrcali' && !n.prosto && n.barv > 1 },
+  ];
+  return C.filter(c => naloge.some(c.f));
+}
+
+function ocena(c, naloge, moje) {
+  const vse = naloge.filter(c.f);
+  const sam = vse.filter(n => moje[n.stopnja] && ['sam', 'namig'].includes(moje[n.stopnja].stanje)).length;
+  const raz = sam === vse.length ? 'da' : sam >= Math.ceil(vse.length / 2) ? 'del' : 'ne';
+  return { raz, besedilo: `${sam} / ${vse.length}`, znak: raz === 'da' ? '✅ doseženo' : raz === 'del' ? '🟡 delno' : '❌ ni doseženo' };
+}
+
+async function nalozi() {
+  const t = ucitelj();
+  document.getElementById('tiskaj').disabled = true;
+  if (!t) { vs.innerHTML = '<div class="msg"><h2>Najprej se prijavi kot učitelj</h2><p>Odpri <a href="./">Brihto</a>, prijavi se kot učitelj, nato znova odpri to stran.</p></div>'; return; }
+  const ura = polje.value.trim();
+  history.replaceState(null, '', '?ura=' + encodeURIComponent(ura));
+  vs.innerHTML = '<div class="msg">Nalagam …</div>';
+  let vrst;
+  try { vrst = await rpc('sola_izdelki_porocilo', { p_seja: t.seja, p_ura: ura }); }
+  catch (e) { vs.innerHTML = `<div class="msg"><h2>Napaka</h2><p>${esc(e.message)}</p><p>Je <code>supabase_izdelki.sql</code> zagnan v Supabase? Je prijava učitelja še veljavna?</p></div>`; return; }
+  if (!vrst.length) { vs.innerHTML = '<div class="msg"><h2>Še ni izdelkov</h2><p>Za to uro še noben učenec ni shranil dela.</p></div>'; return; }
+
+  // seznam nalog ure (unija vseh učencev), po vrstnem redu
+  const nal = {};
+  vrst.forEach(v => { if (v.stopnja.startsWith('_')) return; const p = v.podatki || {};
+    nal[v.stopnja] = nal[v.stopnja] || { stopnja: v.stopnja, zap: v.zap, naslov: p.naslov, vrsta: p.vrsta, os: p.os, prosto: p.prosto, barv: barvLika(p) }; });
+  const naloge = Object.values(nal).sort((a, b) => a.zap - b.zap);
+  const C = cilji(naloge);
+
+  // po učencih
+  const uc = {};
+  vrst.forEach(v => { const u = uc[v.student_id] = uc[v.student_id] || { ime: v.ime, emoji: v.emoji, razred: v.razred, moje: {}, zadnje: v.posodobljeno, prvo: v.posodobljeno };
+    if (v.posodobljeno > u.zadnje) u.zadnje = v.posodobljeno; if (v.posodobljeno < u.prvo) u.prvo = v.posodobljeno;
+    if (!v.stopnja.startsWith('_')) u.moje[v.stopnja] = v.podatki; });
+  const ucenci = Object.values(uc).sort((a, b) => (a.razred || '').localeCompare(b.razred || '') || a.ime.localeCompare(b.ime, 'sl'));
+  const dan = iso => new Date(iso).toLocaleDateString('sl-SI');
+  const ura_ = iso => new Date(iso).toLocaleTimeString('sl-SI', { hour: '2-digit', minute: '2-digit' });
+
+  let pov = `<div class="povzetek"><b>${ucenci.length} učencev</b> · ura <code>${esc(ura)}</code> · ena stran na učenca, natisni z gumbom zgoraj.
+    <table><tr><th>Učenec</th><th>Razred</th><th>Naloge</th>${C.map(c => `<th>${esc(c.ime)}</th>`).join('')}</tr>`;
+  let strani = '';
+  for (const u of ucenci) {
+    const res = naloge.filter(n => u.moje[n.stopnja] && ['sam', 'namig', 'potrjeno', 'ustvarjeno'].includes(u.moje[n.stopnja].stanje)).length;
+    const oc = C.map(c => ocena(c, naloge, u.moje));
+    pov += `<tr><td>${esc(u.emoji || '')} ${esc(u.ime)}</td><td>${esc(u.razred || '')}</td><td>${res} / ${naloge.length}</td>${oc.map(o => `<td>${o.znak.split(' ')[0]} ${o.besedilo}</td>`).join('')}</tr>`;
+
+    const vrstice = naloge.map(n => { const m = u.moje[n.stopnja];
+      const st = m ? STANJE[m.stanje] || ['', m.stanje] : ['–', 'ni prišel/a do sem'];
+      const posk = m && n.vrsta !== 'check' && !n.prosto ? (m.poskusi || 0) : '';
+      return `<tr><td>${esc(n.naslov || n.stopnja)}</td><td>${st[0]} ${esc(st[1])}</td><td>${posk}</td><td>${m && m.namigi ? m.namigi : ''}</td></tr>`; }).join('');
+
+    const zr = naloge.filter(n => n.vrsta === 'zrcali' && !n.prosto && u.moje[n.stopnja] && u.moje[n.stopnja].dano);
+    const sl = zr.map(n => { const m = u.moje[n.stopnja], st = STANJE[m.stanje] || ['', ''];
+      return `<div class="slika">${mreza(m, Math.max(5, Math.min(8, Math.floor(80 / Math.max(m.w, m.h)))))}${st[0]} ${esc((n.naslov || '').replace(/^\d+\.\s*/, ''))}</div>`; }).join('');
+    const pr = naloge.filter(n => n.prosto && u.moje[n.stopnja] && u.moje[n.stopnja].dano)
+      .map(n => `<div class="slika velika">${mreza(u.moje[n.stopnja], 11)}🎨 ${esc(n.naslov)}</div>`).join('');
+
+    strani += `<section class="stran">
+      <div class="glava"><div><h2>${esc(u.emoji || '')} ${esc(u.ime)}</h2><div>${esc(u.razred || '')}</div></div>
+        <div class="meta">${esc(ura)}<br>${dan(u.prvo)}, ${ura_(u.prvo)} do ${ura_(u.zadnje)}</div></div>
+      ${C.length ? `<h3>Cilji</h3><div class="cilji">${C.map((c, i) => `<div class="cilj ${oc[i].raz}"><span>${esc(c.ime)}</span><b>${oc[i].znak} (${oc[i].besedilo})</b></div>`).join('')}</div>
+      <div class="legenda">Šteje naloga, ki jo je učenec rešil sam ali z namigom. Pogledana rešitev ne šteje.</div>` : ''}
+      <h3>Naloge</h3>
+      <table class="naloge"><tr><th>Naloga</th><th>Kako</th><th>Poskusov</th><th>Namigov</th></tr>${vrstice}</table>
+      ${sl ? `<h3>Risbe (✕ = kvadratek na napačnem mestu ali v napačni barvi)</h3><div class="slike">${sl}</div>` : ''}
+      ${pr ? `<h3>Prosto ustvarjanje</h3><div class="slike">${pr}</div>` : ''}
+      <div class="opomba">Izpis iz Brihte (brihta.github.io/sola), ${new Date().toLocaleDateString('sl-SI')}.</div>
+    </section>`;
+  }
+  vs.innerHTML = pov + '</table></div>' + strani;
+  document.getElementById('tiskaj').disabled = false;
+}
+
+document.getElementById('nalozi').onclick = nalozi;
+polje.addEventListener('keydown', e => { if (e.key === 'Enter') nalozi(); });
+document.getElementById('tiskaj').onclick = () => window.print();
+nalozi();
+</script>
+</body>
+</html>
