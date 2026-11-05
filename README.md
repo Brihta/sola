@@ -12,6 +12,7 @@ Vsak predmet ima svojo mapo v `gradiva/`:
 
 | Mapa | Predmet |
 |---|---|
+| `gradiva/racunalnistvo-3` | Računalništvo 3 |
 | `gradiva/racunalnistvo-4` | Računalništvo 4 |
 | `gradiva/racunalnistvo-5` | Računalništvo 5 |
 | `gradiva/racunalnistvo-6` | Računalništvo 6 |

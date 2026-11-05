@@ -26,7 +26,7 @@ Pravila za skripto:
   datoteko preimenuješ v `_Ime.txt` in znova objaviš. Oddaje ostanejo.
 - Ime datoteke določa kviz: preimenovanje (brez `_`) naredi NOV kviz.
 
-`<predmet>` je eden od: racunalnistvo-4, racunalnistvo-5, racunalnistvo-6,
+`<predmet>` je eden od: racunalnistvo-3, racunalnistvo-4, racunalnistvo-5, racunalnistvo-6,
 racunalnistvo-6-9, gasilci, rokodelnica, svetovni-popotniki, matematika-3,
 slovenscina-3, anglescina-3.
 
@@ -80,9 +80,9 @@ pojem B = razlaga B
 
 ## Ure računalništva: samostojne interaktivne strani (obvezno od 23. 10. 2026)
 
-Pri VSEH urah računalništva (racunalnistvo-4, -5, -6, -6-9) so koraki ure
+Pri VSEH urah računalništva (racunalnistvo-3, -4, -5, -6, -6-9) so koraki ure
 samostojne HTML strani, ki jih učenci prehodijo sami, brez učitelja (do 25
-učencev; 4. r 9 do 10 let, ostali 11 do 14 let; učiteljeva razlaga in delo v paru za to ne delujeta).
+učencev; 3. r 8 do 9 let, 4. r 9 do 10 let, ostali 11 do 14 let; učiteljeva razlaga in delo v paru za to ne delujeta).
 Ne delaj več Word zapisov, PDF prosojnic in delovnih listov za te ure.
 Orodje, pravila zasnove in primer so v `orodja/samostojna-ura/README.md`:
 preberi ga, preden začneš (tudi razdelek »Naučeno iz prakse«). Zgradi z
