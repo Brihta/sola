@@ -3,7 +3,9 @@
   const $ = (h) => { const d = document.createElement('div'); d.innerHTML = h.trim(); return d.firstElementChild; };
   const esc = (s) => String(s).replace(/[&<>"]/g, (c) => ({ '&': '&amp;', '<': '&lt;', '>': '&gt;', '"': '&quot;' }[c]));
   const shuffle = (a) => { a = a.slice(); for (let i = a.length - 1; i > 0; i--) { const j = Math.floor(Math.random() * (i + 1)); [a[i], a[j]] = [a[j], a[i]]; } return a; };
-  const KEY = 'brihta_ura7:' + location.pathname.split('/').pop();
+  // Napredek je vezan na prijavljenega učenca in celo pot strani: računalniki so skupni, imena korakov se ponavljajo med urami.
+  const UID = (() => { try { const u = JSON.parse(localStorage.getItem('brihta_profile_v1') || 'null'); return (u && u.id) || ''; } catch (e) { return ''; } })();
+  const KEY = 'brihta_ura8:' + UID + ':' + decodeURIComponent(location.pathname);
   const load = () => { try { return parseInt(localStorage.getItem(KEY) || '0', 10) || 0; } catch (e) { return 0; } };
   const save = (v) => { try { localStorage.setItem(KEY, String(v)); } catch (e) {} };
 
@@ -407,7 +409,7 @@
   };
 
   // Natipkaj besedilo. s.text, s.min (%), s.save: shrani kot izhodišče, s.compare: primerjaj z izhodiščem.
-  const BKEY = 'brihta_tipkanje_izhodisce';
+  const BKEY = 'brihta_tipkanje_izhodisce:' + UID;
   function lev(a, b) {
     const m = a.length, n = b.length; let p = Array.from({ length: n + 1 }, (_, j) => j);
     for (let i = 1; i <= m; i++) { const q = [i]; for (let j = 1; j <= n; j++) q[j] = Math.min(p[j] + 1, q[j - 1] + 1, p[j - 1] + (a[i - 1] === b[j - 1] ? 0 : 1)); p = q; }
@@ -449,7 +451,7 @@
   };
 
   // Poštevanka s tipkanjem. s.tables: [2,3,...], s.n: koliko pravilnih, s.save/compare: čas
-  const TKEY = 'brihta_postevanka_cas';
+  const TKEY = 'brihta_postevanka_cas:' + UID;
   TYPES.times = (s, c) => {
     const tabs = s.tables || [2, 3, 4, 5], need = s.n || 10;
     const w = $(`<div class="times"><div class="tq"></div>

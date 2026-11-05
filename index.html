@@ -996,7 +996,7 @@ function stranUra(p, g, korak) {
    pošlje postMessage {tip:'brihta-korak', stanje:'zacetek'} ob nalaganju in {…, stanje:'koncano'} ob koncu.
    Strani, ki ničesar ne pošljejo, gumba ne zaklenejo. */
 let trenutniKorak = null;
-const kljucResenih = g => 'sola_ura_reseno:' + g.pot;
+const kljucResenih = g => 'sola_ura_reseno:' + (ucenec ? ucenec.id + ':' : '') + g.pot;
 function reseniKoraki(g) { try { return JSON.parse(preberi(kljucResenih(g)) || '[]'); } catch (e) { return []; } }
 /* Interaktivni koraki pred korakom i, ki še niso rešeni (kviz ure se odpre šele, ko jih ni). */
 function nereseniPred(g, i) {
