@@ -282,6 +282,40 @@
   ],
   "racunalnistvo-6-9": [
    {
+    "ime": "8. ura Vaja za Bober",
+    "vrsta": "ura",
+    "datum": "2026-11-06T08:00:00+02:00",
+    "pot": "gradiva/racunalnistvo-6-9/2026-11-06 8. ura Vaja za Bober",
+    "koraki": [
+     {
+      "ime": "Navodila",
+      "vrsta": "besedilo",
+      "pot": "gradiva/racunalnistvo-6-9/2026-11-06 8. ura Vaja za Bober/1 Navodila.md",
+      "velikost": 798,
+      "besedilo": "## 🎯 Cilj ure\n\nPripravim se na šolsko tekmovanje **Bober**: rešujem prave naloge prejšnjih let in iz razlage rešitev ugotovim, kje sem se zmotil/a.\n\n## ✅ Uspešen sem, če …\n\n- izberem pravo skupino (6. in 7. razred ali 8. in 9. razred),\n- rešim vsaj eno leto nalog v vadnici,\n- v zvezek z lastnimi besedami razložim rešitev naloge, ki sem jo zgrešil/a.\n\n## 🗺️ Kako delaš\n\n1. Vsak korak je ena stran. Beri in klikaj **na strani**.\n2. Ko rešiš nalogo, se odklene zeleni gumb **Naslednja naloga**.\n3. Ko piše **🎉 Končano!**, se odklene velik gumb **Naprej** spodaj desno. Z njim greš na naslednji korak.\n4. Če se zatakneš, klikni **💡 Namig**. Po namigih lahko pogledaš rešitev.\n\nDelaš sam, s svojo hitrostjo. Po kvizu rešuješ prave Bobrove naloge do konca ure.\n"
+     },
+     {
+      "ime": "Kako poteka Bober",
+      "vrsta": "html",
+      "pot": "gradiva/racunalnistvo-6-9/2026-11-06 8. ura Vaja za Bober/2 Kako poteka Bober.html",
+      "velikost": 54684,
+      "interaktivno": true
+     },
+     {
+      "ime": "Kviz",
+      "vrsta": "kviz",
+      "kviz": "vaja-za-bober"
+     },
+     {
+      "ime": "Naloge prejsnjih let",
+      "vrsta": "html",
+      "pot": "gradiva/racunalnistvo-6-9/2026-11-06 8. ura Vaja za Bober/4 Naloge prejsnjih let.html",
+      "velikost": 54644,
+      "interaktivno": true
+     }
+    ]
+   },
+   {
     "ime": "7. ura Zapis algoritma",
     "vrsta": "ura",
     "datum": "2026-10-23T08:00:00+02:00",
@@ -378,5 +412,5 @@
   "slovenscina-3": [],
   "svetovni-popotniki": []
  },
- "posodobljeno": "2026-11-05T10:48:29+00:00"
+ "posodobljeno": "2026-11-05T19:11:13+00:00"
 }
