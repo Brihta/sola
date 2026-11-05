@@ -4,6 +4,8 @@
 # Po Ninovi želji (5. 11.) samo korak z vajami: brez uvoda, kviza in knjižic z rešitvami.
 # Vadnica med reševanjem ne pove, ali je odgovor pravilen; po »Zaključi« pokaže stran Rezultati
 # (za vsako odgovorjeno nalogo Pravilen ali Napačen odgovor in točke). Preverjeno 5. 11. 2026 (2025/26, 6. in 7. r).
+# Učenec rezultat vpiše v kviz »Samoocena Bober <leto> <skupina>« (vsaka naloga: Pravilen, Napačen, Nisem odgovoril/a);
+# ti kvizi nimajo pravila 50 % (supabase_kvizi_samoocena.sql). Učitelj vidi točke in uspešnost po nalogah.
 # Vrstni red odgovorov se v vadnici premeša za vsak poskus, zato list za odgovore s črkami ne bi deloval.
 
 VADNICA = 'https://bober.acm.si/simple/guest/compete/'
@@ -38,15 +40,12 @@ def tabela():
 
 # ---------------- 2 Naloge prejšnjih let ----------------
 stran('2 Naloge prejsnjih let.html', 'Naloge prejšnjih let', [
-    {'type': 'check', 'title': 'Reši prave Bobrove naloge', 'label': 'Rešil/a sem vsaj eno leto in točke zapisal/a v zvezek.', 'html': f'''
+    {'type': 'check', 'title': 'Reši prave Bobrove naloge', 'label': 'Vajo sem končal/a in vidim stran Rezultati.', 'html': f'''
 <div class="box">1️⃣ Izberi leto in <b>svojo skupino</b> (6. in 7. r ali 8. in 9. r). Odpre se nov zavihek.<br>
 2️⃣ Če se pokaže obrazec: vpiši samo ime, priimek <b>Vaja</b>, datum 1. 1., kodo pusti <b>prazno</b>.<br>
 3️⃣ Čas teče zgoraj desno. Med reševanjem ne izveš, ali je odgovor pravilen, tako kot na tekmovanju.<br>
-4️⃣ Ko končaš, klikni <b>Zaključi</b>. Pokažejo se <b>rezultati</b>: pri vsaki nalogi piše, ali je pravilno.</div>
+4️⃣ Ko končaš, klikni <b>Zaključi</b>. Pokažejo se <b>rezultati</b>: pri vsaki nalogi piše, ali je pravilno.<br>
+5️⃣ Zavihka z rezultati <b>ne zapri</b>. Na Brihti odpri korak <b>Moj rezultat</b> za isto leto in skupino in prepiši, kaj piše pri vsaki nalogi.</div>
 {tabela()}
-<div class="zapis"><h3>BOBER: VAJA</h3>
-<p>Leto: ______ &nbsp; Skupina: ______</p>
-<p>Pravilnih nalog: ______ od ______</p>
-<p>Naloga, ki sem jo zgrešil/a: ______________</p></div>
-<p class="small">Če ti ostane čas, vzemi naslednje leto. ★★ Državno tekmovanje je težje, za tiste, ki želijo več.</p>'''},
+<p class="small">Če ti ostane čas, reši naslednje leto in vpiši tudi ta rezultat. ★★ Državno tekmovanje je za tiste, ki želijo več (zanj ni vpisa rezultata).</p>'''},
 ], 'Treniral/a si na pravih nalogah. Srečno na tekmovanju! 🦫')

@@ -131,3 +131,12 @@ uživali in delali vsak s svojo hitrostjo. Kar je šlo narobe in je popravljeno:
   na tekmovanju; učitelj jih lahko uporabi tudi za glasovanje v razredu).
 - Šolsko tekmovanje je novembra (2026: 9. do 20. 11.). Preveri, ali ima oddelek v
   tem oknu sploh uro, in to Ninu povej takoj.
+
+**Bober (ACM, 6. do 9. r), vadnica za goste (preverjeno 5. 11. 2026):**
+
+- Povezave `https://bober.acm.si/simple/guest/compete/<id>/` odprejo test brez obrazca (v vgrajenem brskalniku).
+- Med reševanjem vadnica ne pove, ali je odgovor pravilen. Po »Zaključi« pokaže stran Rezultati
+  (za vsako ODGOVORJENO nalogo Pravilen ali Napačen odgovor in točke); vsote ne pokaže.
+- Vrstni red nalog in odgovorov se za vsak poskus premeša, zato list za odgovore s črkami ne deluje.
+- Rezultat učenec vpiše v kviz `Samoocena …` (vsaka naloga: Pravilen, Napačen, Nisem odgovoril/a).
+  Kvizi z id `…/samoocena-…` nimajo pravila 50 % (`supabase_kvizi_samoocena.sql`).
