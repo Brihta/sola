@@ -711,6 +711,21 @@
     };
   };
 
+  /* Lupa: klik na sliko v razlagi ali navodilu (ne v odgovoru) jo poveča čez cel zaslon. */
+  card.addEventListener('click', (e) => {
+    const m = e.target.closest('.mini'); if (!m || m.closest('button, .opt')) return;
+    const st = getComputedStyle(m).gridTemplateColumns.split(' ').length;
+    const vr = Math.ceil(m.querySelectorAll('span:not(.os)').length / st);
+    const v = Math.max(24, Math.floor(Math.min((window.innerWidth * 0.9) / st, (window.innerHeight - 120) / vr)));
+    const k = m.cloneNode(true); k.style.setProperty('--m', v + 'px');
+    const o = $('<div class="lupa" role="dialog" aria-label="Povečana slika"></div>');
+    o.appendChild(k); o.appendChild($('<button class="zapri">✕ Zapri</button>'));
+    const zapri = () => { o.remove(); document.removeEventListener('keydown', esc_); };
+    const esc_ = (ev) => { if (ev.key === 'Escape') zapri(); };
+    o.onclick = zapri; document.addEventListener('keydown', esc_);
+    document.body.appendChild(o);
+  });
+
   tell('zacetek');
   function zacni() {
     if (IZD && UID) {

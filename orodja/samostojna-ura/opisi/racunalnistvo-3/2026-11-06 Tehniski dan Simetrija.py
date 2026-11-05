@@ -8,12 +8,12 @@
 BARVA = {'R': '#ef4444', 'Y': '#facc15', 'G': '#22c55e', 'B': '#3b82f6', 'C': '#1f2937', 'O': '#fb923c'}
 
 
-def mini(vrstice, os=None):
+def mini(vrstice, os=None, m=22):
     """Majhna slika na mreži (cela slika); os = 'v', 'h' ali None. Iz <span>, ker je lahko v odstavku."""
     st = len(vrstice[0])
     cel = ''.join(f'<span style="background:{BARVA.get(x, "#fff")}"></span>' for r in vrstice for x in r)
     crta = '<span class="os"></span>' if os else ''
-    return f'<span class="mini {os or ""}" style="grid-template-columns:repeat({st},22px)">{cel}{crta}</span>'
+    return f'<span class="mini {os or ""}" style="--m:{m}px;grid-template-columns:repeat({st},var(--m))">{cel}{crta}</span>'
 
 
 def cela_v(pol):
@@ -29,7 +29,7 @@ METULJ = ['...C..', '....C.', '.RR..C', 'RYYR.C', 'RYBYRC', 'RYYRRC', '.RRR.C', 
 stran('4 Simetrija.html', 'Simetrija', [
     info('Kaj je simetrija?', f'''
 <p class="big">Poglej metulja. 🦋 Rdeča črta ga razdeli na dva dela.</p>
-<p>{mini(cela_v(METULJ), 'v')}</p>
+<p>{mini(cela_v(METULJ), 'v', 26)}</p>
 <div class="box big">Levi del je <b>enak</b> desnemu, le obrnjen. Kot v ogledalu. 🪞<br>
 Taki sliki rečemo <b>simetrična</b>. Črta je <b>os simetrije</b>.</div>'''),
 
@@ -70,7 +70,7 @@ Taki sliki rečemo <b>simetrična</b>. Črta je <b>os simetrije</b>.</div>'''),
     # 3. stopnja: vodoravna os
     info('Črta je lahko tudi ležeča', f'''
 <p class="big">Os simetrije je lahko tudi <b>vodoravna</b>. Takrat je zrcalo kot gladina jezera. 🏞️</p>
-<p>{mini(cela_h(['...BB...', '..BBBB..', '.BB..BB.', 'BB....BB']), 'h')}</p>
+<p>{mini(cela_h(['...BB...', '..BBBB..', '.BB..BB.', 'BB....BB']), 'h', 30)}</p>
 <p class="big">Kar je zgoraj, je tudi spodaj. Rišeš <b>pod</b> črto.</p>'''),
     {'type': 'zrcali', 'id': 'h1', 'title': '4. Gladina jezera', 'intro': '<div>Nariši spodnjo polovico, pod črto.</div>',
      'os': 'h', 'pol': ['...GG...', '..GGGG..', '.GG..GG.', 'GG....GG']},
@@ -99,8 +99,8 @@ Taki sliki rečemo <b>simetrična</b>. Črta je <b>os simetrije</b>.</div>'''),
                'Preštej kvadratke od telesa navzven, barvo za barvo.']},
 
     {'type': 'check', 'title': 'V zvezek',
-     'html': f'''<p class="big">V zvezek (karo) nariši ta lik in njegovo zrcalno sliko.</p>
-<p>{mini(['..R.....', '.RR.....', 'RRR.....', '.YY.....', '..Y.....'], 'v')}</p>
+     'html': f'''<p class="big">V zvezek (karo) nariši ta lik in njegovo zrcalno sliko. 🔍 Klikni sliko, da jo povečaš.</p>
+<p>{mini(['..R.....', '.RR.....', 'RRR.....', '.YY.....', '..Y.....'], 'v', 40)}</p>
 <div class="box big">1. S svinčnikom in ravnilom nariši rdečo črto, to je os.<br>2. Na levi nariši lik.<br>3. Na desni ga nariši kot v ogledalu, z barvicami.</div>''',
      'label': 'Narisal/a sem v zvezek.'},
 
