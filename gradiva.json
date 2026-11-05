@@ -291,55 +291,35 @@
       "ime": "Navodila",
       "vrsta": "besedilo",
       "pot": "gradiva/racunalnistvo-6-9/2026-11-06 8. ura Vaja za Bober/1 Navodila.md",
-      "velikost": 818,
-      "besedilo": "## 🎯 Cilj ure\n\nPripravim se na šolsko tekmovanje **Bober**: rešujem prave naloge prejšnjih let in na koncu vidim, koliko sem jih rešil/a pravilno.\n\n## ✅ Uspešen sem, če …\n\n- izberem pravo skupino (6. in 7. razred ali 8. in 9. razred),\n- rešim vsaj eno leto nalog v vadnici in kliknem Zaključi,\n- rezultat pošteno vpišem v korak **Moj rezultat** za isto leto in skupino.\n\n## 🗺️ Kako delaš\n\n1. Vsak korak je ena stran. Beri in klikaj **na strani**.\n2. Ko rešiš nalogo, se odklene zeleni gumb **Naslednja naloga**.\n3. Ko piše **🎉 Končano!**, se odklene velik gumb **Naprej** spodaj desno. Z njim greš na naslednji korak.\n4. Če se zatakneš, klikni **💡 Namig**. Po namigih lahko pogledaš rešitev.\n\nDelaš sam, s svojo hitrostjo, do konca ure. Učitelj vidi rezultate, ki jih vpišeš.\n"
+      "velikost": 802,
+      "besedilo": "## 🎯 Cilj ure\n\nPripravim se na šolsko tekmovanje **Bober**: rešujem prave naloge prejšnjih let in na koncu vidim, koliko sem jih rešil/a pravilno.\n\n## ✅ Uspešen sem, če …\n\n- izberem pravo skupino (6. in 7. razred ali 8. in 9. razred),\n- rešim vsaj eno leto nalog v vadnici in kliknem Zaključi,\n- rezultat pošteno vpišem v korak z istim letom in skupino.\n\n## 🗺️ Kako delaš\n\n1. Vsak korak je ena stran. Beri in klikaj **na strani**.\n2. Ko rešiš nalogo, se odklene zeleni gumb **Naslednja naloga**.\n3. Ko piše **🎉 Končano!**, se odklene velik gumb **Naprej** spodaj desno. Z njim greš na naslednji korak.\n4. Če se zatakneš, klikni **💡 Namig**. Po namigih lahko pogledaš rešitev.\n\nDelaš sam, s svojo hitrostjo, do konca ure. Učitelj vidi rezultate, ki jih vpišeš.\n"
      },
      {
       "ime": "Naloge prejsnjih let",
       "vrsta": "html",
       "pot": "gradiva/racunalnistvo-6-9/2026-11-06 8. ura Vaja za Bober/2 Naloge prejsnjih let.html",
-      "velikost": 52995,
+      "velikost": 51138,
       "interaktivno": true
      },
      {
-      "ime": "Moj rezultat 2025-26 6. in 7. r",
+      "ime": "2025-26, 6. in 7. r",
       "vrsta": "kviz",
       "kviz": "samoocena-bober-2025-26-6-7"
      },
      {
-      "ime": "Moj rezultat 2025-26 8. in 9. r",
+      "ime": "2025-26, 8. in 9. r",
       "vrsta": "kviz",
       "kviz": "samoocena-bober-2025-26-8-9"
      },
      {
-      "ime": "Moj rezultat 2024-25 6. in 7. r",
+      "ime": "2024-25, 6. in 7. r",
       "vrsta": "kviz",
       "kviz": "samoocena-bober-2024-25-6-7"
      },
      {
-      "ime": "Moj rezultat 2024-25 8. in 9. r",
+      "ime": "2024-25, 8. in 9. r",
       "vrsta": "kviz",
       "kviz": "samoocena-bober-2024-25-8-9"
-     },
-     {
-      "ime": "Moj rezultat 2023-24 6. in 7. r",
-      "vrsta": "kviz",
-      "kviz": "samoocena-bober-2023-24-6-7"
-     },
-     {
-      "ime": "Moj rezultat 2023-24 8. in 9. r",
-      "vrsta": "kviz",
-      "kviz": "samoocena-bober-2023-24-8-9"
-     },
-     {
-      "ime": "Moj rezultat 2022-23 6. in 7. r",
-      "vrsta": "kviz",
-      "kviz": "samoocena-bober-2022-23-6-7"
-     },
-     {
-      "ime": "Moj rezultat 2022-23 8. in 9. r",
-      "vrsta": "kviz",
-      "kviz": "samoocena-bober-2022-23-8-9"
      }
     ]
    },
@@ -440,5 +420,5 @@
   "slovenscina-3": [],
   "svetovni-popotniki": []
  },
- "posodobljeno": "2026-11-05T19:45:26+00:00"
+ "posodobljeno": "2026-11-05T19:51:26+00:00"
 }
