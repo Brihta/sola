@@ -96,9 +96,9 @@ stran('4 Slogi na poskus.html', 'Slogi na poskus', [
 # ---------------- 5 V Wordu ----------------
 stran('5 Slogi v Wordu.html', 'Zdaj zares: Word', [
     info('Odpri Word', '''
-<p class="big">Isto besedilo boš uredil/a v pravem Wordu.</p>
-<div class="box big">1. Odpri nov zavihek in pojdi na <b>office.com</b>.<br>2. Prijavi se s šolskim <b>Arnes</b> računom.<br>3. Klikni <b>Word</b> in nato <b>Prazen dokument</b>.</div>
-<p>Ko je prazen dokument odprt, se vrni v ta zavihek in klikni Naslednja naloga.</p>'''),
+<p class="big">Isto besedilo boš uredil/a v pravem Wordu, ki je na tem računalniku.</p>
+<div class="box big">1. Klikni gumb <b>Start</b> spodaj levo.<br>2. Natipkaj <b>Word</b> in pritisni <b>Enter</b>.<br>3. Klikni <b>Prazen dokument</b>.</div>
+<p>Ko je prazen dokument odprt, se vrni v brskalnik in klikni Naslednja naloga.</p>'''),
     info('Prenesi besedilo', f'''
 <p class="big">Besedila ti ni treba tipkati. Kopiraj ga in ga prilepi v Word s <b>Ctrl + V</b>.</p>
 {KOPIRAJ}
@@ -113,8 +113,8 @@ stran('5 Slogi v Wordu.html', 'Zdaj zares: Word', [
 ☐ Reka Savinja, Hmelj, Rimska nekropola: <b>Naslov 2</b><br>
 ☐ stavki s piko: <b>Navadno</b><br>
 ☐ Zavihek <b>Pogled</b>, vklopi <b>Podokno za krmarjenje</b>. Ali vidiš vse naslove?<br>
-☐ Zgoraj klikni na ime dokumenta in ga preimenuj v <b>Savinjska dolina</b>.</div>
-<p class="small">Word za splet shranjuje sam. Če slogov ne najdeš, poglej na zavihek Osnovno, desni del.</p>'''},
+☐ Pritisni <b>Ctrl + S</b> in dokument shrani v mapo <b>Dokumenti</b> z imenom <b>Savinjska dolina</b>.</div>
+<p class="small">Med delom večkrat pritisni Ctrl + S. Če slogov ne najdeš, poglej na zavihek Osnovno, desni del.</p>'''},
 ], 'Uredil/a si pravi dokument s slogi.')
 
 # ---------------- 6 Zapis v zvezek ----------------
