@@ -100,6 +100,10 @@ jih učenci prehodijo po vrsti:
 - `4 Delovni list.docx` (če je);
 - `5 Kviz.kviz`: ena vrstica, slug ali naslov kviza (slug = ime datoteke kviza, npr. `razgradnja-in-vzorci`).
 
+Povezava je korak `N Ime.url`: prva vrstica je spletni naslov, neobvezno še
+`opis=…` (ena kratka poved), `emoji=…` ali `slika=…` (pot od korena strani, npr.
+`brihta.png`). Učenec dobi kartico s sliko in gumbom »Gremo!«.
+
 Številka določa vrstni red in se ne pokaže. Nato commit in push na `main`;
 GitHub Action posodobi `gradiva.json` (v 1–2 minutah). Posamezne datoteke
 neposredno v mapi predmeta še delujejo, a uro vedno objavi kot mapo.

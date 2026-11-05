@@ -72,6 +72,18 @@ def preberi_url(pot):
     return m.group(0) if m else None
 
 
+def preberi_okras(pot):
+    """Neobvezne vrstice v .url: opis=…, emoji=…, slika=… (pot od korena strani)."""
+    with open(pot, encoding="utf-8", errors="replace") as f:
+        besedilo = f.read()
+    okras = {}
+    for kljuc in ("opis", "emoji", "slika"):
+        m = re.search(rf"^{kljuc}\s*=\s*(.+?)\s*$", besedilo, re.M | re.I)
+        if m:
+            okras[kljuc] = m.group(1)
+    return okras
+
+
 def lepo_ime(osnova):
     ime = DATUM_V_IMENU.sub("", osnova)
     ime = ime.replace("_", " ").strip()
@@ -89,7 +101,7 @@ def korak(pot, rel, vnos):
     vrsta = VRSTE.get(konc, "datoteka")
     if vrsta == "povezava":
         url = preberi_url(pot)
-        return {"ime": ime, "vrsta": vrsta, "url": url} if url else None
+        return {"ime": ime, "vrsta": vrsta, "url": url, **preberi_okras(pot)} if url else None
     z = {"ime": ime, "vrsta": vrsta, "pot": rel, "velikost": os.path.getsize(pot)}
     if konc == "md":
         with open(pot, encoding="utf-8", errors="replace") as f:
@@ -144,6 +156,7 @@ def gradivo(predmet, vnos):
         if not url:
             return None
         zapis["url"] = url
+        zapis.update(preberi_okras(pot))
     else:
         zapis["pot"] = rel_odpri
         if velikost is not None:

@@ -42,12 +42,16 @@
      {
       "ime": "Brihta matematika",
       "vrsta": "povezava",
-      "url": "https://brihta.github.io/matematika/"
+      "url": "https://brihta.github.io/matematika/",
+      "opis": "Računaj do 20 in premagaj nagajivce!",
+      "slika": "brihta.png"
      },
      {
       "ime": "Polžek robot 20 misij",
       "vrsta": "povezava",
-      "url": "https://classedeflorent.fr/en/games/bot/snailbot/missions/index-snailbot.php"
+      "url": "https://classedeflorent.fr/en/games/bot/snailbot/missions/index-snailbot.php",
+      "opis": "Pelji polžka robota do cilja. Reši 20 misij!",
+      "emoji": "🐌"
      }
     ]
    }
@@ -447,5 +451,5 @@
   "slovenscina-3": [],
   "svetovni-popotniki": []
  },
- "posodobljeno": "2026-11-05T21:12:10+01:00"
+ "posodobljeno": "2026-11-05T21:18:06+01:00"
 }
