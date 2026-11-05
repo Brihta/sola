@@ -581,6 +581,7 @@
     const rabljene = s.prosto ? (s.barve || 'RYGB').split('') : [...new Set(dano.join('').replace(/\./g, ''))];
     const M = Array.from({ length: H }, () => Array(W).fill('.'));
     let barva = rabljene[0], fin = false;
+    const nap = { mesto: 0, barva: 0, manjka: 0, prerisal: 0 };   // kolikokrat je Preveri našel to vrsto napake (za poročilo)
 
     const cs = Math.max(26, Math.min(48, Math.floor((Math.min(window.innerWidth, 980) - 70) / W), Math.floor((window.innerHeight - 200) / H)));
     const wrap = $(`<div class="zr ${V ? 'zv' : 'zh'}" style="--zc:${cs}px"></div>`);
@@ -689,6 +690,8 @@
         fin = true; celice.forEach((d) => d.classList.add('zok'));
         done('✅ ' + (s.win || 'Odlično! Slika je simetrična.')); return;
       }
+      if (prerisal && napMesto) nap.prerisal++;
+      else { if (napMesto) nap.mesto++; if (napBarva) nap.barva++; if (!napMesto && !napBarva && manjka) nap.manjka++; }
       const sim = (V ? 'v isti vrsti' : 'v istem stolpcu');
       let t;
       if (!imaKaj) t = 'Mreža na tvoji strani je še prazna. Začni pri kvadratkih, ki se dotikajo črte.';
@@ -707,7 +710,7 @@
     bHint.hidden = !(s.hints || []).length || cur < best;
     return {
       solve: s.demo || s.prosto ? null : () => { resitevNarisi(); fin = true; celice.forEach((d) => d.classList.remove('zx', 'zo')); },
-      podatki: () => ({ os: V ? 'v' : 'h', w: W, h: H, dano: dano, moje: M.map((v) => v.join('')), prosto: !!s.prosto }),
+      podatki: () => ({ os: V ? 'v' : 'h', w: W, h: H, dano: dano, moje: M.map((v) => v.join('')), prosto: !!s.prosto, napake: nap }),
     };
   };
 

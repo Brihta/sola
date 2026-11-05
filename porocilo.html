@@ -36,6 +36,8 @@
   .slika svg { display: block; margin: 0 auto 2px; }
   .slika.velika { font-size: 12px; }
   .opomba { margin-top: 10px; font-size: 11px; color: var(--mut); }
+  .nap { color: var(--mid); font-size: 11px; }
+  button#brisi { border-color: var(--bad); color: var(--bad); }
   .legenda { font-size: 11px; color: var(--mut); margin-top: 4px; }
   @media print {
     body { background: #fff; }
@@ -52,13 +54,14 @@
   <input id="ura" placeholder="npr. racunalnistvo-3/2026-11-06-simetrija">
   <button id="nalozi">Naloži</button>
   <button class="go" id="tiskaj" disabled>🖨️ Natisni vse (PDF)</button>
+  <button id="brisi" disabled title="Izbriše izdelke VSEH učencev te ure">🗑️ Izbriši izdelke te ure</button>
 </div>
 <div id="vsebina"><div class="msg">Nalagam …</div></div>
 
 <script>
 const SUPABASE = { url: 'https://ldczgbajbarlgwqzcggh.supabase.co', key: 'sb_publishable_888IYcEb-nSmGO0d67hEwA_rBFuXnv8' };
 const BARVE = { R: '#ef4444', Y: '#facc15', G: '#22c55e', B: '#3b82f6', O: '#fb923c', P: '#a855f7', K: '#92400e', C: '#1f2937' };
-const STANJE = { sam: ['✅', 'sam/a'], namig: ['💡', 'z namigom'], resitev: ['👀', 'pogledal/a rešitev'], potrjeno: ['✅', 'potrdil/a'], ustvarjeno: ['🎨', 'ustvaril/a'] };
+const STANJE = { sam: ['✅', 'sam/a'], namig: ['💡', 'z namigom'], resitev: ['👀', 'pogledal/a rešitev'], potrjeno: ['☑️', 'potrdil/a (preveri zvezek)'], ustvarjeno: ['🎨', 'ustvaril/a'] };
 const esc = s => String(s ?? '').replace(/[&<>"]/g, c => ({ '&': '&amp;', '<': '&lt;', '>': '&gt;', '"': '&quot;' }[c]));
 const vs = document.getElementById('vsebina');
 const polje = document.getElementById('ura');
@@ -111,9 +114,20 @@ function cilji(naloge) {
   return C.filter(c => naloge.some(c.f));
 }
 
+/* Naloga šteje za cilj, če jo je učenec rešil sam ali z namigom. Pri izbiri samo v prvem poskusu (sicer je lahko le klikal po vrsti). */
+function uspel(n, m) {
+  if (!m || !['sam', 'namig'].includes(m.stanje)) return false;
+  return n.vrsta !== 'choose' || (m.poskusi || 1) <= 1;
+}
+function napake(m) {
+  const z = m && m.napake; if (!z) return '';
+  const d = [z.prerisal && `prerisal ${z.prerisal}×`, z.mesto && `mesto ${z.mesto}×`, z.barva && `barva ${z.barva}×`, z.manjka && `nedokončano ${z.manjka}×`].filter(Boolean);
+  return d.length ? ` <span class="nap">(${d.join(', ')})</span>` : '';
+}
+
 function ocena(c, naloge, moje) {
   const vse = naloge.filter(c.f);
-  const sam = vse.filter(n => moje[n.stopnja] && ['sam', 'namig'].includes(moje[n.stopnja].stanje)).length;
+  const sam = vse.filter(n => uspel(n, moje[n.stopnja])).length;
   const raz = sam === vse.length ? 'da' : sam >= Math.ceil(vse.length / 2) ? 'del' : 'ne';
   return { raz, besedilo: `${sam} / ${vse.length}`, znak: raz === 'da' ? '✅ doseženo' : raz === 'del' ? '🟡 delno' : '❌ ni doseženo' };
 }
@@ -155,8 +169,9 @@ async function nalozi() {
     pov += `<tr><td>${esc(u.emoji || '')} ${esc(u.ime)}</td><td>${esc(u.razred || '')}</td><td>${res} / ${naloge.length}</td>${oc.map(o => `<td>${o.znak.split(' ')[0]} ${o.besedilo}</td>`).join('')}</tr>`;
 
     const vrstice = naloge.map(n => { const m = u.moje[n.stopnja];
-      const st = m ? STANJE[m.stanje] || ['', m.stanje] : ['–', 'ni prišel/a do sem'];
-      const posk = m && n.vrsta !== 'check' && !n.prosto ? (m.poskusi || 0) : '';
+      let st = m ? STANJE[m.stanje] || ['', m.stanje] : ['–', 'ni prišel/a do sem'];
+      if (m && n.vrsta === 'choose' && !uspel(n, m) && ['sam', 'namig'].includes(m.stanje)) st = ['🔁', `prav šele v ${m.poskusi}. poskusu`];
+      const posk = m && n.vrsta !== 'check' && !n.prosto ? (m.poskusi || 0) + napake(m) : '';
       return `<tr><td>${esc(n.naslov || n.stopnja)}</td><td>${st[0]} ${esc(st[1])}</td><td>${posk}</td><td>${m && m.namigi ? m.namigi : ''}</td></tr>`; }).join('');
 
     const zr = naloge.filter(n => n.vrsta === 'zrcali' && !n.prosto && u.moje[n.stopnja] && u.moje[n.stopnja].dano);
@@ -169,7 +184,7 @@ async function nalozi() {
       <div class="glava"><div><h2>${esc(u.emoji || '')} ${esc(u.ime)}</h2><div>${esc(u.razred || '')}</div></div>
         <div class="meta">${esc(ura)}<br>${dan(u.prvo)}, ${ura_(u.prvo)} do ${ura_(u.zadnje)}</div></div>
       ${C.length ? `<h3>Cilji</h3><div class="cilji">${C.map((c, i) => `<div class="cilj ${oc[i].raz}"><span>${esc(c.ime)}</span><b>${oc[i].znak} (${oc[i].besedilo})</b></div>`).join('')}</div>
-      <div class="legenda">Šteje naloga, ki jo je učenec rešil sam ali z namigom. Pogledana rešitev ne šteje.</div>` : ''}
+      <div class="legenda">Šteje naloga, rešena sam/a ali z namigom (vprašanje z izbiro le v prvem poskusu). Pogledana rešitev ne šteje.</div>` : ''}
       <h3>Naloge</h3>
       <table class="naloge"><tr><th>Naloga</th><th>Kako</th><th>Poskusov</th><th>Namigov</th></tr>${vrstice}</table>
       ${sl ? `<h3>Risbe (✕ = kvadratek na napačnem mestu ali v napačni barvi)</h3><div class="slike">${sl}</div>` : ''}
@@ -179,11 +194,20 @@ async function nalozi() {
   }
   vs.innerHTML = pov + '</table></div>' + strani;
   document.getElementById('tiskaj').disabled = false;
+  document.getElementById('brisi').disabled = false;
 }
 
 document.getElementById('nalozi').onclick = nalozi;
 polje.addEventListener('keydown', e => { if (e.key === 'Enter') nalozi(); });
 document.getElementById('tiskaj').onclick = () => window.print();
+document.getElementById('brisi').onclick = async () => {
+  const t = ucitelj(), ura = polje.value.trim();
+  if (!t || !ura) return;
+  if (!confirm(`Izbrišem izdelke VSEH učencev za uro »${ura}«?\n\nTega ni mogoče razveljaviti.`)) return;
+  try { const n = await rpc('sola_izdelki_izbrisi', { p_seja: t.seja, p_ura: ura }); alert(`Izbrisano: ${n} zapisov.`); }
+  catch (e) { alert('Brisanje ni uspelo: ' + e.message); }
+  nalozi();
+};
 nalozi();
 </script>
 </body>
