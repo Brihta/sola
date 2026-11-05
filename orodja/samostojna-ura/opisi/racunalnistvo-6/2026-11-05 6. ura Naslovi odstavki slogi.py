@@ -104,7 +104,7 @@ stran('5 Slogi v Wordu.html', 'Zdaj zares: Word', [
 {KOPIRAJ}
 <p class="small">Vsaka vrstica je svoj odstavek, ker je na koncu Enter.</p>'''),
     {'type': 'order', 'title': 'Kako v Wordu izbereš slog?', 'intro': '<div>Uredi korake v pravi vrstni red.</div>',
-     'items': ['Klikni v vrstico, ki jo želiš oblikovati.', 'Zgoraj odpri zavihek <b>Osnovno</b>.', 'V skupini <b>Slogi</b> poišči pravi slog.', 'Klikni slog, na primer <b>Naslov 1</b>.'],
+     'items': ['Klikni v vrstico, ki jo želiš oblikovati.', 'Na zavihku <b>Osnovno</b> v skupini <b>Slogi</b> poišči pravi slog.', 'Klikni slog, na primer <b>Naslov 1</b>.', 'V podoknu za krmarjenje preveri, ali je naslov tam.'],
      'hints': ['Najprej Word potrebuje vedeti, KATERO vrstico urejaš.']},
     {'type': 'check', 'title': 'Uredi svoj dokument', 'label': 'Moj dokument ima vse sloge in naslove vidim v podoknu za krmarjenje.', 'html': '''
 <div class="box">V Wordu izberi sloge <b>čisto enako kot v nalogi Savinjska dolina</b>:<br>

@@ -68,7 +68,7 @@ stran('3 Bobrckove naloge.html', 'Vaja za Bobrček: A, B, C ali D?', [
                  ch('pri 🪵', why='Bober nikoli ne gre 2-krat desno, do 🪵 ne pride.')],
      'hints': ['Pokaži s prstom na bobra in premikaj prst po vsakem ukazu.']},
     {'type': 'choose', 'abcd': True, 'title': '2. Kratek program', 'intro': 'Kateri program nariše <b>enako</b> kot ■ → ■ → ■ → ■ ?',
-     'options': [ch('ponovi 4× ( ■ → )', why='Na koncu robot naredi še en →, ki ga v prvotnem programu ni.'),
+     'options': [ch('ponovi 2× ( ■ → ) ■', why='Ta pobarva samo 3 polja. Zanka se ponovi premalokrat.'),
                  ch('ponovi 3× ( ■ → ) ■', True, '3-krat »■ →« in nato še ■. Točno enako kot dolgi program.'),
                  ch('ponovi 3× ( → ■ )', why='Ta začne s premikom, zato prvo polje ostane nepobarvano.'),
                  ch('ponovi 4× ( ■ )', why='Robot se nikamor ne premakne, 4-krat pobarva isto polje.')],
