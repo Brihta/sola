@@ -482,6 +482,48 @@
     return { solve: () => { fin = true; inp.disabled = true; btn.disabled = true; q.innerHTML = `${a} · ${b} = ${a * b}`; } };
   };
 
+  // Slogi v urejevalniku besedila. s.paras: [[besedilo, slog, zakaj?], ...]; slogi: 'Naslov', 'Naslov 1', 'Naslov 2', 'Navadno'.
+  const SLOGI = ['Naslov', 'Naslov 1', 'Naslov 2', 'Navadno'];
+  const scls = (st) => 'st' + SLOGI.indexOf(st);
+  TYPES.slogi = (s, c) => {
+    const styles = s.styles || SLOGI;
+    const w = $(`<div class="slogi"><div class="ribbon"><span class="rl">Slogi:</span></div>
+      <div class="sdoc"><div class="page"></div><div class="nav"><div class="navh">Podokno za krmarjenje</div><div class="navl"></div></div></div>
+      <div class="row"><button class="btn go2">Preveri</button> <span class="small">Klikni odstavek, nato slog zgoraj.</span></div></div>`);
+    c.appendChild(w);
+    const page = w.querySelector('.page'), navl = w.querySelector('.navl'), rib = w.querySelector('.ribbon'), btn = w.querySelector('.go2');
+    const cur = s.paras.map((p) => p[3] || 'Navadno');
+    let sel = 0, fin = false;
+    const P = s.paras.map((p, i) => { const d = $(`<p class="para" tabindex="0"></p>`); d.textContent = p[0];
+      d.onclick = () => { sel = i; draw(); }; page.appendChild(d); return d; });
+    const B = styles.map((st) => { const b = $(`<button class="sbtn ${scls(st)}">${st}</button>`);
+      b.onclick = () => { if (fin) return; cur[sel] = st; P[sel].classList.remove('wrong'); if (sel < P.length - 1) sel++; draw(); }; rib.appendChild(b); return b; });
+    function draw() {
+      P.forEach((d, i) => { d.className = 'para ' + scls(cur[i]) + (i === sel && !fin ? ' sel' : '') + (d.classList.contains('wrong') ? ' wrong' : ''); });
+      B.forEach((b, k) => b.classList.toggle('on', cur[sel] === styles[k]));
+      const h = s.paras.map((p, i) => [p[0], cur[i]]).filter((x) => x[1] !== 'Navadno');
+      navl.innerHTML = h.length ? h.map((x) => `<div class="nv ${scls(x[1])}">${esc(x[0])}</div>`).join('') : '<div class="small">Tu se pokažejo naslovi.</div>';
+    }
+    function why(i) {
+      const [t, st, z] = s.paras[i]; if (z) return z;
+      if (st === 'Naslov') return `»${esc(t)}« je ime celega besedila na vrhu. Zanj je slog <b>Naslov</b>.`;
+      if (st === 'Naslov 1') return `»${esc(t)}« je kratek naslov poglavja. Zanj je slog <b>Naslov 1</b>.`;
+      if (st === 'Naslov 2') { let k = i; while (k >= 0 && s.paras[k][1] !== 'Naslov 1') k--;
+        return `»${esc(t)}« je manjši del znotraj poglavja »${esc(k >= 0 ? s.paras[k][0] : '')}«. Zanj je slog <b>Naslov 2</b>.`; }
+      return `»${esc(t.length > 40 ? t.slice(0, 40) + ' …' : t)}« je cel stavek z razlago, torej navaden odstavek. Zanj je slog <b>Navadno</b>.`;
+    }
+    btn.onclick = () => {
+      if (fin) return;
+      const bad = s.paras.map((p, i) => (cur[i] === p[1] ? -1 : i)).filter((i) => i >= 0);
+      P.forEach((d, i) => d.classList.toggle('wrong', bad.includes(i)));
+      if (!bad.length) { fin = true; draw(); done('✅ ' + (s.win || 'Vsi slogi so pravi. Poglej podokno za krmarjenje: to je zemljevid tvojega besedila.')); return; }
+      sel = bad[0]; draw();
+      feedback(`❌ Narobe ${bad.length === 1 ? 'je 1 odstavek' : bad.length === 2 ? 'sta 2 odstavka' : bad.length < 5 ? 'so ' + bad.length + ' odstavki' : 'je ' + bad.length + ' odstavkov'} (rdeče). ${why(bad[0])}`, 'bad');
+    };
+    draw();
+    return { solve: () => { s.paras.forEach((p, i) => (cur[i] = p[1])); P.forEach((d) => d.classList.remove('wrong')); fin = true; draw(); } };
+  };
+
   tell('zacetek');
   show(cur);
 })();

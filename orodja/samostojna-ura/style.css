@@ -65,3 +65,13 @@ footer{display:flex;gap:10px;align-items:center;flex-wrap:wrap;border-top:3px so
 .typ textarea{width:100%;font:24px/1.5 ui-monospace,Consolas,monospace;padding:10px 14px;border:2px solid var(--blue);border-radius:12px;resize:none}
 .legend span{display:inline-block;padding:2px 10px;border-radius:8px;margin:0 6px 6px 0;font-size:16px}
 .kbr.rn{padding-left:0}.times .tq{font-size:52px;font-weight:800;margin:6px 0 10px}.times .qm{color:var(--blue)}.times input{font:inherit;font-size:34px;width:150px;padding:4px 12px;border:3px solid var(--blue);border-radius:12px}
+
+.slogi .ribbon{display:flex;flex-wrap:wrap;gap:8px;align-items:center;background:#f3f6f9;border:2px solid var(--sky2);border-radius:12px;padding:8px 10px;margin-bottom:10px}.slogi .rl{font-size:15px;color:var(--mut);font-weight:600}
+.sbtn{font:inherit;background:#fff;border:2px solid #b9c6d3;border-radius:8px;padding:4px 12px;cursor:pointer;min-height:44px}.sbtn:hover{border-color:var(--blue)}.sbtn.on{border-color:var(--blue);background:var(--sky2)}
+.sdoc{display:flex;gap:14px;flex-wrap:wrap;align-items:flex-start}.page{flex:1 1 380px;background:#fff;border:1px solid #d5dde5;box-shadow:0 2px 10px rgba(0,0,0,.08);padding:18px 26px;min-height:200px}
+.para{margin:0 0 6px;padding:3px 6px;border-radius:6px;border:2px solid transparent;cursor:pointer;font-family:Calibri,Arial,sans-serif}.para:hover{background:#f6f9fc}.para.sel{border-color:var(--blue);background:var(--sky)}.para.wrong{border-color:var(--bad);background:var(--badbg)}
+.st0{font-size:30px;font-weight:300;color:#1d2b3a}.st1{font-size:23px;color:#2E5C8A;font-weight:600}.st2{font-size:19px;color:#4a7fb3;font-weight:600}.st3{font-size:16px;color:#1d2b3a}
+.sbtn.st0{font-size:20px}.sbtn.st1{font-size:18px}.sbtn.st2{font-size:16px}.sbtn.st3{font-size:15px}
+.nav{flex:0 1 230px;min-width:200px;border:2px solid var(--sky2);border-radius:10px;padding:8px 10px;background:#fafcfe}.navh{font-size:14px;font-weight:700;color:var(--mut);margin-bottom:6px}
+.nv{font-size:15px;padding:2px 0;color:var(--blue);font-weight:400}.nv.st0{font-weight:700}.nv.st1{padding-left:10px}.nv.st2{padding-left:26px;font-size:14px}
+.btn.go2:hover:not(:disabled){background:#244a70}

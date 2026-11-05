@@ -65,6 +65,16 @@ footer{display:flex;gap:10px;align-items:center;flex-wrap:wrap;border-top:3px so
 .typ textarea{width:100%;font:24px/1.5 ui-monospace,Consolas,monospace;padding:10px 14px;border:2px solid var(--blue);border-radius:12px;resize:none}
 .legend span{display:inline-block;padding:2px 10px;border-radius:8px;margin:0 6px 6px 0;font-size:16px}
 .kbr.rn{padding-left:0}.times .tq{font-size:52px;font-weight:800;margin:6px 0 10px}.times .qm{color:var(--blue)}.times input{font:inherit;font-size:34px;width:150px;padding:4px 12px;border:3px solid var(--blue);border-radius:12px}
+
+.slogi .ribbon{display:flex;flex-wrap:wrap;gap:8px;align-items:center;background:#f3f6f9;border:2px solid var(--sky2);border-radius:12px;padding:8px 10px;margin-bottom:10px}.slogi .rl{font-size:15px;color:var(--mut);font-weight:600}
+.sbtn{font:inherit;background:#fff;border:2px solid #b9c6d3;border-radius:8px;padding:4px 12px;cursor:pointer;min-height:44px}.sbtn:hover{border-color:var(--blue)}.sbtn.on{border-color:var(--blue);background:var(--sky2)}
+.sdoc{display:flex;gap:14px;flex-wrap:wrap;align-items:flex-start}.page{flex:1 1 380px;background:#fff;border:1px solid #d5dde5;box-shadow:0 2px 10px rgba(0,0,0,.08);padding:18px 26px;min-height:200px}
+.para{margin:0 0 6px;padding:3px 6px;border-radius:6px;border:2px solid transparent;cursor:pointer;font-family:Calibri,Arial,sans-serif}.para:hover{background:#f6f9fc}.para.sel{border-color:var(--blue);background:var(--sky)}.para.wrong{border-color:var(--bad);background:var(--badbg)}
+.st0{font-size:30px;font-weight:300;color:#1d2b3a}.st1{font-size:23px;color:#2E5C8A;font-weight:600}.st2{font-size:19px;color:#4a7fb3;font-weight:600}.st3{font-size:16px;color:#1d2b3a}
+.sbtn.st0{font-size:20px}.sbtn.st1{font-size:18px}.sbtn.st2{font-size:16px}.sbtn.st3{font-size:15px}
+.nav{flex:0 1 230px;min-width:200px;border:2px solid var(--sky2);border-radius:10px;padding:8px 10px;background:#fafcfe}.navh{font-size:14px;font-weight:700;color:var(--mut);margin-bottom:6px}
+.nv{font-size:15px;padding:2px 0;color:var(--blue);font-weight:400}.nv.st0{font-weight:700}.nv.st1{padding-left:10px}.nv.st2{padding-left:26px;font-size:14px}
+.btn.go2:hover:not(:disabled){background:#244a70}
 </style></head><body><div id="app"></div><script>window.PAGE={"title": "★★ Izziv: Kača", "screens": [{"type": "grid", "title": "Kača", "intro": "Pobarvaj kačo. Robot ne sme pobarvati nobenega drugega polja.", "n": 4, "target": [[0, 0], [0, 1], [0, 2], [0, 3], [1, 3], [2, 3], [2, 2], [2, 1], [2, 0]], "solution": ["P", "R", "P", "R", "P", "R", "P", "D", "P", "D", "P", "L", "P", "L", "P", "L", "P"], "hints": ["Kača gre desno, dol in nazaj levo.", "Po vsakem premiku pobarvaj: ■ → ■ → ■ → ■, nato ↓ ■ ↓ ■, nato ← ■ ← ■ ← ■."]}, {"type": "grid", "stars": "★★★", "title": "Črka U", "intro": "Pobarvaj črko U.", "n": 4, "target": [[0, 0], [1, 0], [2, 0], [2, 1], [2, 2], [1, 2], [0, 2]], "solution": ["P", "D", "P", "D", "P", "R", "P", "R", "P", "U", "P", "U", "P"], "hints": ["Dol, desno, gor.", "■ ↓ ■ ↓ ■ → ■ → ■ ↑ ■ ↑ ■"]}], "endText": "Rešil/a si izziv!"};</script><script>/* Brihta samostojna ura: zasloni z nalogami, ki se preverijo sami. */
 (function () {
   const $ = (h) => { const d = document.createElement('div'); d.innerHTML = h.trim(); return d.firstElementChild; };
@@ -547,6 +557,48 @@ footer{display:flex;gap:10px;align-items:center;flex-wrap:wrap;border-top:3px so
     btn.onclick = go; inp.onkeydown = (e) => { if (e.key === 'Enter') { e.preventDefault(); go(); } };
     next(); feedback('Natipkaj rezultat s številkami v zgornji vrsti tipkovnice in pritisni Enter.', '');
     return { solve: () => { fin = true; inp.disabled = true; btn.disabled = true; q.innerHTML = `${a} · ${b} = ${a * b}`; } };
+  };
+
+  // Slogi v urejevalniku besedila. s.paras: [[besedilo, slog, zakaj?], ...]; slogi: 'Naslov', 'Naslov 1', 'Naslov 2', 'Navadno'.
+  const SLOGI = ['Naslov', 'Naslov 1', 'Naslov 2', 'Navadno'];
+  const scls = (st) => 'st' + SLOGI.indexOf(st);
+  TYPES.slogi = (s, c) => {
+    const styles = s.styles || SLOGI;
+    const w = $(`<div class="slogi"><div class="ribbon"><span class="rl">Slogi:</span></div>
+      <div class="sdoc"><div class="page"></div><div class="nav"><div class="navh">Podokno za krmarjenje</div><div class="navl"></div></div></div>
+      <div class="row"><button class="btn go2">Preveri</button> <span class="small">Klikni odstavek, nato slog zgoraj.</span></div></div>`);
+    c.appendChild(w);
+    const page = w.querySelector('.page'), navl = w.querySelector('.navl'), rib = w.querySelector('.ribbon'), btn = w.querySelector('.go2');
+    const cur = s.paras.map((p) => p[3] || 'Navadno');
+    let sel = 0, fin = false;
+    const P = s.paras.map((p, i) => { const d = $(`<p class="para" tabindex="0"></p>`); d.textContent = p[0];
+      d.onclick = () => { sel = i; draw(); }; page.appendChild(d); return d; });
+    const B = styles.map((st) => { const b = $(`<button class="sbtn ${scls(st)}">${st}</button>`);
+      b.onclick = () => { if (fin) return; cur[sel] = st; P[sel].classList.remove('wrong'); if (sel < P.length - 1) sel++; draw(); }; rib.appendChild(b); return b; });
+    function draw() {
+      P.forEach((d, i) => { d.className = 'para ' + scls(cur[i]) + (i === sel && !fin ? ' sel' : '') + (d.classList.contains('wrong') ? ' wrong' : ''); });
+      B.forEach((b, k) => b.classList.toggle('on', cur[sel] === styles[k]));
+      const h = s.paras.map((p, i) => [p[0], cur[i]]).filter((x) => x[1] !== 'Navadno');
+      navl.innerHTML = h.length ? h.map((x) => `<div class="nv ${scls(x[1])}">${esc(x[0])}</div>`).join('') : '<div class="small">Tu se pokažejo naslovi.</div>';
+    }
+    function why(i) {
+      const [t, st, z] = s.paras[i]; if (z) return z;
+      if (st === 'Naslov') return `»${esc(t)}« je ime celega besedila na vrhu. Zanj je slog <b>Naslov</b>.`;
+      if (st === 'Naslov 1') return `»${esc(t)}« je kratek naslov poglavja. Zanj je slog <b>Naslov 1</b>.`;
+      if (st === 'Naslov 2') { let k = i; while (k >= 0 && s.paras[k][1] !== 'Naslov 1') k--;
+        return `»${esc(t)}« je manjši del znotraj poglavja »${esc(k >= 0 ? s.paras[k][0] : '')}«. Zanj je slog <b>Naslov 2</b>.`; }
+      return `»${esc(t.length > 40 ? t.slice(0, 40) + ' …' : t)}« je cel stavek z razlago, torej navaden odstavek. Zanj je slog <b>Navadno</b>.`;
+    }
+    btn.onclick = () => {
+      if (fin) return;
+      const bad = s.paras.map((p, i) => (cur[i] === p[1] ? -1 : i)).filter((i) => i >= 0);
+      P.forEach((d, i) => d.classList.toggle('wrong', bad.includes(i)));
+      if (!bad.length) { fin = true; draw(); done('✅ ' + (s.win || 'Vsi slogi so pravi. Poglej podokno za krmarjenje: to je zemljevid tvojega besedila.')); return; }
+      sel = bad[0]; draw();
+      feedback(`❌ Narobe ${bad.length === 1 ? 'je 1 odstavek' : bad.length === 2 ? 'sta 2 odstavka' : bad.length < 5 ? 'so ' + bad.length + ' odstavki' : 'je ' + bad.length + ' odstavkov'} (rdeče). ${why(bad[0])}`, 'bad');
+    };
+    draw();
+    return { solve: () => { s.paras.forEach((p, i) => (cur[i] = p[1])); P.forEach((d) => d.classList.remove('wrong')); fin = true; draw(); } };
   };
 
   tell('zacetek');

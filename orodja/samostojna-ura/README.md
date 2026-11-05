@@ -71,6 +71,9 @@ info(naslov, html)                       # razlaga; razredi: big, box, warn, sma
                   # poštevanka: natipkaj rezultat (številke zgoraj), meri čas in napake
 {'type':'type',   'title', 'intro', 'text':'...', 'min':90, 'save':True|'compare':True, 'win', 'hints'}
                   # natipkaj vrstico; natančnost (Levenshtein) in hitrost; save = izhodišče, compare = primerjava z njim
+{'type':'slogi',  'title', 'intro', 'paras':[['besedilo','Naslov 1'], ['besedilo','Navadno','zakaj?'], ...], 'win', 'hints'}
+                  # mali urejevalnik: klikni odstavek, nato slog (Naslov, Naslov 1, Naslov 2, Navadno);
+                  # desno se sproti riše podokno za krmarjenje; Preveri obarva napačne in pove zakaj
 ```
 
 Vsak zaslon lahko ima še `stars` in `optional`. Na koncu vsake strani se sam doda

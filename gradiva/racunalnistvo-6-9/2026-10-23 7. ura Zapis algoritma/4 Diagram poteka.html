@@ -54,6 +54,27 @@ footer{display:flex;gap:10px;align-items:center;flex-wrap:wrap;border-top:3px so
 .sym.o{border-radius:24px;background:var(--sky2)}.sym.r{background:var(--sky)}.sym.d{background:var(--sun);border-color:var(--sunb);clip-path:polygon(50% 0,100% 50%,50% 100%,0 50%);border:none}
 .zapis{background:#fffef6;border:2px solid #e8dfb8;border-radius:14px;padding:16px 22px;font-size:19px}.zapis h3{margin:0 0 8px;color:var(--blue)}.zapis b{color:var(--blue)}
 @media (max-width:720px){:root{--cs:38px}.fl{flex-basis:100%}.flow{width:100%}.match{grid-template-columns:1fr}}
+
+.kb{display:inline-block;background:#f3f6f9;border-radius:14px;padding:10px;margin-top:8px;user-select:none}.kbr{display:flex;gap:5px;margin:5px 0}.kbr.r1{padding-left:18px}.kbr.r2{padding-left:40px}
+.kk{width:44px;height:44px;border-radius:8px;display:flex;align-items:center;justify-content:center;font-weight:700;font-size:17px;border:2px solid rgba(0,0,0,.12);position:relative}.kk.space{width:300px;margin-left:150px;font-weight:500;font-size:14px}
+.kk.bump::after{content:"";position:absolute;bottom:6px;width:14px;height:3px;border-radius:2px;background:#1d2b3a}
+.f-lm,.f-dm{background:#f9d5e5}.f-lp,.f-dp{background:#d5e8f9}.f-ls,.f-ds{background:#d9f2d9}.f-lk,.f-dk{background:#fff0c2}.f-pa{background:#e8e0f5}
+.kk.hot{outline:4px solid var(--bad);outline-offset:1px;transform:scale(1.12);z-index:1}
+.keys .target{display:flex;align-items:center;gap:18px}.tkey{display:inline-flex;align-items:center;justify-content:center;width:96px;height:96px;font-size:56px;font-weight:800;border:4px solid var(--blue);border-radius:16px;background:#fff}.tkey.miss{animation:sh .35s;border-color:var(--bad)}.tfing{font-size:22px;color:var(--mut)}.kstat{font-size:19px;margin:10px 0 4px}
+.typ .ttext{font:24px/1.6 ui-monospace,Consolas,monospace;background:var(--sky);border-radius:12px;padding:12px 16px;margin-bottom:10px;word-break:break-word}.typ .ttext span{display:inline;border:0;padding:0;margin:0;width:auto;height:auto;background:none}.typ .ttext .tg{color:var(--ok)}.typ .ttext .tb{color:#fff;background:var(--bad);border-radius:3px}.typ .ttext .tc{border-bottom:3px solid var(--blue)}
+.typ textarea{width:100%;font:24px/1.5 ui-monospace,Consolas,monospace;padding:10px 14px;border:2px solid var(--blue);border-radius:12px;resize:none}
+.legend span{display:inline-block;padding:2px 10px;border-radius:8px;margin:0 6px 6px 0;font-size:16px}
+.kbr.rn{padding-left:0}.times .tq{font-size:52px;font-weight:800;margin:6px 0 10px}.times .qm{color:var(--blue)}.times input{font:inherit;font-size:34px;width:150px;padding:4px 12px;border:3px solid var(--blue);border-radius:12px}
+
+.slogi .ribbon{display:flex;flex-wrap:wrap;gap:8px;align-items:center;background:#f3f6f9;border:2px solid var(--sky2);border-radius:12px;padding:8px 10px;margin-bottom:10px}.slogi .rl{font-size:15px;color:var(--mut);font-weight:600}
+.sbtn{font:inherit;background:#fff;border:2px solid #b9c6d3;border-radius:8px;padding:4px 12px;cursor:pointer;min-height:44px}.sbtn:hover{border-color:var(--blue)}.sbtn.on{border-color:var(--blue);background:var(--sky2)}
+.sdoc{display:flex;gap:14px;flex-wrap:wrap;align-items:flex-start}.page{flex:1 1 380px;background:#fff;border:1px solid #d5dde5;box-shadow:0 2px 10px rgba(0,0,0,.08);padding:18px 26px;min-height:200px}
+.para{margin:0 0 6px;padding:3px 6px;border-radius:6px;border:2px solid transparent;cursor:pointer;font-family:Calibri,Arial,sans-serif}.para:hover{background:#f6f9fc}.para.sel{border-color:var(--blue);background:var(--sky)}.para.wrong{border-color:var(--bad);background:var(--badbg)}
+.st0{font-size:30px;font-weight:300;color:#1d2b3a}.st1{font-size:23px;color:#2E5C8A;font-weight:600}.st2{font-size:19px;color:#4a7fb3;font-weight:600}.st3{font-size:16px;color:#1d2b3a}
+.sbtn.st0{font-size:20px}.sbtn.st1{font-size:18px}.sbtn.st2{font-size:16px}.sbtn.st3{font-size:15px}
+.nav{flex:0 1 230px;min-width:200px;border:2px solid var(--sky2);border-radius:10px;padding:8px 10px;background:#fafcfe}.navh{font-size:14px;font-weight:700;color:var(--mut);margin-bottom:6px}
+.nv{font-size:15px;padding:2px 0;color:var(--blue);font-weight:400}.nv.st0{font-weight:700}.nv.st1{padding-left:10px}.nv.st2{padding-left:26px;font-size:14px}
+.btn.go2:hover:not(:disabled){background:#244a70}
 </style></head><body><div id="app"></div><script>window.PAGE={"title": "Diagram poteka", "screens": [{"type": "info", "title": "Algoritem kot slika", "html": "\n<p class=\"big\">Algoritem lahko narišemo. Taki sliki rečemo <b>diagram poteka</b>. Uporablja 4 znake:</p>\n<p><span class=\"sym o\">oval</span> začetek ali konec</p>\n<p><span class=\"sym r\">pravokotnik</span> ukaz: naredi nekaj</p>\n<p><span class=\"sym d\">romb</span> vprašanje z odgovorom <b>da</b> ali <b>ne</b></p>\n<p><span class=\"sym\" style=\"border:none;font-size:30px\">➜</span> puščica: kam gremo naprej</p>"}, {"type": "match", "title": "Poveži znak in pomen", "pairs": [["oval", "začetek ali konec"], ["pravokotnik", "ukaz: naredi nekaj"], ["romb", "vprašanje: da ali ne?"], ["puščica", "kam gremo naprej"]], "hints": ["Romb je edini, ki ima dva izhoda: da in ne."]}, {"type": "trace", "title": "Igra »Ugani število«: sledi s prstom", "intro": "Računalnik si je izmislil <b>40</b>. Ti ugibaš <b>65</b>. Klikaj like po vrsti, kot teče algoritem.", "path": [{"n": "z"}, {"n": "i"}, {"n": "v"}, {"n": "e", "a": "ne", "q": "Ali je 65 = 40?", "why": "65 ni enako 40."}, {"n": "l", "a": "ne", "q": "Ali je 65 < 40 (65 manjše od 40)?", "why": "65 je večje od 40, zato odgovor ne."}, {"n": "m2"}], "win": "Računalnik izpiše »Manj!«. Puščica te nato vrne na »Vprašaj«: to je zanka.", "hints": ["Sledi puščici, ki gre iz zelenega lika.", "Pri rombu najprej odgovori da ali ne, potem klikni lik na koncu te puščice."]}, {"type": "trace", "title": "Še enkrat: zadetek!", "intro": "Skrito število je še vedno <b>40</b>. Zdaj ugibaš <b>40</b>. Začnemo pri »Vprašaj«.", "path": [{"n": "v"}, {"n": "e", "a": "da", "q": "Ali je 40 = 40?", "why": "40 je enako 40."}, {"n": "b"}, {"n": "k"}], "win": "Bravo! Algoritem se konča. Dober algoritem se vedno konča.", "hints": ["Pri »da« gre puščica desno."]}, {"type": "choose", "title": "Kaj izpiše računalnik?", "intro": "Skrito število je <b>40</b>. Ugibaš <b>12</b>. Kaj izpiše računalnik?", "options": [{"t": "Več!", "ok": true, "why": "12 je manjše od 40, zato mora biti naslednji ugib večji."}, {"t": "Manj!", "ok": false, "why": "12 je MANJŠE od 40. Ali mora biti naslednji ugib manjši ali večji?"}, {"t": "Bravo!", "ok": false, "why": "12 ni enako 40."}], "hints": ["Ali je 12 < 40?"]}, {"type": "guess", "title": "Zdaj igraj ti", "intro": "Računalnik izvaja ta algoritem. Ugani njegovo število.", "hints": ["Začni s 50. Če reče »Več!«, poskusi 75, če »Manj!«, poskusi 25."]}], "endText": "Znaš brati diagram poteka in razumeš, kako deluje igra Ugani število."};</script><script>/* Brihta samostojna ura: zasloni z nalogami, ki se preverijo sami. */
 (function () {
   const $ = (h) => { const d = document.createElement('div'); d.innerHTML = h.trim(); return d.firstElementChild; };
@@ -117,7 +138,7 @@ footer{display:flex;gap:10px;align-items:center;flex-wrap:wrap;border-top:3px so
     bNext.hidden = s.type === 'end';
     if (s.stars) card.appendChild($(`<div class="stars">${s.stars} izziv</div>`));
     if (s.title) card.appendChild($(`<h2>${s.title}</h2>`));
-    if (s.intro) card.appendChild($(`<p class="intro">${s.intro}</p>`));
+    if (s.intro) card.appendChild($(`<div class="intro">${s.intro}</div>`));
     const R = TYPES[s.type];
     const r = R(s, card);
     solver = r && r.solve;
@@ -160,7 +181,7 @@ footer{display:flex;gap:10px;align-items:center;flex-wrap:wrap;border-top:3px so
 
   TYPES.choose = (s, c) => {
     const box = $('<div class="opts"></div>'); c.appendChild(box);
-    const btns = shuffle(s.options).map((o) => {
+    const btns = (s.abcd ? s.options.map((o, i) => ({ ...o, t: `<b>${'ABCDEFGH'[i]}</b> &nbsp;${o.t}` })) : shuffle(s.options)).map((o) => {
       const b = $(`<button class="opt">${o.t}</button>`);
       b.onclick = () => {
         if (o.ok) { btns.forEach((x) => (x.disabled = true)); b.classList.add('good'); done('✅ ' + (o.why || 'Pravilno!')); }
@@ -410,6 +431,174 @@ footer{display:flex;gap:10px;align-items:center;flex-wrap:wrap;border-top:3px so
     }
     ctrl.innerHTML = `<button class="btn go2">Obrni prvo karto</button>`; ctrl.querySelector('button').onclick = turn;
     return { solve: () => { cs.forEach((d, k) => { d.textContent = nums[k]; d.classList.add('up'); }); mem = Math.max(...nums); memEl.textContent = mem; ctrl.innerHTML = ''; } };
+  };
+
+  /* ---------- tipkovnica (slovenska QWERTZ) ---------- */
+  const KB = [['q','w','e','r','t','z','u','i','o','p','š','đ'], ['a','s','d','f','g','h','j','k','l','č','ć','ž'], ['y','x','c','v','b','n','m',',','.','-']];
+  const FING = { '1':'lm','2':'lp','3':'ls','4':'lk','5':'lk','6':'dk','7':'dk','8':'ds','9':'dp','0':'dm', q:'lm',a:'lm',y:'lm', w:'lp',s:'lp',x:'lp', e:'ls',d:'ls',c:'ls', r:'lk',f:'lk',v:'lk',t:'lk',g:'lk',b:'lk',
+    z:'dk',h:'dk',n:'dk',u:'dk',j:'dk',m:'dk', i:'ds',k:'ds',',':'ds', o:'dp',l:'dp','.':'dp', p:'dm','č':'dm','š':'dm','đ':'dm','ć':'dm','ž':'dm','-':'dm', ' ':'pa' };
+  const FNAME = { lm:'levi mezinec', lp:'levi prstanec', ls:'levi sredinec', lk:'levi kazalec', dk:'desni kazalec', ds:'desni sredinec', dp:'desni prstanec', dm:'desni mezinec', pa:'palec' };
+  // Če je na računalniku nastavljena angleška razporeditev, tipka Č pošlje »;«.
+  const norm = (k) => { k = (k || '').toLowerCase(); return k === ';' ? 'č' : k; };
+  function keyboard(digits) {
+    const w = $(`<div class="kb"></div>`);
+    if (digits) { const d = $(`<div class="kbr rn"></div>`); '1234567890'.split('').forEach((k) => d.appendChild($(`<span class="kk f-${FING[k]}" data-k="${k}">${k}</span>`))); w.appendChild(d); }
+    KB.forEach((row, r) => {
+      const d = $(`<div class="kbr r${r}"></div>`);
+      row.forEach((k) => d.appendChild($(`<span class="kk f-${FING[k]}${k === 'f' || k === 'j' ? ' bump' : ''}" data-k="${esc(k)}">${esc(k.toUpperCase())}</span>`)));
+      w.appendChild(d);
+    });
+    w.appendChild($(`<div class="kbr"><span class="kk f-pa space" data-k=" ">presledek</span></div>`));
+    w.mark = (k) => { w.querySelectorAll('.kk').forEach((e) => e.classList.toggle('hot', e.dataset.k === k)); };
+    return w;
+  }
+
+  // Pritisni označeno tipko. s.keys: niz dovoljenih tipk, s.n: koliko pravilnih, s.min: najmanjša natančnost v %.
+  TYPES.keys = (s, c) => {
+    const pool = (s.keys || 'asdfjklč').split('');
+    const need = s.n || 20, min = s.min || 85;
+    const w = $(`<div class="keys"><div class="target"><span class="tkey"></span><span class="tfing"></span></div>
+      <div class="kstat">Pravilno: <b class="ok">0</b> / ${need} &nbsp;·&nbsp; Narobe: <b class="no">0</b></div></div>`);
+    c.appendChild(w); const kb = keyboard(s.digits || /[0-9]/.test(pool.join(''))); c.appendChild(kb);
+    const tk = w.querySelector('.tkey'), tf = w.querySelector('.tfing'), okE = w.querySelector('.ok'), noE = w.querySelector('.no');
+    let ok = 0, no = 0, want = '', fin = false;
+    const pick = () => { let k; do { k = pool[Math.floor(Math.random() * pool.length)]; } while (k === want && pool.length > 1); want = k;
+      tk.textContent = k === ' ' ? '␣' : k.toUpperCase(); tf.textContent = FNAME[FING[k]]; if (s.showKb !== false) kb.mark(k); };
+    const onkey = (e) => {
+      if (fin || !document.body.contains(w)) { document.removeEventListener('keydown', onkey); return; }
+      if (e.key.length !== 1 && e.key !== ';') return;
+      e.preventDefault();
+      if (norm(e.key) === want) { ok++; okE.textContent = ok; tk.classList.remove('miss'); }
+      else { no++; noE.textContent = no; tk.classList.remove('miss'); void tk.offsetWidth; tk.classList.add('miss'); return; }
+      if (ok >= need) {
+        const acc = Math.round(100 * ok / (ok + no));
+        if (acc >= min) { fin = true; kb.mark(''); tk.textContent = '✓'; tf.textContent = ''; done(`✅ Natančnost: <b>${acc} %</b>. ${s.win || 'Odlično!'}`); }
+        else { feedback(`Natančnost je ${acc} %, potrebuješ vsaj ${min} %. Začni znova in počasneje. Natančnost je pomembnejša od hitrosti.`, 'bad'); ok = 0; no = 0; okE.textContent = 0; noE.textContent = 0; pick(); }
+        return;
+      }
+      pick();
+    };
+    document.addEventListener('keydown', onkey); pick();
+    feedback('Postavi prste na osnovno vrsto in pritisni označeno tipko. Ne glej na tipkovnico, glej sem.', '');
+    return { solve: () => { fin = true; document.removeEventListener('keydown', onkey); kb.mark(''); } };
+  };
+
+  // Natipkaj besedilo. s.text, s.min (%), s.save: shrani kot izhodišče, s.compare: primerjaj z izhodiščem.
+  const BKEY = 'brihta_tipkanje_izhodisce';
+  function lev(a, b) {
+    const m = a.length, n = b.length; let p = Array.from({ length: n + 1 }, (_, j) => j);
+    for (let i = 1; i <= m; i++) { const q = [i]; for (let j = 1; j <= n; j++) q[j] = Math.min(p[j] + 1, q[j - 1] + 1, p[j - 1] + (a[i - 1] === b[j - 1] ? 0 : 1)); p = q; }
+    return p[n];
+  }
+  TYPES.type = (s, c) => {
+    const min = s.min === undefined ? 90 : s.min;
+    const w = $(`<div class="typ"><div class="ttext"></div>
+      <textarea rows="2" spellcheck="false" autocomplete="off" autocapitalize="off" placeholder="Tipkaj tukaj …"></textarea>
+      <div class="row"><button class="btn go2">Preveri</button> <span class="small">ali pritisni Enter</span></div></div>`);
+    c.appendChild(w);
+    const tt = w.querySelector('.ttext'), ta = w.querySelector('textarea'), btn = w.querySelector('.go2');
+    tt.innerHTML = [...s.text].map((ch) => `<span>${ch === ' ' ? '&nbsp;' : esc(ch)}</span>`).join('');
+    const spans = tt.querySelectorAll('span');
+    let t0 = 0, fin = false;
+    ta.onpaste = (e) => { e.preventDefault(); feedback('Lepljenje ne šteje. Natipkaj sam/a. 🙂', 'hint'); };
+    ta.oninput = () => {
+      if (!t0 && ta.value) t0 = Date.now();
+      const v = ta.value.replace(/;/g, 'č').replace(/:/g, 'Č');
+      spans.forEach((sp, i) => { sp.className = i < v.length ? (v[i] === s.text[i] ? 'tg' : 'tb') : i === v.length ? 'tc' : ''; });
+    };
+    const check = () => {
+      if (fin) return;
+      const v = ta.value.replace(/\n/g, '').replace(/;/g, 'č').replace(/:/g, 'Č').trimEnd();
+      if (v.length < s.text.length * 0.8) { feedback('Natipkaj celo vrstico do konca, nato klikni Preveri.', 'hint'); return; }
+      const acc = Math.max(0, Math.round(100 * (1 - lev(v, s.text) / s.text.length)));
+      const sec = Math.max(1, (Date.now() - (t0 || Date.now())) / 1000);
+      const wpm = Math.round((v.length / 5) / (sec / 60));
+      let msg = `Natančnost: <b>${acc} %</b> &nbsp;·&nbsp; hitrost: <b>${wpm}</b> besed na minuto`;
+      if (s.save) { try { if (!localStorage.getItem(BKEY)) localStorage.setItem(BKEY, JSON.stringify({ acc, wpm })); } catch (e) {} }
+      if (s.compare) { let b = null; try { b = JSON.parse(localStorage.getItem(BKEY) || 'null'); } catch (e) {}
+        if (b) msg += `<br>Na začetku ure: <b>${b.acc} %</b> in <b>${b.wpm}</b> besed na minuto. ${acc >= b.acc ? 'Natančnost se je izboljšala ali ostala enaka. 💪' : 'Natančnost je nižja kot na začetku: upočasni in ne glej tipk.'}`; }
+      if (acc >= min) { fin = true; ta.disabled = true; btn.disabled = true; done('✅ ' + msg + (s.win ? '<br>' + s.win : '')); }
+      else { feedback(`${msg}<br>❌ Potrebuješ vsaj <b>${min} %</b>. Pobriši in poskusi znova, počasneje.`, 'bad'); ta.value = ''; t0 = 0; ta.oninput(); ta.focus(); }
+    };
+    btn.onclick = check; ta.onkeydown = (e) => { if (e.key === 'Enter') { e.preventDefault(); check(); } };
+    ta.oninput(); setTimeout(() => ta.focus(), 50);
+    return { solve: () => { fin = true; ta.value = s.text; ta.oninput(); ta.disabled = true; btn.disabled = true; } };
+  };
+
+  // Poštevanka s tipkanjem. s.tables: [2,3,...], s.n: koliko pravilnih, s.save/compare: čas
+  const TKEY = 'brihta_postevanka_cas';
+  TYPES.times = (s, c) => {
+    const tabs = s.tables || [2, 3, 4, 5], need = s.n || 10;
+    const w = $(`<div class="times"><div class="tq"></div>
+      <div class="row"><input type="text" inputmode="numeric" autocomplete="off" placeholder="?"><button class="btn go2">OK</button></div>
+      <div class="kstat">Pravilno: <b class="ok">0</b> / ${need} &nbsp;·&nbsp; Napak: <b class="no">0</b></div></div>`);
+    c.appendChild(w); const kb = keyboard(true); c.appendChild(kb);
+    const q = w.querySelector('.tq'), inp = w.querySelector('input'), okE = w.querySelector('.ok'), noE = w.querySelector('.no'), btn = w.querySelector('.go2');
+    let a = 0, b = 0, ok = 0, no = 0, t0 = 0, fin = false, last = '';
+    const next = () => { let k; do { a = tabs[Math.floor(Math.random() * tabs.length)]; b = 1 + Math.floor(Math.random() * 10); k = a + 'x' + b; } while (k === last); last = k;
+      q.innerHTML = `${a} · ${b} = <span class="qm">?</span>`; inp.value = ''; inp.focus(); };
+    const go = () => {
+      if (fin) return; const v = inp.value.trim(); if (!v) return;
+      if (!t0) t0 = Date.now();
+      if (parseInt(v, 10) === a * b) { ok++; okE.textContent = ok; feedback('✅ ' + a + ' · ' + b + ' = ' + (a * b), 'ok'); }
+      else { no++; noE.textContent = no; feedback(`❌ ${a} · ${b} = <b>${a * b}</b>, ne ${esc(v)}. Pogledaj zaslon, ne tipk.`, 'bad'); }
+      if (ok >= need) {
+        fin = true; inp.disabled = true; btn.disabled = true;
+        const sec = Math.round((Date.now() - t0) / 1000);
+        let msg = `Čas: <b>${sec} s</b> &nbsp;·&nbsp; napak: <b>${no}</b>.`;
+        if (s.save) { try { localStorage.setItem(TKEY, String(sec)); } catch (e) {} }
+        if (s.compare) { let p = null; try { p = parseInt(localStorage.getItem(TKEY), 10); } catch (e) {}
+          if (p) msg += ` Prej: <b>${p} s</b>. ${sec < p ? 'Hitrejši/a si! 🚀' : 'Tokrat počasneje, nič hudega: natančnost je pomembnejša.'}`; }
+        done('✅ ' + msg + (s.win ? '<br>' + s.win : ''));
+        return;
+      }
+      next();
+    };
+    btn.onclick = go; inp.onkeydown = (e) => { if (e.key === 'Enter') { e.preventDefault(); go(); } };
+    next(); feedback('Natipkaj rezultat s številkami v zgornji vrsti tipkovnice in pritisni Enter.', '');
+    return { solve: () => { fin = true; inp.disabled = true; btn.disabled = true; q.innerHTML = `${a} · ${b} = ${a * b}`; } };
+  };
+
+  // Slogi v urejevalniku besedila. s.paras: [[besedilo, slog, zakaj?], ...]; slogi: 'Naslov', 'Naslov 1', 'Naslov 2', 'Navadno'.
+  const SLOGI = ['Naslov', 'Naslov 1', 'Naslov 2', 'Navadno'];
+  const scls = (st) => 'st' + SLOGI.indexOf(st);
+  TYPES.slogi = (s, c) => {
+    const styles = s.styles || SLOGI;
+    const w = $(`<div class="slogi"><div class="ribbon"><span class="rl">Slogi:</span></div>
+      <div class="sdoc"><div class="page"></div><div class="nav"><div class="navh">Podokno za krmarjenje</div><div class="navl"></div></div></div>
+      <div class="row"><button class="btn go2">Preveri</button> <span class="small">Klikni odstavek, nato slog zgoraj.</span></div></div>`);
+    c.appendChild(w);
+    const page = w.querySelector('.page'), navl = w.querySelector('.navl'), rib = w.querySelector('.ribbon'), btn = w.querySelector('.go2');
+    const cur = s.paras.map((p) => p[3] || 'Navadno');
+    let sel = 0, fin = false;
+    const P = s.paras.map((p, i) => { const d = $(`<p class="para" tabindex="0"></p>`); d.textContent = p[0];
+      d.onclick = () => { sel = i; draw(); }; page.appendChild(d); return d; });
+    const B = styles.map((st) => { const b = $(`<button class="sbtn ${scls(st)}">${st}</button>`);
+      b.onclick = () => { if (fin) return; cur[sel] = st; P[sel].classList.remove('wrong'); if (sel < P.length - 1) sel++; draw(); }; rib.appendChild(b); return b; });
+    function draw() {
+      P.forEach((d, i) => { d.className = 'para ' + scls(cur[i]) + (i === sel && !fin ? ' sel' : '') + (d.classList.contains('wrong') ? ' wrong' : ''); });
+      B.forEach((b, k) => b.classList.toggle('on', cur[sel] === styles[k]));
+      const h = s.paras.map((p, i) => [p[0], cur[i]]).filter((x) => x[1] !== 'Navadno');
+      navl.innerHTML = h.length ? h.map((x) => `<div class="nv ${scls(x[1])}">${esc(x[0])}</div>`).join('') : '<div class="small">Tu se pokažejo naslovi.</div>';
+    }
+    function why(i) {
+      const [t, st, z] = s.paras[i]; if (z) return z;
+      if (st === 'Naslov') return `»${esc(t)}« je ime celega besedila na vrhu. Zanj je slog <b>Naslov</b>.`;
+      if (st === 'Naslov 1') return `»${esc(t)}« je kratek naslov poglavja. Zanj je slog <b>Naslov 1</b>.`;
+      if (st === 'Naslov 2') { let k = i; while (k >= 0 && s.paras[k][1] !== 'Naslov 1') k--;
+        return `»${esc(t)}« je manjši del znotraj poglavja »${esc(k >= 0 ? s.paras[k][0] : '')}«. Zanj je slog <b>Naslov 2</b>.`; }
+      return `»${esc(t.length > 40 ? t.slice(0, 40) + ' …' : t)}« je cel stavek z razlago, torej navaden odstavek. Zanj je slog <b>Navadno</b>.`;
+    }
+    btn.onclick = () => {
+      if (fin) return;
+      const bad = s.paras.map((p, i) => (cur[i] === p[1] ? -1 : i)).filter((i) => i >= 0);
+      P.forEach((d, i) => d.classList.toggle('wrong', bad.includes(i)));
+      if (!bad.length) { fin = true; draw(); done('✅ ' + (s.win || 'Vsi slogi so pravi. Poglej podokno za krmarjenje: to je zemljevid tvojega besedila.')); return; }
+      sel = bad[0]; draw();
+      feedback(`❌ Narobe ${bad.length === 1 ? 'je 1 odstavek' : bad.length === 2 ? 'sta 2 odstavka' : bad.length < 5 ? 'so ' + bad.length + ' odstavki' : 'je ' + bad.length + ' odstavkov'} (rdeče). ${why(bad[0])}`, 'bad');
+    };
+    draw();
+    return { solve: () => { s.paras.forEach((p, i) => (cur[i] = p[1])); P.forEach((d) => d.classList.remove('wrong')); fin = true; draw(); } };
   };
 
   tell('zacetek');
