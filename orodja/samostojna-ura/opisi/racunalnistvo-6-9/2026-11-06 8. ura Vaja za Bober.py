@@ -12,8 +12,6 @@ VADNICA = 'https://bober.acm.si/simple/guest/compete/'
 LETA = [
     ('2025/26', '532', '533'),
     ('2024/25', '492', '493'),
-    ('2023/24', '392', '393'),
-    ('2022/23', '410', '411'),
 ]
 
 
@@ -29,13 +27,10 @@ def tabela():
         f'<td style="padding:6px">{gumb(VADNICA + a + "/", "6. in 7. r")}</td>'
         f'<td style="padding:6px">{gumb(VADNICA + b + "/", "8. in 9. r")}</td></tr>'
         for leto, a, b in LETA)
-    zvezdice = (
-        '<tr><td style="padding:6px"><b>★★ državno 2024/25</b></td>'
-        f'<td style="padding:6px" colspan="2">{gumb("https://bober.acm.si/simple/guest/competition/drzavno2024gostje/", "Izberi skupino")}</td></tr>')
     return ('<table style="border-collapse:collapse;margin:8px 0">'
             '<tr><th style="padding:6px;text-align:left">Šolsko tekmovanje</th><th style="padding:6px;text-align:left">Vaja</th>'
             '<th style="padding:6px;text-align:left">Vaja</th></tr>'
-            + vrstice + zvezdice + '</table>')
+            + vrstice + '</table>')
 
 
 # ---------------- 2 Naloge prejšnjih let ----------------
@@ -45,7 +40,7 @@ stran('2 Naloge prejsnjih let.html', 'Naloge prejšnjih let', [
 2️⃣ Če se pokaže obrazec: vpiši samo ime, priimek <b>Vaja</b>, datum 1. 1., kodo pusti <b>prazno</b>.<br>
 3️⃣ Čas teče zgoraj desno. Med reševanjem ne izveš, ali je odgovor pravilen, tako kot na tekmovanju.<br>
 4️⃣ Ko končaš, klikni <b>Zaključi</b>. Pokažejo se <b>rezultati</b>: pri vsaki nalogi piše, ali je pravilno.<br>
-5️⃣ Zavihka z rezultati <b>ne zapri</b>. Na Brihti odpri korak <b>Moj rezultat</b> za isto leto in skupino in prepiši, kaj piše pri vsaki nalogi.</div>
+5️⃣ Zavihka z rezultati <b>ne zapri</b>. Na Brihti odpri korak z <b>istim letom in skupino</b> (npr. 2025-26, 6. in 7. r) in prepiši, kaj piše pri vsaki nalogi.</div>
 {tabela()}
-<p class="small">Če ti ostane čas, reši naslednje leto in vpiši tudi ta rezultat. ★★ Državno tekmovanje je za tiste, ki želijo več (zanj ni vpisa rezultata).</p>'''},
+<p class="small">Če ti ostane čas, reši še drugo leto in vpiši tudi ta rezultat.</p>'''},
 ], 'Treniral/a si na pravih nalogah. Srečno na tekmovanju! 🦫')

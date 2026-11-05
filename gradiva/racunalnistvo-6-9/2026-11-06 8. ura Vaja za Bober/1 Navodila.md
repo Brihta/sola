@@ -6,7 +6,7 @@ Pripravim se na šolsko tekmovanje **Bober**: rešujem prave naloge prejšnjih l
 
 - izberem pravo skupino (6. in 7. razred ali 8. in 9. razred),
 - rešim vsaj eno leto nalog v vadnici in kliknem Zaključi,
-- rezultat pošteno vpišem v korak **Moj rezultat** za isto leto in skupino.
+- rezultat pošteno vpišem v korak z istim letom in skupino.
 
 ## 🗺️ Kako delaš
 
