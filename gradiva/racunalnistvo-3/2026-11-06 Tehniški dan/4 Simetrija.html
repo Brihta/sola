@@ -178,15 +178,22 @@ footer{display:flex;gap:10px;align-items:center;flex-wrap:wrap;border-top:3px so
   function zabeleziZaslon(i) {
     const s = screens[i]; if (!IZD || s.type === 'info' || s.type === 'end' || s.demo) return;
     const stanje = s.type === 'check' ? 'potrjeno' : s.prosto ? 'ustvarjeno' : resitev ? 'resitev' : hintN > 0 ? 'namig' : 'sam';
-    zabelezi(s.id || ('s' + String(i).padStart(2, '0')), i,
+    // Ponovno rešena naloga se pošlje, če ni slabša od že poslane (rešitev < namig < sam), da »pokaži rešitev« ne povozi samostojne rešitve.
+    const stopnja = s.id || ('s' + String(i).padStart(2, '0'));
+    const rang = { resitev: 0, namig: 1 }[stanje] ?? 2;
+    const PK = 'brihta_izdelki_poslano:' + UID + ':' + IZD.ura;
+    let poslano = {}; try { poslano = JSON.parse(localStorage.getItem(PK) || '{}'); } catch (e) {}
+    if (!s.prosto && poslano[stopnja] !== undefined && rang < poslano[stopnja]) return;
+    poslano[stopnja] = rang; try { localStorage.setItem(PK, JSON.stringify(poslano)); } catch (e) {}
+    zabelezi(stopnja, i,
       Object.assign({ naslov: (s.title || '').replace(/<[^>]*>/g, ''), vrsta: s.type, stanje, poskusi, namigi: hintN }, podatki ? podatki() : {}));
   }
 
   function done(msg) {
     bNext.disabled = false; bNext.classList.add('pulse');
     bHint.hidden = true; bSolve.hidden = true; bSkip.hidden = true;
-    if (cur + 1 > best) { best = cur + 1; save(best); zabeleziZaslon(cur); }
-    else if (screens[cur].prosto) zabeleziZaslon(cur);
+    if (cur + 1 > best) { best = cur + 1; save(best); }
+    zabeleziZaslon(cur);
     if (msg) feedback(msg, 'ok');
     dots();
   }
@@ -238,7 +245,7 @@ footer{display:flex;gap:10px;align-items:center;flex-wrap:wrap;border-top:3px so
       <p>${esc(P.endText || 'Ta korak je opravljen.')}</p>
       <p class="arrow">Zdaj klikni velik gumb <b>»Naprej«</b> spodaj desno, pod tem okvirjem. ⬇</p>
       <button class="btn ghost" id="again">Začni ta korak znova</button></div>`));
-    c.querySelector('#again').onclick = () => show(0);
+    c.querySelector('#again').onclick = () => { best = 0; save(0); show(0); };   // znova = vse naloge se rešijo in shranijo znova
     tell('koncano');
   };
   TYPES.check = (s, c) => {
