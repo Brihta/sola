@@ -131,7 +131,7 @@
   TYPES.end = (s, c) => {
     c.appendChild($(`<div class="end"><div class="big">🎉</div><h2>Končano!</h2>
       <p>${esc(P.endText || 'Ta korak je opravljen.')}</p>
-      <p class="arrow">Zdaj klikni velik gumb <b>»Naprej«</b> spodaj desno, pod tem okvirjem. ⬇</p>
+      <p class="arrow">${window.parent !== window ? 'Zdaj klikni velik gumb <b>»Naprej«</b> spodaj desno, pod tem okvirjem. ⬇' : 'Zapri ta zavihek in se vrni na Brihto. Tam klikni <b>»Naprej«</b>.'}</p>
       <button class="btn ghost" id="again">Začni ta korak znova</button></div>`));
     c.querySelector('#again').onclick = () => { best = 0; save(0); show(0); };   // znova = vse naloge se rešijo in shranijo znova
     tell('koncano');
