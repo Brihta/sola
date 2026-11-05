@@ -4,7 +4,7 @@
 Uporaba:  python3 zgradi.py <opis-ure.py> "<mapa ure v gradiva/...>"
 
 <opis-ure.py> je navaden Python, ki kliče stran(...). Na voljo so:
-  stran(ime_datoteke, naslov, zasloni, besedilo_konca)
+  stran(ime_datoteke, naslov, zasloni, besedilo_konca, izdelki='predmet/id-ure')
   info(naslov, html)              zaslon z razlago (Naprej je takoj odklenjen)
   ch(besedilo, ok=False, why='')  možnost za zaslon 'choose'
   slika(pot)                      PNG/JPG kot data: URI (pot relativno na opis ure)
@@ -25,10 +25,13 @@ def main():
     mapa_opisa = os.path.dirname(opis)
     narejeno = []
 
-    def stran(ime, naslov, zasloni, konec='Ta korak je opravljen.'):
+    def stran(ime, naslov, zasloni, konec='Ta korak je opravljen.', izdelki=None):
         if not ime.endswith('.html'):
             ime += '.html'
-        data = json.dumps({'title': naslov, 'screens': zasloni, 'endText': konec}, ensure_ascii=False)
+        stran_ = {'title': naslov, 'screens': zasloni, 'endText': konec}
+        if izdelki:
+            stran_['izdelki'] = {'ura': izdelki}  # delo učenca se shrani (supabase_izdelki.sql)
+        data = json.dumps(stran_, ensure_ascii=False)
         html = (f'<!doctype html><html lang="sl"><head><meta charset="utf-8">'
                 f'<meta name="viewport" content="width=device-width,initial-scale=1"><title>{naslov}</title>'
                 f'<style>{CSS}</style></head><body><div id="app"></div>'

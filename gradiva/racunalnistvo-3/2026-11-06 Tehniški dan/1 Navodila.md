@@ -1,12 +1,13 @@
 ## 🎯 Danes
 
-Računam do 20 in vodim polžka robota po poti.
+Računam do 20, vodim polžka robota in rišem simetrične slike.
 
 ## ✅ Uspešen sem, če …
 
 - pravilno računam do 20,
 - s puščicami pripeljem polžka do cilja,
-- rešim čim več od 20 misij.
+- rešim čim več od 20 misij,
+- narišem drugo polovico slike kot v ogledalu.
 
 ## 🗺️ Kako delaš
 
@@ -14,4 +15,5 @@ Računam do 20 in vodim polžka robota po poti.
 2. Ko učitelj reče, klikni **Polžek robot**.
 3. Začni pri misiji **1**. Ko jo rešiš, pojdi na naslednjo.
 4. Puščice povedo polžku, kam naj gre. Najprej premisli, nato klikni.
-5. Ne gre? Poskusi znova. Lahko vprašaš soseda.
+5. Ko učitelj reče, klikni **Simetrija**. Najprej se prijavi, da se tvoje risbe shranijo.
+6. Ne gre? Poskusi znova. Klikni **💡 Namig**.

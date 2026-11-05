@@ -12,6 +12,7 @@ with sync_playwright() as p:
         pg.on('pageerror', lambda e: errs.append(str(e)))
         pg.on('console', lambda m: errs.append(m.text) if m.type == 'error' else None)
         pg.goto(f.resolve().as_uri()); pg.wait_for_timeout(300)
+        if pg.locator('#gate-go').count(): pg.click('#gate-go'); pg.wait_for_timeout(100)  # stran z izdelki brez prijave
         n = 0
         while n < 20:
             n += 1
@@ -36,6 +37,7 @@ with sync_playwright() as p:
                 if pg.locator('#solve').is_visible(): pg.click('#solve')
                 elif pg.locator('.chk input').count(): pg.check('.chk input')
                 elif pg.locator('#skip').is_visible(): pg.click('#skip'); continue
+                elif pg.locator('.zrun:not(:disabled)').count(): pg.click('.zrun'); pg.wait_for_timeout(9000)  # zrcali demo
                 elif pg.locator('.opt:not(:disabled)').count():
                     for k in range(pg.locator('.opt').count()):
                         if not nxt.is_disabled(): break

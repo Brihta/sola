@@ -74,9 +74,20 @@ info(naslov, html)                       # razlaga; razredi: big, box, warn, sma
 {'type':'slogi',  'title', 'intro', 'paras':[['besedilo','Naslov 1'], ['besedilo','Navadno','zakaj?'], ...], 'win', 'hints'}
                   # mali urejevalnik: klikni odstavek, nato slog (Naslov, Naslov 1, Naslov 2, Navadno);
                   # desno se sproti riše podokno za krmarjenje; Preveri obarva napačne in pove zakaj
+{'type':'zrcali', 'id':'n1', 'title', 'intro', 'os':'v'|'h', 'pol':['..RR', ...], 'obrni':False, 'demo':False, 'hints'}
+                  # simetrija na mreži: pol = dana polovica (pri 'v' levi stolpci, pri 'h' zgornje vrstice), '.' prazno
+                  # barve: R rdeča, Y rumena, G zelena, B modra, O oranžna, P vijolična, K rjava, C črna
+                  # obrni = lik je desno/spodaj; demo = učenec klikne »Poglej, kako« in gleda zrcaljenje
+                  # odziv loči: napačno mesto (✖), napačna barva (obroba), manjka, lik le prerisan (ne zrcaljen)
+{'type':'zrcali', 'prosto':True, 'w':12, 'h':10, 'os':'v', 'barve':'RYGBOP'}   # prosto risanje, zrcalo riše samo
 ```
 
-Vsak zaslon lahko ima še `stars` in `optional`. Na koncu vsake strani se sam doda
+Vsak zaslon lahko ima še `stars` in `optional`.
+
+**Izdelki za učiteljevo poročilo:** `stran(..., izdelki='racunalnistvo-3/2026-11-06-simetrija')`.
+Stran potem zahteva prijavo (ali »Nadaljuj brez shranjevanja«), v glavi pokaže, za koga shranjuje,
+in po vsaki rešeni nalogi zapiše v Supabase (`supabase_izdelki.sql`): stanje (sam, namig, rešitev),
+poskuse, namige in pri `zrcali` še mrežo. Daj nalogam stalen `id`, da se ob popravku ure poročilo ne pomeša. Na koncu vsake strani se sam doda
 zaslon »🎉 Končano!«.
 
 **Nova vrsta naloge** (npr. za Scratch, binarna števila, omrežja): dodaj

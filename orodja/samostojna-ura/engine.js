@@ -4,7 +4,8 @@
   const esc = (s) => String(s).replace(/[&<>"]/g, (c) => ({ '&': '&amp;', '<': '&lt;', '>': '&gt;', '"': '&quot;' }[c]));
   const shuffle = (a) => { a = a.slice(); for (let i = a.length - 1; i > 0; i--) { const j = Math.floor(Math.random() * (i + 1)); [a[i], a[j]] = [a[j], a[i]]; } return a; };
   // Napredek je vezan na prijavljenega učenca in celo pot strani: računalniki so skupni, imena korakov se ponavljajo med urami.
-  const UID = (() => { try { const u = JSON.parse(localStorage.getItem('brihta_profile_v1') || 'null'); return (u && u.id) || ''; } catch (e) { return ''; } })();
+  const PROFIL = (() => { try { return JSON.parse(localStorage.getItem('brihta_profile_v1') || 'null') || {}; } catch (e) { return {}; } })();
+  const UID = PROFIL.id || '';
   const KEY = 'brihta_ura8:' + UID + ':' + decodeURIComponent(location.pathname);
   const load = () => { try { return parseInt(localStorage.getItem(KEY) || '0', 10) || 0; } catch (e) { return 0; } };
   const save = (v) => { try { localStorage.setItem(KEY, String(v)); } catch (e) {} };
@@ -37,11 +38,43 @@
       `<span class="cnt">${Math.min(cur + 1, screens.length - 1)} / ${screens.length - 1}</span>`;
   }
 
-  let solver = null, hintN = 0;
+  let solver = null, hintN = 0, poskusi = 0, resitev = false, podatki = null;
+
+  /* ---------- izdelki: shranjevanje dela učenca za učiteljevo poročilo (supabase_izdelki.sql) ---------- */
+  const IZD = P.izdelki;   // {ura: 'racunalnistvo-3/2026-11-06-simetrija'}
+  const SB = { url: 'https://ldczgbajbarlgwqzcggh.supabase.co', key: 'sb_publishable_888IYcEb-nSmGO0d67hEwA_rBFuXnv8' };
+  const CAKA = 'brihta_izdelki_cakajo:' + UID;
+  const cakajo = () => { try { return JSON.parse(localStorage.getItem(CAKA) || '[]'); } catch (e) { return []; } };
+  const naj = (v) => { try { localStorage.setItem(CAKA, JSON.stringify(v)); } catch (e) {} };
+  async function poslji(z) {
+    const r = await fetch(SB.url + '/rest/v1/rpc/sola_izdelek_shrani', { method: 'POST',
+      headers: { apikey: SB.key, Authorization: 'Bearer ' + SB.key, 'Content-Type': 'application/json' }, body: JSON.stringify(z) });
+    if (!r.ok) throw new Error('HTTP ' + r.status);
+    return (await r.text()).trim() === 'true';
+  }
+  async function izprazni() {
+    const v = cakajo(); if (!v.length) return;
+    const ostane = [];
+    for (const z of v) { try { await poslji(z); } catch (e) { ostane.push(z); } }
+    naj(ostane);
+  }
+  function zabelezi(stopnja, zap, pod) {
+    if (!IZD || !UID) return;
+    const z = { p_student: UID, p_ura: IZD.ura, p_stopnja: stopnja, p_zap: zap, p_podatki: pod };
+    poslji(z).then(izprazni).catch(() => { const v = cakajo().filter((x) => x.p_stopnja !== stopnja); v.push(z); naj(v); });
+  }
+  function zabeleziZaslon(i) {
+    const s = screens[i]; if (!IZD || s.type === 'info' || s.type === 'end' || s.demo) return;
+    const stanje = s.type === 'check' ? 'potrjeno' : s.prosto ? 'ustvarjeno' : resitev ? 'resitev' : hintN > 0 ? 'namig' : 'sam';
+    zabelezi(s.id || ('s' + String(i).padStart(2, '0')), i,
+      Object.assign({ naslov: (s.title || '').replace(/<[^>]*>/g, ''), vrsta: s.type, stanje, poskusi, namigi: hintN }, podatki ? podatki() : {}));
+  }
+
   function done(msg) {
     bNext.disabled = false; bNext.classList.add('pulse');
     bHint.hidden = true; bSolve.hidden = true; bSkip.hidden = true;
-    if (cur + 1 > best) { best = cur + 1; save(best); }
+    if (cur + 1 > best) { best = cur + 1; save(best); zabeleziZaslon(cur); }
+    else if (screens[cur].prosto) zabeleziZaslon(cur);
     if (msg) feedback(msg, 'ok');
     dots();
   }
@@ -54,7 +87,7 @@
 
   function show(i) {
     cur = i; const s = screens[i];
-    card.innerHTML = ''; solver = null; hintN = 0;
+    card.innerHTML = ''; solver = null; hintN = 0; poskusi = 0; resitev = false; podatki = null;
     bNext.classList.remove('pulse');
     bBack.disabled = i === 0;
     const hints = s.hints || [];
@@ -66,7 +99,7 @@
     if (s.intro) card.appendChild($(`<div class="intro">${s.intro}</div>`));
     const R = TYPES[s.type];
     const r = R(s, card);
-    solver = r && r.solve;
+    solver = r && r.solve; podatki = r && r.podatki;
     const already = i < best;
     bNext.disabled = !(s.type === 'info' || already);
     if (s.type === 'info') { if (i + 1 > best) { best = i + 1; save(best); } bHint.hidden = true; }
@@ -83,7 +116,7 @@
     if (hintN < h.length) { feedback('💡 ' + h[hintN], 'hint'); hintN++; }
     if (hintN >= h.length && solver) { bHint.hidden = true; bSolve.hidden = false; }
   };
-  bSolve.onclick = () => { if (solver) { solver(); feedback('Tukaj je rešitev. Dobro si jo oglej, nato klikni Naprej.', 'hint'); done(); } };
+  bSolve.onclick = () => { if (solver) { resitev = true; solver(); feedback('Tukaj je rešitev. Dobro si jo oglej, nato klikni Naprej.', 'hint'); done(); } };
 
   /* ---------- vrste zaslonov ---------- */
   const TYPES = {};
@@ -109,8 +142,8 @@
     const btns = (s.abcd ? s.options.map((o, i) => ({ ...o, t: `<b>${'ABCDEFGH'[i]}</b> &nbsp;${o.t}` })) : shuffle(s.options)).map((o) => {
       const b = $(`<button class="opt">${o.t}</button>`);
       b.onclick = () => {
-        if (o.ok) { btns.forEach((x) => (x.disabled = true)); b.classList.add('good'); done('✅ ' + (o.why || 'Pravilno!')); }
-        else { b.classList.add('bad'); b.disabled = true; feedback('❌ ' + (o.why || 'Ne še. Poskusi drugo možnost.'), 'bad'); }
+        if (o.ok) { poskusi++; btns.forEach((x) => (x.disabled = true)); b.classList.add('good'); done('✅ ' + (o.why || 'Pravilno!')); }
+        else { poskusi++; b.classList.add('bad'); b.disabled = true; feedback('❌ ' + (o.why || 'Ne še. Poskusi drugo možnost.'), 'bad'); }
       };
       box.appendChild(b); b._o = o; return b;
     });
@@ -526,6 +559,175 @@
     return { solve: () => { s.paras.forEach((p, i) => (cur[i] = p[1])); P.forEach((d) => d.classList.remove('wrong')); fin = true; draw(); } };
   };
 
+  /* ---------- zrcali: simetrija na mreži z barvami ----------
+     {type:'zrcali', title, intro, os:'v'|'h', pol:['..R', ...], obrni:False, demo:False, hints}
+       pol = dana polovica (pri 'v' levi stolpci, pri 'h' zgornje vrstice); '.' je prazno polje.
+       obrni = dana polovica je desno / spodaj. demo = učenec samo pogleda, kako se zrcali.
+     {type:'zrcali', prosto:True, w:12, h:10, os:'v'|'h', barve:'RYGB'}  prosto ustvarjanje, zrcalo riše samo. */
+  const BARVE = { R: ['#ef4444', 'rdeča'], Y: ['#facc15', 'rumena'], G: ['#22c55e', 'zelena'], B: ['#3b82f6', 'modra'],
+    O: ['#fb923c', 'oranžna'], P: ['#a855f7', 'vijolična'], K: ['#92400e', 'rjava'], C: ['#1f2937', 'črna'] };
+  const stevilo = (n, a, b, c) => n === 1 ? a : n === 2 ? b : c;
+  TYPES.zrcali = (s, c) => {
+    const V = (s.os || 'v') === 'v';
+    let W, H, dano = [];
+    if (s.prosto) { W = s.w || 12; H = s.h || 10; for (let r = 0; r < H; r++) dano.push('.'.repeat(W)); }
+    else if (V) { const k = s.pol[0].length; W = 2 * k; H = s.pol.length; dano = s.pol.map((v) => s.obrni ? '.'.repeat(k) + [...v].reverse().join('') : v + '.'.repeat(k)); }
+    else { const k = s.pol.length; W = s.pol[0].length; H = 2 * k;
+      dano = s.obrni ? s.pol.map(() => '.'.repeat(W)).concat(s.pol.slice().reverse()) : s.pol.concat(s.pol.map(() => '.'.repeat(W))); }
+    const zr = (r, q) => V ? [r, W - 1 - q] : [H - 1 - r, q];
+    const D = (r, q) => dano[r][q];
+    const cilj = (r, q) => { if (D(r, q) !== '.') return '.'; const [a, b] = zr(r, q); return D(a, b); };
+    const mojaStran = (r, q) => s.prosto ? true : V ? (s.obrni ? q < W / 2 : q >= W / 2) : (s.obrni ? r < H / 2 : r >= H / 2);
+    const rabljene = s.prosto ? (s.barve || 'RYGB').split('') : [...new Set(dano.join('').replace(/\./g, ''))];
+    const M = Array.from({ length: H }, () => Array(W).fill('.'));
+    let barva = rabljene[0], fin = false;
+
+    const cs = Math.max(26, Math.min(48, Math.floor((Math.min(window.innerWidth, 980) - 70) / W), Math.floor((window.innerHeight - 200) / H)));
+    const wrap = $(`<div class="zr ${V ? 'zv' : 'zh'}" style="--zc:${cs}px"></div>`);
+    const g = $(`<div class="zg" style="grid-template-columns:repeat(${W},var(--zc))"></div>`);
+    const celice = [];
+    for (let r = 0; r < H; r++) for (let q = 0; q < W; q++) {
+      const d = $('<div class="zcell"></div>'); d._r = r; d._q = q;
+      if (V && q === W / 2 - 1) d.classList.add('ax-r');
+      if (!V && r === H / 2 - 1) d.classList.add('ax-b');
+      if (D(r, q) !== '.') { d.style.background = BARVE[D(r, q)][0]; d.classList.add('dano'); }
+      else if (!mojaStran(r, q)) d.classList.add('tuja');
+      g.appendChild(d); celice.push(d);
+    }
+    const cel = (r, q) => celice[r * W + q];
+    const ozadje = $(`<div class="zaxis ${V ? 'v' : 'h'}"></div>`);
+    const gw = $('<div class="zgw"></div>'); gw.appendChild(g); gw.appendChild(ozadje);
+    wrap.appendChild(gw);
+
+    const side = $('<div class="zside"></div>');
+    let pal = null;
+    if (!s.demo && (rabljene.length > 1 || s.prosto)) {
+      pal = $('<div class="zpal"><div class="small">Izberi barvo:</div></div>');
+      rabljene.concat(['_']).forEach((k) => {
+        const b = $(k === '_' ? '<button class="zsw radir" title="Radirka">🧽<span>briši</span></button>'
+          : `<button class="zsw" style="--b:${BARVE[k][0]}" title="${BARVE[k][1]}"><i></i><span>${BARVE[k][1]}</span></button>`);
+        b._k = k; b.onclick = () => { barva = k; pal.querySelectorAll('.zsw').forEach((x) => x.classList.toggle('on', x === b)); };
+        if (k === barva) b.classList.add('on');
+        pal.appendChild(b);
+      });
+      side.appendChild(pal);
+    }
+    const bPrev = s.demo ? $('<button class="btn go2 zrun">▶ Poglej, kako</button>')
+      : $(`<button class="btn go2 zrun">${s.prosto ? '✔ Končal/a sem' : '✔ Preveri'}</button>`);
+    const bBrisi = $('<button class="btn ghost">🗑️ Začni znova</button>');
+    const vr = $('<div class="row"></div>'); vr.appendChild(bPrev); if (!s.demo) vr.appendChild(bBrisi);
+    side.appendChild(vr);
+    side.appendChild($(`<div class="small">${s.demo ? '' : s.prosto
+      ? 'Riši kjerkoli. Zrcalo na drugi strani črte nariše sliko samo. Lahko vlečeš s prstom ali z miško.'
+      : 'Klikni kvadratek, da ga pobarvaš. Še en klik ga pobriše. Lahko tudi vlečeš.'}</div>`));
+    wrap.appendChild(side);
+    c.appendChild(wrap);
+
+    function narisi(r, q) {
+      const d = cel(r, q), k = M[r][q];
+      if (D(r, q) !== '.') return;
+      d.style.background = k === '.' ? '' : BARVE[k][0];
+      d.classList.remove('zx', 'zo', 'zm');
+    }
+    function postavi(r, q, k) {
+      M[r][q] = k; narisi(r, q);
+      if (s.prosto) { const [a, b] = zr(r, q); if (a !== r || b !== q) { M[a][b] = k; narisi(a, b); } }
+    }
+    // risanje: klik ali vlečenje (miška, prst)
+    let vlecem = null;
+    const naCeli = (e) => { const el = document.elementFromPoint(e.clientX, e.clientY); return el && el._r !== undefined && el.classList.contains('zcell') ? el : null; };
+    function dotik(d, zacetek) {
+      if (fin || s.demo) return;
+      const r = d._r, q = d._q;
+      if (D(r, q) !== '.') { if (zacetek) feedback('Ta del je že narisan. Riši na <b>drugi strani</b> črte. ' + (V ? (s.obrni ? '👈' : '👉') : (s.obrni ? '👆' : '👇')), 'hint'); return; }
+      if (!mojaStran(r, q)) { if (zacetek) feedback('Na tej strani je lik. Riši na <b>prazni strani</b> črte.', 'hint'); return; }
+      if (zacetek) vlecem = (barva === '_' || M[r][q] === barva) ? '.' : barva;
+      if (vlecem !== null && M[r][q] !== vlecem) postavi(r, q, vlecem);
+    }
+    g.addEventListener('pointerdown', (e) => { const d = naCeli(e); if (!d) return; e.preventDefault(); dotik(d, true); });
+    g.addEventListener('pointermove', (e) => { if (vlecem === null) return; const d = naCeli(e); if (d) dotik(d, false); });
+    window.addEventListener('pointerup', () => { vlecem = null; });
+    g.addEventListener('pointercancel', () => { vlecem = null; });
+
+    bBrisi.onclick = () => { if (fin && !s.prosto) return; for (let r = 0; r < H; r++) for (let q = 0; q < W; q++) if (M[r][q] !== '.') postavi(r, q, '.'); feedback('Mreža je prazna. Začni znova.', ''); };
+
+    function resitevNarisi() { for (let r = 0; r < H; r++) for (let q = 0; q < W; q++) { M[r][q] = cilj(r, q); narisi(r, q); } }
+
+    bPrev.onclick = () => {
+      if (s.demo) {
+        if (fin) return; fin = true; bPrev.disabled = true;
+        const red = []; for (let r = 0; r < H; r++) for (let q = 0; q < W; q++) if (cilj(r, q) !== '.') red.push([r, q]);
+        red.sort((a, b) => (V ? Math.abs(a[1] - W / 2) - Math.abs(b[1] - W / 2) : Math.abs(a[0] - H / 2) - Math.abs(b[0] - H / 2)));
+        red.forEach(([r, q], i) => setTimeout(() => {
+          const [a, b] = zr(r, q); cel(a, b).classList.add('par'); M[r][q] = cilj(r, q); narisi(r, q); cel(r, q).classList.add('par');
+          setTimeout(() => { cel(a, b).classList.remove('par'); cel(r, q).classList.remove('par'); }, 380);
+          if (i === red.length - 1) setTimeout(() => done('✅ ' + (s.win || 'Vsak kvadratek ima svoj par. Par je <b>enako daleč</b> od črte, le na drugi strani.')), 450);
+        }, 120 + i * 420));
+        return;
+      }
+      if (fin && !s.prosto) return;
+      if (s.prosto) {
+        const n = M.flat().filter((k) => k !== '.').length;
+        if (n < 8) { feedback(`Nariši še malo. Pobarvaj vsaj 8 kvadratkov (zdaj ${n}).`, 'hint'); return; }
+        done('✅ ' + (s.win || 'Čudovito! Tvoja slika je simetrična. Shranjena je za učitelja.')); return;
+      }
+      poskusi++;
+      let napMesto = 0, napBarva = 0, manjka = 0, prerisal = true, imaKaj = false;
+      for (let r = 0; r < H; r++) for (let q = 0; q < W; q++) {
+        if (!mojaStran(r, q)) continue;
+        const t = cilj(r, q), m = M[r][q], d = cel(r, q);
+        d.classList.remove('zx', 'zo', 'zm');
+        if (m !== '.') imaKaj = true;
+        if (m !== '.' && t === '.') { napMesto++; d.classList.add('zx'); }
+        else if (m !== '.' && m !== t) { napBarva++; d.classList.add('zo'); }
+        else if (m === '.' && t !== '.') manjka++;
+        // je lik samo prerisal (premaknil), ne zrcalil?
+        const pr = V ? (s.obrni ? D(r, q + W / 2) : D(r, q - W / 2)) : (s.obrni ? D(r + H / 2, q) : D(r - H / 2, q));
+        if (pr !== m) prerisal = false;
+      }
+      if (!napMesto && !napBarva && !manjka) {
+        fin = true; celice.forEach((d) => d.classList.add('zok'));
+        done('✅ ' + (s.win || 'Odlično! Slika je simetrična.')); return;
+      }
+      const sim = (V ? 'v isti vrsti' : 'v istem stolpcu');
+      let t;
+      if (!imaKaj) t = 'Mreža na tvoji strani je še prazna. Začni pri kvadratkih, ki se dotikajo črte.';
+      else if (prerisal && napMesto) t = '🪞 Lik si samo <b>prerisal/a</b>. Zrcalo ga obrne: kar je pri črti, ostane pri črti. Kar je daleč od črte, je daleč tudi na drugi strani.';
+      else if (napMesto) t = `✖ ${stevilo(napMesto, 'En kvadratek je', 'Dva kvadratka sta', napMesto + ' kvadratkov je')} na napačnem mestu (označeno s ✖). Par mora biti <b>enako daleč od črte</b> in ${sim}. Preštej kvadratke do črte.`;
+      else if (napBarva) t = `🎨 Mesto je pravo, <b>barva pa ne</b> (${stevilo(napBarva, 'en obkrožen kvadratek', 'dva obkrožena kvadratka', napBarva + ' obkroženih kvadratkov')}). V zrcalu ima par enako barvo.`;
+      else t = `Skoraj! Manjka še ${stevilo(manjka, 'en kvadratek', 'dva kvadratka', manjka + ' kvadratkov')}. Poišči kvadratek na liku, ki še nima para.`;
+      if (napMesto && napBarva) t += ` Tudi barva ni prava pri ${napBarva} (obkroženo).`;
+      if ((napMesto || napBarva) && manjka) t += ` Manjka še ${manjka}.`;
+      feedback('❌ ' + t, 'bad');
+    };
+    if (!s.hints && !s.demo && !s.prosto) s.hints = [
+      `Izberi en kvadratek lika. Preštej, koliko kvadratkov je oddaljen od črte.`,
+      `Njegov par je na drugi strani črte, <b>enako daleč</b> od nje, ${V ? 'v isti vrsti' : 'v istem stolpcu'}.`,
+      'Začni s kvadratki, ki se dotikajo črte: njihov par se črte tudi dotika.'];
+    bHint.hidden = !(s.hints || []).length || cur < best;
+    return {
+      solve: s.demo || s.prosto ? null : () => { resitevNarisi(); fin = true; celice.forEach((d) => d.classList.remove('zx', 'zo')); },
+      podatki: () => ({ os: V ? 'v' : 'h', w: W, h: H, dano: dano, moje: M.map((v) => v.join('')), prosto: !!s.prosto }),
+    };
+  };
+
   tell('zacetek');
-  show(cur);
+  function zacni() {
+    if (IZD && UID) {
+      const ime = PROFIL.display_name || PROFIL.username || '';
+      document.querySelector('header').appendChild($(`<div class="kdo" title="Tvoje delo se shranjuje za učitelja.">💾 ${esc(PROFIL.emoji || '👤')} ${esc(ime)}</div>`));
+      zabelezi('_zacetek', -1, { naslov: 'Odprl/a stran', vrsta: 'zacetek', stanje: 'odprto' });
+    }
+    show(cur);
+  }
+  if (IZD && !UID) {
+    document.querySelector('footer').hidden = true;
+    card.innerHTML = `<div class="gate"><div class="big-ic">🔐</div><h2>Najprej se prijavi</h2>
+      <p class="big">Tvoje risbe se shranijo za učitelja. Zato se moraš prijaviti.</p>
+      <p>Na Brihti zgoraj desno klikni <b>Prijava</b> in vpiši svoje ime in geslo.<br>Nato klikni zeleni gumb.</p>
+      <button class="btn go" id="gate-ok">Prijavil/a sem se ✔</button>
+      <p class="small"><button class="linkbtn" id="gate-go">Nadaljuj brez shranjevanja (samo za učitelja)</button></p></div>`;
+    card.querySelector('#gate-ok').onclick = () => location.reload();
+    card.querySelector('#gate-go').onclick = () => { document.querySelector('footer').hidden = false; zacni(); };
+  } else { zacni(); izprazni(); }
 })();

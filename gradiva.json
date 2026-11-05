@@ -36,8 +36,8 @@
       "ime": "Navodila",
       "vrsta": "besedilo",
       "pot": "gradiva/racunalnistvo-3/2026-11-06 Tehniški dan/1 Navodila.md",
-      "velikost": 513,
-      "besedilo": "## 🎯 Danes\n\nRačunam do 20 in vodim polžka robota po poti.\n\n## ✅ Uspešen sem, če …\n\n- pravilno računam do 20,\n- s puščicami pripeljem polžka do cilja,\n- rešim čim več od 20 misij.\n\n## 🗺️ Kako delaš\n\n1. Klikni **Brihta matematika**. Prijavi se in računaj.\n2. Ko učitelj reče, klikni **Polžek robot**.\n3. Začni pri misiji **1**. Ko jo rešiš, pojdi na naslednjo.\n4. Puščice povedo polžku, kam naj gre. Najprej premisli, nato klikni.\n5. Ne gre? Poskusi znova. Lahko vprašaš soseda.\n"
+      "velikost": 670,
+      "besedilo": "## 🎯 Danes\n\nRačunam do 20, vodim polžka robota in rišem simetrične slike.\n\n## ✅ Uspešen sem, če …\n\n- pravilno računam do 20,\n- s puščicami pripeljem polžka do cilja,\n- rešim čim več od 20 misij,\n- narišem drugo polovico slike kot v ogledalu.\n\n## 🗺️ Kako delaš\n\n1. Klikni **Brihta matematika**. Prijavi se in računaj.\n2. Ko učitelj reče, klikni **Polžek robot**.\n3. Začni pri misiji **1**. Ko jo rešiš, pojdi na naslednjo.\n4. Puščice povedo polžku, kam naj gre. Najprej premisli, nato klikni.\n5. Ko učitelj reče, klikni **Simetrija**. Najprej se prijavi, da se tvoje risbe shranijo.\n6. Ne gre? Poskusi znova. Klikni **💡 Namig**.\n"
      },
      {
       "ime": "Brihta matematika",
@@ -52,6 +52,13 @@
       "url": "https://classedeflorent.fr/en/games/bot/snailbot/missions/index-snailbot.php",
       "opis": "Pelji polžka robota do cilja. Reši 20 misij!",
       "emoji": "🐌"
+     },
+     {
+      "ime": "Simetrija",
+      "vrsta": "html",
+      "pot": "gradiva/racunalnistvo-3/2026-11-06 Tehniški dan/4 Simetrija.html",
+      "velikost": 88055,
+      "interaktivno": true
      }
     ]
    }
@@ -451,5 +458,5 @@
   "slovenscina-3": [],
   "svetovni-popotniki": []
  },
- "posodobljeno": "2026-11-05T21:18:06+01:00"
+ "posodobljeno": "2026-11-05T21:46:48+01:00"
 }
