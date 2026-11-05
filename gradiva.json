@@ -43,21 +43,21 @@
       "ime": "Robot na mrezi",
       "vrsta": "html",
       "pot": "gradiva/racunalnistvo-4/2026-11-10 4. ura Algoritem po prostoru/2 Robot na mrezi.html",
-      "velikost": 46077,
+      "velikost": 51103,
       "interaktivno": true
      },
      {
       "ime": "Bobrckove naloge",
       "vrsta": "html",
       "pot": "gradiva/racunalnistvo-4/2026-11-10 4. ura Algoritem po prostoru/3 Bobrckove naloge.html",
-      "velikost": 52644,
+      "velikost": 57670,
       "interaktivno": true
      },
      {
       "ime": "Zapis v zvezek",
       "vrsta": "html",
       "pot": "gradiva/racunalnistvo-4/2026-11-10 4. ura Algoritem po prostoru/4 Zapis v zvezek.html",
-      "velikost": 43696,
+      "velikost": 48722,
       "interaktivno": true
      },
      {
@@ -69,7 +69,7 @@
       "ime": "Izziv Kaca",
       "vrsta": "html",
       "pot": "gradiva/racunalnistvo-4/2026-11-10 4. ura Algoritem po prostoru/6 Izziv Kaca.html",
-      "velikost": 44065,
+      "velikost": 49091,
       "interaktivno": true
      },
      {
@@ -98,21 +98,21 @@
       "ime": "Robot na mrezi",
       "vrsta": "html",
       "pot": "gradiva/racunalnistvo-5/2026-11-05 5. ura Labirint in Bobrcek/2 Robot na mrezi.html",
-      "velikost": 47577,
+      "velikost": 52603,
       "interaktivno": true
      },
      {
       "ime": "Bobrckove naloge",
       "vrsta": "html",
       "pot": "gradiva/racunalnistvo-5/2026-11-05 5. ura Labirint in Bobrcek/3 Bobrckove naloge.html",
-      "velikost": 51896,
+      "velikost": 56922,
       "interaktivno": true
      },
      {
       "ime": "Zapis v zvezek",
       "vrsta": "html",
       "pot": "gradiva/racunalnistvo-5/2026-11-05 5. ura Labirint in Bobrcek/4 Zapis v zvezek.html",
-      "velikost": 43794,
+      "velikost": 48820,
       "interaktivno": true
      },
      {
@@ -149,6 +149,68 @@
   ],
   "racunalnistvo-6": [
    {
+    "ime": "6. ura Naslovi odstavki slogi",
+    "vrsta": "ura",
+    "datum": "2026-11-05T08:00:00+02:00",
+    "pot": "gradiva/racunalnistvo-6/2026-11-05 6. ura Naslovi odstavki slogi",
+    "koraki": [
+     {
+      "ime": "Navodila",
+      "vrsta": "besedilo",
+      "pot": "gradiva/racunalnistvo-6/2026-11-05 6. ura Naslovi odstavki slogi/1 Navodila.md",
+      "velikost": 870,
+      "besedilo": "## 🎯 Cilj ure\n\nNaučim se, kaj so **naslov**, **odstavek** in **slog**, in besedilo v Wordu uredim s **slogi**.\n\n## ✅ Uspešen sem, če …\n\n- naslovom izberem pravi slog (Naslov, Naslov 1, Naslov 2),\n- odstavkom pustim slog Navadno in Enter pritisnem samo na koncu odstavka,\n- v podoknu za krmarjenje vidim vse naslove svojega dokumenta,\n- znam povedati, zakaj je slog boljši kot samo krepko besedilo.\n\n## 🗺️ Kako delaš\n\n1. Vsak korak je ena stran. Beri in klikaj **na strani**.\n2. Ko rešiš nalogo, se odklene zeleni gumb **Naslednja naloga**.\n3. Ko piše **🎉 Končano!**, se odklene velik gumb **Naprej** spodaj desno. Z njim greš na naslednji korak.\n4. Če se zatakneš, klikni **💡 Namig**. Po namigih lahko pogledaš rešitev.\n\nDelaš sam, s svojo hitrostjo. Pripravi **zvezek** za zapis. **★★ Izziv** na koncu je za tiste, ki želijo več.\n"
+     },
+     {
+      "ime": "Ogrevanje prstov",
+      "vrsta": "html",
+      "pot": "gradiva/racunalnistvo-6/2026-11-05 6. ura Naslovi odstavki slogi/2 Ogrevanje prstov.html",
+      "velikost": 49134,
+      "interaktivno": true
+     },
+     {
+      "ime": "Kaj je slog",
+      "vrsta": "html",
+      "pot": "gradiva/racunalnistvo-6/2026-11-05 6. ura Naslovi odstavki slogi/3 Kaj je slog.html",
+      "velikost": 52241,
+      "interaktivno": true
+     },
+     {
+      "ime": "Slogi na poskus",
+      "vrsta": "html",
+      "pot": "gradiva/racunalnistvo-6/2026-11-05 6. ura Naslovi odstavki slogi/4 Slogi na poskus.html",
+      "velikost": 49848,
+      "interaktivno": true
+     },
+     {
+      "ime": "Slogi v Wordu",
+      "vrsta": "html",
+      "pot": "gradiva/racunalnistvo-6/2026-11-05 6. ura Naslovi odstavki slogi/5 Slogi v Wordu.html",
+      "velikost": 50856,
+      "interaktivno": true
+     },
+     {
+      "ime": "Zapis v zvezek",
+      "vrsta": "html",
+      "pot": "gradiva/racunalnistvo-6/2026-11-05 6. ura Naslovi odstavki slogi/6 Zapis v zvezek.html",
+      "velikost": 48834,
+      "interaktivno": true
+     },
+     {
+      "ime": "Kviz",
+      "vrsta": "kviz",
+      "kviz": "naslovi-in-slogi"
+     },
+     {
+      "ime": "Izziv kazalo z enim klikom",
+      "vrsta": "html",
+      "pot": "gradiva/racunalnistvo-6/2026-11-05 6. ura Naslovi odstavki slogi/8 Izziv kazalo z enim klikom.html",
+      "velikost": 50279,
+      "interaktivno": true
+     }
+    ]
+   },
+   {
     "ime": "3. ura Tipkanje in postevanka",
     "vrsta": "ura",
     "datum": "2026-10-23T08:00:00+02:00",
@@ -165,28 +227,28 @@
       "ime": "Ogrevanje osnovna vrsta",
       "vrsta": "html",
       "pot": "gradiva/racunalnistvo-6/2026-10-23 3. ura Tipkanje in postevanka/2 Ogrevanje osnovna vrsta.html",
-      "velikost": 44349,
+      "velikost": 49375,
       "interaktivno": true
      },
      {
       "ime": "Stevilke na tipkovnici",
       "vrsta": "html",
       "pot": "gradiva/racunalnistvo-6/2026-10-23 3. ura Tipkanje in postevanka/3 Stevilke na tipkovnici.html",
-      "velikost": 45032,
+      "velikost": 50058,
       "interaktivno": true
      },
      {
       "ime": "Postevanka s tipkanjem",
       "vrsta": "html",
       "pot": "gradiva/racunalnistvo-6/2026-10-23 3. ura Tipkanje in postevanka/4 Postevanka s tipkanjem.html",
-      "velikost": 44608,
+      "velikost": 49634,
       "interaktivno": true
      },
      {
       "ime": "Zapis v zvezek",
       "vrsta": "html",
       "pot": "gradiva/racunalnistvo-6/2026-10-23 3. ura Tipkanje in postevanka/5 Zapis v zvezek.html",
-      "velikost": 43827,
+      "velikost": 48853,
       "interaktivno": true
      },
      {
@@ -198,7 +260,7 @@
       "ime": "Izziv vsa postevanka",
       "vrsta": "html",
       "pot": "gradiva/racunalnistvo-6/2026-10-23 3. ura Tipkanje in postevanka/7 Izziv vsa postevanka.html",
-      "velikost": 43764,
+      "velikost": 48790,
       "interaktivno": true
      }
     ]
@@ -236,28 +298,28 @@
       "ime": "Kaj je algoritem",
       "vrsta": "html",
       "pot": "gradiva/racunalnistvo-6-9/2026-10-23 7. ura Zapis algoritma/2 Kaj je algoritem.html",
-      "velikost": 34100,
+      "velikost": 51078,
       "interaktivno": true
      },
      {
       "ime": "Program za mrežo",
       "vrsta": "html",
       "pot": "gradiva/racunalnistvo-6-9/2026-10-23 7. ura Zapis algoritma/3 Program za mrežo.html",
-      "velikost": 35120,
+      "velikost": 52098,
       "interaktivno": true
      },
      {
       "ime": "Diagram poteka",
       "vrsta": "html",
       "pot": "gradiva/racunalnistvo-6-9/2026-10-23 7. ura Zapis algoritma/4 Diagram poteka.html",
-      "velikost": 33822,
+      "velikost": 50800,
       "interaktivno": true
      },
      {
       "ime": "Zapis v zvezek",
       "vrsta": "html",
       "pot": "gradiva/racunalnistvo-6-9/2026-10-23 7. ura Zapis algoritma/5 Zapis v zvezek.html",
-      "velikost": 196518,
+      "velikost": 213496,
       "interaktivno": true
      },
      {
@@ -269,7 +331,7 @@
       "ime": "Izziv Najdi največje",
       "vrsta": "html",
       "pot": "gradiva/racunalnistvo-6-9/2026-10-23 7. ura Zapis algoritma/7 Izziv Najdi največje.html",
-      "velikost": 32907,
+      "velikost": 49885,
       "interaktivno": true
      }
     ]
@@ -316,5 +378,5 @@
   "slovenscina-3": [],
   "svetovni-popotniki": []
  },
- "posodobljeno": "2026-11-05T08:13:19+00:00"
+ "posodobljeno": "2026-11-05T08:33:50+00:00"
 }
