@@ -87,6 +87,14 @@
   .tb.h1 { font-size: 1.05rem; } .tb.h2 { font-size: .95rem; } .tb.p { font-weight: 600; }
   .tb.b { font-weight: 900; } .tb.i { font-style: italic; font-family: Georgia, serif; } .tb.u { text-decoration: underline; }
   .ed-bar select { width: auto; min-height: 40px; padding: 0 10px; border-radius: 10px; font-weight: 700; }
+  .tb.a { padding: 0 8px; } .tb.a svg { display: block; }
+  .barva { position: relative; }
+  .tb.c { font-weight: 900; font-size: 1.05rem; padding: 0 10px; line-height: 1; display: flex; flex-direction: column; align-items: center; justify-content: center; gap: 2px; }
+  .tb.c i { display: block; width: 20px; height: 5px; border-radius: 3px; background: currentColor; }
+  .paleta { position: absolute; top: calc(100% + 6px); left: 0; z-index: 10; background: #fff; border: 1.5px solid var(--line-2); border-radius: 14px; box-shadow: var(--shadow); padding: 10px; display: grid; grid-template-columns: repeat(5, 34px); gap: 8px; }
+  .paleta button { width: 34px; height: 34px; border-radius: 50%; border: 2px solid rgba(0,0,0,.12); cursor: pointer; }
+  .paleta button:hover, .paleta button.on { outline: 3px solid #0ea5e9; outline-offset: 2px; }
+  .paleta .brez { grid-column: 1 / -1; width: auto; height: 34px; border-radius: 10px; background: #fff; font-weight: 800; }
   .status { margin-left: auto; font-weight: 800; font-size: .9rem; color: var(--muted); white-space: nowrap; }
   .status.ok { color: var(--good); } .status.bad { color: var(--bad); }
   .ed-title { width: 100%; border: 0 !important; border-bottom: 1.5px dashed var(--line-2) !important; border-radius: 0 !important; padding: 18px 24px 10px !important; font-size: 1.6rem; font-weight: 900; outline: none; }
@@ -145,6 +153,7 @@
     body { background: #fff; }
     body > *:not(#tisk) { display: none !important; }
     #tisk { display: block; }
+    .stran { -webkit-print-color-adjust: exact; print-color-adjust: exact; }
     .stran { break-after: page; page-break-after: always; font-family: 'Nunito', Arial, sans-serif; color: #000; }
     .stran:last-child { break-after: auto; page-break-after: auto; }
     .stran .glava { display: flex; justify-content: space-between; border-bottom: 2px solid #0369a1; padding-bottom: 4px; margin-bottom: 12px; font-size: 11pt; color: #444; }
@@ -224,7 +233,14 @@ const PREDOGLED = 'pisanje_predogled';
 const Size = Quill.import('attributors/style/size');
 Size.whitelist = ['14px', '24px', '32px'];
 Quill.register(Size, true);
-const FORMATI = ['header', 'bold', 'italic', 'underline', 'size'];
+Quill.register(Quill.import('attributors/style/align'), true);
+Quill.register(Quill.import('attributors/style/color'), true);
+const FORMATI = ['header', 'bold', 'italic', 'underline', 'size', 'align', 'color'];
+const BARVE = [['#e11d48', 'rdeča'], ['#ea580c', 'oranžna'], ['#ca8a04', 'rumena'], ['#16a34a', 'zelena'], ['#0d9488', 'turkizna'],
+  ['#2563eb', 'modra'], ['#7c3aed', 'vijolična'], ['#db2777', 'roza'], ['#92400e', 'rjava'], ['#6b7280', 'siva']];
+const crte = ys => `<svg width="22" height="22" viewBox="0 0 22 22" aria-hidden="true">${ys.map(([x, w], i) => `<rect x="${x}" y="${4 + i * 4}" width="${w}" height="2.2" rx="1.1" fill="currentColor"/>`).join('')}</svg>`;
+const PORAVNAVE = [['', 'Poravnaj levo', crte([[2, 18], [2, 12], [2, 16], [2, 10]])], ['center', 'Poravnaj na sredino', crte([[2, 18], [5, 12], [3, 16], [6, 10]])],
+  ['right', 'Poravnaj desno', crte([[2, 18], [8, 12], [4, 16], [10, 10]])], ['justify', 'Poravnaj obojestransko', crte([[2, 18], [2, 18], [2, 18], [2, 10]])]];
 const PRAZNO = { ops: [{ insert: '\n' }] };
 
 function prikazi(el, vsebina) {
@@ -247,6 +263,11 @@ function urejevalnik(el, o) {
       <button type="button" class="tb i" data-f="italic" title="Ležeče (Ctrl+I)">L</button>
       <button type="button" class="tb u" data-f="underline" title="Podčrtano (Ctrl+U)">P</button>
       <span class="sep"></span>
+      ${PORAVNAVE.map(([v, t, ik]) => `<button type="button" class="tb a" data-a="${v}" title="${t}" aria-label="${t}">${ik}</button>`).join('')}
+      <span class="sep"></span>
+      <span class="barva"><button type="button" class="tb c" data-barva title="Barva besedila" aria-label="Barva besedila" aria-expanded="false">A<i></i></button>
+        <div class="paleta" data-paleta hidden>${BARVE.map(([b, t]) => `<button type="button" data-c="${b}" style="background:${b}" title="${t}" aria-label="${t}"></button>`).join('')}
+          <button type="button" class="brez" data-c="" title="Črna (brez barve)">⬛ Črna</button></div></span>
       <select data-size title="Velikost pisave" aria-label="Velikost pisave">
         <option value="14px">Mala pisava</option><option value="">Navadna pisava</option>
         <option value="24px">Velika pisava</option><option value="32px">Zelo velika pisava</option>
@@ -330,11 +351,18 @@ function urejevalnik(el, o) {
   // Orodna vrstica
   const $bar = el.querySelector('.ed-bar'), $size = el.querySelector('[data-size]');
   $size.value = '';
+  const $barva = el.querySelector('[data-barva]'), $paleta = el.querySelector('[data-paleta]');
+  const paleta = odpri => { $paleta.hidden = !odpri; $barva.setAttribute('aria-expanded', String(odpri)); };
+  document.addEventListener('mousedown', e => { if (!$paleta.hidden && !e.target.closest('.barva')) paleta(false); });
+  el.addEventListener('keydown', e => { if (e.key === 'Escape' && !$paleta.hidden) { paleta(false); q.focus(); } });
   $bar.addEventListener('mousedown', e => { if (e.target.closest('button')) e.preventDefault(); });
   $bar.addEventListener('click', e => {
     const b = e.target.closest('button'); if (!b || zaklenjeno) return;
+    if (b === $barva) { paleta($paleta.hidden); return; }
     q.focus();
-    if (b.dataset.h != null) q.format('header', b.dataset.h === '0' ? false : Number(b.dataset.h), 'user');
+    if (b.dataset.c != null) { q.format('color', b.dataset.c || false, 'user'); paleta(false); }
+    else if (b.dataset.a != null) q.format('align', b.dataset.a || false, 'user');
+    else if (b.dataset.h != null) q.format('header', b.dataset.h === '0' ? false : Number(b.dataset.h), 'user');
     else if (b.dataset.f) { const f = q.getFormat(); q.format(b.dataset.f, !f[b.dataset.f], 'user'); }
     posodobi();
   });
@@ -345,6 +373,10 @@ function urejevalnik(el, o) {
     $bar.querySelectorAll('[data-h]').forEach(b => b.classList.toggle('on', String(f.header || 0) === b.dataset.h));
     $bar.querySelectorAll('[data-f]').forEach(b => b.classList.toggle('on', !!f[b.dataset.f]));
     $size.value = typeof f.size === 'string' ? f.size : '';
+    $bar.querySelectorAll('[data-a]').forEach(b => b.classList.toggle('on', (typeof f.align === 'string' ? f.align : '') === b.dataset.a));
+    const c = typeof f.color === 'string' ? f.color : '';
+    $barva.style.color = c || '';
+    $paleta.querySelectorAll('[data-c]').forEach(b => b.classList.toggle('on', b.dataset.c === c));
   }
   q.on('editor-change', posodobi);
 
