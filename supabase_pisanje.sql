@@ -25,10 +25,22 @@ create table if not exists sola_pis_projekti (
   arhiviran   boolean not null default false, -- učenci ga ne vidijo več
   zaklenjen   boolean not null default false, -- učenci besedilo vidijo, a ga ne morejo spreminjati
   popravi_sam boolean not null default false, -- učitelj popravlja kopijo, učenec popravke vnese sam
+  ucitelj_id  uuid references teachers(id) on delete set null, -- lastnica projekta (NULL = vsi učitelji)
   ustvarjeno  timestamptz not null default now()
 );
 alter table sola_pis_projekti add column if not exists zaklenjen boolean not null default false;
 alter table sola_pis_projekti add column if not exists popravi_sam boolean not null default false;
+alter table sola_pis_projekti add column if not exists ucitelj_id uuid references teachers(id) on delete set null;
+-- Projekti, nastali pred lastništvom, pripadajo Ninu.
+update sola_pis_projekti set ucitelj_id = (select id from teachers where lower(email) = 'nino.kokalj@os-sempeter.si' limit 1)
+ where ucitelj_id is null;
+
+-- Ime, ki ga učenci vidijo pri projektih učitelja (npr. »Učiteljica Maja«).
+create table if not exists sola_pis_ucitelji (
+  teacher_id uuid primary key references teachers(id) on delete cascade,
+  ime        text not null
+);
+alter table sola_pis_ucitelji enable row level security;
 alter table sola_pis_projekti enable row level security;
 
 create table if not exists sola_pis_besedila (
@@ -78,6 +90,29 @@ returns boolean language sql stable security definer set search_path = public as
             or public.razred_na_dan(s.letnik, s.oddelek, current_date) like p.razred || '%'));
 $$;
 revoke execute on function public._sola_pis_vidi(uuid, uuid) from public, anon, authenticated;
+
+-- Ali je projekt od učitelja s to sejo (projekt brez lastnice je od vseh).
+create or replace function public._sola_pis_lastnik(p_seja uuid, p_projekt uuid)
+returns boolean language sql stable security definer set search_path = public as $$
+  select exists (select 1 from sola_pis_projekti p
+                  where p.id = p_projekt and public._sola_ucitelj(p_seja) is not null
+                    and (p.ucitelj_id is null or p.ucitelj_id = public._sola_ucitelj(p_seja)));
+$$;
+revoke execute on function public._sola_pis_lastnik(uuid, uuid) from public, anon, authenticated;
+
+create or replace function public._sola_pis_lastnik_b(p_seja uuid, p_besedilo uuid)
+returns boolean language sql stable security definer set search_path = public as $$
+  select public._sola_pis_lastnik(p_seja, (select projekt_id from sola_pis_besedila where id = p_besedilo));
+$$;
+revoke execute on function public._sola_pis_lastnik_b(uuid, uuid) from public, anon, authenticated;
+
+-- Ime učitelja, kot ga vidijo učenci.
+create or replace function public._sola_pis_ucitelj_ime(p_teacher uuid)
+returns text language sql stable security definer set search_path = public as $$
+  select coalesce((select u.ime from sola_pis_ucitelji u where u.teacher_id = p_teacher),
+                  (select t.username from teachers t where t.id = p_teacher));
+$$;
+revoke execute on function public._sola_pis_ucitelj_ime(uuid) from public, anon, authenticated;
 
 -- Ime učenca, kot ga vidi učitelj.
 create or replace function public._sola_pis_ime(p_student uuid)
@@ -132,6 +167,7 @@ create or replace function public.sola_pis_moji(p_student uuid)
 returns jsonb language sql stable security definer set search_path = public as $$
   select coalesce(jsonb_agg(jsonb_build_object(
            'id', p.id, 'ime', p.ime, 'opis', p.opis, 'presoja', p.presoja, 'zaklenjen', p.zaklenjen, 'popravi_sam', p.popravi_sam, 'ustvarjeno', p.ustvarjeno,
+           'ucitelj', public._sola_pis_ucitelj_ime(p.ucitelj_id),
            'besedilo', (select jsonb_build_object('id', b.id, 'naslov', b.naslov, 'besed', b.besed,
                                                   'posodobljeno', b.posodobljeno, 'urejal', b.urejal,
                                                   'komentar', b.komentar is not null and b.komentar <> '',
@@ -159,7 +195,8 @@ begin
   on conflict (projekt_id, student_id) do nothing;
   select * into b from sola_pis_besedila where projekt_id = p_projekt and student_id = p_student;
   return jsonb_build_object(
-    'projekt', jsonb_build_object('id', p.id, 'ime', p.ime, 'opis', p.opis, 'presoja', p.presoja, 'zaklenjen', p.zaklenjen, 'popravi_sam', p.popravi_sam),
+    'projekt', jsonb_build_object('id', p.id, 'ime', p.ime, 'opis', p.opis, 'presoja', p.presoja, 'zaklenjen', p.zaklenjen, 'popravi_sam', p.popravi_sam,
+                                  'ucitelj', public._sola_pis_ucitelj_ime(p.ucitelj_id)),
     'id', b.id, 'naslov', b.naslov, 'vsebina', b.vsebina, 'verzija', b.verzija, 'urejal', b.urejal,
     'komentar', b.komentar, 'komentar_cas', b.komentar_cas, 'posodobljeno', b.posodobljeno, 'popravki', b.popravki,
     'presoje', (select coalesce(jsonb_agg(jsonb_build_object('zvezda1', r.zvezda1, 'zvezda2', r.zvezda2,
@@ -223,7 +260,8 @@ begin
             'besedil', (select count(*) from sola_pis_besedila b where b.projekt_id = p.id and b.besed > 0),
             'posodobljeno', (select max(b.posodobljeno) from sola_pis_besedila b where b.projekt_id = p.id)
           ) order by p.arhiviran, p.ustvarjeno desc), '[]'::jsonb)
-     from sola_pis_projekti p);
+     from sola_pis_projekti p
+    where p.ucitelj_id is null or p.ucitelj_id = public._sola_ucitelj(p_seja));
 end; $$;
 
 -- Nov projekt (p_id NULL) ali sprememba imena, opisa, razreda.
@@ -235,14 +273,15 @@ begin
   if btrim(coalesce(p_ime, '')) = '' or length(p_ime) > 120 or length(coalesce(p_opis, '')) > 2000
      or length(coalesce(p_razred, '')) > 10 then return null; end if;
   if p_id is null then
-    insert into sola_pis_projekti (ime, opis, razred)
-    values (btrim(p_ime), nullif(btrim(coalesce(p_opis, '')), ''), nullif(upper(btrim(coalesce(p_razred, ''))), ''))
+    insert into sola_pis_projekti (ime, opis, razred, ucitelj_id)
+    values (btrim(p_ime), nullif(btrim(coalesce(p_opis, '')), ''), nullif(upper(btrim(coalesce(p_razred, ''))), ''),
+            public._sola_ucitelj(p_seja))
     returning id into i;
   else
     update sola_pis_projekti
        set ime = btrim(p_ime), opis = nullif(btrim(coalesce(p_opis, '')), ''),
            razred = nullif(upper(btrim(coalesce(p_razred, ''))), '')
-     where id = p_id returning id into i;
+     where id = p_id and public._sola_pis_lastnik(p_seja, p_id) returning id into i;
   end if;
   return i;
 end; $$;
@@ -251,7 +290,7 @@ create or replace function public.sola_pis_u_arhiviraj(p_seja uuid, p_id uuid, p
 returns boolean language plpgsql security definer set search_path = public as $$
 begin
   if public._sola_ucitelj(p_seja) is null then return false; end if;
-  update sola_pis_projekti set arhiviran = coalesce(p_arhiviran, true) where id = p_id;
+  update sola_pis_projekti set arhiviran = coalesce(p_arhiviran, true) where id = p_id and public._sola_pis_lastnik(p_seja, p_id);
   return found;
 end; $$;
 
@@ -260,8 +299,21 @@ create or replace function public.sola_pis_u_zakleni(p_seja uuid, p_id uuid, p_z
 returns boolean language plpgsql security definer set search_path = public as $$
 begin
   if public._sola_ucitelj(p_seja) is null then return false; end if;
-  update sola_pis_projekti set zaklenjen = coalesce(p_zaklenjen, true) where id = p_id;
+  update sola_pis_projekti set zaklenjen = coalesce(p_zaklenjen, true) where id = p_id and public._sola_pis_lastnik(p_seja, p_id);
   return found;
+end; $$;
+
+-- Ime učitelja za učence: p_ime NULL samo vrne trenutno ime.
+create or replace function public.sola_pis_u_moje_ime(p_seja uuid, p_ime text)
+returns text language plpgsql security definer set search_path = public as $$
+declare t uuid := public._sola_ucitelj(p_seja);
+begin
+  if t is null then return null; end if;
+  if p_ime is not null and btrim(p_ime) <> '' and length(p_ime) <= 80 then
+    insert into sola_pis_ucitelji (teacher_id, ime) values (t, btrim(p_ime))
+    on conflict (teacher_id) do update set ime = excluded.ime;
+  end if;
+  return public._sola_pis_ucitelj_ime(t);
 end; $$;
 
 -- Način popravljanja: false = učitelj popravlja kar v učenčevem besedilu,
@@ -270,7 +322,7 @@ create or replace function public.sola_pis_u_popravi_sam(p_seja uuid, p_id uuid,
 returns boolean language plpgsql security definer set search_path = public as $$
 begin
   if public._sola_ucitelj(p_seja) is null then return false; end if;
-  update sola_pis_projekti set popravi_sam = coalesce(p_vklop, false) where id = p_id;
+  update sola_pis_projekti set popravi_sam = coalesce(p_vklop, false) where id = p_id and public._sola_pis_lastnik(p_seja, p_id);
   return found;
 end; $$;
 
@@ -278,7 +330,7 @@ create or replace function public.sola_pis_u_izbrisi_projekt(p_seja uuid, p_id u
 returns boolean language plpgsql security definer set search_path = public as $$
 begin
   if public._sola_ucitelj(p_seja) is null then return false; end if;
-  delete from sola_pis_projekti where id = p_id;
+  delete from sola_pis_projekti where id = p_id and public._sola_pis_lastnik(p_seja, p_id);
   return found;
 end; $$;
 
@@ -305,7 +357,7 @@ begin
                                            where x.projekt_id = p.id and r.ocenjevalec = b.student_id)
                          )), '[]'::jsonb)
                          from sola_pis_besedila b where b.projekt_id = p.id))
-     from sola_pis_projekti p where p.id = p_id);
+     from sola_pis_projekti p where p.id = p_id and public._sola_pis_lastnik(p_seja, p_id));
 end; $$;
 
 -- Celotna besedila (enega ali več) z imeni, komentarjem in presojami — za ogled in izvoz.
@@ -323,7 +375,7 @@ begin
                           'zvezda2', r.zvezda2, 'zelja', r.zelja, 'oddano', r.oddano) order by r.oddano nulls last), '[]'::jsonb)
                         from sola_pis_presoje r where r.besedilo_id = b.id)
           )), '[]'::jsonb)
-     from sola_pis_besedila b where b.id = any(p_ids));
+     from sola_pis_besedila b where b.id = any(p_ids) and public._sola_pis_lastnik(p_seja, b.projekt_id));
 end; $$;
 
 create or replace function public.sola_pis_u_shrani(p_seja uuid, p_id uuid, p_verzija int,
@@ -331,6 +383,7 @@ create or replace function public.sola_pis_u_shrani(p_seja uuid, p_id uuid, p_ve
 returns jsonb language plpgsql security definer set search_path = public as $$
 begin
   if public._sola_ucitelj(p_seja) is null then return jsonb_build_object('ok', false, 'napaka', 'SEJA'); end if;
+  if not public._sola_pis_lastnik_b(p_seja, p_id) then return jsonb_build_object('ok', false, 'napaka', 'NI'); end if;
   return public._sola_pis_zapisi(p_id, p_verzija, p_naslov, p_vsebina, p_besedilo, 'ucitelj');
 end; $$;
 
@@ -342,6 +395,7 @@ returns jsonb language plpgsql security definer set search_path = public as $$
 declare v int;
 begin
   if public._sola_ucitelj(p_seja) is null then return jsonb_build_object('ok', false, 'napaka', 'SEJA'); end if;
+  if not public._sola_pis_lastnik_b(p_seja, p_id) then return jsonb_build_object('ok', false, 'napaka', 'NI'); end if;
   if jsonb_typeof(p_vsebina) <> 'object' or length(p_vsebina::text) > 400000
      or length(coalesce(p_besedilo, '')) > 100000 or length(coalesce(p_naslov, '')) > 200
      or (p_nov is not null and jsonb_typeof(p_nov) <> 'object') then
@@ -365,7 +419,7 @@ end; $$;
 create or replace function public.sola_pis_u_komentar(p_seja uuid, p_id uuid, p_komentar text)
 returns boolean language plpgsql security definer set search_path = public as $$
 begin
-  if public._sola_ucitelj(p_seja) is null or length(coalesce(p_komentar, '')) > 5000 then return false; end if;
+  if not public._sola_pis_lastnik_b(p_seja, p_id) or length(coalesce(p_komentar, '')) > 5000 then return false; end if;
   update sola_pis_besedila
      set komentar = nullif(btrim(coalesce(p_komentar, '')), ''), komentar_cas = now()
    where id = p_id;
@@ -376,7 +430,7 @@ end; $$;
 create or replace function public.sola_pis_u_presoja_pocisti(p_seja uuid, p_besedilo uuid, p_ocenjevalec uuid)
 returns boolean language plpgsql security definer set search_path = public as $$
 begin
-  if public._sola_ucitelj(p_seja) is null then return false; end if;
+  if not public._sola_pis_lastnik_b(p_seja, p_besedilo) then return false; end if;
   update sola_pis_presoje set zvezda1 = null, zvezda2 = null, zelja = null, oddano = null
    where besedilo_id = p_besedilo and ocenjevalec = p_ocenjevalec;
   return found;
@@ -393,7 +447,7 @@ returns jsonb language plpgsql security definer set search_path = public as $$
 declare n int; k int; je boolean;
 begin
   if public._sola_ucitelj(p_seja) is null then return null; end if;
-  if not exists (select 1 from sola_pis_projekti where id = p_id) then return null; end if;
+  if not public._sola_pis_lastnik(p_seja, p_id) then return null; end if;
   if not coalesce(p_vklop, false) then
     update sola_pis_projekti set presoja = false where id = p_id;
     return jsonb_build_object('presoja', false);
@@ -434,6 +488,7 @@ grant execute on function public.sola_pis_u_projekt_shrani(uuid, uuid, text, tex
 grant execute on function public.sola_pis_u_arhiviraj(uuid, uuid, boolean) to anon;
 grant execute on function public.sola_pis_u_zakleni(uuid, uuid, boolean) to anon;
 grant execute on function public.sola_pis_u_popravi_sam(uuid, uuid, boolean) to anon;
+grant execute on function public.sola_pis_u_moje_ime(uuid, text) to anon;
 grant execute on function public.sola_pis_u_popravek(uuid, uuid, int, jsonb, text, jsonb, text) to anon;
 grant execute on function public.sola_pis_u_izbrisi_projekt(uuid, uuid) to anon;
 grant execute on function public.sola_pis_u_projekt(uuid, uuid) to anon;

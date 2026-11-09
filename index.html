@@ -554,13 +554,16 @@ const PREDMETI = [
       { id: 'racunalnistvo-4',   ime: 'Računalništvo 4',   kratko: '4. razred',    koda: 'RAČ 4',   c1: '#0ea5e9', c2: '#6366f1', emoji: '🖱️', opis: '4. razred',
         povezave: [
           { ime: 'Brihta – matematika', opis: 'Vaje iz poštevanke in računanja', url: 'https://brihta.github.io/matematika/', emoji: '🦉', c1: '#6c5ce7', c2: '#a855f7' },
-          { ime: 'Pisalnica', opis: 'Piši, popravi, zablesti!', url: 'pisanje-besedil/', emoji: '✍️', c1: '#0ea5e9', c2: '#22c55e', samoUcitelj: true },
         ] },
       { id: 'racunalnistvo-5',   ime: 'Računalništvo 5',   kratko: '5. razred',    koda: 'RAČ 5',   c1: '#a855f7', c2: '#ec4899', emoji: '🧩', opis: '5. razred' },
       { id: 'racunalnistvo-6',   ime: 'Računalništvo 6',   kratko: '6. razred',    koda: 'RAČ 6',   c1: '#10b981', c2: '#0ea5e9', emoji: '🤖', opis: '6. razred' },
       { id: 'racunalnistvo-6-9', ime: 'Računalništvo 6–9', kratko: '6.–9. razred', koda: 'RAČ 6–9', c1: '#f97316', c2: '#e11d48', emoji: '🧑‍💻', opis: 'od 6. do 9. razreda' },
     ] },
   { id: 'fleksi',             ime: 'Fleksi',                   koda: '3. skupina',          c1: '#f43f5e', c2: '#a855f7', emoji: '🤸' },
+];
+/* Orodja: lastne kartice na glavni strani (vodijo na svojo stran). samoUcitelj = vidijo jo le učitelji in testni učenci. */
+const ORODJA = [
+  { ime: 'Pisalnica', opis: 'Piši, popravi, zablesti!', url: 'pisanje-besedil/', emoji: '✍️', c1: '#0ea5e9', c2: '#22c55e', samoUcitelj: true },
 ];
 const VSI = [];
 PREDMETI.forEach(p => { if (p.otroci) p.otroci.forEach(o => { o.stars = p; VSI.push(o); }); else VSI.push(p); });
@@ -750,7 +753,7 @@ function stranNadzorna() {
       <div class="owl" aria-hidden="true"><div class="bubble">${esc(sporocilo)}</div><img src="brihta.png" alt=""></div>
     </section>
     <div class="sec-h"><h2>Tvoji predmeti</h2></div>
-    <div class="cards">${PREDMETI.map(kartica).join('')}</div>`;
+    <div class="cards">${PREDMETI.map(kartica).join('')}${ORODJA.filter(vidi).map(orodjeKartica).join('')}</div>`;
 }
 
 function stranSkupina(p) {
@@ -766,10 +769,13 @@ function stranSkupina(p) {
 
 /* Učenčevi računi, ki vidijo tudi povezave »samoUcitelj« (učiteljev testni račun). */
 const TESTNI_UCENCI = ['pik5'];
+const vidi = l => !l.samoUcitelj || ucitelj || (ucenec && TESTNI_UCENCI.includes(ucenec.username));
+const orodjeKartica = o => `<a class="card" style="${barve(o)}" href="${esc(o.url)}"><div class="art"><span class="emoji" aria-hidden="true">${o.emoji}</span></div>
+    <div class="card-body"><div><h3>${esc(o.ime)}</h3><p>${esc(o.opis)}</p></div>${PUSCICA}</div></a>`;
 /* Razdelek »Uporabne povezave« (skupina ali posamezen predmet z lastnostjo povezave). */
 function povezaveHtml(p) {
   /* samoUcitelj: povezava je še v pripravi, vidi jo samo prijavljen učitelj. */
-  const povezave = (p.povezave || []).filter(l => !l.samoUcitelj || ucitelj || (ucenec && TESTNI_UCENCI.includes(ucenec.username)));
+  const povezave = (p.povezave || []).filter(vidi);
   return povezave.length ? `<div class="sec-h" style="margin-top:34px"><h2>Uporabne povezave</h2></div>
     <div class="links">${povezave.map(l => `<a class="link" style="${barve(l)}" href="${esc(l.url)}" target="_blank" rel="noopener">
       <span class="ln-art">${l.slika ? `<img src="${esc(l.slika)}" alt="">` : `<span aria-hidden="true">${l.emoji}</span>`}</span>
@@ -1536,6 +1542,7 @@ function izbiraZivali() {
 function posodobiNav() {
   document.getElementById('nav-avatar').textContent = ucitelj ? '👨‍🏫' : ucenec ? (ucenec.emoji || '🦉') : '👤';
   document.getElementById('nav-name').textContent = ucitelj ? ucitelj.username : ucenec ? ucenec.username : 'Prijava';
+  napolniPredal();
 }
 
 /* ?prijava=pisanje: odpre prijavo in po njej vrne na podstran. */
@@ -1668,7 +1675,8 @@ function napolniPredal() {
   document.getElementById('tray-list').innerHTML = PREDMETI.map(p => p.otroci
     ? `<li><a href="#/${p.id}" style="${barve(p)}"><span class="ic">${p.emoji}</span><span>${esc(p.ime)}<small>${p.otroci.length} razredi</small></span></a></li>` +
       p.otroci.map(o => `<li class="sub"><a href="#/p/${o.id}" style="${barve(o)}"><span class="ic">${o.emoji}</span><span>${o.emoji} ${esc(o.kratko)}</span></a></li>`).join('')
-    : `<li><a href="#/p/${p.id}" style="${barve(p)}"><span class="ic">${p.emoji}</span><span>${esc(p.ime)}<small>${esc(p.koda)}</small></span></a></li>`).join('');
+    : `<li><a href="#/p/${p.id}" style="${barve(p)}"><span class="ic">${p.emoji}</span><span>${esc(p.ime)}<small>${esc(p.koda)}</small></span></a></li>`).join('')
+    + ORODJA.filter(vidi).map(o => `<li><a href="${esc(o.url)}" style="${barve(o)}"><span class="ic">${o.emoji}</span><span>${esc(o.ime)}<small>${esc(o.opis)}</small></span></a></li>`).join('');
 }
 const PREDALI = {
   predmeti: [document.getElementById('tray'), document.getElementById('nav-courses')],
