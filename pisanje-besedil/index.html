@@ -3,7 +3,7 @@
 <head>
 <meta charset="utf-8">
 <meta name="viewport" content="width=device-width, initial-scale=1">
-<title>Pisalnica — Brihta</title>
+<title>Moja besedila — Brihta</title>
 <link rel="icon" href="../brihta.png">
 <link rel="preconnect" href="https://fonts.googleapis.com">
 <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
@@ -200,7 +200,7 @@
 </head>
 <body spellcheck="false">
 <header class="top"><div class="top-in">
-  <a class="brand" href="../"><img src="../brihta.png" alt=""> Brihta <span>· Pisalnica</span></a>
+  <a class="brand" href="../"><img src="../brihta.png" alt=""> Brihta <span>· Moja besedila</span></a>
   <button class="who" id="who" type="button" hidden aria-haspopup="dialog" aria-controls="racun"></button>
   <a class="who" id="prijava" href="../?prijava=pisanje" hidden>Prijava</a>
 </div></header>
@@ -549,7 +549,7 @@ function zapustiUrejevalnik() { if (aktivni) { aktivni.unici(); aktivni = null; 
 async function ucenecDomov() {
   const r = await rpc('sola_pis_moji', { p_student: ucenec.id });
   if (r === NEDOSEGLJIVO || !Array.isArray(r)) return napaka(NI_POVEZAVE);
-  $main.innerHTML = `<section class="hero"><h1>✍️ Pisalnica</h1><p>Izberi projekt in piši. Besedilo se samo shranjuje.</p></section>
+  $main.innerHTML = `<section class="hero"><h1>✍️ Moja besedila</h1><p>Izberi projekt in piši. Besedilo se samo shranjuje.</p></section>
     ${r.length ? `<div class="cards">${r.map(p => {
       const b = p.besedilo, z = p.naloge;
       return `<div class="card">
@@ -645,7 +645,7 @@ async function uciteljDomov() {
   const [r, mojeIme] = await Promise.all([rpc('sola_pis_u_projekti', { p_seja: S() }), rpc('sola_pis_u_moje_ime', { p_seja: S(), p_ime: null })]);
   if (r === NEDOSEGLJIVO) return napaka(NI_POVEZAVE);
   if (!Array.isArray(r)) return napaka('Prijava je potekla. <a href="../?prijava=pisanje">Prijavi se znova</a>.');
-  $main.innerHTML = `<section class="hero"><h1>✍️ Pisalnica</h1><p>Projekti, besedila učencev, vrstniška presoja in izvoz v PDF.</p></section>
+  $main.innerHTML = `<section class="hero"><h1>✍️ Moja besedila</h1><p>Projekti, besedila učencev, vrstniška presoja in izvoz v PDF.</p></section>
     ${ZA_UCENCE ? '' : '<div class="note warn">🔒 Stran je zaenkrat vidna samo učiteljem. Učenci je ne vidijo.</div>'}
     <div class="panel">
       <div class="field" style="margin:0"><label for="moje-ime">👩‍🏫 Vaše ime, ki ga vidijo učenci pri vaših projektih</label>
@@ -927,7 +927,7 @@ async function izvozi(p, ids, sKomentarjem, sPresojami) {
 
 /* ═══════════════════ USMERJANJE ═══════════════════ */
 function prijavaPotrebna(besedilo) {
-  $main.innerHTML = `<section class="hero"><h1>✍️ Pisalnica</h1><p>${besedilo}</p></section>
+  $main.innerHTML = `<section class="hero"><h1>✍️ Moja besedila</h1><p>${besedilo}</p></section>
     <div class="panel" style="text-align:center"><a class="btn btn-go" href="../?prijava=pisanje">Prijava na Brihti</a></div>`;
 }
 function usmeri() {
@@ -942,7 +942,7 @@ function usmeri() {
   }
   if (ucenec) {
     if (!ZA_UCENCE && ls.get(PREDOGLED) !== '1' && !TESTNI_UCENCI.includes(ucenec.username)) {
-      $main.innerHTML = '<section class="hero"><h1>✍️ Pisalnica</h1><p>Ta stran še ni pripravljena. Kmalu!</p></section>';
+      $main.innerHTML = '<section class="hero"><h1>✍️ Moja besedila</h1><p>Ta stran še ni pripravljena. Kmalu!</p></section>';
       return;
     }
     if (d[0] === 'b' && d[1]) return ucenecPisi(d[1]);
