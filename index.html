@@ -559,12 +559,7 @@ const PREDMETI = [
       { id: 'racunalnistvo-6',   ime: 'Računalništvo 6',   kratko: '6. razred',    koda: 'RAČ 6',   c1: '#10b981', c2: '#0ea5e9', emoji: '🤖', opis: '6. razred' },
       { id: 'racunalnistvo-6-9', ime: 'Računalništvo 6–9', kratko: '6.–9. razred', koda: 'RAČ 6–9', c1: '#f97316', c2: '#e11d48', emoji: '🧑‍💻', opis: 'od 6. do 9. razreda' },
     ] },
-  { id: 'gasilci',            ime: 'Gasilci',                  koda: 'Interesna dejavnost', c1: '#ef4444', c2: '#f97316', emoji: '🚒' },
-  { id: 'rokodelnica',        ime: 'Rokodelnica',              koda: 'Interesna dejavnost', c1: '#f59e0b', c2: '#f43f5e', emoji: '🧶' },
-  { id: 'svetovni-popotniki', ime: 'Svetovni popotniki',       koda: 'Interesna dejavnost', c1: '#14b8a6', c2: '#0ea5e9', emoji: '🌍' },
-  { id: 'matematika-3',       ime: 'Matematika – 3. skupina',  koda: 'MAT · 3. skupina',    c1: '#f43f5e', c2: '#a855f7', emoji: '🔢' },
-  { id: 'slovenscina-3',      ime: 'Slovenščina – 3. skupina', koda: 'SLJ · 3. skupina',    c1: '#8b5cf6', c2: '#6366f1', emoji: '📖' },
-  { id: 'anglescina-3',       ime: 'Angleščina – 3. skupina',  koda: 'ANG · 3. skupina',    c1: '#06b6d4', c2: '#22c55e', emoji: '💬' },
+  { id: 'fleksi',             ime: 'Fleksi',                   koda: '3. skupina',          c1: '#f43f5e', c2: '#a855f7', emoji: '🤸' },
 ];
 const VSI = [];
 PREDMETI.forEach(p => { if (p.otroci) p.otroci.forEach(o => { o.stars = p; VSI.push(o); }); else VSI.push(p); });

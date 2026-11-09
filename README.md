@@ -17,12 +17,7 @@ Vsak predmet ima svojo mapo v `gradiva/`:
 | `gradiva/racunalnistvo-5` | Računalništvo 5 |
 | `gradiva/racunalnistvo-6` | Računalništvo 6 |
 | `gradiva/racunalnistvo-6-9` | Računalništvo 6–9 |
-| `gradiva/gasilci` | Gasilci |
-| `gradiva/rokodelnica` | Rokodelnica |
-| `gradiva/svetovni-popotniki` | Svetovni popotniki |
-| `gradiva/matematika-3` | Matematika – 3. skupina |
-| `gradiva/slovenscina-3` | Slovenščina – 3. skupina |
-| `gradiva/anglescina-3` | Angleščina – 3. skupina |
+| `gradiva/fleksi` | Fleksi (3. skupina) |
 
 **Na GitHubu (najhitreje):** odpri mapo predmeta → *Add file* → *Upload files*
 → povleci datoteko → *Commit changes*. Čez 1–2 minuti je gradivo na strani.
