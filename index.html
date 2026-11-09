@@ -563,7 +563,7 @@ const PREDMETI = [
 ];
 /* Orodja: lastne kartice na glavni strani (vodijo na svojo stran). samoUcitelj = vidijo jo le učitelji in testni učenci. */
 const ORODJA = [
-  { ime: 'Moja besedila', opis: 'Pisanje in popravljanje besedil', url: 'pisanje-besedil/', emoji: '✍️', c1: '#0ea5e9', c2: '#22c55e', samoUcitelj: true },
+  { ime: 'Moja besedila', opis: 'Pisanje in popravljanje besedil', url: 'pisanje-besedil/', emoji: '✍️', c1: '#0ea5e9', c2: '#22c55e' },
 ];
 const VSI = [];
 PREDMETI.forEach(p => { if (p.otroci) p.otroci.forEach(o => { o.stars = p; VSI.push(o); }); else VSI.push(p); });
