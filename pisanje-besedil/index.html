@@ -164,7 +164,7 @@
   }
 </style>
 </head>
-<body>
+<body spellcheck="false">
 <header class="top"><div class="top-in">
   <a class="brand" href="../"><img src="../brihta.png" alt=""> Brihta <span>· Pisanje besedil</span></a>
   <button class="who" id="who" type="button" hidden aria-haspopup="dialog" aria-controls="racun"></button>
@@ -280,6 +280,7 @@ function urejevalnik(el, o) {
   const $naslov = el.querySelector('[data-naslov]'), $status = el.querySelector('[data-status]');
   const q = new Quill(el.querySelector('[data-q]'), { formats: FORMATI, modules: { toolbar: false, history: { delay: 800, maxStack: 300, userOnly: true } },
     placeholder: 'Tukaj začni pisati …' });
+  q.root.spellcheck = false;
   const KOPIJA = 'pisanje_kopija_' + o.id;
   let verzija = o.verzija, umazano = false, shranjujem = false, zaklenjeno = false, zadnjic = null;
 
