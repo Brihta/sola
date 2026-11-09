@@ -24,9 +24,11 @@ create table if not exists sola_pis_projekti (
   presoja_n   int not null default 1,         -- koliko tujih besedil prebere vsak
   arhiviran   boolean not null default false, -- učenci ga ne vidijo več
   zaklenjen   boolean not null default false, -- učenci besedilo vidijo, a ga ne morejo spreminjati
+  popravi_sam boolean not null default false, -- učitelj popravlja kopijo, učenec popravke vnese sam
   ustvarjeno  timestamptz not null default now()
 );
 alter table sola_pis_projekti add column if not exists zaklenjen boolean not null default false;
+alter table sola_pis_projekti add column if not exists popravi_sam boolean not null default false;
 alter table sola_pis_projekti enable row level security;
 
 create table if not exists sola_pis_besedila (
@@ -42,6 +44,7 @@ create table if not exists sola_pis_besedila (
   komentar     text,
   komentar_cas timestamptz,
   popravki     jsonb,                         -- zadnji učiteljev popravek: {pred: {naslov, besedilo}, po: {...}, cas}
+                                              -- pri »Popravi sam« še vsebina (učiteljeva kopija) in verzija
   ustvarjeno   timestamptz not null default now(),
   posodobljeno timestamptz not null default now(),
   unique (projekt_id, student_id)
@@ -107,7 +110,8 @@ begin
          -- (ostane ista, dokler učitelj popravlja), »po« je učiteljeva zadnja različica.
          -- Ko učenec nato piše naprej in učitelj spet popravlja, se začne nov krog.
          popravki = case when p_kdo = 'ucitelj' then jsonb_build_object(
-                      'pred', case when urejal = 'ucitelj' and popravki is not null then popravki -> 'pred'
+                      'pred', case when urejal = 'ucitelj' and popravki is not null and popravki -> 'vsebina' is null
+                                   then popravki -> 'pred'
                                    else jsonb_build_object('naslov', naslov, 'besedilo', besedilo) end,
                       'po', jsonb_build_object('naslov', coalesce(p_naslov, ''), 'besedilo', coalesce(p_besedilo, '')),
                       'cas', now())
@@ -127,7 +131,7 @@ revoke execute on function public._sola_pis_zapisi(uuid, int, text, jsonb, text,
 create or replace function public.sola_pis_moji(p_student uuid)
 returns jsonb language sql stable security definer set search_path = public as $$
   select coalesce(jsonb_agg(jsonb_build_object(
-           'id', p.id, 'ime', p.ime, 'opis', p.opis, 'presoja', p.presoja, 'zaklenjen', p.zaklenjen, 'ustvarjeno', p.ustvarjeno,
+           'id', p.id, 'ime', p.ime, 'opis', p.opis, 'presoja', p.presoja, 'zaklenjen', p.zaklenjen, 'popravi_sam', p.popravi_sam, 'ustvarjeno', p.ustvarjeno,
            'besedilo', (select jsonb_build_object('id', b.id, 'naslov', b.naslov, 'besed', b.besed,
                                                   'posodobljeno', b.posodobljeno, 'urejal', b.urejal,
                                                   'komentar', b.komentar is not null and b.komentar <> '',
@@ -155,7 +159,7 @@ begin
   on conflict (projekt_id, student_id) do nothing;
   select * into b from sola_pis_besedila where projekt_id = p_projekt and student_id = p_student;
   return jsonb_build_object(
-    'projekt', jsonb_build_object('id', p.id, 'ime', p.ime, 'opis', p.opis, 'presoja', p.presoja, 'zaklenjen', p.zaklenjen),
+    'projekt', jsonb_build_object('id', p.id, 'ime', p.ime, 'opis', p.opis, 'presoja', p.presoja, 'zaklenjen', p.zaklenjen, 'popravi_sam', p.popravi_sam),
     'id', b.id, 'naslov', b.naslov, 'vsebina', b.vsebina, 'verzija', b.verzija, 'urejal', b.urejal,
     'komentar', b.komentar, 'komentar_cas', b.komentar_cas, 'posodobljeno', b.posodobljeno, 'popravki', b.popravki,
     'presoje', (select coalesce(jsonb_agg(jsonb_build_object('zvezda1', r.zvezda1, 'zvezda2', r.zvezda2,
@@ -215,7 +219,7 @@ begin
   if public._sola_ucitelj(p_seja) is null then return null; end if;
   return (select coalesce(jsonb_agg(jsonb_build_object(
             'id', p.id, 'ime', p.ime, 'opis', p.opis, 'razred', p.razred, 'presoja', p.presoja,
-            'presoja_n', p.presoja_n, 'arhiviran', p.arhiviran, 'zaklenjen', p.zaklenjen, 'ustvarjeno', p.ustvarjeno,
+            'presoja_n', p.presoja_n, 'arhiviran', p.arhiviran, 'zaklenjen', p.zaklenjen, 'popravi_sam', p.popravi_sam, 'ustvarjeno', p.ustvarjeno,
             'besedil', (select count(*) from sola_pis_besedila b where b.projekt_id = p.id and b.besed > 0),
             'posodobljeno', (select max(b.posodobljeno) from sola_pis_besedila b where b.projekt_id = p.id)
           ) order by p.arhiviran, p.ustvarjeno desc), '[]'::jsonb)
@@ -260,6 +264,16 @@ begin
   return found;
 end; $$;
 
+-- Način popravljanja: false = učitelj popravlja kar v učenčevem besedilu,
+-- true = »Popravi sam« (učitelj popravlja kopijo, učenec popravke vnese sam).
+create or replace function public.sola_pis_u_popravi_sam(p_seja uuid, p_id uuid, p_vklop boolean)
+returns boolean language plpgsql security definer set search_path = public as $$
+begin
+  if public._sola_ucitelj(p_seja) is null then return false; end if;
+  update sola_pis_projekti set popravi_sam = coalesce(p_vklop, false) where id = p_id;
+  return found;
+end; $$;
+
 create or replace function public.sola_pis_u_izbrisi_projekt(p_seja uuid, p_id uuid)
 returns boolean language plpgsql security definer set search_path = public as $$
 begin
@@ -275,12 +289,13 @@ begin
   if public._sola_ucitelj(p_seja) is null then return null; end if;
   return (select jsonb_build_object(
             'id', p.id, 'ime', p.ime, 'opis', p.opis, 'razred', p.razred, 'presoja', p.presoja,
-            'presoja_n', p.presoja_n, 'arhiviran', p.arhiviran, 'zaklenjen', p.zaklenjen,
+            'presoja_n', p.presoja_n, 'arhiviran', p.arhiviran, 'zaklenjen', p.zaklenjen, 'popravi_sam', p.popravi_sam,
             'razdeljeno', exists (select 1 from sola_pis_presoje r join sola_pis_besedila b on b.id = r.besedilo_id
                                    where b.projekt_id = p.id),
             'besedila', (select coalesce(jsonb_agg(jsonb_build_object(
                            'id', b.id, 'ucenec', public._sola_pis_ime(b.student_id), 'naslov', b.naslov,
                            'besed', b.besed, 'posodobljeno', b.posodobljeno, 'urejal', b.urejal,
+                           'popravljeno', b.popravki is not null,
                            'komentar', b.komentar is not null and b.komentar <> '',
                            'prejetih', (select count(r.oddano) from sola_pis_presoje r where r.besedilo_id = b.id),
                            'dodeljenih', (select count(*) from sola_pis_presoje r where r.besedilo_id = b.id),
@@ -300,7 +315,7 @@ begin
   if public._sola_ucitelj(p_seja) is null then return null; end if;
   return (select coalesce(jsonb_agg(jsonb_build_object(
             'id', b.id, 'projekt_id', b.projekt_id, 'ucenec', public._sola_pis_ime(b.student_id),
-            'naslov', b.naslov, 'vsebina', b.vsebina, 'verzija', b.verzija, 'urejal', b.urejal,
+            'naslov', b.naslov, 'vsebina', b.vsebina, 'besedilo', b.besedilo, 'verzija', b.verzija, 'urejal', b.urejal,
             'besed', b.besed, 'komentar', b.komentar, 'komentar_cas', b.komentar_cas, 'posodobljeno', b.posodobljeno,
             'popravki', b.popravki,
             'presoje', (select coalesce(jsonb_agg(jsonb_build_object(
@@ -317,6 +332,34 @@ returns jsonb language plpgsql security definer set search_path = public as $$
 begin
   if public._sola_ucitelj(p_seja) is null then return jsonb_build_object('ok', false, 'napaka', 'SEJA'); end if;
   return public._sola_pis_zapisi(p_id, p_verzija, p_naslov, p_vsebina, p_besedilo, 'ucitelj');
+end; $$;
+
+-- »Popravi sam«: učitelj shrani svojo popravljeno kopijo; učenčevo besedilo ostane nespremenjeno.
+-- p_nov = {naslov, besedilo} začne nov krog (učenčeva različica, iz katere je kopija nastala).
+create or replace function public.sola_pis_u_popravek(p_seja uuid, p_id uuid, p_verzija int, p_nov jsonb,
+                                                     p_naslov text, p_vsebina jsonb, p_besedilo text)
+returns jsonb language plpgsql security definer set search_path = public as $$
+declare v int;
+begin
+  if public._sola_ucitelj(p_seja) is null then return jsonb_build_object('ok', false, 'napaka', 'SEJA'); end if;
+  if jsonb_typeof(p_vsebina) <> 'object' or length(p_vsebina::text) > 400000
+     or length(coalesce(p_besedilo, '')) > 100000 or length(coalesce(p_naslov, '')) > 200
+     or (p_nov is not null and jsonb_typeof(p_nov) <> 'object') then
+    return jsonb_build_object('ok', false, 'napaka', 'PREVELIKO');
+  end if;
+  update sola_pis_besedila
+     set popravki = jsonb_build_object(
+           'pred', case when p_nov is not null or popravki is null or popravki -> 'pred' is null
+                        then coalesce(p_nov, jsonb_build_object('naslov', naslov, 'besedilo', besedilo))
+                        else popravki -> 'pred' end,
+           'po', jsonb_build_object('naslov', coalesce(p_naslov, ''), 'besedilo', coalesce(p_besedilo, '')),
+           'vsebina', p_vsebina, 'cas', now(),
+           'verzija', coalesce(p_verzija, 0) + 1),
+         urejal = 'ucitelj'
+   where id = p_id
+  returning (popravki ->> 'verzija')::int into v;
+  if not found then return jsonb_build_object('ok', false, 'napaka', 'NI'); end if;
+  return jsonb_build_object('ok', true, 'verzija', v);
 end; $$;
 
 create or replace function public.sola_pis_u_komentar(p_seja uuid, p_id uuid, p_komentar text)
@@ -390,6 +433,8 @@ grant execute on function public.sola_pis_u_projekti(uuid) to anon;
 grant execute on function public.sola_pis_u_projekt_shrani(uuid, uuid, text, text, text) to anon;
 grant execute on function public.sola_pis_u_arhiviraj(uuid, uuid, boolean) to anon;
 grant execute on function public.sola_pis_u_zakleni(uuid, uuid, boolean) to anon;
+grant execute on function public.sola_pis_u_popravi_sam(uuid, uuid, boolean) to anon;
+grant execute on function public.sola_pis_u_popravek(uuid, uuid, int, jsonb, text, jsonb, text) to anon;
 grant execute on function public.sola_pis_u_izbrisi_projekt(uuid, uuid) to anon;
 grant execute on function public.sola_pis_u_projekt(uuid, uuid) to anon;
 grant execute on function public.sola_pis_u_besedila(uuid, uuid[]) to anon;
