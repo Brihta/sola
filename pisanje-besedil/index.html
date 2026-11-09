@@ -98,6 +98,7 @@
   .status { margin-left: auto; font-weight: 800; font-size: .9rem; color: var(--muted); white-space: nowrap; }
   .status.ok { color: var(--good); } .status.bad { color: var(--bad); }
   .ed-title { width: 100%; border: 0 !important; border-bottom: 1.5px dashed var(--line-2) !important; border-radius: 0 !important; padding: 18px 24px 10px !important; font-size: 1.6rem; font-weight: 900; outline: none; }
+  .ed-wrap.zaklenjen .ed-title { border-radius: 20px 20px 0 0 !important; background: none; color: inherit; }
   .ed-title::placeholder { color: #c7c2b6; }
   .ql-container { font-family: 'Nunito', system-ui, sans-serif; font-size: 18px; }
   .ed-wrap .ql-editor { min-height: 55vh; padding: 16px 24px 40px; line-height: 1.6; }
@@ -289,10 +290,16 @@ function urejevalnik(el, o) {
     q.setContents(vsebina && vsebina.ops ? vsebina : PRAZNO, 'silent');
   }
   nalozi(o.naslov, o.vsebina);
+  if (o.zaklenjeno) {
+    zaklenjeno = true; q.enable(false); $naslov.disabled = true;
+    el.querySelector('.ed-bar').hidden = true;
+    el.querySelector('.ed-wrap').classList.add('zaklenjen');
+  }
   // Neshranjena kopija s tega računalnika (npr. ob izpadu povezave)
   try {
     const k = JSON.parse(ls.get(KOPIJA) || 'null');
-    if (k && k.verzija === verzija) { nalozi(k.naslov, k.vsebina); umazano = true; }
+    if (zaklenjeno) {}
+    else if (k && k.verzija === verzija) { nalozi(k.naslov, k.vsebina); umazano = true; }
     else if (k) ls.del(KOPIJA);
   } catch (e) {}
 
@@ -331,7 +338,7 @@ function urejevalnik(el, o) {
     } else if (r && (r.napaka === 'ZAKLENJENO' || r.napaka === 'NI' || r.napaka === 'SEJA')) {
       zaklenjeno = true; q.enable(false); $naslov.disabled = true;
       stanje('Ni shranjeno', 'bad');
-      obvestilo(r.napaka === 'SEJA' ? 'Prijava je potekla. Prijavi se znova na Brihti.' : 'Tega besedila ne moreš več spreminjati (projekt je zaprt).');
+      obvestilo(r.napaka === 'SEJA' ? 'Prijava je potekla. Prijavi se znova na Brihti.' : '🔒 Učitelj je zaklenil projekt. Besedila zdaj ne moreš spreminjati.');
     } else {
       umazano = true;
       stanje('⚠ Ni povezave — poskušam znova', 'bad');
@@ -387,7 +394,7 @@ function urejevalnik(el, o) {
     unici() { clearInterval(tik); shrani(true); },
   };
   aktivni = ctl;
-  if (!o.vsebina || !(o.vsebina.ops || []).some(op => typeof op.insert === 'string' && op.insert.trim())) setTimeout(() => $naslov.value ? q.focus() : $naslov.focus(), 50);
+  if (!zaklenjeno && (!o.vsebina || !(o.vsebina.ops || []).some(op => typeof op.insert === 'string' && op.insert.trim()))) setTimeout(() => $naslov.value ? q.focus() : $naslov.focus(), 50);
   return ctl;
 }
 document.addEventListener('visibilitychange', () => {
@@ -424,12 +431,13 @@ async function ucenecDomov() {
         ${p.opis ? `<p class="opis">${esc(p.opis)}</p>` : ''}
         <div class="meta">${b && b.besed ? `${esc(b.naslov || 'Brez naslova')} · ${besed(b.besed)} · ${cas(b.posodobljeno)}` : 'Še nisi začel/a pisati.'}</div>
         <div class="tags">
+          ${p.zaklenjen ? '<span class="tag grey">🔒 Zaklenjeno: lahko bereš, ne moreš spreminjati</span>' : ''}
           ${b && b.komentar ? '<span class="tag sun">💬 Učitelj ti je napisal komentar</span>' : ''}
           ${b && b.urejal === 'ucitelj' ? '<span class="tag pink">✏️ Učitelj je popravil besedilo</span>' : ''}
           ${b && b.presoj ? `<span class="tag ok">⭐ Sošolci so ti napisali: ${b.presoj}</span>` : ''}
         </div>
         <div class="row">
-          <a class="btn btn-go" href="#/b/${p.id}">${b && b.besed ? '✏️ Nadaljuj' : '✏️ Začni pisati'}</a>
+          <a class="btn btn-go" href="#/b/${p.id}">${p.zaklenjen ? '📖 Preberi' : b && b.besed ? '✏️ Nadaljuj' : '✏️ Začni pisati'}</a>
           ${z && z.vseh ? `<a class="btn btn-sun" href="#/z/${p.id}">⭐⭐🪄 Presodi sošolce (${z.oddanih}/${z.vseh})</a>` : ''}
         </div>
       </div>`; }).join('')}</div>` : '<div class="panel empty">Zaenkrat ni nobenega projekta. Ko ga bo učitelj pripravil, se bo pokazal tukaj.</div>'}`;
@@ -441,12 +449,13 @@ async function ucenecPisi(pid) {
   if (!r) return napaka('Tega projekta ni ali je zaprt. <a href="#/">Nazaj</a>');
   $main.innerHTML = `<div class="crumb"><a href="#/">← Moji projekti</a></div>
     <section class="hero" style="padding:18px 24px"><h1 style="font-size:1.6rem">${esc(r.projekt.ime)}</h1>${r.projekt.opis ? `<p>${esc(r.projekt.opis)}</p>` : ''}</section>
+    ${r.projekt.zaklenjen ? '<div class="note warn">🔒 Učitelj je zaklenil projekt. Svoje besedilo lahko prebereš, spreminjati ga ne moreš.</div>' : ''}
     ${r.urejal === 'ucitelj' ? '<div class="note info">✏️ Učitelj je popravil tvoje besedilo. Preberi, kaj je spremenil.</div>' : ''}
     ${r.komentar ? `<div class="komentar"><h3>💬 Komentar učitelja <small style="color:var(--muted);font-weight:700">· ${cas(r.komentar_cas)}</small></h3><p>${esc(r.komentar)}</p></div>` : ''}
     <div id="ed"></div>
     ${r.presoje.length ? `<div class="panel"><h2>⭐⭐🪄 Kaj so ti napisali sošolci</h2>${presojeHtml(r.presoje, false)}</div>` : ''}`;
   urejevalnik(document.getElementById('ed'), {
-    id: r.id, naslov: r.naslov, vsebina: r.vsebina, verzija: r.verzija, jaz: 'ucenec', kdoDrug: 'učitelj',
+    id: r.id, naslov: r.naslov, vsebina: r.vsebina, verzija: r.verzija, jaz: 'ucenec', kdoDrug: 'učitelj', zaklenjeno: r.projekt.zaklenjen,
     shrani: (d, keep) => rpc('sola_pis_shrani', { p_student: ucenec.id, p_id: d.id, p_verzija: d.verzija, p_naslov: d.naslov, p_vsebina: d.vsebina, p_besedilo: d.besedilo }, keep),
     osvezi: async () => { const x = await rpc('sola_pis_odpri', { p_student: ucenec.id, p_projekt: pid }); return x && x.id ? x : null; },
   });
@@ -514,6 +523,7 @@ async function uciteljDomov() {
         <span class="tag grey">${p.razred ? esc(p.razred) + '. razred' : 'vsi razredi'}</span>
         <span class="tag">${besedil(p.besedil)}</span>
         ${p.presoja ? '<span class="tag sun">⭐ presoja vklopljena</span>' : ''}
+        ${p.zaklenjen ? '<span class="tag pink">🔒 zaklenjen</span>' : ''}
         ${p.arhiviran ? '<span class="tag grey">🗄️ zaprt</span>' : ''}
       </div>
       ${p.posodobljeno ? `<div class="meta">Zadnja sprememba: ${cas(p.posodobljeno)}</div>` : ''}
@@ -535,7 +545,7 @@ async function uciteljProjekt(pid) {
   const b = p.besedila.slice().sort((x, y) => (x.ucenec.razred || '').localeCompare(y.ucenec.razred || '') || x.ucenec.ime.localeCompare(y.ucenec.ime, 'sl'));
   const izbrani = new Set();
   $main.innerHTML = `<div class="crumb"><a href="#/">← Vsi projekti</a></div>
-    <section class="hero"><h1>${esc(p.ime)}</h1><p>${p.razred ? esc(p.razred) + '. razred · ' : ''}${besedil(b.filter(x => x.besed).length)}${p.arhiviran ? ' · 🗄️ zaprt (učenci ga ne vidijo)' : ''}</p></section>
+    <section class="hero"><h1>${esc(p.ime)}</h1><p>${p.razred ? esc(p.razred) + '. razred · ' : ''}${besedil(b.filter(x => x.besed).length)}${p.zaklenjen ? ' · 🔒 zaklenjen (učenci besedil ne morejo spreminjati)' : ''}${p.arhiviran ? ' · 🗄️ zaprt (učenci ga ne vidijo)' : ''}</p></section>
 
     <div class="panel">
       <h2>⭐⭐🪄 Vrstniška presoja (dve zvezdi in želja)</h2>
@@ -581,6 +591,7 @@ async function uciteljProjekt(pid) {
       <div class="field"><label for="raz">Razred <small>(4 = vsi 4. razredi, 4A = samo 4.A; prazno = vsi)</small></label><input type="text" id="raz" maxlength="10" style="max-width:160px" value="${esc(p.razred || '')}"></div>
       <div class="row">
         <button class="btn btn-go" id="nast">Shrani</button>
+        <button class="btn" id="zakl">${p.zaklenjen ? '🔓 Odkleni projekt' : '🔒 Zakleni projekt (učenci berejo, ne pišejo)'}</button>
         <button class="btn" id="arh">${p.arhiviran ? '↩︎ Ponovno odpri projekt' : '🗄️ Zapri projekt (učenci ga ne vidijo več)'}</button>
         <button class="btn btn-bad" id="brisi">Izbriši projekt</button>
       </div>
@@ -625,6 +636,11 @@ async function uciteljProjekt(pid) {
   g('nast').addEventListener('click', async () => {
     const r = await rpc('sola_pis_u_projekt_shrani', { p_seja: S(), p_id: pid, p_ime: g('ime').value, p_opis: g('opis').value, p_razred: g('raz').value });
     if (typeof r === 'string') uciteljProjekt(pid); else nMsg.textContent = 'Ni shranjeno (ime ne sme biti prazno).';
+  });
+  g('zakl').addEventListener('click', async () => {
+    const r = await rpc('sola_pis_u_zakleni', { p_seja: S(), p_id: pid, p_zaklenjen: !p.zaklenjen });
+    if (r !== true) return alert(NI_POVEZAVE);
+    uciteljProjekt(pid);
   });
   g('arh').addEventListener('click', async () => { await rpc('sola_pis_u_arhiviraj', { p_seja: S(), p_id: pid, p_arhiviran: !p.arhiviran }); uciteljProjekt(pid); });
   g('brisi').addEventListener('click', async () => {
