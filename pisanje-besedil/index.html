@@ -145,6 +145,7 @@
 <header class="top"><div class="top-in">
   <a class="brand" href="../"><img src="../brihta.png" alt=""> Brihta <span>· Pisanje besedil</span></a>
   <span class="who" id="who" hidden></span>
+  <button class="btn btn-sm" id="odjava" type="button" hidden>Odjava</button>
 </div></header>
 <main id="main"><div class="empty">Nalagam …</div></main>
 <div id="tisk"></div>
@@ -678,6 +679,15 @@ window.addEventListener('hashchange', usmeri);
   const who = document.getElementById('who');
   if (ucitelj) { who.hidden = false; who.textContent = '👨‍🏫 ' + ucitelj.username; }
   else if (ucenec) { who.hidden = false; who.textContent = (ucenec.emoji || '🙂') + ' ' + (ucenec.display_name || ucenec.username); }
+  const $odj = document.getElementById('odjava');
+  $odj.hidden = !(ucitelj || ucenec);
+  $odj.addEventListener('click', async () => {
+    $odj.disabled = true;
+    if (aktivni) { await aktivni.shrani(); zapustiUrejevalnik(); }
+    if (ucitelj) await rpc('sola_ucitelj_odjava', { p_seja: ucitelj.seja });
+    ls.del('brihta_profile_v1'); ls.del('sola_ucitelj_v2');
+    location.href = '../';
+  });
   usmeri();
 })();
 </script>
