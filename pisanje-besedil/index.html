@@ -155,6 +155,7 @@
    Dokler ZA_UCENCE ni true, stran vidi samo prijavljen učitelj (in učenčev način
    le v brskalniku, kjer je bil učitelj že prijavljen — za preizkus s testnim učencem). */
 const ZA_UCENCE = false;
+const TESTNI_UCENCI = ['pik5'];   // učiteljev testni učenčev račun: vidi stran že zdaj
 
 const SUPABASE = { url: 'https://ldczgbajbarlgwqzcggh.supabase.co', key: 'sb_publishable_888IYcEb-nSmGO0d67hEwA_rBFuXnv8' };
 const NEDOSEGLJIVO = { nedosegljivo: true };
@@ -656,7 +657,7 @@ function usmeri() {
     return uciteljDomov();
   }
   if (ucenec) {
-    if (!ZA_UCENCE && ls.get(PREDOGLED) !== '1') {
+    if (!ZA_UCENCE && ls.get(PREDOGLED) !== '1' && !TESTNI_UCENCI.includes(ucenec.username)) {
       $main.innerHTML = '<section class="hero"><h1>✍️ Pisanje besedil</h1><p>Ta stran še ni pripravljena. Kmalu!</p></section>';
       return;
     }

@@ -764,10 +764,12 @@ function stranSkupina(p) {
     ${povezaveHtml(p)}`;
 }
 
+/* Učenčevi računi, ki vidijo tudi povezave »samoUcitelj« (učiteljev testni račun). */
+const TESTNI_UCENCI = ['pik5'];
 /* Razdelek »Uporabne povezave« (skupina ali posamezen predmet z lastnostjo povezave). */
 function povezaveHtml(p) {
   /* samoUcitelj: povezava je še v pripravi, vidi jo samo prijavljen učitelj. */
-  const povezave = (p.povezave || []).filter(l => !l.samoUcitelj || ucitelj);
+  const povezave = (p.povezave || []).filter(l => !l.samoUcitelj || ucitelj || (ucenec && TESTNI_UCENCI.includes(ucenec.username)));
   return povezave.length ? `<div class="sec-h" style="margin-top:34px"><h2>Uporabne povezave</h2></div>
     <div class="links">${povezave.map(l => `<a class="link" style="${barve(l)}" href="${esc(l.url)}" target="_blank" rel="noopener">
       <span class="ln-art">${l.slika ? `<img src="${esc(l.slika)}" alt="">` : `<span aria-hidden="true">${l.emoji}</span>`}</span>
