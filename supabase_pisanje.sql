@@ -41,10 +41,12 @@ create table if not exists sola_pis_besedila (
   urejal       text not null default 'ucenec', -- kdo je nazadnje spremenil: 'ucenec' / 'ucitelj'
   komentar     text,
   komentar_cas timestamptz,
+  popravki     jsonb,                         -- zadnji učiteljev popravek: {pred: {naslov, besedilo}, po: {...}, cas}
   ustvarjeno   timestamptz not null default now(),
   posodobljeno timestamptz not null default now(),
   unique (projekt_id, student_id)
 );
+alter table sola_pis_besedila add column if not exists popravki jsonb;
 alter table sola_pis_besedila enable row level security;
 create index if not exists sola_pis_besedila_student on sola_pis_besedila (student_id);
 
@@ -100,7 +102,16 @@ begin
      set naslov = coalesce(p_naslov, ''), vsebina = p_vsebina, besedilo = coalesce(p_besedilo, ''),
          besed = coalesce(array_length(regexp_split_to_array(btrim(coalesce(p_besedilo, '')), '\s+'), 1), 0)
                  * (btrim(coalesce(p_besedilo, '')) <> '')::int,
-         verzija = verzija + 1, urejal = p_kdo, posodobljeno = now()
+         verzija = verzija + 1, urejal = p_kdo, posodobljeno = now(),
+         -- Učiteljev popravek: »pred« je učenčeva različica, preden jo je učitelj začel popravljati
+         -- (ostane ista, dokler učitelj popravlja), »po« je učiteljeva zadnja različica.
+         -- Ko učenec nato piše naprej in učitelj spet popravlja, se začne nov krog.
+         popravki = case when p_kdo = 'ucitelj' then jsonb_build_object(
+                      'pred', case when urejal = 'ucitelj' and popravki is not null then popravki -> 'pred'
+                                   else jsonb_build_object('naslov', naslov, 'besedilo', besedilo) end,
+                      'po', jsonb_build_object('naslov', coalesce(p_naslov, ''), 'besedilo', coalesce(p_besedilo, '')),
+                      'cas', now())
+                    else popravki end
    where id = p_id and verzija = p_verzija
   returning verzija into v;
   if found then return jsonb_build_object('ok', true, 'verzija', v); end if;
@@ -146,7 +157,7 @@ begin
   return jsonb_build_object(
     'projekt', jsonb_build_object('id', p.id, 'ime', p.ime, 'opis', p.opis, 'presoja', p.presoja, 'zaklenjen', p.zaklenjen),
     'id', b.id, 'naslov', b.naslov, 'vsebina', b.vsebina, 'verzija', b.verzija, 'urejal', b.urejal,
-    'komentar', b.komentar, 'komentar_cas', b.komentar_cas, 'posodobljeno', b.posodobljeno,
+    'komentar', b.komentar, 'komentar_cas', b.komentar_cas, 'posodobljeno', b.posodobljeno, 'popravki', b.popravki,
     'presoje', (select coalesce(jsonb_agg(jsonb_build_object('zvezda1', r.zvezda1, 'zvezda2', r.zvezda2,
                                                              'zelja', r.zelja, 'oddano', r.oddano) order by r.oddano), '[]'::jsonb)
                   from sola_pis_presoje r where r.besedilo_id = b.id and r.oddano is not null));
@@ -291,6 +302,7 @@ begin
             'id', b.id, 'projekt_id', b.projekt_id, 'ucenec', public._sola_pis_ime(b.student_id),
             'naslov', b.naslov, 'vsebina', b.vsebina, 'verzija', b.verzija, 'urejal', b.urejal,
             'besed', b.besed, 'komentar', b.komentar, 'komentar_cas', b.komentar_cas, 'posodobljeno', b.posodobljeno,
+            'popravki', b.popravki,
             'presoje', (select coalesce(jsonb_agg(jsonb_build_object(
                           'ocenjevalec', public._sola_pis_ime(r.ocenjevalec), 'zvezda1', r.zvezda1,
                           'zvezda2', r.zvezda2, 'zelja', r.zelja, 'oddano', r.oddano) order by r.oddano nulls last), '[]'::jsonb)

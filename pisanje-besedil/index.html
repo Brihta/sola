@@ -110,6 +110,30 @@
   .bere .ql-editor { padding: 6px 2px; min-height: 0; }
   .bere h1.naslov { font-size: 1.5rem; margin-bottom: 4px; }
 
+  /* Popravki učitelja (levo) ob besedilu (desno) */
+  main.siroko { max-width: 1400px; }
+  .razdeli { display: grid; grid-template-columns: minmax(0, 1fr) minmax(0, 1fr); gap: 18px; align-items: start; }
+  .razdeli > * { min-width: 0; }
+  .razdeli.brez { grid-template-columns: minmax(0, 1fr); }
+  .razdeli.brez .popravki { display: none; }
+  .popravki { position: sticky; top: 70px; max-height: calc(100vh - 86px); overflow: auto; background: var(--surface); border-radius: 20px; box-shadow: var(--shadow); border: 2px solid #fecdd3; margin-bottom: 18px; }
+  .popravki .glava-p { position: sticky; top: 0; z-index: 1; background: #fff1f2; padding: 10px 16px; border-bottom: 1.5px solid #fecdd3; }
+  .popravki .glava-p h2 { font-size: 1.1rem; color: #9f1239; margin: 0; }
+  .popravki .legenda { font-size: .85rem; font-weight: 700; color: var(--muted); margin-top: 4px; display: flex; gap: 12px; flex-wrap: wrap; }
+  .popravki .p-naslov { font-size: 1.6rem; font-weight: 900; padding: 14px 20px 6px; }
+  .popravki .p-besedilo { padding: 6px 20px 24px; font-size: 18px; line-height: 1.75; white-space: pre-wrap; overflow-wrap: anywhere; }
+  .popravki del, .popravki ins { border-radius: 4px; padding: 0 1px; }
+  .popravki del { color: #be123c; text-decoration: line-through 2px; background: #ffe4e6; }
+  .popravki ins { color: #dc2626; font-weight: 900; text-decoration: underline 2px; text-underline-offset: 3px; background: #fee2e2; }
+  .popravki del + ins { margin-left: 4px; }
+  .popravki ins { padding: 0 2px; }
+  .popravki .zn { font-weight: 900; font-size: .9em; padding: 0 2px; }
+  .popravki .brez-pop { padding: 20px; color: var(--muted); font-weight: 700; }
+  @media (max-width: 900px) {
+    .razdeli { grid-template-columns: minmax(0, 1fr); }
+    .popravki { position: static; max-height: 60vh; }
+  }
+
   .komentar { background: #fff8e6; border: 2px solid #ffe08a; border-radius: 18px; padding: 14px 18px; margin-bottom: 18px; }
   .komentar h3 { font-size: 1.05rem; margin-bottom: 4px; }
   .komentar p { margin: 0; white-space: pre-wrap; }
@@ -285,9 +309,13 @@ function urejevalnik(el, o) {
   const KOPIJA = 'pisanje_kopija_' + o.id;
   let verzija = o.verzija, umazano = false, shranjujem = false, zaklenjeno = false, zadnjic = null;
 
+  let tikOb = null;
+  const javi = () => { if (o.ob) o.ob($naslov.value.trim(), q.getText().trim()); };
+  const javiKmalu = () => { clearTimeout(tikOb); tikOb = setTimeout(javi, 400); };
   function nalozi(naslov, vsebina) {
     $naslov.value = naslov || '';
     q.setContents(vsebina && vsebina.ops ? vsebina : PRAZNO, 'silent');
+    javi();
   }
   nalozi(o.naslov, o.vsebina);
   if (o.zaklenjeno) {
@@ -317,7 +345,8 @@ function urejevalnik(el, o) {
     stanje('Shranjujem …');
     ls.set(KOPIJA, JSON.stringify({ verzija, naslov: $naslov.value, vsebina: q.getContents() }));
   }
-  q.on('text-change', (d, s, src) => { if (src === 'user') spremenjeno(); });
+  q.on('text-change', (d, s, src) => { if (src === 'user') { spremenjeno(); javiKmalu(); } });
+  $naslov.addEventListener('input', javiKmalu);
   $naslov.addEventListener('input', spremenjeno);
 
   async function shrani(keepalive) {
@@ -404,6 +433,68 @@ document.addEventListener('visibilitychange', () => {
 window.addEventListener('pagehide', () => { if (aktivni) aktivni.shrani(true); });
 window.addEventListener('beforeunload', e => { if (aktivni && aktivni.neshranjeno()) { aktivni.shrani(true); e.preventDefault(); e.returnValue = ''; } });
 
+/* ─── Primerjava: kaj je učitelj spremenil ─── */
+// Besedilo razreže na besede, presledke, nove vrstice in ločila; nato najde najdaljše skupno zaporedje.
+const deli = t => (t || '').match(/\n|[ \t\u00a0]+|[\p{L}\p{N}]+|[^\s\p{L}\p{N}]/gu) || [];
+function primerjaj(a, b) {
+  const A = deli(a), B = deli(b);
+  let z = 0; while (z < A.length && z < B.length && A[z] === B[z]) z++;
+  let k = 0; while (k < A.length - z && k < B.length - z && A[A.length - 1 - k] === B[B.length - 1 - k]) k++;
+  const x = A.slice(z, A.length - k), y = B.slice(z, B.length - k), n = x.length, m = y.length;
+  const out = [];
+  if (z) out.push(['=', A.slice(0, z).join('')]);
+  if (n * m > 9e6) { // zelo dolgo besedilo: brez podrobne primerjave srednjega dela
+    if (n) out.push(['-', x.join('')]); if (m) out.push(['+', y.join('')]);
+  } else {
+    const L = new Uint16Array((n + 1) * (m + 1)), W = m + 1;
+    for (let i = n - 1; i >= 0; i--) for (let j = m - 1; j >= 0; j--)
+      L[i * W + j] = x[i] === y[j] ? L[(i + 1) * W + j + 1] + 1 : Math.max(L[(i + 1) * W + j], L[i * W + j + 1]);
+    let i = 0, j = 0, del = '', ins = '';
+    const izprazni = () => {
+      // Samo drugačno število presledkov: pokaži le odvečne ali manjkajoče.
+      if (/^[ \t\u00a0]+$/.test(del) && /^[ \t\u00a0]+$/.test(ins)) {
+        const c = Math.min(del.length, ins.length);
+        out.push(['=', ins.slice(0, c)]); del = del.slice(c); ins = ins.slice(c);
+      }
+      if (del) out.push(['-', del]); if (ins) out.push(['+', ins]); del = ins = '';
+    };
+    while (i < n || j < m) {
+      if (i < n && j < m && x[i] === y[j]) { izprazni(); out.push(['=', x[i]]); i++; j++; }
+      else if (j < m && (i === n || L[i * W + j + 1] >= L[(i + 1) * W + j])) ins += y[j++];
+      else del += x[i++];
+    }
+    izprazni();
+  }
+  if (k) out.push(['=', A.slice(A.length - k).join('')]);
+  return out;
+}
+// HTML: zbrisano prečrtano, dodano rdeče. Presledki (·) in novi odstavki (¶) se vidijo.
+function primerjavaHtml(a, b) {
+  const kosi = primerjaj(a, b);
+  if (!kosi.some(d => d[0] !== '=')) return null;
+  return kosi.map(([t, s]) => {
+    if (t === '=') return esc(s);
+    const samoPresledki = !s.trim();
+    let h = esc(s);
+    if (t === '-') {
+      h = samoPresledki ? h.replace(/[ \t\u00a0]/g, '·') : h;
+      h = h.replace(/\n/g, '<span class="zn">¶</span>');
+      return `<del title="Učitelj je to zbrisal">${h}</del>`;
+    }
+    if (samoPresledki) h = h.replace(/[ \t\u00a0]/g, '·');
+    h = h.replace(/\n/g, '<span class="zn">¶</span>\n');
+    return `<ins title="Učitelj je to dodal">${h}</ins>`;
+  }).join('');
+}
+function popravkiHtml(pred, po, cas_) {
+  const n = primerjavaHtml(pred.naslov, po.naslov), b = primerjavaHtml(pred.besedilo, po.besedilo);
+  return `<div class="glava-p"><h2>✏️ Popravki učitelja${cas_ ? ` <small style="font-weight:700;color:var(--muted)">· ${cas(cas_)}</small>` : ''}</h2>
+    <div class="legenda"><span><del>prečrtano</del> = zbrisal</span><span><ins>rdeče</ins> = dodal ali popravil</span><span><del>·</del> presledek</span><span><ins>¶</ins> nov odstavek</span></div></div>
+    ${n || b ? `<div class="p-naslov">${n || esc(po.naslov || '')}</div><div class="p-besedilo">${b || esc(po.besedilo || '')}</div>`
+      : '<div class="brez-pop">Popravkov še ni.</div>'}`;
+}
+const imaPopravke = (pred, po) => !!(primerjavaHtml(pred.naslov, po.naslov) || primerjavaHtml(pred.besedilo, po.besedilo));
+
 /* ─── Skupni deli ─── */
 function presojeHtml(seznam, zUciteljem) {
   if (!seznam.length) return '';
@@ -447,17 +538,26 @@ async function ucenecPisi(pid) {
   const r = await rpc('sola_pis_odpri', { p_student: ucenec.id, p_projekt: pid });
   if (r === NEDOSEGLJIVO) return napaka(NI_POVEZAVE);
   if (!r) return napaka('Tega projekta ni ali je zaprt. <a href="#/">Nazaj</a>');
+  const pop = r.popravki && r.popravki.pred && r.popravki.po && imaPopravke(r.popravki.pred, r.popravki.po);
+  $main.classList.toggle('siroko', !!pop);
   $main.innerHTML = `<div class="crumb"><a href="#/">← Moji projekti</a></div>
     <section class="hero" style="padding:18px 24px"><h1 style="font-size:1.6rem">${esc(r.projekt.ime)}</h1>${r.projekt.opis ? `<p>${esc(r.projekt.opis)}</p>` : ''}</section>
     ${r.projekt.zaklenjen ? '<div class="note warn">🔒 Učitelj je zaklenil projekt. Svoje besedilo lahko prebereš, spreminjati ga ne moreš.</div>' : ''}
-    ${r.urejal === 'ucitelj' ? '<div class="note info">✏️ Učitelj je popravil tvoje besedilo. Preberi, kaj je spremenil.</div>' : ''}
+    ${pop ? `<div class="note info row" style="justify-content:space-between">✏️ Učitelj je popravil tvoje besedilo. V rdečem okvirju vidiš, kaj je spremenil; v urejevalniku je tvoje besedilo s popravki.
+      <button class="btn btn-sm" id="pop-tg" type="button">Skrij popravke</button></div>` : ''}
     ${r.komentar ? `<div class="komentar"><h3>💬 Komentar učitelja <small style="color:var(--muted);font-weight:700">· ${cas(r.komentar_cas)}</small></h3><p>${esc(r.komentar)}</p></div>` : ''}
-    <div id="ed"></div>
+    ${pop ? `<div class="razdeli" id="razdeli"><section class="popravki" aria-label="Popravki učitelja">${popravkiHtml(r.popravki.pred, r.popravki.po, r.popravki.cas)}</section><div id="ed"></div></div>` : '<div id="ed"></div>'}
     ${r.presoje.length ? `<div class="panel"><h2>⭐⭐🪄 Kaj so ti napisali sošolci</h2>${presojeHtml(r.presoje, false)}</div>` : ''}`;
   urejevalnik(document.getElementById('ed'), {
     id: r.id, naslov: r.naslov, vsebina: r.vsebina, verzija: r.verzija, jaz: 'ucenec', kdoDrug: 'učitelj', zaklenjeno: r.projekt.zaklenjen,
     shrani: (d, keep) => rpc('sola_pis_shrani', { p_student: ucenec.id, p_id: d.id, p_verzija: d.verzija, p_naslov: d.naslov, p_vsebina: d.vsebina, p_besedilo: d.besedilo }, keep),
     osvezi: async () => { const x = await rpc('sola_pis_odpri', { p_student: ucenec.id, p_projekt: pid }); return x && x.id ? x : null; },
+  });
+  const tg = document.getElementById('pop-tg');
+  if (tg) tg.addEventListener('click', () => {
+    const skrij = document.getElementById('razdeli').classList.toggle('brez');
+    tg.textContent = skrij ? 'Pokaži popravke' : 'Skrij popravke';
+    $main.classList.toggle('siroko', !skrij);
   });
 }
 
@@ -658,6 +758,9 @@ async function uciteljBesedilo(pid, bid) {
   const d = r[0];
   const vrsta = p.besedila.slice().sort((x, y) => (x.ucenec.razred || '').localeCompare(y.ucenec.razred || '') || x.ucenec.ime.localeCompare(y.ucenec.ime, 'sl'));
   const i = vrsta.findIndex(x => x.id === bid), prej = vrsta[i - 1], nasl = vrsta[i + 1];
+  // Primerjava z učenčevo različico: če je učitelj že popravljal (in učenec od takrat ni pisal), s tisto pred popravki.
+  let pred = d.urejal === 'ucitelj' && d.popravki && d.popravki.pred ? d.popravki.pred : null;
+  $main.classList.add('siroko');
   $main.innerHTML = `<div class="crumb"><a href="#/">Vsi projekti</a> › <a href="#/u/${pid}">${esc(p.ime)}</a></div>
     <div class="row" style="justify-content:space-between;margin-bottom:12px">
       <h1 style="font-size:1.7rem">${esc(d.ucenec.emoji || '')} ${esc(d.ucenec.ime)} ${d.ucenec.razred ? `<span class="tag grey" style="vertical-align:middle">${esc(d.ucenec.razred)}</span>` : ''}</h1>
@@ -666,8 +769,9 @@ async function uciteljBesedilo(pid, bid) {
         ${nasl ? `<a class="btn btn-sm" href="#/u/${pid}/${nasl.id}">${esc(nasl.ucenec.ime)} →</a>` : ''}
       </div>
     </div>
-    <div class="note info">Popravke lahko pišete kar v besedilo; shranijo se sami. Učenec ob naslednjem odprtju vidi, da ste besedilo popravili.</div>
-    <div id="ed"></div>
+    <div class="note info row" style="justify-content:space-between">Popravke pišite kar v besedilo; shranijo se sami. V rdečem okvirju sproti vidite, kar bo učenec videl kot popravke.
+      <button class="btn btn-sm" id="pop-tg" type="button">Skrij popravke</button></div>
+    <div class="razdeli" id="razdeli"><section class="popravki" id="pop" aria-label="Popravki učitelja"></section><div id="ed"></div></div>
     <div class="panel">
       <h2>💬 Komentar za učenca</h2>
       <textarea id="kom" maxlength="5000" style="min-height:110px" placeholder="Kaj je dobro in kaj naj izboljša …">${esc(d.komentar || '')}</textarea>
@@ -676,8 +780,17 @@ async function uciteljBesedilo(pid, bid) {
     ${d.presoje.length ? `<div class="panel" id="presoje"><h2>⭐⭐🪄 Presoje sošolcev</h2>${presojeHtml(d.presoje, true)}</div>` : ''}`;
   urejevalnik(document.getElementById('ed'), {
     id: d.id, naslov: d.naslov, vsebina: d.vsebina, verzija: d.verzija, jaz: 'ucitelj', kdoDrug: 'učenec',
+    ob: (naslov, besedilo) => {
+      if (!pred) pred = { naslov, besedilo };
+      document.getElementById('pop').innerHTML = popravkiHtml(pred, { naslov, besedilo });
+    },
     shrani: (x, keep) => rpc('sola_pis_u_shrani', { p_seja: S(), p_id: x.id, p_verzija: x.verzija, p_naslov: x.naslov, p_vsebina: x.vsebina, p_besedilo: x.besedilo }, keep),
     osvezi: async () => { const x = await rpc('sola_pis_u_besedila', { p_seja: S(), p_ids: [bid] }); return Array.isArray(x) && x[0] ? x[0] : null; },
+  });
+  document.getElementById('pop-tg').addEventListener('click', e => {
+    const skrij = document.getElementById('razdeli').classList.toggle('brez');
+    e.target.textContent = skrij ? 'Pokaži popravke' : 'Skrij popravke';
+    $main.classList.toggle('siroko', !skrij);
   });
   const $kom = document.getElementById('kom'), $st = document.getElementById('kom-st');
   $kom.addEventListener('input', () => { $st.textContent = 'Ni shranjeno'; $st.className = 'status bad'; });
@@ -721,6 +834,7 @@ function prijavaPotrebna(besedilo) {
 }
 function usmeri() {
   zapustiUrejevalnik();
+  $main.classList.remove('siroko');
   window.scrollTo(0, 0);
   const d = location.hash.replace(/^#\/?/, '').split('/').filter(Boolean);
   if (ucitelj) {
