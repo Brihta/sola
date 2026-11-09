@@ -554,6 +554,7 @@ const PREDMETI = [
       { id: 'racunalnistvo-4',   ime: 'Računalništvo 4',   kratko: '4. razred',    koda: 'RAČ 4',   c1: '#0ea5e9', c2: '#6366f1', emoji: '🖱️', opis: '4. razred',
         povezave: [
           { ime: 'Brihta – matematika', opis: 'Vaje iz poštevanke in računanja', url: 'https://brihta.github.io/matematika/', emoji: '🦉', c1: '#6c5ce7', c2: '#a855f7' },
+          { ime: 'Pisanje besedil', opis: 'Vaje iz pisanja na računalniku', url: 'pisanje-besedil/', emoji: '✍️', c1: '#0ea5e9', c2: '#22c55e', samoUcitelj: true },
         ] },
       { id: 'racunalnistvo-5',   ime: 'Računalništvo 5',   kratko: '5. razred',    koda: 'RAČ 5',   c1: '#a855f7', c2: '#ec4899', emoji: '🧩', opis: '5. razred' },
       { id: 'racunalnistvo-6',   ime: 'Računalništvo 6',   kratko: '6. razred',    koda: 'RAČ 6',   c1: '#10b981', c2: '#0ea5e9', emoji: '🤖', opis: '6. razred' },
@@ -765,8 +766,10 @@ function stranSkupina(p) {
 
 /* Razdelek »Uporabne povezave« (skupina ali posamezen predmet z lastnostjo povezave). */
 function povezaveHtml(p) {
-  return p.povezave && p.povezave.length ? `<div class="sec-h" style="margin-top:34px"><h2>Uporabne povezave</h2></div>
-    <div class="links">${p.povezave.map(l => `<a class="link" style="${barve(l)}" href="${esc(l.url)}" target="_blank" rel="noopener">
+  /* samoUcitelj: povezava je še v pripravi, vidi jo samo prijavljen učitelj. */
+  const povezave = (p.povezave || []).filter(l => !l.samoUcitelj || ucitelj);
+  return povezave.length ? `<div class="sec-h" style="margin-top:34px"><h2>Uporabne povezave</h2></div>
+    <div class="links">${povezave.map(l => `<a class="link" style="${barve(l)}" href="${esc(l.url)}" target="_blank" rel="noopener">
       <span class="ln-art">${l.slika ? `<img src="${esc(l.slika)}" alt="">` : `<span aria-hidden="true">${l.emoji}</span>`}</span>
       <span class="nm"><b>${esc(l.ime)}</b><small>${esc(l.opis)}</small></span>${SVG.ext}</a>`).join('')}</div>` : '';
 }
@@ -1533,8 +1536,11 @@ function posodobiNav() {
   document.getElementById('nav-name').textContent = ucitelj ? ucitelj.username : ucenec ? ucenec.username : 'Prijava';
 }
 
+/* ?prijava=pisanje: odpre prijavo in po njej vrne na podstran. */
+const NAZAJ = { pisanje: 'pisanje-besedil/' }[new URLSearchParams(location.search).get('prijava')];
 async function poPrijavi() {
   shraniRacun();
+  if (NAZAJ && (ucenec || ucitelj)) { location.href = NAZAJ; return; }
   posodobiNav();
   odpriPredal(null);
   await naloziMoje();
@@ -1721,6 +1727,7 @@ const preveriUcitelja = async () => {
   if (r === false || r === null) { ucitelj = null; shraniRacun(); posodobiNav(); }
 };
 Promise.all([naloziGradiva(), naloziKvize(), naloziMoje(), preveriUcitelja()]).then(usmeri);
+if (new URLSearchParams(location.search).has('prijava')) odpriPredal('racun');
 </script>
 </body>
 </html>
