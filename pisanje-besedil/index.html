@@ -126,6 +126,20 @@
   .tabela { overflow-x: auto; }
   input[type=checkbox] { width: 20px; height: 20px; accent-color: #0ea5e9; }
 
+  [hidden] { display: none !important; }
+  button.who { cursor: pointer; }
+  button.who:hover, a.who:hover { box-shadow: var(--shadow); }
+  a.who { text-decoration: none; color: var(--ink); }
+  .ozadje { position: fixed; inset: 0; z-index: 90; background: rgba(31,35,64,.35); backdrop-filter: blur(3px); }
+  .racun { position: fixed; z-index: 100; top: 70px; right: 16px; width: min(380px, calc(100vw - 32px)); background: #fff; border-radius: 24px; box-shadow: 0 22px 50px -18px rgba(31,35,64,.5); padding: 20px; }
+  .racun h2 { font-size: 1.5rem; }
+  .racun .x { border: 0; background: none; font-size: 1.3rem; cursor: pointer; padding: 4px 8px; }
+  .racun-kdo { display: flex; gap: 14px; align-items: center; background: linear-gradient(135deg, #e0f2fe, #dcfce7); border-radius: 18px; padding: 14px; margin: 14px 0; }
+  .racun-em { width: 54px; height: 54px; border-radius: 50%; background: #fff; display: grid; place-items: center; font-size: 28px; }
+  .racun-kdo b { display: block; font-size: 1.2rem; }
+  .racun-kdo small { color: var(--muted); font-weight: 700; }
+  .btn-block { width: 100%; }
+  .racun-op { text-align: center; color: var(--muted); font-size: .9rem; margin: 10px 0 0; }
   #tisk { display: none; }
   @media print {
     body { background: #fff; }
@@ -144,10 +158,18 @@
 <body>
 <header class="top"><div class="top-in">
   <a class="brand" href="../"><img src="../brihta.png" alt=""> Brihta <span>· Pisanje besedil</span></a>
-  <span class="who" id="who" hidden></span>
-  <button class="btn btn-sm" id="odjava" type="button" hidden>Odjava</button>
+  <button class="who" id="who" type="button" hidden aria-haspopup="dialog" aria-controls="racun"></button>
+  <a class="who" id="prijava" href="../?prijava=pisanje" hidden>Prijava</a>
 </div></header>
 <main id="main"><div class="empty">Nalagam …</div></main>
+<div class="ozadje" id="racun-ozadje" hidden></div>
+<div class="racun" id="racun" role="dialog" aria-modal="true" aria-labelledby="racun-h" hidden>
+  <div class="row" style="justify-content:space-between"><h2 id="racun-h">Moj račun</h2><button class="x" type="button" data-zapri aria-label="Zapri">✕</button></div>
+  <div class="racun-kdo"><span class="racun-em" id="racun-em"></span><div><b id="racun-ime"></b><small id="racun-vloga"></small></div></div>
+  <button class="btn btn-block" id="odjava" type="button">Odjava</button>
+  <a class="btn btn-block" href="../" style="margin-top:8px">← Nazaj na Brihto</a>
+  <p class="racun-op">Isti račun velja za vso Brihto.</p>
+</div>
 <div id="tisk"></div>
 
 <script src="https://cdn.jsdelivr.net/npm/quill@2.0.3/dist/quill.js"></script>
@@ -676,13 +698,23 @@ window.addEventListener('hashchange', usmeri);
     if (ok === false || ok === null) ucitelj = null;
     else ls.set(PREDOGLED, '1');
   }
-  const who = document.getElementById('who');
-  if (ucitelj) { who.hidden = false; who.textContent = '👨‍🏫 ' + ucitelj.username; }
-  else if (ucenec) { who.hidden = false; who.textContent = (ucenec.emoji || '🙂') + ' ' + (ucenec.display_name || ucenec.username); }
+  const who = document.getElementById('who'), $r = document.getElementById('racun'), $oz = document.getElementById('racun-ozadje');
+  const em = ucitelj ? '👨‍🏫' : ucenec ? (ucenec.emoji || '🙂') : '';
+  const ime = ucitelj ? ucitelj.username : ucenec ? (ucenec.display_name || ucenec.username) : '';
+  if (ucitelj || ucenec) {
+    who.hidden = false; who.textContent = em + ' ' + ime;
+    document.getElementById('racun-em').textContent = em;
+    document.getElementById('racun-ime').textContent = ime;
+    document.getElementById('racun-vloga').textContent = ucitelj ? 'Učitelj' : 'Učenec · ' + ucenec.username;
+  } else document.getElementById('prijava').hidden = false;
+  const odpri = da => { $r.hidden = $oz.hidden = !da; who.setAttribute('aria-expanded', da); if (da) document.getElementById('odjava').focus(); };
+  who.addEventListener('click', () => odpri($r.hidden));
+  $oz.addEventListener('click', () => odpri(false));
+  $r.querySelector('[data-zapri]').addEventListener('click', () => odpri(false));
+  document.addEventListener('keydown', e => { if (e.key === 'Escape' && !$r.hidden) odpri(false); });
   const $odj = document.getElementById('odjava');
-  $odj.hidden = !(ucitelj || ucenec);
   $odj.addEventListener('click', async () => {
-    $odj.disabled = true;
+    $odj.disabled = true; $odj.textContent = 'Shranjujem …';
     if (aktivni) { await aktivni.shrani(); zapustiUrejevalnik(); }
     if (ucitelj) await rpc('sola_ucitelj_odjava', { p_seja: ucitelj.seja });
     ls.del('brihta_profile_v1'); ls.del('sola_ucitelj_v2');
