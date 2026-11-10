@@ -276,6 +276,10 @@ const crte = ys => `<svg width="22" height="22" viewBox="0 0 22 22" aria-hidden=
 const PORAVNAVE = [['', 'Poravnaj levo', crte([[2, 18], [2, 12], [2, 16], [2, 10]])], ['center', 'Poravnaj na sredino', crte([[2, 18], [5, 12], [3, 16], [6, 10]])],
   ['right', 'Poravnaj desno', crte([[2, 18], [8, 12], [4, 16], [10, 10]])], ['justify', 'Poravnaj obojestransko', crte([[2, 18], [2, 18], [2, 18], [2, 10]])]];
 const PRAZNO = { ops: [{ insert: '\n' }] };
+// Oblikovanje naslova (poravnava, barva) je shranjeno v vsebina.naslov = { a, c }.
+const BARVA_OK = c => /^#[0-9a-f]{6}$/i.test(c || '');
+const naslovSlog = v => { const f = (v && v.naslov) || {};
+  return `${['left', 'center', 'right'].includes(f.a) ? `text-align:${f.a};` : ''}${BARVA_OK(f.c) ? `color:${f.c};` : ''}`; };
 
 function prikazi(el, vsebina) {
   const q = new Quill(el, { readOnly: true, formats: FORMATI, modules: { toolbar: false } });
@@ -317,12 +321,16 @@ function urejevalnik(el, o) {
   q.root.spellcheck = false;
   const KOPIJA = 'pisanje_kopija_' + (o.kljuc || o.id);
   let verzija = o.verzija, umazano = false, shranjujem = false, zaklenjeno = false, zadnjic = null;
+  let nf = {}, vNaslovu = false;
+  const slogNaslova = () => { $naslov.style.textAlign = nf.a || ''; $naslov.style.color = BARVA_OK(nf.c) ? nf.c : ''; };
+  const vsebinaZdaj = () => { const v = { ops: q.getContents().ops }; if (nf.a || nf.c) v.naslov = { ...nf }; return v; };
 
   let tikOb = null;
   const javi = uporabnik => { if (o.ob) o.ob($naslov.value.trim(), q.getText().trim(), !!uporabnik); };
   const javiKmalu = () => { clearTimeout(tikOb); tikOb = setTimeout(() => javi(true), 400); };
   function nalozi(naslov, vsebina) {
     $naslov.value = naslov || '';
+    nf = { ...((vsebina && vsebina.naslov) || {}) }; slogNaslova();
     q.setContents(vsebina && vsebina.ops ? vsebina : PRAZNO, 'silent');
     javi();
   }
@@ -352,7 +360,7 @@ function urejevalnik(el, o) {
     if (zaklenjeno) return;
     umazano = true;
     stanje('Shranjujem …');
-    ls.set(KOPIJA, JSON.stringify({ verzija, naslov: $naslov.value, vsebina: q.getContents() }));
+    ls.set(KOPIJA, JSON.stringify({ verzija, naslov: $naslov.value, vsebina: vsebinaZdaj() }));
   }
   q.on('text-change', (d, s, src) => { if (src === 'user') { spremenjeno(); javiKmalu(); } });
   $naslov.addEventListener('input', javiKmalu);
@@ -361,13 +369,13 @@ function urejevalnik(el, o) {
   async function shrani(keepalive) {
     if (!umazano || shranjujem || zaklenjeno) return;
     shranjujem = true; umazano = false;
-    const vsebina = q.getContents(), besedilo = q.getText().trim(), naslov = $naslov.value.trim();
+    const vsebina = vsebinaZdaj(), besedilo = q.getText().trim(), naslov = $naslov.value.trim();
     const r = await o.shrani({ id: o.id, verzija, naslov, vsebina, besedilo }, keepalive);
     shranjujem = false;
     if (r && r.ok) {
       verzija = r.verzija; zadnjic = new Date();
       if (!umazano) { ls.del(KOPIJA); stanje('✓ Shranjeno', 'ok'); }
-      else ls.set(KOPIJA, JSON.stringify({ verzija, naslov: $naslov.value, vsebina: q.getContents() }));
+      else ls.set(KOPIJA, JSON.stringify({ verzija, naslov: $naslov.value, vsebina: vsebinaZdaj() }));
     } else if (r && r.napaka === 'KONFLIKT') {
       verzija = r.verzija; umazano = false; ls.del(KOPIJA);
       nalozi(r.naslov, r.vsebina);
@@ -405,6 +413,12 @@ function urejevalnik(el, o) {
   $bar.addEventListener('click', e => {
     const b = e.target.closest('button'); if (!b || zaklenjeno) return;
     if (b === $barva) { paleta($paleta.hidden); return; }
+    if (vNaslovu && (b.dataset.a != null || b.dataset.c != null)) {
+      if (b.dataset.a != null) nf.a = b.dataset.a === 'center' || b.dataset.a === 'right' ? b.dataset.a : 'left';
+      else { nf.c = b.dataset.c || ''; paleta(false); }
+      if (!nf.c) delete nf.c;
+      slogNaslova(); spremenjeno(); $naslov.focus(); posodobiNaslov(); return;
+    }
     q.focus();
     if (b.dataset.c != null) { q.format('color', b.dataset.c || false, 'user'); paleta(false); }
     else if (b.dataset.a != null) q.format('align', b.dataset.a || false, 'user');
@@ -425,6 +439,15 @@ function urejevalnik(el, o) {
     $paleta.querySelectorAll('[data-c]').forEach(b => b.classList.toggle('on', b.dataset.c === c));
   }
   q.on('editor-change', posodobi);
+  function posodobiNaslov() {
+    const a = nf.a === 'left' ? '' : nf.a || 'center';
+    $bar.querySelectorAll('[data-a]').forEach(b => b.classList.toggle('on', b.dataset.a === a));
+    $bar.querySelectorAll('[data-h],[data-f]').forEach(b => b.classList.remove('on'));
+    $barva.style.color = nf.c || '';
+    $paleta.querySelectorAll('[data-c]').forEach(b => b.classList.toggle('on', b.dataset.c === (nf.c || '')));
+  }
+  $naslov.addEventListener('focus', () => { vNaslovu = true; posodobiNaslov(); });
+  q.on('selection-change', r => { if (r) vNaslovu = false; });
 
   const ctl = {
     shrani, preveri,
@@ -612,7 +635,7 @@ async function ucenecPresoja(pid, izbran) {
       <p>Preberi sošolčevo besedilo. Napiši dve stvari, ki so ti bile všeč, in en nasvet, kako bi bilo še boljše. Bodi prijazen/prijazna.</p></section>
     ${r.length > 1 ? `<div class="zavihki">${r.map((x, j) => `<button type="button" data-i="${j}" class="${j === i ? 'on' : ''}">${x.oddano ? '✓ ' : ''}Besedilo ${j + 1}</button>`).join('')}</div>` : ''}
     <div class="tsw">
-      <div class="panel bere"><h1 class="naslov">${esc(n.naslov || 'Brez naslova')}</h1><div id="besedilo"></div></div>
+      <div class="panel bere"><h1 class="naslov" style="${naslovSlog(n.vsebina)}">${esc(n.naslov || 'Brez naslova')}</h1><div id="besedilo"></div></div>
       <div class="panel zvezda">
         ${n.oddano ? '<div class="note info">✓ Oddano. Lahko še popraviš in oddaš znova.</div>' : ''}
         <div class="field"><label for="z1">⭐ Prva pohvala</label><textarea id="z1" maxlength="1000" placeholder="Všeč mi je, da …">${esc(n.zvezda1 || '')}</textarea></div>
@@ -912,7 +935,7 @@ async function izvozi(p, ids, sKomentarjem, sPresojami) {
   const $t = document.getElementById('tisk');
   $t.innerHTML = r.map((d, i) => `<section class="stran">
     <div class="glava"><span><b>${esc(d.ucenec.ime)}</b>${d.ucenec.razred ? ' · ' + esc(d.ucenec.razred) : ''}</span><span>${esc(p.ime)} · ${cas(d.posodobljeno)}</span></div>
-    <h1 class="naslov">${esc(d.naslov || '')}</h1>
+    <h1 class="naslov" style="${naslovSlog(d.vsebina)}">${esc(d.naslov || '')}</h1>
     <div data-v="${i}"></div>
     ${sKomentarjem && d.komentar ? `<div class="komentar"><h3>💬 Komentar učitelja</h3><p>${esc(d.komentar)}</p></div>` : ''}
     ${sPresojami ? presojeHtml(d.presoje.filter(x => x.oddano).map(x => ({ ...x, ocenjevalec: null })), false) : ''}
