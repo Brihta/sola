@@ -293,6 +293,9 @@ let aktivni = null;
 function urejevalnik(el, o) {
   el.innerHTML = `<div class="ed-wrap">
     <div class="ed-bar" role="toolbar" aria-label="Oblikovanje">
+      <button type="button" class="tb" data-u="undo" title="Razveljavi (Ctrl+Z)" aria-label="Razveljavi">↶ Razveljavi</button>
+      <button type="button" class="tb" data-u="redo" title="Ponovi (Ctrl+Y)" aria-label="Ponovi">↷</button>
+      <span class="sep"></span>
       <button type="button" class="tb h1" data-h="1" title="Naslov 1">Naslov 1</button>
       <button type="button" class="tb h2" data-h="2" title="Podnaslov">Podnaslov</button>
       <button type="button" class="tb p" data-h="0" title="Navadno besedilo">Navadno besedilo</button>
@@ -413,6 +416,7 @@ function urejevalnik(el, o) {
   $bar.addEventListener('click', e => {
     const b = e.target.closest('button'); if (!b || zaklenjeno) return;
     if (b === $barva) { paleta($paleta.hidden); return; }
+    if (b.dataset.u) { q.focus(); q.history[b.dataset.u](); posodobi(); return; }
     if (vNaslovu && (b.dataset.a != null || b.dataset.c != null)) {
       if (b.dataset.a != null) nf.a = b.dataset.a === 'center' || b.dataset.a === 'right' ? b.dataset.a : 'left';
       else { nf.c = b.dataset.c || ''; paleta(false); }
