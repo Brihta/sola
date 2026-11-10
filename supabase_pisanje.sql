@@ -24,12 +24,14 @@ create table if not exists sola_pis_projekti (
   presoja_n   int not null default 1,         -- koliko tujih besedil prebere vsak
   arhiviran   boolean not null default false, -- učenci ga ne vidijo več
   zaklenjen   boolean not null default false, -- učenci besedilo vidijo, a ga ne morejo spreminjati
-  popravi_sam boolean not null default false, -- učitelj popravlja kopijo, učenec popravke vnese sam
+  popravi_sam boolean not null default true,  -- učitelj popravlja kopijo, učenec popravke vnese sam
   ucitelj_id  uuid references teachers(id) on delete set null, -- lastnica projekta (NULL = vsi učitelji)
   ustvarjeno  timestamptz not null default now()
 );
 alter table sola_pis_projekti add column if not exists zaklenjen boolean not null default false;
 alter table sola_pis_projekti add column if not exists popravi_sam boolean not null default false;
+-- Privzeto »Popravi sam«: učenec sam vnese učiteljeve popravke (tako se nauči).
+alter table sola_pis_projekti alter column popravi_sam set default true;
 alter table sola_pis_projekti add column if not exists ucitelj_id uuid references teachers(id) on delete set null;
 -- Projekti, nastali pred lastništvom, pripadajo Ninu.
 update sola_pis_projekti set ucitelj_id = (select id from teachers where lower(email) = 'nino.kokalj@os-sempeter.si' limit 1)
