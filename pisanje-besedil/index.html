@@ -97,7 +97,7 @@
   .paleta .brez { grid-column: 1 / -1; width: auto; height: 34px; border-radius: 10px; background: #fff; font-weight: 800; }
   .status { margin-left: auto; font-weight: 800; font-size: .9rem; color: var(--muted); white-space: nowrap; }
   .status.ok { color: var(--good); } .status.bad { color: var(--bad); }
-  .ed-title { width: 100%; border: 0 !important; border-bottom: 1.5px dashed var(--line-2) !important; border-radius: 0 !important; padding: 18px 24px 10px !important; font-size: 1.6rem; font-weight: 900; outline: none; }
+  .ed-title { width: 100%; text-align: center; border: 0 !important; border-bottom: 1.5px dashed var(--line-2) !important; border-radius: 0 !important; padding: 18px 24px 10px !important; font-size: 1.6rem; font-weight: 900; outline: none; }
   .ed-wrap.zaklenjen .ed-title { border-radius: 20px 20px 0 0 !important; background: none; color: inherit; }
   .ed-title::placeholder { color: #c7c2b6; }
   .ql-container { font-family: 'Nunito', system-ui, sans-serif; font-size: 18px; }
@@ -108,7 +108,7 @@
   .ql-editor h2 { font-size: 1.45em; font-weight: 800; margin: .3em 0 .2em; color: #075985; }
   .ql-editor p { margin: 0 0 .25em; }
   .bere .ql-editor { padding: 6px 2px; min-height: 0; }
-  .bere h1.naslov { font-size: 1.5rem; margin-bottom: 4px; }
+  .bere h1.naslov { text-align: center; font-size: 1.5rem; margin-bottom: 4px; }
 
   /* Popravki učitelja (levo) ob besedilu (desno) */
   main.siroko { max-width: 1400px; }
@@ -120,7 +120,7 @@
   .popravki .glava-p { position: sticky; top: 0; z-index: 1; background: #fff1f2; padding: 10px 16px; border-bottom: 1.5px solid #fecdd3; }
   .popravki .glava-p h2 { font-size: 1.1rem; color: #9f1239; margin: 0; }
   .popravki .legenda { font-size: .85rem; font-weight: 700; color: var(--muted); margin-top: 4px; display: flex; gap: 12px; flex-wrap: wrap; }
-  .popravki .p-naslov { font-size: 1.6rem; font-weight: 900; padding: 14px 20px 6px; }
+  .popravki .p-naslov { text-align: center; font-size: 1.6rem; font-weight: 900; padding: 14px 20px 6px; }
   .popravki .p-besedilo { padding: 6px 20px 24px; font-size: 18px; line-height: 1.75; white-space: pre-wrap; overflow-wrap: anywhere; }
   .popravki del, .popravki ins { border-radius: 4px; padding: 0 1px; }
   .popravki del { color: #be123c; text-decoration: line-through 2px; background: #ffe4e6; }
@@ -191,7 +191,7 @@
     .stran { break-after: page; page-break-after: always; font-family: 'Nunito', Arial, sans-serif; color: #000; }
     .stran:last-child { break-after: auto; page-break-after: auto; }
     .stran .glava { display: flex; justify-content: space-between; border-bottom: 2px solid #0369a1; padding-bottom: 4px; margin-bottom: 12px; font-size: 11pt; color: #444; }
-    .stran h1.naslov { font-size: 20pt; margin: 0 0 8px; }
+    .stran h1.naslov { text-align: center; font-size: 20pt; margin: 0 0 8px; }
     .stran .ql-editor { padding: 0; font-size: 12pt; line-height: 1.5; overflow: visible; height: auto; }
     .stran .komentar, .stran .presoja { break-inside: avoid; margin-top: 12px; }
     @page { size: A4; margin: 16mm; }
