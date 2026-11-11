@@ -82,18 +82,21 @@
   .ed-bar { position: sticky; top: 57px; z-index: 5; display: flex; gap: 6px; flex-wrap: wrap; align-items: center; padding: 10px 12px; background: #f7fbff; border-bottom: 1.5px solid var(--line); border-radius: 20px 20px 0 0; }
   .ed-bar .sep { width: 1.5px; align-self: stretch; background: var(--line-2); margin: 0 4px; }
   .tb { min-height: 40px; min-width: 40px; padding: 0 12px; border-radius: 10px; border: 1.5px solid var(--line-2); background: #fff; cursor: pointer; font-weight: 800; }
-  .tb:hover { border-color: #93c5fd; }
+  .tb:hover, .ed-bar select:hover { border-color: #93c5fd; }
   .tb.on { background: #0ea5e9; border-color: #0ea5e9; color: #fff; }
-  .tb.h1 { font-size: 1.05rem; } .tb.h2 { font-size: .95rem; } .tb.p { font-weight: 600; }
   .tb.b { font-weight: 900; } .tb.i { font-style: italic; font-family: Georgia, serif; } .tb.u { text-decoration: underline; }
-  .ed-bar select { width: auto; min-height: 40px; padding: 0 10px; border-radius: 10px; font-weight: 700; }
+  .ed-bar select { width: auto; min-height: 40px; padding: 0 10px; border-radius: 10px; font-weight: 700; cursor: pointer; }
   .tb.a { padding: 0 8px; } .tb.a svg { display: block; }
   .barva { position: relative; }
+  .ed-bar .skupina { display: flex; gap: 6px; flex-wrap: wrap; }
   .tb.c { font-weight: 900; font-size: 1.05rem; padding: 0 10px; line-height: 1; display: flex; flex-direction: column; align-items: center; justify-content: center; gap: 2px; }
   .tb.c i { display: block; width: 20px; height: 5px; border-radius: 3px; background: currentColor; }
   .paleta { position: absolute; top: calc(100% + 6px); left: 0; z-index: 10; background: #fff; border: 1.5px solid var(--line-2); border-radius: 14px; box-shadow: var(--shadow); padding: 10px; display: grid; grid-template-columns: repeat(5, 34px); gap: 8px; }
   .paleta button { width: 34px; height: 34px; border-radius: 50%; border: 2px solid rgba(0,0,0,.12); cursor: pointer; }
   .paleta button:hover, .paleta button.on { outline: 3px solid #0ea5e9; outline-offset: 2px; }
+  .paleta.vrsta { grid-template-columns: repeat(4, auto); right: 0; left: auto; }
+  .paleta.vrsta button { width: auto; height: auto; border-radius: 10px; border: 1.5px solid var(--line-2); }
+  .paleta.vrsta button:hover, .paleta.vrsta button.on { outline: none; }
   .paleta .brez { grid-column: 1 / -1; width: auto; height: 34px; border-radius: 10px; background: #fff; font-weight: 800; }
   .status { margin-left: auto; font-weight: 800; font-size: .9rem; color: var(--muted); white-space: nowrap; }
   .status.ok { color: var(--good); } .status.bad { color: var(--bad); }
@@ -293,26 +296,26 @@ let aktivni = null;
 function urejevalnik(el, o) {
   el.innerHTML = `<div class="ed-wrap">
     <div class="ed-bar" role="toolbar" aria-label="Oblikovanje">
-      <button type="button" class="tb" data-u="undo" title="Razveljavi (Ctrl+Z)" aria-label="Razveljavi">↶ Razveljavi</button>
-      <button type="button" class="tb" data-u="redo" title="Ponovi (Ctrl+Y)" aria-label="Ponovi">↷</button>
+      <span class="skupina"><button type="button" class="tb" data-u="undo" title="Razveljavi (Ctrl+Z)" aria-label="Razveljavi">↶</button>
+      <button type="button" class="tb" data-u="redo" title="Ponovi (Ctrl+Y)" aria-label="Ponovi">↷</button></span>
       <span class="sep"></span>
-      <button type="button" class="tb h1" data-h="1" title="Naslov 1">Naslov 1</button>
-      <button type="button" class="tb h2" data-h="2" title="Podnaslov">Podnaslov</button>
-      <button type="button" class="tb p" data-h="0" title="Navadno besedilo">Navadno besedilo</button>
-      <span class="sep"></span>
-      <button type="button" class="tb b" data-f="bold" title="Krepko (Ctrl+B)">K</button>
-      <button type="button" class="tb i" data-f="italic" title="Ležeče (Ctrl+I)">L</button>
-      <button type="button" class="tb u" data-f="underline" title="Podčrtano (Ctrl+U)">P</button>
-      <span class="sep"></span>
-      ${PORAVNAVE.map(([v, t, ik]) => `<button type="button" class="tb a" data-a="${v}" title="${t}" aria-label="${t}">${ik}</button>`).join('')}
-      <span class="sep"></span>
-      <span class="barva"><button type="button" class="tb c" data-barva title="Barva besedila" aria-label="Barva besedila" aria-expanded="false">A<i></i></button>
-        <div class="paleta" data-paleta hidden>${BARVE.map(([b, t]) => `<button type="button" data-c="${b}" style="background:${b}" title="${t}" aria-label="${t}"></button>`).join('')}
-          <button type="button" class="brez" data-c="" title="Črna (brez barve)">⬛ Črna</button></div></span>
+      <span class="skupina"><select data-slog title="Vrsta besedila" aria-label="Vrsta besedila">
+        <option value="0">Navadno besedilo</option><option value="1">Naslov 1</option><option value="2">Podnaslov</option>
+      </select>
       <select data-size title="Velikost pisave" aria-label="Velikost pisave">
         <option value="14px">Mala pisava</option><option value="">Navadna pisava</option>
         <option value="24px">Velika pisava</option><option value="32px">Zelo velika pisava</option>
-      </select>
+      </select></span>
+      <span class="sep"></span>
+      <span class="skupina"><button type="button" class="tb b" data-f="bold" title="Krepko (Ctrl+B)">K</button>
+      <button type="button" class="tb i" data-f="italic" title="Ležeče (Ctrl+I)">L</button>
+      <button type="button" class="tb u" data-f="underline" title="Podčrtano (Ctrl+U)">P</button>
+      <span class="barva"><button type="button" class="tb c" data-barva title="Barva besedila" aria-label="Barva besedila" aria-expanded="false">A<i></i></button>
+        <div class="paleta" data-paleta hidden>${BARVE.map(([b, t]) => `<button type="button" data-c="${b}" style="background:${b}" title="${t}" aria-label="${t}"></button>`).join('')}
+          <button type="button" class="brez" data-c="" title="Črna (brez barve)">⬛ Črna</button></div></span></span>
+      <span class="sep"></span>
+      <span class="barva"><button type="button" class="tb a" data-por title="Poravnava" aria-label="Poravnava" aria-expanded="false">${PORAVNAVE[0][2]}</button>
+        <div class="paleta vrsta" data-porpal hidden>${PORAVNAVE.map(([v, t, ik]) => `<button type="button" class="tb a" data-a="${v}" title="${t}" aria-label="${t}">${ik}</button>`).join('')}</div></span>
       <span class="status" data-status></span>
     </div>
     <input type="text" class="ed-title" data-naslov maxlength="200" placeholder="Naslov besedila" aria-label="Naslov besedila">
@@ -406,16 +409,24 @@ function urejevalnik(el, o) {
   }
 
   // Orodna vrstica
-  const $bar = el.querySelector('.ed-bar'), $size = el.querySelector('[data-size]');
+  const $bar = el.querySelector('.ed-bar'), $size = el.querySelector('[data-size]'), $slog = el.querySelector('[data-slog]');
   $size.value = '';
   const $barva = el.querySelector('[data-barva]'), $paleta = el.querySelector('[data-paleta]');
-  const paleta = odpri => { $paleta.hidden = !odpri; $barva.setAttribute('aria-expanded', String(odpri)); };
-  document.addEventListener('mousedown', e => { if (!$paleta.hidden && !e.target.closest('.barva')) paleta(false); });
-  el.addEventListener('keydown', e => { if (e.key === 'Escape' && !$paleta.hidden) { paleta(false); q.focus(); } });
+  const $por = el.querySelector('[data-por]'), $porpal = el.querySelector('[data-porpal]');
+  const paleta = odpri => { $paleta.hidden = !odpri; $barva.setAttribute('aria-expanded', String(odpri)); if (odpri) poravnave(false); };
+  const poravnave = odpri => { $porpal.hidden = !odpri; $por.setAttribute('aria-expanded', String(odpri)); if (odpri) paleta(false); };
+  const ikonaPoravnave = a => { $por.innerHTML = (PORAVNAVE.find(([v]) => v === a) || PORAVNAVE[0])[2]; };
+  document.addEventListener('mousedown', e => {
+    if (!$paleta.hidden && !$barva.parentNode.contains(e.target)) paleta(false);
+    if (!$porpal.hidden && !$por.parentNode.contains(e.target)) poravnave(false);
+  });
+  el.addEventListener('keydown', e => { if (e.key === 'Escape' && (!$paleta.hidden || !$porpal.hidden)) { paleta(false); poravnave(false); q.focus(); } });
   $bar.addEventListener('mousedown', e => { if (e.target.closest('button')) e.preventDefault(); });
   $bar.addEventListener('click', e => {
     const b = e.target.closest('button'); if (!b || zaklenjeno) return;
     if (b === $barva) { paleta($paleta.hidden); return; }
+    if (b === $por) { poravnave($porpal.hidden); return; }
+    if (b.dataset.a != null) poravnave(false);
     if (b.dataset.u) { q.focus(); q.history[b.dataset.u](); posodobi(); return; }
     if (vNaslovu && (b.dataset.a != null || b.dataset.c != null)) {
       if (b.dataset.a != null) nf.a = b.dataset.a === 'center' || b.dataset.a === 'right' ? b.dataset.a : 'left';
@@ -426,18 +437,20 @@ function urejevalnik(el, o) {
     q.focus();
     if (b.dataset.c != null) { q.format('color', b.dataset.c || false, 'user'); paleta(false); }
     else if (b.dataset.a != null) q.format('align', b.dataset.a || false, 'user');
-    else if (b.dataset.h != null) q.format('header', b.dataset.h === '0' ? false : Number(b.dataset.h), 'user');
     else if (b.dataset.f) { const f = q.getFormat(); q.format(b.dataset.f, !f[b.dataset.f], 'user'); }
     posodobi();
   });
+  $slog.addEventListener('change', () => { if (zaklenjeno) return; q.focus(); q.format('header', $slog.value === '0' ? false : Number($slog.value), 'user'); posodobi(); });
   $size.addEventListener('change', () => { if (zaklenjeno) return; q.focus(); q.format('size', $size.value || false, 'user'); posodobi(); });
   function posodobi() {
     const sel = q.getSelection(); if (!sel) return;
     const f = q.getFormat(sel);
-    $bar.querySelectorAll('[data-h]').forEach(b => b.classList.toggle('on', String(f.header || 0) === b.dataset.h));
+    $slog.value = String(f.header === 1 || f.header === 2 ? f.header : 0);
     $bar.querySelectorAll('[data-f]').forEach(b => b.classList.toggle('on', !!f[b.dataset.f]));
     $size.value = typeof f.size === 'string' ? f.size : '';
-    $bar.querySelectorAll('[data-a]').forEach(b => b.classList.toggle('on', (typeof f.align === 'string' ? f.align : '') === b.dataset.a));
+    const a = typeof f.align === 'string' ? f.align : '';
+    $bar.querySelectorAll('[data-a]').forEach(b => b.classList.toggle('on', a === b.dataset.a));
+    ikonaPoravnave(a);
     const c = typeof f.color === 'string' ? f.color : '';
     $barva.style.color = c || '';
     $paleta.querySelectorAll('[data-c]').forEach(b => b.classList.toggle('on', b.dataset.c === c));
@@ -446,7 +459,8 @@ function urejevalnik(el, o) {
   function posodobiNaslov() {
     const a = nf.a === 'left' ? '' : nf.a || 'center';
     $bar.querySelectorAll('[data-a]').forEach(b => b.classList.toggle('on', b.dataset.a === a));
-    $bar.querySelectorAll('[data-h],[data-f]').forEach(b => b.classList.remove('on'));
+    ikonaPoravnave(a);
+    $bar.querySelectorAll('[data-f]').forEach(b => b.classList.remove('on'));
     $barva.style.color = nf.c || '';
     $paleta.querySelectorAll('[data-c]').forEach(b => b.classList.toggle('on', b.dataset.c === (nf.c || '')));
   }

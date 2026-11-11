@@ -45,8 +45,11 @@ in morajo biti varni: majhni, preverjeni, takoj objavljeni.
 
 ## Odločitve in zgodovina
 - Črkovalnik brskalnika je bil izklopljen, 10. 11. 2026 pa spet **vklopljen** (Nino je želel, da podčrta napake).
-- Orodna vrstica: Razveljavi/Ponovi, Naslov 1, Podnaslov, Navadno, K/L/P, poravnave, barva,
-  velikost. Ko je kazalec v naslovu, poravnava in barva veljata za naslov.
+- Orodna vrstica (11. 11. 2026 urejena v skupine, da gre v eno vrsto pri ~870 px):
+  ↶ ↷ | spustni meni vrste besedila (Navadno besedilo / Naslov 1 / Podnaslov) in velikosti |
+  K L P in barva | poravnava (en gumb z ikono trenutne poravnave, odpre okence s štirimi).
+  Skupine (`.skupina`) se lomijo samo kot celota. Ko je kazalec v naslovu, poravnava in barva
+  veljata za naslov.
 - Brez strežniške zgodovine različic, razen `rezerve`. Če učenec zbriše in shrani, je prejšnje
   besedilo ohranjeno samo v rezervi ali v `popravki.pred`/`po`.
 - Prenos projekta k drugi učiteljici: skrbnik (`sola_pis_a_prenesi`) ali SQL `update sola_pis_projekti set ucitelj_id = …`.
