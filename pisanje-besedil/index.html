@@ -706,12 +706,14 @@ async function skrbnikUcitelji(tid) {
   SKRBNIK = sk;
   const hero = `<section class="hero"><h1>✍️ Moja besedila</h1><p>Učitelji in njihovi projekti. Kot skrbnik lahko vsak projekt odprete, urejate in prenesete drugemu učitelju.</p></section>${skrbnikZavihki('vsi')}`;
   if (!tid) {
-    $main.innerHTML = `${hero}<div class="cards">${sk.map(u => `<a class="card" href="#/ucitelji/${u.id || 'brez'}" style="text-decoration:none;color:inherit">
+    const z = sk.filter(u => u.projektov > 0), brez = sk.length - z.length;
+    $main.innerHTML = `${hero}${z.length ? '' : '<div class="panel empty">Noben učitelj še nima projektov.</div>'}<div class="cards">${z.map(u => `<a class="card" href="#/ucitelji/${u.id || 'brez'}" style="text-decoration:none;color:inherit">
       <h3>👩‍🏫 ${esc(u.ime)}${u.jaz ? ' <span class="tag grey">vi</span>' : ''}</h3>
       ${u.username && u.username !== u.ime ? `<div class="meta">${esc(u.username)}</div>` : ''}
       <div class="tags"><span class="tag">${u.projektov} ${({ 1: 'projekt', 2: 'projekta', 3: 'projekti', 4: 'projekti' })[u.projektov % 100] || 'projektov'}</span>${u.besedil ? `<span class="tag ok">${besedil(u.besedil)}</span>` : ''}</div>
       ${u.posodobljeno ? `<div class="meta">Zadnja sprememba: ${cas(u.posodobljeno)}</div>` : ''}
-    </a>`).join('')}</div>`;
+    </a>`).join('')}</div>
+    ${brez ? `<p class="meta" style="margin-top:10px">Učiteljev brez projektov: ${brez} (niso prikazani; projekt jim lahko prenesete v nastavitvah projekta).</p>` : ''}`;
     return;
   }
   const u = sk.find(x => (x.id || 'brez') === tid);
