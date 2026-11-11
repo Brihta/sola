@@ -939,6 +939,9 @@ async function uciteljBesedilo(pid, bid) {
       ? '✍️ Način »Popravi sam«: popravljate kopijo, učenčevo besedilo ostane, kot je. Učenec vidi vaše popravke v rdečem in jih vnese sam.'
       : 'Popravke pišite kar v besedilo; shranijo se sami. V rdečem okvirju sproti vidite, kar bo učenec videl kot popravke.'}
       <button class="btn btn-sm" id="pop-tg" type="button">Skrij popravke</button></div>
+    ${d.rezerva && (d.rezerva.besed || 0) > (d.besed || 0) ? `<div class="note warn row" style="justify-content:space-between">
+      <span>⚠️ Besedilo se je ${cas(d.rezerva.cas)} naenkrat močno skrajšalo (prej ${besed(d.rezerva.besed)}, zdaj ${besed(d.besed || 0)}). Prejšnja različica je shranjena.</span>
+      <button class="btn btn-sm" id="rez" type="button">↶ Vrni prejšnjo različico</button></div>` : ''}
     <div class="razdeli" id="razdeli"><section class="popravki" id="pop" aria-label="Popravki učitelja"></section><div id="ed"></div></div>
     <div class="panel">
       <h2>💬 Komentar za učenca</h2>
@@ -970,6 +973,14 @@ async function uciteljBesedilo(pid, bid) {
     const skrij = document.getElementById('razdeli').classList.toggle('brez');
     e.target.textContent = skrij ? 'Pokaži popravke' : 'Skrij popravke';
     $main.classList.toggle('siroko', !skrij);
+  });
+  const $rez = document.getElementById('rez');
+  if ($rez) $rez.addEventListener('click', async () => {
+    if (!confirm('Vrnem prejšnjo, daljšo različico besedila? Trenutno besedilo se shrani, tako da lahko vračanje tudi prekličete.')) return;
+    if (aktivni) await aktivni.shrani();
+    const ok = await rpc('sola_pis_u_vrni_rezervo', { p_seja: S(), p_id: bid });
+    if (ok !== true) return alert(NI_POVEZAVE);
+    zapustiUrejevalnik(); uciteljBesedilo(pid, bid);
   });
   const $kom = document.getElementById('kom'), $st = document.getElementById('kom-st');
   $kom.addEventListener('input', () => { $st.textContent = 'Ni shranjeno'; $st.className = 'status bad'; });

@@ -64,6 +64,9 @@ create table if not exists sola_pis_besedila (
   unique (projekt_id, student_id)
 );
 alter table sola_pis_besedila add column if not exists popravki jsonb;
+-- Varovalka: ko se besedilo naenkrat močno skrajša (npr. Ctrl+A in tipka), se prejšnja
+-- različica shrani sem: {naslov, vsebina, besedilo, besed, cas}. Učitelj jo vrne z enim klikom.
+alter table sola_pis_besedila add column if not exists rezerva jsonb;
 alter table sola_pis_besedila enable row level security;
 create index if not exists sola_pis_besedila_student on sola_pis_besedila (student_id);
 
@@ -142,6 +145,8 @@ create or replace function public._sola_pis_zapisi(p_id uuid, p_verzija int, p_n
                                                   p_vsebina jsonb, p_besedilo text, p_kdo text)
 returns jsonb language plpgsql security definer set search_path = public as $$
 declare v int; b record;
+        nb int := coalesce(array_length(regexp_split_to_array(btrim(coalesce(p_besedilo, '')), '\s+'), 1), 0)
+                  * (btrim(coalesce(p_besedilo, '')) <> '')::int;
 begin
   if jsonb_typeof(p_vsebina) <> 'object' or length(p_vsebina::text) > 400000
      or length(coalesce(p_besedilo, '')) > 100000 or length(coalesce(p_naslov, '')) > 200 then
@@ -149,9 +154,13 @@ begin
   end if;
   update sola_pis_besedila
      set naslov = coalesce(p_naslov, ''), vsebina = p_vsebina, besedilo = coalesce(p_besedilo, ''),
-         besed = coalesce(array_length(regexp_split_to_array(btrim(coalesce(p_besedilo, '')), '\s+'), 1), 0)
-                 * (btrim(coalesce(p_besedilo, '')) <> '')::int,
+         besed = nb,
          verzija = verzija + 1, urejal = p_kdo, posodobljeno = now(),
+         -- Varovalka: besedilo z vsaj 15 besedami se je naenkrat več kot prepolovilo.
+         rezerva = case when besed >= 15 and nb * 2 < besed and besed - nb >= 10
+                        then jsonb_build_object('naslov', naslov, 'vsebina', vsebina, 'besedilo', besedilo,
+                                                'besed', besed, 'cas', now())
+                        else rezerva end,
          -- Učiteljev popravek: »pred« je učenčeva različica, preden jo je učitelj začel popravljati
          -- (ostane ista, dokler učitelj popravlja), »po« je učiteljeva zadnja različica.
          -- Ko učenec nato piše naprej in učitelj spet popravlja, se začne nov krog.
@@ -429,7 +438,7 @@ begin
             'id', b.id, 'projekt_id', b.projekt_id, 'ucenec', public._sola_pis_ime(b.student_id),
             'naslov', b.naslov, 'vsebina', b.vsebina, 'besedilo', b.besedilo, 'verzija', b.verzija, 'urejal', b.urejal,
             'besed', b.besed, 'komentar', b.komentar, 'komentar_cas', b.komentar_cas, 'posodobljeno', b.posodobljeno,
-            'popravki', b.popravki,
+            'popravki', b.popravki, 'rezerva', b.rezerva - 'vsebina',
             'presoje', (select coalesce(jsonb_agg(jsonb_build_object(
                           'ocenjevalec', public._sola_pis_ime(r.ocenjevalec), 'zvezda1', r.zvezda1,
                           'zvezda2', r.zvezda2, 'zelja', r.zelja, 'oddano', r.oddano) order by r.oddano nulls last), '[]'::jsonb)
@@ -474,6 +483,22 @@ begin
   returning (popravki ->> 'verzija')::int into v;
   if not found then return jsonb_build_object('ok', false, 'napaka', 'NI'); end if;
   return jsonb_build_object('ok', true, 'verzija', v);
+end; $$;
+
+-- Vrne shranjeno prejšnjo različico (varovalko). Trenutna različica gre v varovalko,
+-- tako da se da vračanje tudi preklicati.
+create or replace function public.sola_pis_u_vrni_rezervo(p_seja uuid, p_id uuid)
+returns boolean language plpgsql security definer set search_path = public as $$
+begin
+  if not public._sola_pis_lastnik_b(p_seja, p_id) then return false; end if;
+  update sola_pis_besedila
+     set naslov = coalesce(rezerva ->> 'naslov', ''), vsebina = rezerva -> 'vsebina',
+         besedilo = coalesce(rezerva ->> 'besedilo', ''), besed = coalesce((rezerva ->> 'besed')::int, 0),
+         rezerva = jsonb_build_object('naslov', naslov, 'vsebina', vsebina, 'besedilo', besedilo,
+                                      'besed', besed, 'cas', now()),
+         verzija = verzija + 1, posodobljeno = now()
+   where id = p_id and rezerva is not null and jsonb_typeof(rezerva -> 'vsebina') = 'object';
+  return found;
 end; $$;
 
 create or replace function public.sola_pis_u_komentar(p_seja uuid, p_id uuid, p_komentar text)
@@ -558,5 +583,6 @@ grant execute on function public.sola_pis_u_projekt(uuid, uuid) to anon;
 grant execute on function public.sola_pis_u_besedila(uuid, uuid[]) to anon;
 grant execute on function public.sola_pis_u_shrani(uuid, uuid, int, text, jsonb, text) to anon;
 grant execute on function public.sola_pis_u_komentar(uuid, uuid, text) to anon;
+grant execute on function public.sola_pis_u_vrni_rezervo(uuid, uuid) to anon;
 grant execute on function public.sola_pis_u_presoja_pocisti(uuid, uuid, uuid) to anon;
 grant execute on function public.sola_pis_u_presoja(uuid, uuid, boolean, int, boolean) to anon;
