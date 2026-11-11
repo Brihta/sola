@@ -86,6 +86,7 @@
   .tb.on { background: #0ea5e9; border-color: #0ea5e9; color: #fff; }
   .tb.b { font-weight: 900; } .tb.i { font-style: italic; font-family: Georgia, serif; } .tb.u { text-decoration: underline; }
   .ed-bar select { width: auto; min-height: 40px; padding: 0 10px; border-radius: 10px; font-weight: 700; cursor: pointer; }
+  .ed-bar select:disabled { cursor: default; background: #f1f5f9; color: #475569; }
   .tb.a { padding: 0 8px; } .tb.a svg { display: block; }
   .barva { position: relative; }
   .ed-bar .skupina { display: flex; gap: 6px; flex-wrap: wrap; }
@@ -100,18 +101,18 @@
   .paleta .brez { grid-column: 1 / -1; width: auto; height: 34px; border-radius: 10px; background: #fff; font-weight: 800; }
   .status { margin-left: auto; font-weight: 800; font-size: .9rem; color: var(--muted); white-space: nowrap; }
   .status.ok { color: var(--good); } .status.bad { color: var(--bad); }
-  .ed-title { width: 100%; text-align: center; border: 0 !important; border-bottom: 1.5px dashed var(--line-2) !important; border-radius: 0 !important; padding: 18px 24px 10px !important; font-size: 1.6rem; font-weight: 900; outline: none; }
+  .ed-title { width: 100%; text-align: center; border: 0 !important; border-bottom: 1.5px dashed var(--line-2) !important; border-radius: 0 !important; padding: 18px 24px 10px !important; font-size: 2rem; font-weight: 900; outline: none; }
   .ed-wrap.zaklenjen .ed-title { border-radius: 20px 20px 0 0 !important; background: none; color: inherit; }
   .ed-title::placeholder { color: #c7c2b6; }
   .ql-container { font-family: 'Nunito', system-ui, sans-serif; font-size: 18px; }
   .ed-wrap .ql-editor { min-height: 55vh; padding: 16px 24px 40px; line-height: 1.6; }
   .ed-wrap .ql-editor:focus-visible { outline: none; }
   .ql-editor.ql-blank::before { color: #b8b3a6; font-style: normal; left: 24px; }
-  .ql-editor h1 { font-size: 2em; font-weight: 900; margin: .3em 0 .2em; }
+  .ql-editor h1 { font-size: 1.7em; font-weight: 900; margin: .3em 0 .2em; }
   .ql-editor h2 { font-size: 1.45em; font-weight: 800; margin: .3em 0 .2em; color: #075985; }
   .ql-editor p { margin: 0 0 .25em; }
   .bere .ql-editor { padding: 6px 2px; min-height: 0; }
-  .bere h1.naslov { text-align: center; font-size: 1.5rem; margin-bottom: 4px; }
+  .bere h1.naslov { text-align: center; font-size: 2rem; margin-bottom: 4px; }
 
   /* Popravki učitelja (levo) ob besedilu (desno) */
   main.siroko { max-width: 1400px; }
@@ -123,7 +124,7 @@
   .popravki .glava-p { position: sticky; top: 0; z-index: 1; background: #fff1f2; padding: 10px 16px; border-bottom: 1.5px solid #fecdd3; }
   .popravki .glava-p h2 { font-size: 1.1rem; color: #9f1239; margin: 0; }
   .popravki .legenda { font-size: .85rem; font-weight: 700; color: var(--muted); margin-top: 4px; display: flex; gap: 12px; flex-wrap: wrap; }
-  .popravki .p-naslov { text-align: center; font-size: 1.6rem; font-weight: 900; padding: 14px 20px 6px; }
+  .popravki .p-naslov { text-align: center; font-size: 2rem; font-weight: 900; padding: 14px 20px 6px; }
   .popravki .p-besedilo { padding: 6px 20px 24px; font-size: 18px; line-height: 1.75; white-space: pre-wrap; overflow-wrap: anywhere; }
   .popravki del, .popravki ins { border-radius: 4px; padding: 0 1px; }
   .popravki del { color: #be123c; text-decoration: line-through 2px; background: #ffe4e6; }
@@ -300,7 +301,8 @@ function urejevalnik(el, o) {
       <button type="button" class="tb" data-u="redo" title="Ponovi (Ctrl+Y)" aria-label="Ponovi">↷</button></span>
       <span class="sep"></span>
       <span class="skupina"><select data-slog title="Vrsta besedila" aria-label="Vrsta besedila">
-        <option value="0">Navadno besedilo</option><option value="1">Naslov 1</option><option value="2">Podnaslov</option>
+        <option value="0">Navadno besedilo</option><option value="2">Podnaslov</option>
+        <option value="n" hidden disabled>Glavni naslov</option><option value="1" hidden disabled>Velik naslov (staro)</option>
       </select>
       <select data-size title="Velikost pisave" aria-label="Velikost pisave">
         <option value="14px">Mala pisava</option><option value="">Navadna pisava</option>
@@ -318,7 +320,7 @@ function urejevalnik(el, o) {
         <div class="paleta vrsta" data-porpal hidden>${PORAVNAVE.map(([v, t, ik]) => `<button type="button" class="tb a" data-a="${v}" title="${t}" aria-label="${t}">${ik}</button>`).join('')}</div></span>
       <span class="status" data-status></span>
     </div>
-    <input type="text" class="ed-title" data-naslov maxlength="200" placeholder="Naslov besedila" aria-label="Naslov besedila">
+    <input type="text" class="ed-title" data-naslov maxlength="200" placeholder="Glavni naslov" aria-label="Glavni naslov">
     <div data-q></div>
   </div>`;
   const $naslov = el.querySelector('[data-naslov]'), $status = el.querySelector('[data-status]');
@@ -445,6 +447,7 @@ function urejevalnik(el, o) {
   function posodobi() {
     const sel = q.getSelection(); if (!sel) return;
     const f = q.getFormat(sel);
+    $slog.disabled = $size.disabled = false;
     $slog.value = String(f.header === 1 || f.header === 2 ? f.header : 0);
     $bar.querySelectorAll('[data-f]').forEach(b => b.classList.toggle('on', !!f[b.dataset.f]));
     $size.value = typeof f.size === 'string' ? f.size : '';
@@ -461,6 +464,7 @@ function urejevalnik(el, o) {
     $bar.querySelectorAll('[data-a]').forEach(b => b.classList.toggle('on', b.dataset.a === a));
     ikonaPoravnave(a);
     $bar.querySelectorAll('[data-f]').forEach(b => b.classList.remove('on'));
+    $slog.value = 'n'; $size.value = ''; $slog.disabled = $size.disabled = true;
     $barva.style.color = nf.c || '';
     $paleta.querySelectorAll('[data-c]').forEach(b => b.classList.toggle('on', b.dataset.c === (nf.c || '')));
   }

@@ -46,9 +46,14 @@ in morajo biti varni: majhni, preverjeni, takoj objavljeni.
 ## Odločitve in zgodovina
 - Črkovalnik brskalnika je bil izklopljen, 10. 11. 2026 pa spet **vklopljen** (Nino je želel, da podčrta napake).
 - Orodna vrstica (11. 11. 2026 urejena v skupine, da gre v eno vrsto pri ~870 px):
-  ↶ ↷ | spustni meni vrste besedila (Navadno besedilo / Naslov 1 / Podnaslov) in velikosti |
+  ↶ ↷ | spustni meni vrste besedila (Navadno besedilo / Podnaslov) in velikosti |
   K L P in barva | poravnava (en gumb z ikono trenutne poravnave, odpre okence s štirimi).
-  Skupine (`.skupina`) se lomijo samo kot celota. Ko je kazalec v naslovu, poravnava in barva
+  Skupine (`.skupina`) se lomijo samo kot celota.
+- Hierarhija (Ninova odločitev 11. 11. 2026): polje nad urejevalnikom je **Glavni naslov**
+  (edini velik naslov, 2rem); znotraj besedila so samo **Podnaslovi** (h2) za sekcije in navadno
+  besedilo. Naslov 1 (h1) ni več v meniju; stara besedila s h1 se še prikažejo (1.7em, manjše od
+  glavnega naslova). Ko je kazalec v glavnem naslovu, meni pokaže »Glavni naslov«, meni vrste in
+  velikosti sta onemogočena. Ko je kazalec v naslovu, poravnava in barva
   veljata za naslov.
 - Brez strežniške zgodovine različic, razen `rezerve`. Če učenec zbriše in shrani, je prejšnje
   besedilo ohranjeno samo v rezervi ali v `popravki.pred`/`po`.
