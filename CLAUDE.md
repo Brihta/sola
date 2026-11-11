@@ -1,6 +1,7 @@
 # Brihta — Šola (brihta.github.io/sola)
 
-Stran za učence: predmeti, gradiva za uro in spletni kvizi. Nino je učitelj;
+Stran za učence: predmeti, gradiva za uro in spletni kvizi. Kazalo vseh projektov: `matematika/KAZALO.md`
+(repozitorij Brihta/matematika). Nino je učitelj;
 piši mu v slovenščini.
 
 ## Kvizi — naredi IN objavi jih sam
