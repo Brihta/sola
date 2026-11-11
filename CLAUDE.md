@@ -108,3 +108,8 @@ GitHub Action posodobi `gradiva.json` (v 1–2 minutah). Posamezne datoteke
 neposredno v mapi predmeta še delujejo, a uro vedno objavi kot mapo.
 
 Več v README.md.
+
+## Moja besedila (pisanje-besedil/)
+
+Vse znanje o programu Moja besedila (baza, načini popravljanja, objava, odločitve)
+je v `pisanje-besedil/CLAUDE.md`. Preberi ga, preden kaj spreminjaš.
