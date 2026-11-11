@@ -668,11 +668,19 @@ async function ucenecPresoja(pid, izbran) {
 
 /* ═══════════════════ UČITELJ ═══════════════════ */
 const S = () => ucitelj.seja;
+/* Skrbnik (Nino) vidi zavihek »Vsi učitelji«. */
+let SKRBNIK = null; // seznam učiteljev ali null
+const skrbnikZavihki = izbran => SKRBNIK ? `<div class="zavihki"><a class="btn ${izbran === 'moji' ? 'btn-go' : ''}" href="#/">📁 Moji projekti</a>
+  <a class="btn ${izbran === 'vsi' ? 'btn-go' : ''}" href="#/ucitelji">👩‍🏫 Vsi učitelji</a></div>` : '';
+
 async function uciteljDomov() {
-  const [r, mojeIme] = await Promise.all([rpc('sola_pis_u_projekti', { p_seja: S() }), rpc('sola_pis_u_moje_ime', { p_seja: S(), p_ime: null })]);
+  const [r, mojeIme, sk] = await Promise.all([rpc('sola_pis_u_projekti', { p_seja: S() }), rpc('sola_pis_u_moje_ime', { p_seja: S(), p_ime: null }),
+    rpc('sola_pis_a_ucitelji', { p_seja: S() })]);
+  SKRBNIK = Array.isArray(sk) ? sk : null;
   if (r === NEDOSEGLJIVO) return napaka(NI_POVEZAVE);
   if (!Array.isArray(r)) return napaka('Prijava je potekla. <a href="../?prijava=pisanje">Prijavi se znova</a>.');
   $main.innerHTML = `<section class="hero"><h1>✍️ Moja besedila</h1><p>Projekti, besedila učencev, vrstniška presoja in izvoz v PDF.</p></section>
+    ${skrbnikZavihki('moji')}
     ${ZA_UCENCE ? '' : '<div class="note warn">🔒 Stran je zaenkrat vidna samo učiteljem. Učenci je ne vidijo.</div>'}
     <div class="panel">
       <div class="field" style="margin:0"><label for="moje-ime">👩‍🏫 Vaše ime, ki ga vidijo učenci pri vaših projektih</label>
@@ -688,7 +696,34 @@ async function uciteljDomov() {
       <div class="msg" id="msg"></div>
       <button class="btn btn-go" id="nov" type="button">Ustvari projekt</button>
     </div>
-    <div class="cards">${r.map(p => `<div class="card ${p.arhiviran ? 'arh' : ''}">
+    ${projektKartice(r)}`;
+  dokonciDomov();
+}
+async function skrbnikUcitelji(tid) {
+  const sk = await rpc('sola_pis_a_ucitelji', { p_seja: S() });
+  if (sk === NEDOSEGLJIVO) return napaka(NI_POVEZAVE);
+  if (!Array.isArray(sk)) return uciteljDomov();
+  SKRBNIK = sk;
+  const hero = `<section class="hero"><h1>✍️ Moja besedila</h1><p>Učitelji in njihovi projekti. Kot skrbnik lahko vsak projekt odprete, urejate in prenesete drugemu učitelju.</p></section>${skrbnikZavihki('vsi')}`;
+  if (!tid) {
+    $main.innerHTML = `${hero}<div class="cards">${sk.map(u => `<a class="card" href="#/ucitelji/${u.id || 'brez'}" style="text-decoration:none;color:inherit">
+      <h3>👩‍🏫 ${esc(u.ime)}${u.jaz ? ' <span class="tag grey">vi</span>' : ''}</h3>
+      ${u.username && u.username !== u.ime ? `<div class="meta">${esc(u.username)}</div>` : ''}
+      <div class="tags"><span class="tag">${u.projektov} ${({ 1: 'projekt', 2: 'projekta', 3: 'projekti', 4: 'projekti' })[u.projektov % 100] || 'projektov'}</span>${u.besedil ? `<span class="tag ok">${besedil(u.besedil)}</span>` : ''}</div>
+      ${u.posodobljeno ? `<div class="meta">Zadnja sprememba: ${cas(u.posodobljeno)}</div>` : ''}
+    </a>`).join('')}</div>`;
+    return;
+  }
+  const u = sk.find(x => (x.id || 'brez') === tid);
+  const r = await rpc('sola_pis_a_projekti', { p_seja: S(), p_ucitelj: tid === 'brez' ? null : tid });
+  if (!Array.isArray(r)) return napaka(NI_POVEZAVE);
+  $main.innerHTML = `${hero}<div class="crumb"><a href="#/ucitelji">← Vsi učitelji</a></div>
+    <h2 style="margin:0 0 12px">👩‍🏫 ${esc(u ? u.ime : 'Učitelj')}</h2>${projektKartice(r)}`;
+}
+
+function projektKartice(r) {
+  if (!r.length) return '<div class="panel empty">Ni projektov.</div>';
+  return `<div class="cards">${r.map(p => `<div class="card ${p.arhiviran ? 'arh' : ''}">
       <h3>${esc(p.ime)}</h3>
       ${p.opis ? `<p class="opis">${esc(p.opis)}</p>` : ''}
       <div class="tags">
@@ -702,6 +737,8 @@ async function uciteljDomov() {
       ${p.posodobljeno ? `<div class="meta">Zadnja sprememba: ${cas(p.posodobljeno)}</div>` : ''}
       <div class="row"><a class="btn btn-go" href="#/u/${p.id}">Odpri</a></div>
     </div>`).join('')}</div>`;
+}
+function dokonciDomov() {
   document.getElementById('moje-ime-ok').addEventListener('click', async () => {
     const v = document.getElementById('moje-ime').value.trim(), st = document.getElementById('moje-ime-st');
     if (!v) return;
@@ -718,12 +755,15 @@ async function uciteljDomov() {
 }
 
 async function uciteljProjekt(pid) {
-  const p = await rpc('sola_pis_u_projekt', { p_seja: S(), p_id: pid });
+  const [p, sk] = await Promise.all([rpc('sola_pis_u_projekt', { p_seja: S(), p_id: pid }), rpc('sola_pis_a_ucitelji', { p_seja: S() })]);
+  SKRBNIK = Array.isArray(sk) ? sk : null;
   if (p === NEDOSEGLJIVO) return napaka(NI_POVEZAVE);
   if (!p) return napaka('Projekta ni. <a href="#/">Nazaj</a>');
   const b = p.besedila.slice().sort((x, y) => (x.ucenec.razred || '').localeCompare(y.ucenec.razred || '') || x.ucenec.ime.localeCompare(y.ucenec.ime, 'sl'));
   const izbrani = new Set();
-  $main.innerHTML = `<div class="crumb"><a href="#/">← Vsi projekti</a></div>
+  const tuj = SKRBNIK && !p.moj;
+  $main.innerHTML = `<div class="crumb">${tuj ? `<a href="#/ucitelji/${p.ucitelj_id || 'brez'}">← Projekti: ${esc(p.ucitelj || 'brez lastnice')}</a>` : '<a href="#/">← Vsi projekti</a>'}</div>
+    ${tuj ? `<div class="note warn">👩‍🏫 To je projekt učitelja <b>${esc(p.ucitelj || 'brez lastnice')}</b>. Kot skrbnik ga lahko urejate; spremembe vidita učitelj in učenci.</div>` : ''}
     <section class="hero"><h1>${esc(p.ime)}</h1><p>${p.razred ? esc(p.razred) + '. razred · ' : ''}${besedil(b.filter(x => x.besed).length)}${p.zaklenjen ? ' · 🔒 zaklenjen (učenci besedil ne morejo spreminjati)' : ''}${p.arhiviran ? ' · 🗄️ zaprt (učenci ga ne vidijo)' : ''}</p></section>
 
     <div class="panel">
@@ -774,6 +814,10 @@ async function uciteljProjekt(pid) {
           <option value="1">Popravi sam: popravke označim, učenec jih vnese sam</option>
         </select>
         <small id="nacin-msg">${p.popravi_sam ? 'Učenec vidi vaše popravke v rdečem, svoje besedilo pa popravi sam. Vi vidite v zelenem, kaj je popravil.' : 'Učenec vidi vaše popravke v rdečem in že popravljeno besedilo.'}</small></div>
+      ${SKRBNIK ? `<div class="field"><label for="lastnik">Lastnik projekta <small>(skrbnik; projekt z vsemi besedili se prenese)</small></label>
+        <div class="row"><select id="lastnik" style="max-width:320px">${SKRBNIK.filter(u => u.id).map(u => `<option value="${u.id}" ${u.id === p.ucitelj_id ? 'selected' : ''}>${esc(u.ime)}${u.username && u.username !== u.ime ? ' (' + esc(u.username) + ')' : ''}</option>`).join('')}
+          ${p.ucitelj_id ? '' : '<option value="" selected>— brez lastnice —</option>'}</select>
+        <button class="btn" id="prenesi" type="button">Prenesi</button></div></div>` : ''}
       <div class="row">
         <button class="btn btn-go" id="nast">Shrani</button>
         <button class="btn" id="zakl">${p.zaklenjen ? '🔓 Odkleni projekt' : '🔒 Zakleni projekt (učenci berejo, ne pišejo)'}</button>
@@ -821,6 +865,14 @@ async function uciteljProjekt(pid) {
   g('nast').addEventListener('click', async () => {
     const r = await rpc('sola_pis_u_projekt_shrani', { p_seja: S(), p_id: pid, p_ime: g('ime').value, p_opis: g('opis').value, p_razred: g('raz').value });
     if (typeof r === 'string') uciteljProjekt(pid); else nMsg.textContent = 'Ni shranjeno (ime ne sme biti prazno).';
+  });
+  if (g('prenesi')) g('prenesi').addEventListener('click', async () => {
+    const t = g('lastnik').value; if (!t || t === p.ucitelj_id) return;
+    const kdo = g('lastnik').selectedOptions[0].textContent;
+    if (!confirm(`Prenesem projekt »${p.ime}« z vsemi besedili k: ${kdo}?`)) return;
+    const ok = await rpc('sola_pis_a_prenesi', { p_seja: S(), p_projekt: pid, p_ucitelj: t });
+    if (ok !== true) return alert(NI_POVEZAVE);
+    uciteljProjekt(pid);
   });
   g('nacin').value = p.popravi_sam ? '1' : '0';
   g('nacin').addEventListener('change', async () => {
@@ -965,6 +1017,7 @@ function usmeri() {
   if (ucitelj) {
     if (d[0] === 'u' && d[1] && d[2]) return uciteljBesedilo(d[1], d[2]);
     if (d[0] === 'u' && d[1]) return uciteljProjekt(d[1]);
+    if (d[0] === 'ucitelji') return skrbnikUcitelji(d[1]);
     return uciteljDomov();
   }
   if (ucenec) {

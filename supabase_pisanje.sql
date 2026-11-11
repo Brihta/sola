@@ -93,12 +93,21 @@ returns boolean language sql stable security definer set search_path = public as
 $$;
 revoke execute on function public._sola_pis_vidi(uuid, uuid) from public, anon, authenticated;
 
--- Ali je projekt od učitelja s to sejo (projekt brez lastnice je od vseh).
+-- Skrbnik Pisalnice (Nino): vidi in ureja projekte vseh učiteljev.
+create or replace function public._sola_pis_skrbnik(p_seja uuid)
+returns boolean language sql stable security definer set search_path = public as $$
+  select exists (select 1 from teachers t
+                  where t.id = public._sola_ucitelj(p_seja) and lower(t.email) = 'nino.kokalj@os-sempeter.si');
+$$;
+revoke execute on function public._sola_pis_skrbnik(uuid) from public, anon, authenticated;
+
+-- Ali je projekt od učitelja s to sejo (projekt brez lastnice je od vseh; skrbnik sme vse).
 create or replace function public._sola_pis_lastnik(p_seja uuid, p_projekt uuid)
 returns boolean language sql stable security definer set search_path = public as $$
   select exists (select 1 from sola_pis_projekti p
                   where p.id = p_projekt and public._sola_ucitelj(p_seja) is not null
-                    and (p.ucitelj_id is null or p.ucitelj_id = public._sola_ucitelj(p_seja)));
+                    and (p.ucitelj_id is null or p.ucitelj_id = public._sola_ucitelj(p_seja)
+                         or public._sola_pis_skrbnik(p_seja)));
 $$;
 revoke execute on function public._sola_pis_lastnik(uuid, uuid) from public, anon, authenticated;
 
@@ -305,6 +314,53 @@ begin
   return found;
 end; $$;
 
+-- ── Skrbnik: vsi učitelji in njihovi projekti ─────────────────────────────
+-- Potrjeni učitelji (in »brez lastnice«, če obstajajo taki projekti) s številom projektov.
+-- Vrne NULL, če seja ni skrbnikova.
+create or replace function public.sola_pis_a_ucitelji(p_seja uuid)
+returns jsonb language plpgsql stable security definer set search_path = public as $$
+begin
+  if not public._sola_pis_skrbnik(p_seja) then return null; end if;
+  return (select coalesce(jsonb_agg(x order by (x->>'projektov')::int desc, x->>'ime'), '[]'::jsonb) from (
+    select jsonb_build_object('id', t.id, 'ime', public._sola_pis_ucitelj_ime(t.id), 'username', t.username,
+             'jaz', t.id = public._sola_ucitelj(p_seja),
+             'projektov', (select count(*) from sola_pis_projekti p where p.ucitelj_id = t.id),
+             'besedil', (select count(*) from sola_pis_besedila b join sola_pis_projekti p on p.id = b.projekt_id
+                          where p.ucitelj_id = t.id and b.besed > 0),
+             'posodobljeno', (select max(b.posodobljeno) from sola_pis_besedila b join sola_pis_projekti p on p.id = b.projekt_id
+                               where p.ucitelj_id = t.id)) as x
+      from teachers t where t.approved
+    union all
+    select jsonb_build_object('id', null, 'ime', 'Brez lastnice', 'username', null, 'jaz', false,
+             'projektov', count(*), 'besedil', 0, 'posodobljeno', null)
+      from sola_pis_projekti p where p.ucitelj_id is null having count(*) > 0
+  ) q);
+end; $$;
+
+-- Projekti enega učitelja (p_ucitelj NULL = brez lastnice).
+create or replace function public.sola_pis_a_projekti(p_seja uuid, p_ucitelj uuid)
+returns jsonb language plpgsql stable security definer set search_path = public as $$
+begin
+  if not public._sola_pis_skrbnik(p_seja) then return null; end if;
+  return (select coalesce(jsonb_agg(jsonb_build_object(
+            'id', p.id, 'ime', p.ime, 'opis', p.opis, 'razred', p.razred, 'presoja', p.presoja,
+            'arhiviran', p.arhiviran, 'zaklenjen', p.zaklenjen, 'popravi_sam', p.popravi_sam, 'ustvarjeno', p.ustvarjeno,
+            'besedil', (select count(*) from sola_pis_besedila b where b.projekt_id = p.id and b.besed > 0),
+            'posodobljeno', (select max(b.posodobljeno) from sola_pis_besedila b where b.projekt_id = p.id)
+          ) order by p.arhiviran, p.ustvarjeno desc), '[]'::jsonb)
+     from sola_pis_projekti p where p.ucitelj_id is not distinct from p_ucitelj);
+end; $$;
+
+-- Prenos projekta k drugemu učitelju (z vsemi besedili).
+create or replace function public.sola_pis_a_prenesi(p_seja uuid, p_projekt uuid, p_ucitelj uuid)
+returns boolean language plpgsql security definer set search_path = public as $$
+begin
+  if not public._sola_pis_skrbnik(p_seja) then return false; end if;
+  if not exists (select 1 from teachers where id = p_ucitelj and approved) then return false; end if;
+  update sola_pis_projekti set ucitelj_id = p_ucitelj where id = p_projekt;
+  return found;
+end; $$;
+
 -- Ime učitelja za učence: p_ime NULL samo vrne trenutno ime.
 create or replace function public.sola_pis_u_moje_ime(p_seja uuid, p_ime text)
 returns text language plpgsql security definer set search_path = public as $$
@@ -344,6 +400,8 @@ begin
   return (select jsonb_build_object(
             'id', p.id, 'ime', p.ime, 'opis', p.opis, 'razred', p.razred, 'presoja', p.presoja,
             'presoja_n', p.presoja_n, 'arhiviran', p.arhiviran, 'zaklenjen', p.zaklenjen, 'popravi_sam', p.popravi_sam,
+            'ucitelj_id', p.ucitelj_id, 'ucitelj', public._sola_pis_ucitelj_ime(p.ucitelj_id),
+            'moj', p.ucitelj_id is not distinct from public._sola_ucitelj(p_seja),
             'razdeljeno', exists (select 1 from sola_pis_presoje r join sola_pis_besedila b on b.id = r.besedilo_id
                                    where b.projekt_id = p.id),
             'besedila', (select coalesce(jsonb_agg(jsonb_build_object(
@@ -491,6 +549,9 @@ grant execute on function public.sola_pis_u_arhiviraj(uuid, uuid, boolean) to an
 grant execute on function public.sola_pis_u_zakleni(uuid, uuid, boolean) to anon;
 grant execute on function public.sola_pis_u_popravi_sam(uuid, uuid, boolean) to anon;
 grant execute on function public.sola_pis_u_moje_ime(uuid, text) to anon;
+grant execute on function public.sola_pis_a_ucitelji(uuid) to anon;
+grant execute on function public.sola_pis_a_projekti(uuid, uuid) to anon;
+grant execute on function public.sola_pis_a_prenesi(uuid, uuid, uuid) to anon;
 grant execute on function public.sola_pis_u_popravek(uuid, uuid, int, jsonb, text, jsonb, text) to anon;
 grant execute on function public.sola_pis_u_izbrisi_projekt(uuid, uuid) to anon;
 grant execute on function public.sola_pis_u_projekt(uuid, uuid) to anon;
