@@ -1,0 +1,102 @@
+<!doctype html>
+<html lang="sl">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width,initial-scale=1,viewport-fit=cover">
+<title>Rezervacija iPadov</title>
+<meta name="apple-mobile-web-app-title" content="iPadi">
+<meta name="apple-mobile-web-app-capable" content="yes">
+<meta name="mobile-web-app-capable" content="yes">
+<meta name="apple-mobile-web-app-status-bar-style" content="default">
+<meta name="theme-color" content="#F6F8FA">
+<link rel="apple-touch-icon" href="ikona-180.png">
+<link rel="icon" href="ikona-180.png">
+<link rel="manifest" href="manifest.json">
+<style>
+  html, body { margin:0; height:100%; background:#F6F8FA; overflow:hidden; }
+  body { font-family:-apple-system, "Segoe UI", Roboto, Arial, sans-serif; color:#1B2B48; }
+  #okvir { position:fixed; left:0; right:0; bottom:0; top:env(safe-area-inset-top, 0px); width:100%; height:calc(100% - env(safe-area-inset-top, 0px)); border:0; background:#F6F8FA; }
+  #stanje { position:fixed; inset:0; z-index:2; display:flex; flex-direction:column; align-items:center; justify-content:center; gap:14px; padding:24px; text-align:center; background:#F6F8FA; font-size:17px; }
+  #stanje[hidden] { display:none; }
+  #stanje img { width:72px; height:72px; border-radius:16px; }
+  #stanje p { margin:0; color:#5B6B7F; max-width:28ch; }
+  #znova { font:inherit; font-weight:600; border:0; border-radius:10px; padding:12px 22px; background:#12A4A0; color:#fff; cursor:pointer; }
+  #znova[hidden] { display:none; }
+</style>
+</head>
+<body>
+<div id="stanje">
+  <img src="ikona-180.png" alt="">
+  <p id="sporocilo">Nalagam rezervacije …</p>
+  <button id="znova" type="button" hidden>Poskusi znova</button>
+</div>
+<script>
+/*
+ * Ovojnica za Rezervacijo iPadov (Google Apps Script).
+ * Aplikacijo naloži v okvir in jo samodejno naloži znova, kadar ostane bela:
+ * ob zagonu, če se v 12 s ne oglasi, in ob vrnitvi na zaslon, če ne odgovori na klic.
+ * Index.html v Apps Scriptu pošlje 'ipadi-pripravljen' in odgovarja na 'ipadi-ping'.
+ */
+var URL_APLIKACIJE = 'https://script.google.com/macros/s/AKfycbz7UqqWAxk1I8BlJfXhEnL52czWpQjAUoNK0lO9M9ICqfRsy-A5EM0pyE-9E60BbpZ7/exec';
+var ROK_NALAGANJA = 12000;      // ms do sporočila »se ne odziva«
+var ROK_ODGOVORA = 2500;        // ms za odgovor na ping
+var SVEZE_PO = 30 * 60000;      // po 30 min v ozadju vedno naloži na novo
+
+var okvir = null, aplikacija = null, pripravljen = false, tNalaganje = null, tPing = null, skritOd = 0;
+var $ = function(id){ return document.getElementById(id); };
+
+function pokazi(besedilo, gumb){
+  $('sporocilo').textContent = besedilo;
+  $('znova').hidden = !gumb;
+  $('stanje').hidden = false;
+}
+
+function nalozi(){
+  pripravljen = false; aplikacija = null;
+  clearTimeout(tNalaganje); clearTimeout(tPing);
+  pokazi('Nalagam rezervacije …', false);
+  if (okvir) okvir.remove();
+  okvir = document.createElement('iframe');
+  okvir.id = 'okvir';
+  okvir.title = 'Rezervacija iPadov';
+  okvir.src = URL_APLIKACIJE;
+  document.body.appendChild(okvir);
+  tNalaganje = setTimeout(function(){
+    if (!pripravljen) pokazi(navigator.onLine === false ? 'Ni povezave z internetom.' : 'Stran se ne odziva.', true);
+  }, ROK_NALAGANJA);
+}
+
+function preveri(){
+  if (!pripravljen || !aplikacija) { nalozi(); return; }
+  if (skritOd && Date.now() - skritOd > SVEZE_PO) { nalozi(); return; }
+  clearTimeout(tPing);
+  tPing = setTimeout(nalozi, ROK_ODGOVORA);
+  try { aplikacija.postMessage('ipadi-ping', '*'); } catch (e) { nalozi(); }
+}
+
+window.addEventListener('message', function(e){
+  var gostitelj = '';
+  try { gostitelj = new URL(e.origin).hostname; } catch (napaka) {}
+  if (!/\.googleusercontent\.com$/.test(gostitelj)) return;
+  if (e.data === 'ipadi-pripravljen') {
+    aplikacija = e.source; pripravljen = true;
+    clearTimeout(tNalaganje);
+    $('stanje').hidden = true;
+  } else if (e.data === 'ipadi-pong') {
+    aplikacija = e.source;
+    clearTimeout(tPing);
+  }
+});
+
+document.addEventListener('visibilitychange', function(){
+  if (document.hidden) skritOd = Date.now();
+  else { preveri(); skritOd = 0; }
+});
+window.addEventListener('pageshow', function(e){ if (e.persisted) preveri(); });
+window.addEventListener('online', function(){ if (!pripravljen) nalozi(); });
+$('znova').onclick = nalozi;
+
+nalozi();
+</script>
+</body>
+</html>
