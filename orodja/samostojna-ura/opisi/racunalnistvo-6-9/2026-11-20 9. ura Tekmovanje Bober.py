@@ -1,4 +1,4 @@
-# Računalništvo 6. do 9. razred, 9. ura »Šolsko tekmovanje Bober« (13. 11. 2026, predura).
+# Računalništvo 6. do 9. razred, 9. ura »Šolsko tekmovanje Bober« (20. 11. 2026, predura; 6. in 7. razred, zadnji dan tekmovanja).
 # LDN/PRIPRAVE: sklop 3 Mladi bober, 9. ura »Šolsko tekmovanje Mladi bober« (okno 9. do 20. 11. 2026).
 # Tekmovanje samo zavzame skoraj vso uro, zato je tu le kratka priprava (okoli 3 minute) in povezava.
 # Brez kviza: po tekmovanju ni časa, rezultate potrdi mentor na bober.acm.si.
