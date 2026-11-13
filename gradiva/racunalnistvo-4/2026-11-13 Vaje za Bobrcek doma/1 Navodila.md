@@ -1,12 +1,12 @@
 ## 🎯 Cilj ure
 
-Sodelujem na šolskem tekmovanju **Bober** in naloge rešujem samostojno.
+Pripravim se na tekmovanje **Bobrček**. Vaje lahko delam v šoli ali **doma**.
 
 ## ✅ Uspešen sem, če …
 
-- poznam pravila tekmovanja,
-- naloge rešujem sam/a, brez pomoči sošolcev in spleta,
-- na koncu preverim odgovore in kliknem Zaključi.
+- rešim nove vaje za Bobrček,
+- pri napaki preberem, zakaj je bilo narobe,
+- pogledam pravo polo iz prejšnjih let.
 
 ## 🗺️ Kako delaš
 
@@ -15,4 +15,4 @@ Sodelujem na šolskem tekmovanju **Bober** in naloge rešujem samostojno.
 3. Ko piše **🎉 Končano!**, se odklene velik gumb **Naprej** spodaj desno. Z njim greš na naslednji korak.
 4. Če se zatakneš, klikni **💡 Namig**. Po namigih lahko pogledaš rešitev.
 
-Delaš sam. Kratka priprava traja nekaj minut, nato je ves preostali čas za tekmovanje.
+Delaš sam, s svojo hitrostjo. ★★ nalogo lahko preskočiš.
