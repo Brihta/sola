@@ -303,6 +303,35 @@
   ],
   "racunalnistvo-6-9": [
    {
+    "ime": "9. ura Tekmovanje Bober",
+    "vrsta": "ura",
+    "datum": "2026-11-13T08:00:00+02:00",
+    "pot": "gradiva/racunalnistvo-6-9/2026-11-13 9. ura Tekmovanje Bober",
+    "koraki": [
+     {
+      "ime": "Navodila",
+      "vrsta": "besedilo",
+      "pot": "gradiva/racunalnistvo-6-9/2026-11-13 9. ura Tekmovanje Bober/1 Navodila.md",
+      "velikost": 695,
+      "besedilo": "## 🎯 Cilj ure\n\nSodelujem na šolskem tekmovanju **Bober** in naloge rešujem samostojno.\n\n## ✅ Uspešen sem, če …\n\n- poznam pravila tekmovanja,\n- naloge rešujem sam/a, brez pomoči sošolcev in spleta,\n- na koncu preverim odgovore in kliknem Zaključi.\n\n## 🗺️ Kako delaš\n\n1. Vsak korak je ena stran. Beri in klikaj **na strani**.\n2. Ko rešiš nalogo, se odklene zeleni gumb **Naslednja naloga**.\n3. Ko piše **🎉 Končano!**, se odklene velik gumb **Naprej** spodaj desno. Z njim greš na naslednji korak.\n4. Če se zatakneš, klikni **💡 Namig**. Po namigih lahko pogledaš rešitev.\n\nDelaš sam. Kratka priprava traja nekaj minut, nato je ves preostali čas za tekmovanje.\n"
+     },
+     {
+      "ime": "Pred tekmovanjem",
+      "vrsta": "html",
+      "pot": "gradiva/racunalnistvo-6-9/2026-11-13 9. ura Tekmovanje Bober/2 Pred tekmovanjem.html",
+      "velikost": 70249,
+      "interaktivno": true
+     },
+     {
+      "ime": "Tekmovanje Bober",
+      "vrsta": "povezava",
+      "url": "https://bober.acm.si/",
+      "opis": "Prijavi se s podatki, ki ti jih da učitelj, in reši tekmovanje.",
+      "emoji": "🦫"
+     }
+    ]
+   },
+   {
     "ime": "8. ura Vaja za Bober",
     "vrsta": "ura",
     "datum": "2026-11-06T08:00:00+02:00",
@@ -438,5 +467,5 @@
    }
   ]
  },
- "posodobljeno": "2026-11-09T11:31:51+01:00"
+ "posodobljeno": "2026-11-13T05:43:58+00:00"
 }
