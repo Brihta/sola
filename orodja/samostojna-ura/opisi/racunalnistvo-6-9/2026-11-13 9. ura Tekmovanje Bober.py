@@ -2,11 +2,12 @@
 # LDN/PRIPRAVE: sklop 3 Mladi bober, 9. ura »Šolsko tekmovanje Mladi bober« (okno 9. do 20. 11. 2026).
 # Tekmovanje samo zavzame skoraj vso uro, zato je tu le kratka priprava (okoli 3 minute) in povezava.
 # Brez kviza: po tekmovanju ni časa, rezultate potrdi mentor na bober.acm.si.
-# Namenoma brez trditev o točkovanju in trajanju (ne smemo zavesti učencev).
+# Iz navodil ACM (mail 10. 11. 2026): 40 minut, učenec vpiše ime, priimek, datum rojstva, razred in ključ s table; napačen ključ = diskvalifikacija.
+# O točkovanju namenoma nič.
 
 stran('2 Pred tekmovanjem.html', 'Pred tekmovanjem', [
     info('Danes je tekmovanje Bober 🦫', '''
-<p class="big">Danes rešuješ <b>pravo</b> tekmovanje. Rešuješ <b>sam/a</b>.</p>
+<p class="big">Danes rešuješ <b>pravo</b> tekmovanje. Rešuješ <b>sam/a</b>, imaš <b>40 minut</b>.</p>
 <div class="box">Najprej dve hitri vprašanji o pravilih. Klikni odgovor. Če je narobe, ti stran pove zakaj. Če ne veš, klikni Namig.</div>'''),
     {'type': 'choose', 'abcd': True, 'title': 'Zataknilo se je', 'intro': 'Pri eni nalogi razmišljaš že dolgo in ne veš, kako naprej. Kaj narediš?',
      'options': [ch('Vprašam soseda, kaj je izbral.', why='Na tekmovanju rešuješ sam/a. Tudi sosed rešuje svoje naloge.'),
@@ -22,7 +23,7 @@ stran('2 Pred tekmovanjem.html', 'Pred tekmovanjem', [
      'hints': ['Učitelj ti pomaga samo, če nekaj ne deluje.']},
     {'type': 'check', 'title': 'Pripravljen/a?', 'label': 'Pripravljen/a sem. Grem na tekmovanje.', 'html': '''
 <div class="box">1️⃣ Naslednji korak odpre stran <b>bober.acm.si</b>.<br>
-2️⃣ Prijaviš se s podatki, ki ti jih da <b>učitelj</b>.<br>
+2️⃣ Vpišeš ime, priimek, datum rojstva, <b>svoj razred</b> in <b>ključ za svoj razred</b>, ki ga učitelj napiše na tablo. Z napačnim ključem si izločen/a!<br>
 3️⃣ Vsako nalogo preberi <b>do konca</b>, šele nato odgovori.<br>
 4️⃣ Ko končaš, preveri odgovore in klikni <b>Zaključi</b>.</div>
 <p class="small">Srečno! 🍀</p>'''},
