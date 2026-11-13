@@ -48,6 +48,35 @@
   ],
   "racunalnistvo-4": [
    {
+    "ime": "Vaje za Bobrcek doma",
+    "vrsta": "ura",
+    "datum": "2026-11-13T08:00:00+02:00",
+    "pot": "gradiva/racunalnistvo-4/2026-11-13 Vaje za Bobrcek doma",
+    "koraki": [
+     {
+      "ime": "Navodila",
+      "vrsta": "besedilo",
+      "pot": "gradiva/racunalnistvo-4/2026-11-13 Vaje za Bobrcek doma/1 Navodila.md",
+      "velikost": 655,
+      "besedilo": "## 🎯 Cilj ure\n\nPripravim se na tekmovanje **Bobrček**. Vaje lahko delam v šoli ali **doma**.\n\n## ✅ Uspešen sem, če …\n\n- rešim nove vaje za Bobrček,\n- pri napaki preberem, zakaj je bilo narobe,\n- pogledam pravo polo iz prejšnjih let.\n\n## 🗺️ Kako delaš\n\n1. Vsak korak je ena stran. Beri in klikaj **na strani**.\n2. Ko rešiš nalogo, se odklene zeleni gumb **Naslednja naloga**.\n3. Ko piše **🎉 Končano!**, se odklene velik gumb **Naprej** spodaj desno. Z njim greš na naslednji korak.\n4. Če se zatakneš, klikni **💡 Namig**. Po namigih lahko pogledaš rešitev.\n\nDelaš sam, s svojo hitrostjo. ★★ nalogo lahko preskočiš.\n"
+     },
+     {
+      "ime": "Bobrckove vaje",
+      "vrsta": "html",
+      "pot": "gradiva/racunalnistvo-4/2026-11-13 Vaje za Bobrcek doma/2 Bobrckove vaje.html",
+      "velikost": 76778,
+      "interaktivno": true
+     },
+     {
+      "ime": "Prave pole Bobrcek",
+      "vrsta": "povezava",
+      "url": "https://ucilnica.acm.si/course/view.php?id=103",
+      "opis": "Prave pole Bobrčka iz prejšnjih let. Izberi 4. razred in jo reši s svinčnikom.",
+      "emoji": "🦫"
+     }
+    ]
+   },
+   {
     "ime": "4. ura Algoritem po prostoru",
     "vrsta": "ura",
     "datum": "2026-11-10T08:00:00+02:00",
@@ -169,6 +198,35 @@
    }
   ],
   "racunalnistvo-6": [
+   {
+    "ime": "Vaje za Bober doma",
+    "vrsta": "ura",
+    "datum": "2026-11-13T08:00:00+02:00",
+    "pot": "gradiva/racunalnistvo-6/2026-11-13 Vaje za Bober doma",
+    "koraki": [
+     {
+      "ime": "Navodila",
+      "vrsta": "besedilo",
+      "pot": "gradiva/racunalnistvo-6/2026-11-13 Vaje za Bober doma/1 Navodila.md",
+      "velikost": 691,
+      "besedilo": "## 🎯 Cilj ure\n\nPripravim se na šolsko tekmovanje **Bober**. Vaje lahko delam v šoli ali **doma**.\n\n## ✅ Uspešen sem, če …\n\n- rešim nove naloge v slogu Bobra,\n- rešim vsaj eno leto pravih nalog v vadnici in kliknem Zaključi,\n- pri napaki preberem, zakaj je bilo narobe.\n\n## 🗺️ Kako delaš\n\n1. Vsak korak je ena stran. Beri in klikaj **na strani**.\n2. Ko rešiš nalogo, se odklene zeleni gumb **Naslednja naloga**.\n3. Ko piše **🎉 Končano!**, se odklene velik gumb **Naprej** spodaj desno. Z njim greš na naslednji korak.\n4. Če se zatakneš, klikni **💡 Namig**. Po namigih lahko pogledaš rešitev.\n\nDelaš sam, s svojo hitrostjo. ★★ naloge lahko preskočiš.\n"
+     },
+     {
+      "ime": "Bobrove vaje",
+      "vrsta": "html",
+      "pot": "gradiva/racunalnistvo-6/2026-11-13 Vaje za Bober doma/2 Bobrove vaje.html",
+      "velikost": 72777,
+      "interaktivno": true
+     },
+     {
+      "ime": "Naloge prejsnjih let",
+      "vrsta": "html",
+      "pot": "gradiva/racunalnistvo-6/2026-11-13 Vaje za Bober doma/3 Naloge prejsnjih let.html",
+      "velikost": 69276,
+      "interaktivno": true
+     }
+    ]
+   },
    {
     "ime": "6. ura Naslovi odstavki slogi",
     "vrsta": "ura",
@@ -303,31 +361,31 @@
   ],
   "racunalnistvo-6-9": [
    {
-    "ime": "9. ura Tekmovanje Bober",
+    "ime": "Vaje za Bober doma",
     "vrsta": "ura",
     "datum": "2026-11-13T08:00:00+02:00",
-    "pot": "gradiva/racunalnistvo-6-9/2026-11-13 9. ura Tekmovanje Bober",
+    "pot": "gradiva/racunalnistvo-6-9/2026-11-13 Vaje za Bober doma",
     "koraki": [
      {
       "ime": "Navodila",
       "vrsta": "besedilo",
-      "pot": "gradiva/racunalnistvo-6-9/2026-11-13 9. ura Tekmovanje Bober/1 Navodila.md",
-      "velikost": 695,
-      "besedilo": "## 🎯 Cilj ure\n\nSodelujem na šolskem tekmovanju **Bober** in naloge rešujem samostojno.\n\n## ✅ Uspešen sem, če …\n\n- poznam pravila tekmovanja,\n- naloge rešujem sam/a, brez pomoči sošolcev in spleta,\n- na koncu preverim odgovore in kliknem Zaključi.\n\n## 🗺️ Kako delaš\n\n1. Vsak korak je ena stran. Beri in klikaj **na strani**.\n2. Ko rešiš nalogo, se odklene zeleni gumb **Naslednja naloga**.\n3. Ko piše **🎉 Končano!**, se odklene velik gumb **Naprej** spodaj desno. Z njim greš na naslednji korak.\n4. Če se zatakneš, klikni **💡 Namig**. Po namigih lahko pogledaš rešitev.\n\nDelaš sam. Kratka priprava traja nekaj minut, nato je ves preostali čas za tekmovanje.\n"
+      "pot": "gradiva/racunalnistvo-6-9/2026-11-13 Vaje za Bober doma/1 Navodila.md",
+      "velikost": 691,
+      "besedilo": "## 🎯 Cilj ure\n\nPripravim se na šolsko tekmovanje **Bober**. Vaje lahko delam v šoli ali **doma**.\n\n## ✅ Uspešen sem, če …\n\n- rešim nove naloge v slogu Bobra,\n- rešim vsaj eno leto pravih nalog v vadnici in kliknem Zaključi,\n- pri napaki preberem, zakaj je bilo narobe.\n\n## 🗺️ Kako delaš\n\n1. Vsak korak je ena stran. Beri in klikaj **na strani**.\n2. Ko rešiš nalogo, se odklene zeleni gumb **Naslednja naloga**.\n3. Ko piše **🎉 Končano!**, se odklene velik gumb **Naprej** spodaj desno. Z njim greš na naslednji korak.\n4. Če se zatakneš, klikni **💡 Namig**. Po namigih lahko pogledaš rešitev.\n\nDelaš sam, s svojo hitrostjo. ★★ naloge lahko preskočiš.\n"
      },
      {
-      "ime": "Pred tekmovanjem",
+      "ime": "Bobrove vaje",
       "vrsta": "html",
-      "pot": "gradiva/racunalnistvo-6-9/2026-11-13 9. ura Tekmovanje Bober/2 Pred tekmovanjem.html",
-      "velikost": 70377,
+      "pot": "gradiva/racunalnistvo-6-9/2026-11-13 Vaje za Bober doma/2 Bobrove vaje.html",
+      "velikost": 72777,
       "interaktivno": true
      },
      {
-      "ime": "Tekmovanje Bober",
-      "vrsta": "povezava",
-      "url": "https://bober.acm.si/",
-      "opis": "Vpiši svoje podatke in ključ za svoj razred s table. Imaš 40 minut.",
-      "emoji": "🦫"
+      "ime": "Naloge prejsnjih let",
+      "vrsta": "html",
+      "pot": "gradiva/racunalnistvo-6-9/2026-11-13 Vaje za Bober doma/3 Naloge prejsnjih let.html",
+      "velikost": 69872,
+      "interaktivno": true
      }
     ]
    },
@@ -467,5 +525,5 @@
    }
   ]
  },
- "posodobljeno": "2026-11-13T06:09:44+00:00"
+ "posodobljeno": "2026-11-13T06:19:55+00:00"
 }
