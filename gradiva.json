@@ -319,14 +319,14 @@
       "ime": "Pred tekmovanjem",
       "vrsta": "html",
       "pot": "gradiva/racunalnistvo-6-9/2026-11-13 9. ura Tekmovanje Bober/2 Pred tekmovanjem.html",
-      "velikost": 70249,
+      "velikost": 70377,
       "interaktivno": true
      },
      {
       "ime": "Tekmovanje Bober",
       "vrsta": "povezava",
       "url": "https://bober.acm.si/",
-      "opis": "Prijavi se s podatki, ki ti jih da učitelj, in reši tekmovanje.",
+      "opis": "Vpiši svoje podatke in ključ za svoj razred s table. Imaš 40 minut.",
       "emoji": "🦫"
      }
     ]
@@ -467,5 +467,5 @@
    }
   ]
  },
- "posodobljeno": "2026-11-13T05:43:58+00:00"
+ "posodobljeno": "2026-11-13T06:09:44+00:00"
 }
