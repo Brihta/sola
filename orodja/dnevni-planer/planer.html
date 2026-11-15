@@ -1,0 +1,401 @@
+<title>Dnevni planer</title>
+<meta name="claude:viewport-fit-sides" content="cover">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Nunito:wght@600;700;800;900&family=Inter:wght@400;500;600&display=swap">
+<style>
+/* Layout: one column, phone first. A time rail on the left, lesson cards on the right, sections below. */
+:root {
+  --bg: #f4f3fa;
+  --surface: #ffffff;
+  --surface-2: #ebe9f6;
+  --ink: #1f2340;
+  --muted: #646a87;
+  --line: #dcd9ec;
+  --accent: #5b4fd6;
+  --accent-ink: #ffffff;
+  --accent-soft: #e9e6ff;
+  --ok: #178a4c;
+  --ok-soft: #ddf3e6;
+  --warn: #b45309;
+  --warn-soft: #fdebd0;
+  --bad: #c0264b;
+  --bad-soft: #fde0e7;
+  --free: #9a9db3;
+  --display: "Nunito", "Avenir Next", "Segoe UI", sans-serif;
+  --body: "Inter", -apple-system, "Segoe UI", sans-serif;
+  --shadow: 0 1px 2px rgba(31,35,64,.06), 0 6px 18px rgba(31,35,64,.06);
+}
+@media (prefers-color-scheme: dark) {
+  :root:not([data-theme="light"]) {
+    --bg: #15172a; --surface: #1e2138; --surface-2: #272b47; --ink: #eceef8; --muted: #a2a7c4;
+    --line: #333853; --accent: #9a90ff; --accent-ink: #15172a; --accent-soft: #2c2a55;
+    --ok: #5fd39a; --ok-soft: #173826; --warn: #f3b25c; --warn-soft: #3d2a10; --bad: #ff7a98; --bad-soft: #43182a;
+    --free: #6b708f; --shadow: 0 1px 2px rgba(0,0,0,.4), 0 6px 18px rgba(0,0,0,.35);
+    color-scheme: dark;
+  }
+}
+:root[data-theme="dark"] {
+  --bg: #15172a; --surface: #1e2138; --surface-2: #272b47; --ink: #eceef8; --muted: #a2a7c4;
+  --line: #333853; --accent: #9a90ff; --accent-ink: #15172a; --accent-soft: #2c2a55;
+  --ok: #5fd39a; --ok-soft: #173826; --warn: #f3b25c; --warn-soft: #3d2a10; --bad: #ff7a98; --bad-soft: #43182a;
+  --free: #6b708f; --shadow: 0 1px 2px rgba(0,0,0,.4), 0 6px 18px rgba(0,0,0,.35);
+  color-scheme: dark;
+}
+* { box-sizing: border-box; }
+body { margin: 0; background: var(--bg); color: var(--ink); font-family: var(--body); font-size: 15px; line-height: 1.5; }
+.wrap { max-width: 760px; margin: 0 auto; padding-block: 20px 56px;
+  padding-left: max(16px, env(safe-area-inset-left, 0px)); padding-right: max(16px, env(safe-area-inset-right, 0px)); }
+h1, h2, h3 { font-family: var(--display); margin: 0; text-wrap: balance; }
+h1 { font-size: 30px; font-weight: 900; line-height: 1.15; letter-spacing: -.01em; }
+h2 { font-size: 15px; font-weight: 800; text-transform: uppercase; letter-spacing: .06em; color: var(--muted); margin-bottom: 10px; }
+h3 { font-size: 17px; font-weight: 800; line-height: 1.3; }
+p { margin: 0; }
+a { color: var(--accent); }
+button { font: inherit; color: inherit; }
+.head { display: flex; flex-wrap: wrap; align-items: flex-end; justify-content: space-between; gap: 10px 16px; margin-bottom: 6px; }
+.eyebrow { font-size: 13px; color: var(--muted); font-weight: 500; letter-spacing: .02em; }
+.badge { display: inline-flex; align-items: center; gap: 6px; padding: 5px 11px; border-radius: 999px; font-family: var(--display); font-weight: 800; font-size: 13px; background: var(--accent); color: var(--accent-ink); }
+.sub { color: var(--muted); font-size: 13px; margin-top: 6px; }
+.status { display: grid; gap: 8px; margin: 18px 0 26px; }
+.pill { display: flex; gap: 10px; align-items: flex-start; padding: 11px 14px; border-radius: 12px; background: var(--surface); border: 1px solid var(--line); font-size: 14px; }
+.pill .dot { flex: none; width: 10px; height: 10px; border-radius: 50%; margin-top: 6px; background: var(--ok); }
+.pill.warn .dot { background: var(--warn); }
+.pill.bad .dot { background: var(--bad); }
+.pill strong { font-weight: 600; }
+section { margin-top: 30px; }
+/* timeline */
+.tl { display: grid; grid-template-columns: 58px 1fr; gap: 0 12px; }
+.tl .t { font-variant-numeric: tabular-nums; font-family: var(--display); font-weight: 800; font-size: 15px; color: var(--muted); padding-top: 13px; text-align: right; position: relative; }
+.tl .t small { display: block; font-family: var(--body); font-weight: 500; font-size: 11px; color: var(--free); margin-top: -2px; letter-spacing: .03em; }
+.tl .c { padding-bottom: 8px; border-left: 2px solid var(--line); padding-left: 14px; position: relative; }
+.tl .c::before { content: ""; position: absolute; left: -7px; top: 19px; width: 12px; height: 12px; border-radius: 50%; background: var(--line); border: 2px solid var(--bg); }
+.tl .c.has::before { background: var(--accent); }
+.tl .c.chg::before { background: var(--warn); }
+.free { color: var(--free); font-size: 13px; padding: 13px 0 6px; }
+.card { background: var(--surface); border: 1px solid var(--line); border-radius: 14px; box-shadow: var(--shadow); overflow: hidden; }
+.card.chg { border-color: var(--warn); }
+.card > button.hd { all: unset; display: block; width: 100%; cursor: pointer; padding: 12px 14px; }
+.card > button.hd:focus-visible { outline: 3px solid var(--accent); outline-offset: -3px; border-radius: 14px; }
+.hd .row { display: flex; align-items: flex-start; justify-content: space-between; gap: 10px; }
+.hd .meta { color: var(--muted); font-size: 13px; margin-top: 3px; }
+.hd .chev { flex: none; width: 22px; height: 22px; border-radius: 50%; background: var(--surface-2); display: grid; place-items: center; color: var(--muted); transition: transform .2s; margin-top: 2px; }
+.card[aria-expanded="true"] .chev { transform: rotate(180deg); }
+.chips { display: flex; flex-wrap: wrap; gap: 6px; margin-top: 8px; }
+.chip { font-size: 11.5px; font-weight: 600; letter-spacing: .03em; padding: 2px 8px; border-radius: 6px; background: var(--surface-2); color: var(--muted); }
+.chip.acc { background: var(--accent-soft); color: var(--accent); }
+.chip.warn { background: var(--warn-soft); color: var(--warn); }
+.chip.bad { background: var(--bad-soft); color: var(--bad); }
+.chip.ok { background: var(--ok-soft); color: var(--ok); }
+.body { display: none; border-top: 1px solid var(--line); padding: 14px; gap: 16px; }
+.card[aria-expanded="true"] .body { display: grid; }
+.blk h4 { font-family: var(--display); font-size: 12px; font-weight: 800; text-transform: uppercase; letter-spacing: .08em; color: var(--accent); margin: 0 0 6px; }
+.blk p + p { margin-top: 6px; }
+.blk ul, .blk ol { margin: 4px 0 0; padding-left: 20px; }
+.blk li { margin: 3px 0; }
+.evio { background: var(--surface-2); border-radius: 10px; padding: 10px 12px; }
+.evio .lbl { font-size: 11.5px; font-weight: 600; color: var(--muted); text-transform: uppercase; letter-spacing: .06em; }
+.evio .txt { margin-top: 3px; font-weight: 500; }
+.evio .vir { margin-top: 6px; font-size: 12.5px; color: var(--muted); }
+.copy { margin-top: 8px; display: inline-flex; align-items: center; gap: 6px; border: 1px solid var(--line); background: var(--surface); border-radius: 8px; padding: 6px 10px; font-size: 13px; font-weight: 500; cursor: pointer; }
+.copy:hover { border-color: var(--accent); }
+.copy:focus-visible { outline: 3px solid var(--accent); outline-offset: 2px; }
+.note { font-size: 13.5px; color: var(--muted); }
+/* lists */
+.list { display: grid; gap: 8px; }
+.item { background: var(--surface); border: 1px solid var(--line); border-radius: 12px; padding: 11px 14px; display: grid; grid-template-columns: auto 1fr; gap: 2px 12px; }
+.item .k { font-family: var(--display); font-weight: 800; font-size: 13px; color: var(--muted); white-space: nowrap; padding-top: 2px; min-width: 64px; }
+.item .k.warn { color: var(--warn); }
+.item .v { min-width: 0; }
+.item .v .who { font-weight: 600; }
+.item .v .rok { display: inline-block; margin-left: 6px; font-size: 12px; font-weight: 600; color: var(--warn); }
+.paziti .item { grid-template-columns: 1fr; border-left: 4px solid var(--warn); }
+.osebno .item { border-left: 4px solid var(--accent); grid-template-columns: 1fr; }
+.viri .item { padding: 8px 14px; grid-template-columns: 14px 1fr; align-items: start; }
+.viri .dot { width: 10px; height: 10px; border-radius: 50%; background: var(--ok); margin-top: 6px; }
+.viri .dot.no { background: var(--bad); }
+.viri .dot.warn { background: var(--warn); }
+.viri .v { font-size: 13.5px; }
+.foot { margin-top: 36px; font-size: 12.5px; color: var(--muted); }
+@media (max-width: 420px) {
+  h1 { font-size: 26px; }
+  .tl { grid-template-columns: 50px 1fr; gap: 0 8px; }
+  .item { grid-template-columns: 1fr; }
+}
+@media (prefers-reduced-motion: reduce) { .hd .chev { transition: none; } }
+</style>
+
+<div class="wrap">
+  <header>
+    <div class="head">
+      <div>
+        <div class="eyebrow" id="eyebrow"></div>
+        <h1 id="naslov"></h1>
+      </div>
+      <span class="badge" id="teden"></span>
+    </div>
+    <p class="sub" id="izdelano"></p>
+  </header>
+
+  <div class="status" id="status"></div>
+
+  <section>
+    <h2>Tvoje ure</h2>
+    <div class="tl" id="tl"></div>
+  </section>
+
+  <section id="sec-spremembe">
+    <h2>Nadomeščanja in spremembe</h2>
+    <div class="list" id="spremembe"></div>
+  </section>
+
+  <section class="paziti" id="sec-paziti">
+    <h2>Na kaj paziti</h2>
+    <div class="list" id="paziti"></div>
+  </section>
+
+  <section id="sec-obvestila">
+    <h2>Obvestila</h2>
+    <div class="list" id="obvestila"></div>
+  </section>
+
+  <section class="osebno" id="sec-osebno">
+    <h2>Osebno</h2>
+    <div class="list" id="osebno"></div>
+  </section>
+
+  <section id="sec-teden">
+    <h2>Ta teden</h2>
+    <div class="list" id="tedenList"></div>
+  </section>
+
+  <section class="viri" id="sec-viri">
+    <h2>Viri in zanesljivost</h2>
+    <div class="list" id="viri"></div>
+  </section>
+
+  <p class="foot" id="foot"></p>
+</div>
+
+<script id="podatki" type="application/json">
+{
+  "datum": "2026-11-16",
+  "dan": "ponedeljek",
+  "teden": "A",
+  "tedenOpomba": "Kako je bil določen A ali B teden.",
+  "izdelano": "Primer podatkov. Pravi planer vsak delovni dan ob 4.47 zapolni to polje in vse spodnje.",
+  "status": [
+    {"stanje": "ok", "besedilo": "Razpored nadomeščanj prebran: zate ni sprememb."},
+    {"stanje": "warn", "besedilo": "Priprav (EVIO vpisi xlsx) nisem mogel prebrati."}
+  ],
+  "ure": [
+    {
+      "ura": "predura", "zacetek": "7.30", "konec": "8.15",
+      "naslov": "Ime dejavnosti", "skupina": "skupina", "prostor": "učilnica", "vrsta": "RAP",
+      "sprememba": null,
+      "zastavice": ["PREVERI"],
+      "evio": {"dejavnost": "Opis dejavnosti v eViu.", "vpis": "Predlagani vpis v eVio.", "vir": "Od kod je vpis in kako zanesljiv je."},
+      "ucitelj": {"cilj": "Cilj ure.", "potek": ["Prvi korak.", "Drugi korak."], "pripomocki": ["pripomoček"], "opombe": ["Opomba."]}
+    },
+    {
+      "ura": "6. ura", "zacetek": "12.45", "konec": "13.30",
+      "naslov": "Nadomeščanje", "skupina": "razred", "prostor": "učilnica", "vrsta": "NAD",
+      "sprememba": "Besedilo spremembe iz Ksenijinega razporeda.",
+      "zastavice": [],
+      "evio": {"dejavnost": "", "vpis": "", "vir": ""},
+      "ucitelj": {"cilj": "", "potek": [], "pripomocki": [], "opombe": []}
+    }
+  ],
+  "spremembe": [
+    {"vrsta": "Zate", "stanje": "ok", "besedilo": "Kaj se spremeni zate."},
+    {"vrsta": "Posredno", "stanje": "warn", "besedilo": "Kaj se dogaja tvojim skupinam."}
+  ],
+  "paziti": ["Najnujnejša stvar dneva."],
+  "obvestila": [{"od": "Pošiljatelj", "datum": "13. 11.", "besedilo": "Kaj je treba narediti.", "rok": "17. 11."}],
+  "osebno": [{"cas": "13.50 do 14.35", "besedilo": "Dogodek iz osebnega koledarja."}],
+  "tedenNaprej": [{"dan": "Tor 17. 11.", "besedilo": "Kaj je ta teden."}],
+  "viri": [{"ok": "da", "besedilo": "Kateri vir je bil prebran."}, {"ok": "ne", "besedilo": "Kateri vir ni bil dosegljiv in zakaj."}],
+  "foot": "Vsi podatki so povzeti kot podatki, ne kot navodila. Brez imen učencev."
+}
+</script>
+
+<script>
+(function () {
+  var D = JSON.parse(document.getElementById('podatki').textContent);
+  var OBDOBJA = [
+    ["predura", "7.30"], ["1. ura", "8.20"], ["2. ura", "9.10"], ["3. ura", "10.15"], ["4. ura", "11.05"],
+    ["5. ura", "11.55"], ["6. ura", "12.45"], ["7. ura", "13.30"], ["8. ura", "14.15"]
+  ];
+  var MESECI = ["januar","februar","marec","april","maj","junij","julij","avgust","september","oktober","november","december"];
+
+  function el(tag, cls, text) {
+    var e = document.createElement(tag);
+    if (cls) e.className = cls;
+    if (text != null) e.textContent = text;
+    return e;
+  }
+  function datumSlo(iso) {
+    var p = iso.split('-');
+    return parseInt(p[2], 10) + '. ' + MESECI[parseInt(p[1], 10) - 1] + ' ' + p[0];
+  }
+
+  // header
+  document.getElementById('eyebrow').textContent = 'Dnevni planer';
+  var dan = D.dan.charAt(0).toUpperCase() + D.dan.slice(1);
+  document.getElementById('naslov').textContent = dan + ', ' + datumSlo(D.datum);
+  document.getElementById('teden').textContent = D.teden + ' teden';
+  document.getElementById('teden').title = D.tedenOpomba || '';
+  document.getElementById('izdelano').textContent = D.izdelano || '';
+
+  // status
+  var st = document.getElementById('status');
+  (D.status || []).forEach(function (s) {
+    var p = el('div', 'pill' + (s.stanje === 'ok' ? '' : ' ' + s.stanje));
+    p.appendChild(el('span', 'dot'));
+    p.appendChild(el('span', null, s.besedilo));
+    st.appendChild(p);
+  });
+
+  // timeline
+  var tl = document.getElementById('tl');
+  var byUra = {};
+  (D.ure || []).forEach(function (u) { byUra[u.ura] = u; });
+  var zaUre = (D.ure || []).filter(function (u) { return !OBDOBJA.some(function (o) { return o[0] === u.ura; }); });
+
+  function card(u) {
+    var chg = !!u.sprememba;
+    var c = el('article', 'card' + (chg ? ' chg' : ''));
+    c.setAttribute('aria-expanded', 'false');
+    var hd = el('button', 'hd');
+    hd.setAttribute('type', 'button');
+    var row = el('div', 'row');
+    var left = el('div');
+    left.appendChild(el('h3', null, u.naslov));
+    var meta = [u.skupina, u.prostor ? 'prostor ' + u.prostor : null, u.zacetek + ' do ' + u.konec].filter(Boolean).join(' · ');
+    left.appendChild(el('p', 'meta', meta));
+    var chips = el('div', 'chips');
+    if (u.vrsta) chips.appendChild(el('span', 'chip acc', u.vrsta));
+    if (chg) chips.appendChild(el('span', 'chip warn', 'SPREMEMBA'));
+    (u.zastavice || []).forEach(function (z) { chips.appendChild(el('span', 'chip ' + (z === 'PREVERI' ? 'warn' : ''), z)); });
+    left.appendChild(chips);
+    row.appendChild(left);
+    var chev = el('span', 'chev', '⌄');
+    chev.setAttribute('aria-hidden', 'true');
+    row.appendChild(chev);
+    hd.appendChild(row);
+    c.appendChild(hd);
+
+    var body = el('div', 'body');
+    if (chg) {
+      var b0 = el('div', 'blk');
+      b0.appendChild(el('h4', null, 'Sprememba'));
+      b0.appendChild(el('p', null, u.sprememba));
+      body.appendChild(b0);
+    }
+    var ev = u.evio || {};
+    var b1 = el('div', 'blk');
+    b1.appendChild(el('h4', null, 'eVio'));
+    if (ev.dejavnost) b1.appendChild(el('p', null, ev.dejavnost));
+    if (ev.vpis) {
+      var box = el('div', 'evio');
+      box.appendChild(el('div', 'lbl', 'Predlagani vpis'));
+      box.appendChild(el('div', 'txt', ev.vpis));
+      if (ev.vir) box.appendChild(el('div', 'vir', ev.vir));
+      var cp = el('button', 'copy', 'Kopiraj vpis');
+      cp.setAttribute('type', 'button');
+      cp.addEventListener('click', function (e) {
+        e.stopPropagation();
+        var t = ev.vpis;
+        function done(ok) { cp.textContent = ok ? 'Kopirano' : 'Označi in kopiraj ročno'; setTimeout(function () { cp.textContent = 'Kopiraj vpis'; }, 1800); }
+        try {
+          navigator.clipboard.writeText(t).then(function () { done(true); }, function () { fallback(); });
+        } catch (err) { fallback(); }
+        function fallback() {
+          var r = document.createRange(); r.selectNodeContents(box.querySelector('.txt'));
+          var s = window.getSelection(); s.removeAllRanges(); s.addRange(r); done(false);
+        }
+      });
+      box.appendChild(cp);
+      b1.appendChild(box);
+    }
+    body.appendChild(b1);
+
+    var uc = u.ucitelj || {};
+    var has = uc.cilj || (uc.potek && uc.potek.length) || (uc.pripomocki && uc.pripomocki.length) || (uc.opombe && uc.opombe.length);
+    if (has) {
+      var b2 = el('div', 'blk');
+      b2.appendChild(el('h4', null, 'Za učitelja'));
+      if (uc.cilj) { var pc = el('p'); pc.appendChild(el('strong', null, 'Cilj: ')); pc.appendChild(document.createTextNode(uc.cilj)); b2.appendChild(pc); }
+      if (uc.potek && uc.potek.length) {
+        b2.appendChild(el('p', null, 'Potek:'));
+        var ol = el('ol'); uc.potek.forEach(function (k) { ol.appendChild(el('li', null, k)); }); b2.appendChild(ol);
+      }
+      if (uc.pripomocki && uc.pripomocki.length) {
+        var pp = el('p'); pp.appendChild(el('strong', null, 'Pripomočki: ')); pp.appendChild(document.createTextNode(uc.pripomocki.join(', '))); b2.appendChild(pp);
+      }
+      if (uc.opombe && uc.opombe.length) {
+        var ul = el('ul'); uc.opombe.forEach(function (k) { ul.appendChild(el('li', 'note', k)); }); b2.appendChild(ul);
+      }
+      body.appendChild(b2);
+    }
+    c.appendChild(body);
+    hd.addEventListener('click', function () {
+      c.setAttribute('aria-expanded', c.getAttribute('aria-expanded') === 'true' ? 'false' : 'true');
+    });
+    return c;
+  }
+
+  OBDOBJA.forEach(function (o) {
+    var u = byUra[o[0]];
+    var t = el('div', 't', o[1]);
+    t.appendChild(el('small', null, o[0]));
+    tl.appendChild(t);
+    var c = el('div', 'c' + (u ? ' has' : '') + (u && u.sprememba ? ' chg' : ''));
+    if (u) c.appendChild(card(u)); else c.appendChild(el('div', 'free', 'prosto'));
+    tl.appendChild(c);
+  });
+  zaUre.forEach(function (u) {
+    var t = el('div', 't', u.zacetek); t.appendChild(el('small', null, u.ura)); tl.appendChild(t);
+    var c = el('div', 'c has' + (u.sprememba ? ' chg' : '')); c.appendChild(card(u)); tl.appendChild(c);
+  });
+
+  // generic list sections
+  function fill(id, secId, arr, render) {
+    var box = document.getElementById(id);
+    if (!arr || !arr.length) { document.getElementById(secId).hidden = true; return; }
+    arr.forEach(function (x) { box.appendChild(render(x)); });
+  }
+  fill('spremembe', 'sec-spremembe', D.spremembe, function (s) {
+    var it = el('div', 'item');
+    it.appendChild(el('div', 'k' + (s.stanje === 'warn' ? ' warn' : ''), s.vrsta));
+    it.appendChild(el('div', 'v', s.besedilo));
+    return it;
+  });
+  fill('paziti', 'sec-paziti', D.paziti, function (s) {
+    var it = el('div', 'item'); it.appendChild(el('div', 'v', s)); return it;
+  });
+  fill('obvestila', 'sec-obvestila', D.obvestila, function (o) {
+    var it = el('div', 'item');
+    it.appendChild(el('div', 'k', o.datum));
+    var v = el('div', 'v');
+    v.appendChild(el('span', 'who', o.od + ': '));
+    v.appendChild(document.createTextNode(o.besedilo));
+    if (o.rok) v.appendChild(el('span', 'rok', 'rok ' + o.rok));
+    it.appendChild(v);
+    return it;
+  });
+  fill('osebno', 'sec-osebno', D.osebno, function (o) {
+    var it = el('div', 'item'); var v = el('div', 'v');
+    v.appendChild(el('span', 'who', o.cas + ': ')); v.appendChild(document.createTextNode(o.besedilo));
+    it.appendChild(v); return it;
+  });
+  fill('tedenList', 'sec-teden', D.tedenNaprej, function (o) {
+    var it = el('div', 'item'); it.appendChild(el('div', 'k', o.dan)); it.appendChild(el('div', 'v', o.besedilo)); return it;
+  });
+  fill('viri', 'sec-viri', D.viri, function (o) {
+    var it = el('div', 'item');
+    it.appendChild(el('span', 'dot' + (o.ok === 'ne' ? ' no' : o.ok === 'delno' ? ' warn' : '')));
+    it.appendChild(el('div', 'v', o.besedilo)); return it;
+  });
+  document.getElementById('foot').textContent = D.foot || '';
+})();
+</script>
