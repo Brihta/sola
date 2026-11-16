@@ -77,8 +77,9 @@ Ko je učitelj prijavljen (»Prijava za učitelje«):
 
 - **Razpored strani predmeta** (vsi predmeti): **＋ Naslov** doda podnaslov (samo besedilo,
   ne zloži se), **＋ Modul** pa zložljivo skupino (📁), v katero daš gradiva. Vse vrstice
-  premikaš s puščicama ↑ ↓ (gradivo s puščico tudi vstopi v modul ali izstopi iz njega),
-  z izbiro 📁 pri gradivu ali z vlečenjem za ročaj ⋮⋮ (gradivo spustiš tudi na glavo modula).
+  premikaš z vlečenjem: primeš celo vrstico z miško (na telefonu kratko pritisneš in držiš)
+  in jo spustiš, kamor želiš; gradivo spustiš tudi na ime modula (gre v modul). Gradivo daš v
+  modul tudi z izbiro 📁.
   ✎ preimenuje, 🗑 izbriše naslov ali modul (gradiva ostanejo). Učenci ne vidijo praznih
   modulov in naslovov, pod katerimi ni nič objavljenega; moduli so zaprti, dokler jih ne odprejo.
   Na novo naložena gradiva se pokažejo na vrhu, dokler jih ne premakneš.

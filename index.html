@@ -269,11 +269,16 @@
     .naslov-v h3::before { content: ''; display: inline-block; width: 6px; height: 1em; border-radius: 3px; margin-right: 10px; vertical-align: -.12em;
                            background: linear-gradient(var(--c1), var(--c2)); }
     .premik { display: flex; align-items: center; gap: 2px; flex-shrink: 0; }
-    .premik button, .premik .rocaj { width: 30px; height: 30px; border-radius: 9px; border: 1.5px solid var(--line-2); background: var(--surface);
+    .premik .rocaj { width: 30px; height: 30px; border-radius: 9px; border: 1.5px solid var(--line-2); background: var(--surface);
            color: var(--muted); font: inherit; font-weight: 900; font-size: .9rem; cursor: pointer; display: flex; align-items: center; justify-content: center; padding: 0; }
     .premik .rocaj { cursor: grab; border-style: dashed; letter-spacing: -2px; }
-    .premik button:disabled { opacity: .3; cursor: default; }
-    .items li.vlecem { opacity: .35; }
+    #razpored.ured li[data-k], #razpored.ured .modul-h { cursor: grab; user-select: none; -webkit-user-select: none; -webkit-touch-callout: none; }
+    #razpored.ured a { -webkit-user-drag: none; }
+    .items li.lebdi { position: fixed; z-index: 1000; pointer-events: none; opacity: .92; transform: rotate(-1deg) scale(1.02);
+                      box-shadow: 0 18px 40px rgba(0,0,0,.22); border-radius: var(--r-lg); background: var(--surface); }
+    .items li.mesto { border: 2px dashed color-mix(in srgb, var(--c1) 60%, white); border-radius: var(--r-lg);
+                      background: color-mix(in srgb, var(--c1) 8%, transparent); list-style: none; }
+    body.vlecenje, body.vlecenje * { cursor: grabbing !important; user-select: none; -webkit-user-select: none; }
     .items .modul { background: var(--surface); border: 1.5px solid var(--line-2); border-radius: var(--r-lg, 18px); padding: 6px; }
     .items .modul.cilj { border-color: var(--c1); box-shadow: 0 0 0 3px color-mix(in srgb, var(--c1) 25%, transparent); }
     .modul-h { display: flex; align-items: center; gap: 8px; min-width: 0; }
@@ -300,7 +305,6 @@
       .modul-h .nasl-akc { margin-left: auto; }
     }
     .nasl-akc { display: flex; gap: 6px; flex-shrink: 0; }
-    @media (max-width: 560px) { .premik .rocaj { display: none; } }
 
     .empty { background: var(--surface); border-radius: var(--r-xl); padding: 36px 24px; text-align: center; color: var(--muted); font-weight: 600; box-shadow: var(--shadow); }
     .empty img { width: 104px; height: 104px; display: block; margin: 0 auto 12px; animation: bob 4s ease-in-out infinite; }
@@ -1005,19 +1009,18 @@ function htmlRazporeda(p, seznam) {
   }
   const moduli = drevo.filter(e => e.tip === 'modul');
   const n = drevo.length;
-  const puscici = (gor, dol) => `<button type="button" data-premik="-1" title="Gor" ${gor ? '' : 'disabled'}>↑</button><button type="button" data-premik="1" title="Dol" ${dol ? '' : 'disabled'}>↓</button>`;
   const vModul = (g, v) => moduli.length ? `<select class="v-modul" title="Premakni v modul" aria-label="Modul">
       <option value="">📁 brez modula</option>${moduli.map(m => `<option value="${esc(m.n.id)}"${m === v ? ' selected' : ''}>📁 ${esc(m.n.besedilo)}</option>`).join('')}</select>` : '';
-  const kontrole = (gor, dol, g, v) => ucitelj ? `<span class="premik"><span class="rocaj" title="Povleci">⋮⋮</span>${puscici(gor, dol)}</span>${g ? vModul(g, v) : ''}` : '';
+  const kontrole = (g, v) => ucitelj ? `<span class="premik"><span class="rocaj" title="Primi in povleci">⋮⋮</span></span>${g ? vModul(g, v) : ''}` : '';
   const akcije = n => ucitelj ? `<span class="nasl-akc"><button class="vis" type="button" data-razd-uredi="${esc(n.id)}" title="Preimenuj">✎</button><button class="vis" type="button" data-razd-izbrisi="${esc(n.id)}" title="Izbriši">🗑</button></span>` : '';
   const vrstice = drevo.map((e, i) => {
-    if (e.tip === 'g') return vrsticaGradiva(p, e.g, kontrole(i > 0, i < n - 1, e.g, null));
-    if (e.tip === 'naslov') return `<li class="naslov-v"${ucitelj ? ` data-k="naslov:${esc(e.n.id)}"` : ''}>${kontrole(i > 0, i < n - 1)}<h3>${esc(e.n.besedilo)}</h3>${akcije(e.n)}</li>`;
+    if (e.tip === 'g') return vrsticaGradiva(p, e.g, kontrole(e.g, null));
+    if (e.tip === 'naslov') return `<li class="naslov-v"${ucitelj ? ` data-k="naslov:${esc(e.n.id)}"` : ''}>${kontrole()}<h3>${esc(e.n.besedilo)}</h3>${akcije(e.n)}</li>`;
     const odprt = modulOdprt(e.n.id), vidnih = e.v.filter(g => !skrito(g)).length;
     return `<li class="modul${odprt ? ' odprt' : ''}" data-m="${esc(e.n.id)}">
-      <div class="modul-h">${kontrole(i > 0, i < n - 1)}<button class="modul-g" type="button" aria-expanded="${odprt}">
+      <div class="modul-h">${kontrole()}<button class="modul-g" type="button" aria-expanded="${odprt}">
         <span class="modul-i" aria-hidden="true">📁</span><b>${esc(e.n.besedilo)}</b><span class="count">${ucitelj ? e.v.length : vidnih}</span><span class="chev">${SVG.chev}</span></button>${akcije(e.n)}</div>
-      <ul class="items modul-v">${e.v.map(g => vrsticaGradiva(p, g, kontrole(true, true, g, e))).join('')}${ucitelj && !e.v.length ? '<li class="prazno">Prazen modul. Gradivo premakneš sem s puščico, izbiro 📁 ali vlečenjem.</li>' : ''}</ul>
+      <ul class="items modul-v">${e.v.map(g => vrsticaGradiva(p, g, kontrole(g, e))).join('')}${ucitelj && !e.v.length ? '<li class="prazno">Prazen modul. Gradivo povleci sem (ali na ime modula) ali ga izberi z 📁.</li>' : ''}</ul>
     </li>`;
   }).join('');
   const imaRazd = drevo.some(e => e.tip !== 'g');
@@ -1025,34 +1028,7 @@ function htmlRazporeda(p, seznam) {
     <ul class="items" id="razpored">${vrstice}</ul></section>`;
 }
 
-/* Premik z gumbom: gradivo vstopi v modul ali izstopi iz njega; naslov in modul se premikata kot celota. */
-function premakni(drevo, kljucVrstice, smer) {
-  const kje = drevo.findIndex(e => (e.tip === 'g' ? kljuc(e.g) : e.tip + ':' + e.n.id) === kljucVrstice);
-  if (kje >= 0) {
-    const e = drevo[kje], j = kje + smer;
-    if (j < 0 || j >= drevo.length) return null;
-    if (e.tip === 'g' && drevo[j].tip === 'modul') {
-      drevo.splice(kje, 1);
-      const m = drevo[smer < 0 ? j : j - 1];
-      smer < 0 ? m.v.push(e.g) : m.v.unshift(e.g);
-      shrani('sola_modul_odprt:' + m.n.id, '1');
-    } else { drevo[kje] = drevo[j]; drevo[j] = e; }
-    return drevo;
-  }
-  for (let i = 0; i < drevo.length; i++) {
-    const m = drevo[i];
-    if (m.tip !== 'modul') continue;
-    const k = m.v.findIndex(g => kljuc(g) === kljucVrstice);
-    if (k < 0) continue;
-    const j = k + smer;
-    if (j >= 0 && j < m.v.length) { [m.v[k], m.v[j]] = [m.v[j], m.v[k]]; return drevo; }
-    const [g] = m.v.splice(k, 1);
-    drevo.splice(smer < 0 ? i : i + 1, 0, { tip: 'g', g });
-    return drevo;
-  }
-  return null;
-}
-
+let odstraniVlecenje = () => {};
 function urejanjeRazporeda(p) {
   const ul = document.getElementById('razpored');
   const drevo = () => drevoPredmeta(p, gradivaZa(p.id));
@@ -1095,13 +1071,6 @@ function urejanjeRazporeda(p) {
     if (zlozi) return;   // zlaganje ureja stranPredmet (za vse)
     const b = e.target.closest('button');
     if (!b) return;
-    if (b.dataset.premik) {
-      const li = b.closest('li[data-k], li[data-m]');
-      const k = li.dataset.k || 'modul:' + li.dataset.m;
-      const d = premakni(drevo(), k, Number(b.dataset.premik));
-      if (d) shraniRazpored(p, redIzDrevesa(d));
-      return;
-    }
     if (b.dataset.razdUredi) {
       const n = NASLOVI.find(x => x.id === b.dataset.razdUredi);
       const t = (prompt(vrstaRazd(n) === 'modul' ? 'Novo ime modula:' : 'Nov naslov:', n.besedilo) || '').trim().slice(0, 120);
@@ -1123,48 +1092,100 @@ function urejanjeRazporeda(p) {
     }
   });
 
-  /* Vlečenje z miško za ročaj ⋮⋮ (na telefonu puščici in izbira 📁). Gradivo spustiš tudi
-     na glavo modula (gre v modul) ali v odprt modul; naslov in modul samo med vrstice zunaj modulov. */
-  let vlecem = null;
+  /* Vlečenje: primi katerokoli vrstico (gradivo, naslov, modul) in jo povleci. Z miško takoj,
+     na telefonu po kratkem pritisku (sicer se stran premika). Gradivo spustiš med vrstice,
+     v odprt modul ali na ime modula (gre na konec modula); naslov in modul samo zunaj modulov. */
+  ul.classList.add('ured');
   const izDom = () => [...ul.children].filter(li => li.dataset.k || li.dataset.m).map(li => li.dataset.m
     ? { m: li.dataset.m, v: [...li.querySelector('.modul-v').children].filter(x => x.dataset.k).map(x => x.dataset.k) }
     : li.dataset.k);
-  ul.addEventListener('pointerdown', e => { const r = e.target.closest('.rocaj'); if (r) r.closest('li[data-k], li[data-m]').draggable = true; });
-  ul.addEventListener('dragstart', e => {
-    vlecem = e.target.closest('li[data-k], li[data-m]');
-    if (!vlecem) return;
-    vlecem.classList.add('vlecem'); e.dataTransfer.effectAllowed = 'move'; e.dataTransfer.setData('text/plain', '');
-  });
-  ul.addEventListener('dragover', e => {
-    if (!vlecem) return;
-    e.preventDefault();
-    const gradivo = !!vlecem.dataset.k && !vlecem.classList.contains('naslov-v');
-    let cilj = e.target.closest('li[data-k], li.modul, li.prazno');
-    if (!cilj || cilj === vlecem || vlecem.contains(cilj)) return;
-    ul.querySelectorAll('.modul.cilj').forEach(x => x.classList.remove('cilj'));
-    if (!gradivo) {   // naslov ali modul: samo zunaj modulov
+  let vl = null, zadnjiVlek = 0;
+  const zacni = () => {
+    const li = vl.li, r = li.getBoundingClientRect();
+    vl.zacel = true;
+    vl.mesto = document.createElement('li');
+    vl.mesto.className = 'mesto'; vl.mesto.style.height = r.height + 'px';
+    li.parentElement.insertBefore(vl.mesto, li);
+    vl.dx = vl.x - r.left; vl.dy = vl.y - r.top;
+    li.classList.add('lebdi');
+    Object.assign(li.style, { left: r.left + 'px', top: r.top + 'px', width: r.width + 'px' });
+    document.body.classList.add('vlecenje');
+    if (navigator.vibrate && vl.dotik) navigator.vibrate(15);
+  };
+  const postavi = (x, y) => {
+    const el = document.elementFromPoint(x, y);
+    if (!el || !ul.contains(el) || vl.mesto.contains(el)) return;
+    const gradivo = !!vl.li.dataset.k && !vl.li.classList.contains('naslov-v');
+    let cilj = el.closest('li[data-k], li.modul, li.prazno');
+    if (!cilj || cilj === vl.li) return;
+    ul.querySelectorAll('.modul.cilj').forEach(m => m.classList.remove('cilj'));
+    if (!gradivo) {
       if (cilj.parentElement !== ul) cilj = cilj.closest('li.modul');
-      if (!cilj || cilj === vlecem) return;
-    } else if (cilj.classList.contains('modul') && e.target.closest('.modul-h')) {
+      if (!cilj) return;
+    } else if (cilj.classList.contains('modul') && el.closest('.modul-h')) {
       cilj.classList.add('cilj');
       const v = cilj.querySelector('.modul-v');
-      v.insertBefore(vlecem, v.querySelector('.prazno'));
+      v.insertBefore(vl.mesto, v.querySelector('.prazno'));
       return;
     } else if (cilj.classList.contains('prazno')) {
-      cilj.parentElement.insertBefore(vlecem, cilj);
+      cilj.parentElement.insertBefore(vl.mesto, cilj);
       return;
     }
     const r = cilj.getBoundingClientRect();
-    cilj.parentElement.insertBefore(vlecem, e.clientY > r.top + r.height / 2 ? cilj.nextSibling : cilj);
-  });
-  ul.addEventListener('drop', e => e.preventDefault());
-  ul.addEventListener('dragend', () => {
-    if (!vlecem) return;
-    vlecem.classList.remove('vlecem'); vlecem.draggable = false; vlecem = null;
-    ul.querySelectorAll('.modul.cilj').forEach(x => x.classList.remove('cilj'));
+    cilj.parentElement.insertBefore(vl.mesto, y > r.top + r.height / 2 ? cilj.nextSibling : cilj);
+  };
+  const koncaj = shrani => {
+    if (!vl) return;
+    const d = vl; vl = null;
+    clearTimeout(d.cas);
+    if (!d.zacel) return;
+    zadnjiVlek = Date.now();
+    d.mesto.replaceWith(d.li);
+    d.li.classList.remove('lebdi'); d.li.removeAttribute('style');
+    document.body.classList.remove('vlecenje');
+    ul.querySelectorAll('.modul.cilj').forEach(m => m.classList.remove('cilj'));
     const red = izDom();
-    if (JSON.stringify(red) !== JSON.stringify(redIzDrevesa(drevo()))) shraniRazpored(p, red);
+    if (shrani && JSON.stringify(red) !== JSON.stringify(redIzDrevesa(drevo()))) shraniRazpored(p, red);
+    else { const y = window.scrollY; stranPredmet(p); window.scrollTo(0, y); }
+  };
+  ul.addEventListener('pointerdown', e => {
+    if (vl || (e.pointerType === 'mouse' && e.button !== 0)) return;
+    if (e.target.closest('select, .vis, .nasl-akc, input, .prazno')) return;
+    const li = e.target.closest('li[data-k], li[data-m]');
+    if (!li || !ul.contains(li)) return;
+    vl = { li, x: e.clientX, y: e.clientY, zacel: false, dotik: e.pointerType !== 'mouse' };
+    if (vl.dotik) vl.cas = setTimeout(() => { if (vl && !vl.zacel) zacni(); }, 300);
   });
+  const premik = e => {
+    if (!vl) return;
+    if (!vl.zacel) {
+      const d = Math.hypot(e.clientX - vl.x, e.clientY - vl.y);
+      if (vl.dotik) { if (d > 10) { clearTimeout(vl.cas); vl = null; } return; }
+      if (d < 6) return;
+      zacni();
+    }
+    e.preventDefault();
+    vl.li.style.left = (e.clientX - vl.dx) + 'px';
+    vl.li.style.top = (e.clientY - vl.dy) + 'px';
+    postavi(e.clientX, e.clientY);
+    if (e.clientY < 70) window.scrollBy(0, -14); else if (e.clientY > innerHeight - 70) window.scrollBy(0, 14);
+  };
+  const dotik = e => { if (vl && vl.zacel) e.preventDefault(); };
+  const gor = () => koncaj(true), prekini = () => koncaj(false);
+  odstraniVlecenje();   // poslušalci prejšnjega izrisa
+  document.addEventListener('pointermove', premik);
+  document.addEventListener('touchmove', dotik, { passive: false });
+  document.addEventListener('pointerup', gor);
+  document.addEventListener('pointercancel', prekini);
+  odstraniVlecenje = () => {
+    document.removeEventListener('pointermove', premik);
+    document.removeEventListener('touchmove', dotik, { passive: false });
+    document.removeEventListener('pointerup', gor);
+    document.removeEventListener('pointercancel', prekini);
+  };
+  ul.addEventListener('contextmenu', e => { if (vl) e.preventDefault(); });
+  /* Po vlečenju ne odpri gradiva in ne zloži modula. */
+  ul.addEventListener('click', e => { if (Date.now() - zadnjiVlek < 400) { e.preventDefault(); e.stopPropagation(); } }, true);
 }
 
 function stranPredmet(p) {
