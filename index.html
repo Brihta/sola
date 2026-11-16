@@ -274,6 +274,31 @@
     .premik .rocaj { cursor: grab; border-style: dashed; letter-spacing: -2px; }
     .premik button:disabled { opacity: .3; cursor: default; }
     .items li.vlecem { opacity: .35; }
+    .items .modul { background: var(--surface); border: 1.5px solid var(--line-2); border-radius: var(--r-lg, 18px); padding: 6px; }
+    .items .modul.cilj { border-color: var(--c1); box-shadow: 0 0 0 3px color-mix(in srgb, var(--c1) 25%, transparent); }
+    .modul-h { display: flex; align-items: center; gap: 8px; min-width: 0; }
+    .modul-g { flex: 1; min-width: 0; display: flex; align-items: center; gap: 10px; background: none; border: 0; padding: 10px 8px; font: inherit; color: var(--ink); cursor: pointer; text-align: left; }
+    .modul-g b { font-size: 1.08rem; font-weight: 900; overflow: hidden; text-overflow: ellipsis; white-space: nowrap; }
+    .modul-g .modul-i { font-size: 1.3rem; }
+    .modul-g .count { background: var(--bg, #fff); border: 1.5px solid var(--line-2); border-radius: 999px; font-size: .8rem; font-weight: 800; padding: 1px 9px; color: var(--muted); }
+    .modul-g .chev { margin-left: auto; width: 32px; height: 32px; border-radius: 50%; border: 1.5px solid var(--line-2); display: flex; align-items: center; justify-content: center; transition: transform .2s; flex-shrink: 0; }
+    .modul-g .chev svg { width: 16px; height: 16px; }
+    .modul:not(.odprt) .modul-g .chev { transform: rotate(-90deg); }
+    .modul:not(.odprt) > .modul-v { display: none; }
+    .modul-v { padding: 4px 4px 6px 14px; }
+    .modul-v .prazno { color: var(--muted); font-weight: 700; font-size: .9rem; padding: 10px 12px; border: 2px dashed var(--line-2); border-radius: 14px; }
+    .v-modul { flex-shrink: 0; max-width: 150px; font: inherit; font-size: .8rem; font-weight: 700; padding: 6px 8px; border-radius: 10px; border: 1.5px solid var(--line-2); background: var(--surface); color: var(--ink); }
+    @media (max-width: 860px) { .v-modul { max-width: 46px; padding: 6px 4px; } .item.ucit .tag.hid { display: none; } }
+    @media (max-width: 560px) {
+      .modul-v { padding-left: 4px; }
+      #razpored .item.ucit { flex-wrap: wrap; gap: 6px; }
+      #razpored .item.ucit > a { order: -1; flex-basis: 100%; }
+      #razpored .item.ucit .v-modul { max-width: 140px; padding: 6px 8px; }
+      #razpored .item.ucit .vis { margin-left: auto; }
+      .naslov-v, .modul-h { flex-wrap: wrap; }
+      .modul-h .modul-g { order: -1; flex-basis: 100%; }
+      .modul-h .nasl-akc { margin-left: auto; }
+    }
     .nasl-akc { display: flex; gap: 6px; flex-shrink: 0; }
     @media (max-width: 560px) { .premik .rocaj { display: none; } }
 
@@ -612,7 +637,7 @@ const PREDMETI = [
         izbira: 'Izberi sklop', vprasanje: 'Kaj bomo delali?', enota: 'sklopa',
         otroci: [
           { id: 'fleksi-spelling', ime: 'Spelling', kratko: 'Spelling', koda: 'Angleščina', c1: '#8b5cf6', c2: '#ec4899', emoji: '✏️', opis: 'Spelling: words of the week' },
-          { id: 'fleksi-reading',  ime: 'Reading',  kratko: 'Reading',  koda: 'Angleščina', c1: '#10b981', c2: '#0ea5e9', emoji: '📖', opis: 'Reading: texts and questions', brezDatumov: true, naslovSeznama: 'Texts' },
+          { id: 'fleksi-reading',  ime: 'Reading',  kratko: 'Reading',  koda: 'Angleščina', c1: '#10b981', c2: '#0ea5e9', emoji: '📖', opis: 'Reading: texts and questions', naslovSeznama: 'Texts' },
         ] },
     ] },
 ];
@@ -895,37 +920,17 @@ function povezaveHtml(p) {
       <span class="nm"><b>${esc(l.ime)}</b><small>${esc(l.opis)}</small></span>${SVG.ext}</a>`).join('')}</div>` : '';
 }
 
-function poTednih(seznam) {
-  const tedni = new Map();
-  seznam.forEach(g => {
-    const k = ponedeljek(g.datum).getTime();
-    if (!tedni.has(k)) tedni.set(k, []);
-    tedni.get(k).push(g);
-  });
-  const ta = ponedeljek(new Date()).getTime();
-  /* Ta teden, nato prihodnji (vidi jih samo učitelj) po vrsti, nato pretekli od najnovejšega. */
-  const rang = k => k === ta ? 0 : k > ta ? 1 : 2;
-  return [...tedni.entries()].sort((a, b) => rang(a[0]) - rang(b[0]) || (rang(a[0]) === 1 ? a[0] - b[0] : b[0] - a[0])).map(([k, g]) => {
-    const pon = new Date(k), pet = new Date(k); pet.setDate(pet.getDate() + 4);
-    const raz = Math.round((ta - k) / (7 * 864e5));
-    const obseg = `${kratek(pon)} – ${kratek(pet)}`;
-    return { ime: raz === 0 ? 'Ta teden' : raz === 1 ? 'Prejšnji teden' : raz === -1 ? 'Naslednji teden' : `Teden ${obseg}`,
-      pod: Math.abs(raz) <= 1 ? obseg : String(pon.getFullYear()), gradiva: g, odprt: raz === 0 || raz === 1 };
-  });
-}
-
-function oznaka(g, brezDatuma) {
+function oznaka(g) {
   if (ucitelj && skrito(g)) return '<span class="tag hid">Skrito</span>';
   const o = g.vrsta === 'kviz' && MOJE[g.id];
-  if (o) return `<span class="tag done">✓ ${o.tocke}/${o.vseh}</span>`;
-  return !brezDatuma && jeDanes(g.datum) ? '<span class="tag new">Novo</span>' : '';
+  return o ? `<span class="tag done">✓ ${o.tocke}/${o.vseh}</span>` : '';
 }
-function vrsticaGradiva(p, g, premik) {
-  const ucit = ucitelj && kljucObjave(g), bd = p.brezDatumov;
-  return `<li class="item${ucit || premik ? ' ucit' : ''}${ucit && skrito(g) ? ' skrito' : ''}"${premik ? ` data-k="${esc(kljucReda(g))}"` : ''}>${premik || ''}<a href="${hrefGradiva(p, g)}" draggable="false">
+function vrsticaGradiva(p, g, kontrole) {
+  const ucit = ucitelj && kljucObjave(g);
+  return `<li class="item${ucit || kontrole ? ' ucit' : ''}${ucit && skrito(g) ? ' skrito' : ''}"${kontrole ? ` data-k="${esc(kljuc(g))}"` : ''}>${kontrole || ''}<a href="${hrefGradiva(p, g)}" draggable="false">
     ${tile(g.vrsta, 'sm')}
-    <span class="nm"><b>${esc(g.ime)}</b><small>${IMENA_VRST[g.vrsta] || 'Datoteka'}${bd ? '' : ' · ' + kdaj(g.datum)}${g.vrsta === 'ura' ? ' · ' + g.koraki.map(k => k.ime).join(' → ') : g.velikost ? ' · ' + velikost(g.velikost) : ''}</small></span>
-    ${oznaka(g, bd)}<svg class="arrow" viewBox="0 0 20 20" fill="none" stroke="currentColor" stroke-width="2.4" stroke-linecap="round" stroke-linejoin="round"><path d="M7.5 4.5L13 10l-5.5 5.5"/></svg>
+    <span class="nm"><b>${esc(g.ime)}</b><small>${IMENA_VRST[g.vrsta] || 'Datoteka'}${g.vrsta === 'ura' ? ' · ' + g.koraki.map(k => k.ime).join(' → ') : g.velikost ? ' · ' + velikost(g.velikost) : ''}</small></span>
+    ${oznaka(g)}<svg class="arrow" viewBox="0 0 20 20" fill="none" stroke="currentColor" stroke-width="2.4" stroke-linecap="round" stroke-linejoin="round"><path d="M7.5 4.5L13 10l-5.5 5.5"/></svg>
   </a>${ucit ? gumbObjave(g) : ''}</li>`;
 }
 
@@ -937,7 +942,7 @@ function okvirPredmeta(p, zavihek, vsebina, stranska, zadnjaDrobtina) {
   const pas = ['gradivo', 'kviz', 'urejevalnik'].includes(zavihek) ? '' : `<section class="banner" style="${barve(p)}">
       <div class="banner-top"><span class="emoji" aria-hidden="true">${p.emoji}</span>
         <div><h1>${esc(p.ime)}</h1><p>${esc(p.opis || p.koda)}</p></div>
-        ${ucitelj ? `<div class="banner-akcije"><a class="btn banner-btn" href="#/p/${p.id}/nalozi">⬆ Naloži</a><a class="btn banner-btn" href="#/p/${p.id}/nov-kviz">＋ Nov kviz</a>${p.brezDatumov && zavihek === 'domov' ? `<button class="btn banner-btn" type="button" id="dodaj-naslov">＋ Naslov</button>` : ''}</div>` : ''}</div>
+        ${ucitelj ? `<div class="banner-akcije"><a class="btn banner-btn" href="#/p/${p.id}/nalozi">⬆ Naloži</a><a class="btn banner-btn" href="#/p/${p.id}/nov-kviz">＋ Nov kviz</a>${zavihek === 'domov' ? `<button class="btn banner-btn" type="button" id="dodaj-naslov">＋ Naslov</button><button class="btn banner-btn" type="button" id="dodaj-modul">＋ Modul</button>` : ''}</div>` : ''}</div>
       ${s ? `<div class="banner-sw">${s.otroci.filter(o => o !== p).map(o => `<a href="${hrefPredmeta(o)}">${o.emoji} ${esc(o.kratko || o.ime)}</a>`).join('')}</div>` : ''}
       <nav class="tabs" aria-label="Zavihki">
         <a href="#/p/${p.id}" class="${zavihek === 'domov' ? 'active' : ''}">Domov</a>
@@ -949,132 +954,246 @@ function okvirPredmeta(p, zavihek, vsebina, stranska, zadnjaDrobtina) {
     <div>${vsebina}</div>${stranska ? `<aside class="side">${stranska}</aside>` : ''}</div>`;
 }
 
-/* Ročni vrstni red z naslovi (predmeti z brezDatumov). Gradiva, ki jih v shranjenem redu še ni
-   (na novo naložena), so na vrhu; brez shranjenega reda: objavljena (najnovejša zgoraj), nato skrita. */
-const kljucReda = g => g.vrsta === 'naslov' ? 'naslov:' + g.id : kljuc(g);
-function razvrsceno(p, seznam) {
+/* ─── Razpored strani predmeta (supabase_razpored.sql) ───────────────────────
+   Brez datumov in tednov: seznam gradiv, ki ga učitelj uredi sam. Poleg gradiv sta še
+   naslov (samo besedilo, ne zloži se) in modul (zložljiva skupina gradiv).
+   RAZPORED[predmet] = ['ključ gradiva', 'naslov:<id>', {m: '<id modula>', v: ['ključ', …]}, …].
+   Gradiva, ki jih v razporedu še ni (na novo naložena), so na vrhu; brez razporeda so
+   objavljena (najnovejša zgoraj), nato skrita (po vrsti, v kateri pridejo na vrsto). */
+const vrstaRazd = n => n.vrsta === 'modul' ? 'modul' : 'naslov';
+function drevoPredmeta(p, seznam) {
   const vidni = seznam.filter(g => !skrito(g)), skriti = seznam.filter(g => skrito(g)).reverse();
-  const vsi = [...NASLOVI.filter(n => n.predmet === p.id).map(n => ({ vrsta: 'naslov', id: n.id, ime: n.besedilo })), ...vidni, ...skriti];
-  const mesto = new Map((RAZPORED[p.id] || []).map((k, i) => [k, i]));
-  return [...vsi.filter(g => !mesto.has(kljucReda(g))),
-          ...vsi.filter(g => mesto.has(kljucReda(g))).sort((a, b) => mesto.get(kljucReda(a)) - mesto.get(kljucReda(b)))];
+  const gradiva = new Map([...vidni, ...skriti].map(g => [kljuc(g), g]));
+  const razd = NASLOVI.filter(n => n.predmet === p.id);
+  const poKljucu = new Map(razd.map(n => [vrstaRazd(n) + ':' + n.id, n]));
+  const porabljeno = new Set(), drevo = [];
+  const vzemi = k => { if (porabljeno.has(k) || !gradiva.has(k)) return null; porabljeno.add(k); return gradiva.get(k); };
+  for (const e of (RAZPORED[p.id] || [])) {
+    if (typeof e === 'string') {
+      if (e.startsWith('naslov:')) {
+        if (poKljucu.has(e) && !porabljeno.has(e)) { porabljeno.add(e); drevo.push({ tip: 'naslov', n: poKljucu.get(e) }); }
+      } else { const g = vzemi(e); if (g) drevo.push({ tip: 'g', g }); }
+    } else if (e && e.m) {
+      const k = 'modul:' + e.m;
+      if (!poKljucu.has(k) || porabljeno.has(k)) continue;
+      porabljeno.add(k);
+      drevo.push({ tip: 'modul', n: poKljucu.get(k), v: (e.v || []).map(vzemi).filter(Boolean) });
+    }
+  }
+  const noviRazd = razd.filter(n => !porabljeno.has(vrstaRazd(n) + ':' + n.id))
+    .map(n => vrstaRazd(n) === 'modul' ? { tip: 'modul', n, v: [] } : { tip: 'naslov', n });
+  const novaGradiva = [...gradiva.keys()].filter(k => !porabljeno.has(k)).map(k => ({ tip: 'g', g: gradiva.get(k) }));
+  return [...noviRazd, ...novaGradiva, ...drevo];
 }
-async function shraniRazpored(p, kljuci) {
-  RAZPORED[p.id] = kljuci;
+const redIzDrevesa = drevo => drevo.map(e => e.tip === 'g' ? kljuc(e.g) : e.tip === 'naslov' ? 'naslov:' + e.n.id : { m: e.n.id, v: e.v.map(g => kljuc(g)) });
+const gradivaVRedu = drevo => drevo.flatMap(e => e.tip === 'g' ? [e.g] : e.tip === 'modul' ? e.v : []);
+const modulOdprt = id => preberi('sola_modul_odprt:' + id) === '1';
+
+async function shraniRazpored(p, red) {
+  RAZPORED[p.id] = red;
   const y = window.scrollY; stranPredmet(p); window.scrollTo(0, y);
-  const r = await rpc('sola_razpored_shrani', { p_seja: ucitelj.seja, p_predmet: p.id, p_red: kljuci });
+  const r = await rpc('sola_razpored_shrani', { p_seja: ucitelj.seja, p_predmet: p.id, p_red: red });
   if (r !== true) alert(r === NEDOSEGLJIVO ? 'Strežnik ni dosegljiv, vrstni red ni shranjen.' : 'Vrstni red ni shranjen. Se moraš znova prijaviti? (Ali pa v Supabase še ni zagnan supabase_razpored.sql.)');
 }
+
+function htmlRazporeda(p, seznam) {
+  let drevo = drevoPredmeta(p, seznam);
+  if (!ucitelj) {
+    /* Učenec ne vidi praznega modula in ne naslova, pod katerim do naslednjega naslova ni ničesar. */
+    drevo = drevo.filter(e => e.tip !== 'modul' || e.v.length);
+    drevo = drevo.filter((e, i) => e.tip !== 'naslov' || (drevo[i + 1] && drevo[i + 1].tip !== 'naslov'));
+  }
+  const moduli = drevo.filter(e => e.tip === 'modul');
+  const n = drevo.length;
+  const puscici = (gor, dol) => `<button type="button" data-premik="-1" title="Gor" ${gor ? '' : 'disabled'}>↑</button><button type="button" data-premik="1" title="Dol" ${dol ? '' : 'disabled'}>↓</button>`;
+  const vModul = (g, v) => moduli.length ? `<select class="v-modul" title="Premakni v modul" aria-label="Modul">
+      <option value="">📁 brez modula</option>${moduli.map(m => `<option value="${esc(m.n.id)}"${m === v ? ' selected' : ''}>📁 ${esc(m.n.besedilo)}</option>`).join('')}</select>` : '';
+  const kontrole = (gor, dol, g, v) => ucitelj ? `<span class="premik"><span class="rocaj" title="Povleci">⋮⋮</span>${puscici(gor, dol)}</span>${g ? vModul(g, v) : ''}` : '';
+  const akcije = n => ucitelj ? `<span class="nasl-akc"><button class="vis" type="button" data-razd-uredi="${esc(n.id)}" title="Preimenuj">✎</button><button class="vis" type="button" data-razd-izbrisi="${esc(n.id)}" title="Izbriši">🗑</button></span>` : '';
+  const vrstice = drevo.map((e, i) => {
+    if (e.tip === 'g') return vrsticaGradiva(p, e.g, kontrole(i > 0, i < n - 1, e.g, null));
+    if (e.tip === 'naslov') return `<li class="naslov-v"${ucitelj ? ` data-k="naslov:${esc(e.n.id)}"` : ''}>${kontrole(i > 0, i < n - 1)}<h3>${esc(e.n.besedilo)}</h3>${akcije(e.n)}</li>`;
+    const odprt = modulOdprt(e.n.id), vidnih = e.v.filter(g => !skrito(g)).length;
+    return `<li class="modul${odprt ? ' odprt' : ''}" data-m="${esc(e.n.id)}">
+      <div class="modul-h">${kontrole(i > 0, i < n - 1)}<button class="modul-g" type="button" aria-expanded="${odprt}">
+        <span class="modul-i" aria-hidden="true">📁</span><b>${esc(e.n.besedilo)}</b><span class="count">${ucitelj ? e.v.length : vidnih}</span><span class="chev">${SVG.chev}</span></button>${akcije(e.n)}</div>
+      <ul class="items modul-v">${e.v.map(g => vrsticaGradiva(p, g, kontrole(true, true, g, e))).join('')}${ucitelj && !e.v.length ? '<li class="prazno">Prazen modul. Gradivo premakneš sem s puščico, izbiro 📁 ali vlečenjem.</li>' : ''}</ul>
+    </li>`;
+  }).join('');
+  const imaRazd = drevo.some(e => e.tip !== 'g');
+  return `<section class="week">${imaRazd ? '' : `<div class="week-h" style="cursor:default"><h3>${esc(p.naslovSeznama || 'Gradiva')}</h3><span class="count">${gradivaVRedu(drevo).filter(g => !skrito(g)).length}</span></div>`}
+    <ul class="items" id="razpored">${vrstice}</ul></section>`;
+}
+
+/* Premik z gumbom: gradivo vstopi v modul ali izstopi iz njega; naslov in modul se premikata kot celota. */
+function premakni(drevo, kljucVrstice, smer) {
+  const kje = drevo.findIndex(e => (e.tip === 'g' ? kljuc(e.g) : e.tip + ':' + e.n.id) === kljucVrstice);
+  if (kje >= 0) {
+    const e = drevo[kje], j = kje + smer;
+    if (j < 0 || j >= drevo.length) return null;
+    if (e.tip === 'g' && drevo[j].tip === 'modul') {
+      drevo.splice(kje, 1);
+      const m = drevo[smer < 0 ? j : j - 1];
+      smer < 0 ? m.v.push(e.g) : m.v.unshift(e.g);
+      shrani('sola_modul_odprt:' + m.n.id, '1');
+    } else { drevo[kje] = drevo[j]; drevo[j] = e; }
+    return drevo;
+  }
+  for (let i = 0; i < drevo.length; i++) {
+    const m = drevo[i];
+    if (m.tip !== 'modul') continue;
+    const k = m.v.findIndex(g => kljuc(g) === kljucVrstice);
+    if (k < 0) continue;
+    const j = k + smer;
+    if (j >= 0 && j < m.v.length) { [m.v[k], m.v[j]] = [m.v[j], m.v[k]]; return drevo; }
+    const [g] = m.v.splice(k, 1);
+    drevo.splice(smer < 0 ? i : i + 1, 0, { tip: 'g', g });
+    return drevo;
+  }
+  return null;
+}
+
 function urejanjeRazporeda(p) {
   const ul = document.getElementById('razpored');
-  const kljuci = () => ul ? [...ul.children].map(li => li.dataset.k) : [];
-  document.getElementById('dodaj-naslov')?.addEventListener('click', async () => {
-    const t = (prompt('Naslov (npr. »Animals« ali »Stories«):') || '').trim();
+  const drevo = () => drevoPredmeta(p, gradivaZa(p.id));
+  const dodaj = vrsta => async () => {
+    const t = (prompt(vrsta === 'modul' ? 'Ime modula (npr. »Unit 1: Animals«):' : 'Naslov (npr. »Stories« ali »Poems«):') || '').trim().slice(0, 120);
     if (!t) return;
-    const id = await rpc('sola_naslov_dodaj', { p_seja: ucitelj.seja, p_predmet: p.id, p_besedilo: t.slice(0, 120) });
-    if (typeof id !== 'string') { alert(id === NEDOSEGLJIVO ? 'Strežnik ni dosegljiv.' : 'Naslova ni bilo mogoče dodati. Se moraš znova prijaviti? (Ali pa v Supabase še ni zagnan supabase_razpored.sql.)'); return; }
-    NASLOVI.push({ id, predmet: p.id, besedilo: t.slice(0, 120) });
-    await shraniRazpored(p, ['naslov:' + id, ...kljuci()]);
-  });
+    const id = await rpc('sola_razdelek_dodaj', { p_seja: ucitelj.seja, p_predmet: p.id, p_besedilo: t, p_vrsta: vrsta });
+    if (typeof id !== 'string') { alert(id === NEDOSEGLJIVO ? 'Strežnik ni dosegljiv.' : 'Ni bilo mogoče dodati. Se moraš znova prijaviti? (Ali pa v Supabase še ni zagnan zadnji supabase_razpored.sql.)'); return; }
+    NASLOVI.push({ id, predmet: p.id, besedilo: t, vrsta });
+    if (vrsta === 'modul') shrani('sola_modul_odprt:' + id, '1');
+    await shraniRazpored(p, [vrsta === 'modul' ? { m: id, v: [] } : 'naslov:' + id, ...redIzDrevesa(drevo()).filter(x => x !== 'naslov:' + id && !(x && x.m === id))]);
+  };
+  document.getElementById('dodaj-naslov')?.addEventListener('click', dodaj('naslov'));
+  document.getElementById('dodaj-modul')?.addEventListener('click', dodaj('modul'));
   if (!ul) return;
+
+  ul.addEventListener('change', e => {
+    const s = e.target.closest('.v-modul');
+    if (!s) return;
+    const k = s.closest('li[data-k]').dataset.k, d = drevo();
+    let g = null, iz = -1;
+    d.forEach((x, i) => {
+      if (x.tip === 'g' && kljuc(x.g) === k) { g = x.g; iz = i; }
+      if (x.tip === 'modul') { const j = x.v.findIndex(y => kljuc(y) === k); if (j >= 0) { g = x.v[j]; x.v.splice(j, 1); iz = i; } }
+    });
+    if (!g) return;
+    if (d[iz].tip === 'g') d.splice(iz, 1);
+    if (s.value) {
+      const m = d.find(x => x.tip === 'modul' && x.n.id === s.value);
+      m.v.push(g); shrani('sola_modul_odprt:' + m.n.id, '1');
+    } else {
+      const mi = d.findIndex(x => x.tip === 'modul' && x === d[iz]);
+      d.splice(mi >= 0 ? mi + 1 : 0, 0, { tip: 'g', g });
+    }
+    shraniRazpored(p, redIzDrevesa(d));
+  });
+
   ul.addEventListener('click', async e => {
+    const zlozi = e.target.closest('.modul-g');
+    if (zlozi) return;   // zlaganje ureja stranPredmet (za vse)
     const b = e.target.closest('button');
     if (!b) return;
     if (b.dataset.premik) {
-      const li = b.closest('li'), k = kljuci(), i = k.indexOf(li.dataset.k), j = i + Number(b.dataset.premik);
-      if (j < 0 || j >= k.length) return;
-      [k[i], k[j]] = [k[j], k[i]];
-      return shraniRazpored(p, k);
+      const li = b.closest('li[data-k], li[data-m]');
+      const k = li.dataset.k || 'modul:' + li.dataset.m;
+      const d = premakni(drevo(), k, Number(b.dataset.premik));
+      if (d) shraniRazpored(p, redIzDrevesa(d));
+      return;
     }
-    if (b.dataset.naslovUredi) {
-      const n = NASLOVI.find(x => x.id === b.dataset.naslovUredi);
-      const t = (prompt('Nov naslov:', n ? n.besedilo : '') || '').trim();
-      if (!t || !n || t === n.besedilo) return;
-      const r = await rpc('sola_naslov_uredi', { p_seja: ucitelj.seja, p_id: n.id, p_besedilo: t.slice(0, 120) });
+    if (b.dataset.razdUredi) {
+      const n = NASLOVI.find(x => x.id === b.dataset.razdUredi);
+      const t = (prompt(vrstaRazd(n) === 'modul' ? 'Novo ime modula:' : 'Nov naslov:', n.besedilo) || '').trim().slice(0, 120);
+      if (!t || t === n.besedilo) return;
+      const r = await rpc('sola_naslov_uredi', { p_seja: ucitelj.seja, p_id: n.id, p_besedilo: t });
       if (r !== true) return alert('Ni uspelo. Se moraš znova prijaviti?');
-      n.besedilo = t.slice(0, 120); const y = window.scrollY; stranPredmet(p); window.scrollTo(0, y);
+      n.besedilo = t; const y = window.scrollY; stranPredmet(p); window.scrollTo(0, y);
+      return;
     }
-    if (b.dataset.naslovIzbrisi) {
-      const id = b.dataset.naslovIzbrisi, n = NASLOVI.find(x => x.id === id);
-      if (!confirm(`Izbrišem naslov »${n ? n.besedilo : ''}«? Gradiva pod njim ostanejo.`)) return;
+    if (b.dataset.razdIzbrisi) {
+      const id = b.dataset.razdIzbrisi, n = NASLOVI.find(x => x.id === id), modul = vrstaRazd(n) === 'modul';
+      if (!confirm(modul ? `Izbrišem modul »${n.besedilo}«? Gradiva iz njega ostanejo na seznamu.` : `Izbrišem naslov »${n.besedilo}«? Gradiva pod njim ostanejo.`)) return;
+      const d = drevo(), i = d.findIndex(x => x.tip !== 'g' && x.n.id === id);
+      if (i >= 0) d.splice(i, 1, ...(modul ? d[i].v.map(g => ({ tip: 'g', g })) : []));
       const r = await rpc('sola_naslov_izbrisi', { p_seja: ucitelj.seja, p_id: id });
       if (r !== true) return alert('Ni uspelo. Se moraš znova prijaviti?');
       NASLOVI = NASLOVI.filter(x => x.id !== id);
-      await shraniRazpored(p, kljuci().filter(k => k !== 'naslov:' + id));
+      await shraniRazpored(p, redIzDrevesa(d));
     }
   });
-  /* Vlečenje z miško (za ročaj ⋮⋮); na telefonu sta puščici. */
+
+  /* Vlečenje z miško za ročaj ⋮⋮ (na telefonu puščici in izbira 📁). Gradivo spustiš tudi
+     na glavo modula (gre v modul) ali v odprt modul; naslov in modul samo med vrstice zunaj modulov. */
   let vlecem = null;
-  ul.addEventListener('pointerdown', e => { const r = e.target.closest('.rocaj'); if (r) r.closest('li').draggable = true; });
-  ul.addEventListener('dragstart', e => { vlecem = e.target.closest('li'); vlecem.classList.add('vlecem'); e.dataTransfer.effectAllowed = 'move'; e.dataTransfer.setData('text/plain', ''); });
+  const izDom = () => [...ul.children].filter(li => li.dataset.k || li.dataset.m).map(li => li.dataset.m
+    ? { m: li.dataset.m, v: [...li.querySelector('.modul-v').children].filter(x => x.dataset.k).map(x => x.dataset.k) }
+    : li.dataset.k);
+  ul.addEventListener('pointerdown', e => { const r = e.target.closest('.rocaj'); if (r) r.closest('li[data-k], li[data-m]').draggable = true; });
+  ul.addEventListener('dragstart', e => {
+    vlecem = e.target.closest('li[data-k], li[data-m]');
+    if (!vlecem) return;
+    vlecem.classList.add('vlecem'); e.dataTransfer.effectAllowed = 'move'; e.dataTransfer.setData('text/plain', '');
+  });
   ul.addEventListener('dragover', e => {
     if (!vlecem) return;
     e.preventDefault();
-    const li = e.target.closest('#razpored > li');
-    if (!li || li === vlecem) return;
-    const r = li.getBoundingClientRect();
-    ul.insertBefore(vlecem, e.clientY > r.top + r.height / 2 ? li.nextSibling : li);
+    const gradivo = !!vlecem.dataset.k && !vlecem.classList.contains('naslov-v');
+    let cilj = e.target.closest('li[data-k], li.modul, li.prazno');
+    if (!cilj || cilj === vlecem || vlecem.contains(cilj)) return;
+    ul.querySelectorAll('.modul.cilj').forEach(x => x.classList.remove('cilj'));
+    if (!gradivo) {   // naslov ali modul: samo zunaj modulov
+      if (cilj.parentElement !== ul) cilj = cilj.closest('li.modul');
+      if (!cilj || cilj === vlecem) return;
+    } else if (cilj.classList.contains('modul') && e.target.closest('.modul-h')) {
+      cilj.classList.add('cilj');
+      const v = cilj.querySelector('.modul-v');
+      v.insertBefore(vlecem, v.querySelector('.prazno'));
+      return;
+    } else if (cilj.classList.contains('prazno')) {
+      cilj.parentElement.insertBefore(vlecem, cilj);
+      return;
+    }
+    const r = cilj.getBoundingClientRect();
+    cilj.parentElement.insertBefore(vlecem, e.clientY > r.top + r.height / 2 ? cilj.nextSibling : cilj);
   });
   ul.addEventListener('drop', e => e.preventDefault());
   ul.addEventListener('dragend', () => {
     if (!vlecem) return;
     vlecem.classList.remove('vlecem'); vlecem.draggable = false; vlecem = null;
-    const k = kljuci();
-    if (JSON.stringify(k) !== JSON.stringify(RAZPORED[p.id] || [])) shraniRazpored(p, k);
+    ul.querySelectorAll('.modul.cilj').forEach(x => x.classList.remove('cilj'));
+    const red = izDom();
+    if (JSON.stringify(red) !== JSON.stringify(redIzDrevesa(drevo()))) shraniRazpored(p, red);
   });
 }
 
 function stranPredmet(p) {
   shrani('sola_zadnji', p.id);
   const seznam = gradivaZa(p.id);
-  const zadnje = seznam.find(g => !skrito(g));
   let vsebina = '';
   if (napaka) {
     vsebina = `<div class="empty"><img src="brihta.png" alt=""><strong>Ups!</strong>Gradiv trenutno ni mogoče naložiti. Osveži stran.</div>`;
-  } else if (!seznam.length) {
+  } else if (!seznam.length && !(ucitelj && NASLOVI.some(n => n.predmet === p.id))) {
     vsebina = `<div class="empty"><img src="brihta.png" alt=""><strong>Tukaj je še prazno</strong>Ko učitelj objavi gradivo, se pokaže tukaj.</div>`;
-  } else if (p.brezDatumov) {
-    /* Brez datumov in tednov (npr. Reading): samo seznam naslovov. Najprej objavljeni (najnovejši zgoraj),
-       učitelj pod njimi vidi še skrite po vrsti, v kateri pridejo na vrsto. */
-    const vrstice = razvrsceno(p, seznam);
-    /* Učenec ne vidi naslova, pod katerim (do naslednjega naslova) ni ničesar. */
-    const prikaz = ucitelj ? vrstice : vrstice.filter((g, i) => g.vrsta !== 'naslov' || (vrstice[i + 1] && vrstice[i + 1].vrsta !== 'naslov'));
-    const imaNaslove = prikaz.some(g => g.vrsta === 'naslov'), n = prikaz.length;
-    const premik = i => ucitelj ? `<span class="premik"><span class="rocaj" title="Povleci">⋮⋮</span><button type="button" data-premik="-1" title="Gor" ${i ? '' : 'disabled'}>↑</button><button type="button" data-premik="1" title="Dol" ${i < n - 1 ? '' : 'disabled'}>↓</button></span>` : '';
-    vsebina = `<section class="week">${imaNaslove ? '' : `<div class="week-h" style="cursor:default"><h3>${esc(p.naslovSeznama || 'Gradiva')}</h3><span class="count">${prikaz.filter(g => !skrito(g)).length}</span></div>`}
-      <ul class="items" id="razpored">${prikaz.map((g, i) => g.vrsta === 'naslov'
-        ? `<li class="naslov-v"${ucitelj ? ` data-k="${esc(kljucReda(g))}"` : ''}>${premik(i)}<h3>${esc(g.ime)}</h3>${ucitelj ? `<span class="nasl-akc"><button class="vis" type="button" data-naslov-uredi="${esc(g.id)}" title="Preimenuj">✎</button><button class="vis" type="button" data-naslov-izbrisi="${esc(g.id)}" title="Izbriši naslov">🗑</button></span>` : ''}</li>`
-        : vrsticaGradiva(p, g, premik(i))).join('')}</ul></section>`;
   } else {
-    const jeUra = zadnje && zadnje.vrsta === 'ura';
-    const gumb = !zadnje ? '' : zadnje.vrsta === 'kviz' ? (MOJE[zadnje.id] ? 'Poglej rezultat' : 'Reši kviz')
-      : jeUra ? (videniKoraki(zadnje).length ? 'Nadaljuj uro' : 'Začni uro') : 'Odpri';
-    vsebina = (!zadnje ? '' : `<section class="today" aria-label="Zadnje gradivo">
-        <span class="label">${jeDanes(zadnje.datum) ? '⭐ Danes na uri' : jeUra ? 'Zadnja ura' : 'Zadnje objavljeno'}</span>
-        ${tile(zadnje.vrsta)}
-        <div class="txt"><h2>${esc(zadnje.ime)}</h2><p>${IMENA_VRST[zadnje.vrsta] || 'Datoteka'} · ${kdaj(zadnje.datum)}</p></div>
-        <a class="btn btn-go btn-big" href="${jeUra ? hrefKoraka(p, zadnje, naslednjiKorak(zadnje)) : hrefGradiva(p, zadnje)}">${gumb} ${SVG.next}</a>
-        ${jeUra ? `<ol class="steps mini">${zadnje.koraki.map((k, i) => korakPika(p, zadnje, k, i, -1)).join('')}</ol>` : ''}
-      </section>`) +
-      poTednih(seznam).map(t => `<section class="week${t.odprt ? '' : ' closed'}">
-        <button class="week-h" type="button" aria-expanded="${t.odprt}"><h3>${esc(t.ime)}</h3><small class="note" style="margin:0">${esc(t.pod)}</small><span class="count">${t.gradiva.length}</span><span class="chev">${SVG.chev}</span></button>
-        <ul class="items">${t.gradiva.map(g => vrsticaGradiva(p, g)).join('')}</ul>
-      </section>`).join('');
+    vsebina = htmlRazporeda(p, seznam);
   }
   vsebina += povezaveHtml(p);
   okvirPredmeta(p, 'domov', vsebina, null);
-  if (ucitelj && p.brezDatumov) urejanjeRazporeda(p);
-  $main.querySelectorAll('button.week-h').forEach(b => b.addEventListener('click', () => {
-    const m = b.parentElement; m.classList.toggle('closed'); b.setAttribute('aria-expanded', !m.classList.contains('closed'));
+  if (ucitelj) urejanjeRazporeda(p);
+  else { const b = document.getElementById('dodaj-naslov'); if (b) b.remove(); }
+  $main.querySelectorAll('.modul-g').forEach(b => b.addEventListener('click', () => {
+    const m = b.closest('.modul'), odprt = !m.classList.contains('odprt');
+    m.classList.toggle('odprt', odprt); b.setAttribute('aria-expanded', odprt);
+    shrani('sola_modul_odprt:' + m.dataset.m, odprt ? '1' : '0');
   }));
 }
 
 function stranDatoteke(p) {
-  const seznam = gradivaZa(p.id);
-  const bd = p.brezDatumov;
-  const vsebina = seznam.length ? `<table class="ftable"><thead><tr><th>Ime</th>${bd ? '' : '<th>Objavljeno</th>'}<th class="hide-m">Vrsta</th><th class="hide-m">Velikost</th></tr></thead><tbody>
+  const seznam = gradivaVRedu(drevoPredmeta(p, gradivaZa(p.id)));
+  const vsebina = seznam.length ? `<table class="ftable"><thead><tr><th>Ime</th><th class="hide-m">Vrsta</th><th class="hide-m">Velikost</th></tr></thead><tbody>
       ${seznam.map(g => `<tr><td class="n"><a href="${hrefGradiva(p, g)}">${tile(g.vrsta, 'xs')}${esc(g.ime)}${ucitelj && skrito(g) ? ' <span class="tag hid">Skrito</span>' : ''}</a></td>
-        ${bd ? '' : `<td class="m">${kdaj(g.datum)}</td>`}<td class="m hide-m">${IMENA_VRST[g.vrsta] || ''}</td><td class="m hide-m">${velikost(g.velikost)}</td></tr>`).join('')}
+        <td class="m hide-m">${IMENA_VRST[g.vrsta] || ''}</td><td class="m hide-m">${velikost(g.velikost)}</td></tr>`).join('')}
     </tbody></table>` : `<div class="empty"><img src="brihta.png" alt=""><strong>Tukaj je še prazno</strong>Ko učitelj objavi gradivo, se pokaže tukaj.</div>`;
   okvirPredmeta(p, 'datoteke', vsebina, null, 'Vsa gradiva');
 }
@@ -1089,7 +1208,8 @@ function stranGradivo(p, k, korak) {
   if (seznam[i].vrsta === 'ura') return stranUra(p, seznam[i], korak);
   const g = seznam[i], url = naslov(g);
   const { notri, opomba } = prikaz(g);
-  const starejse = seznam[i + 1], novejse = seznam[i - 1];
+  const vrsta = gradivaVRedu(drevoPredmeta(p, gradivaZa(p.id))), j = vrsta.findIndex(x => kljuc(x) === k);
+  const starejse = j > 0 ? vrsta[j - 1] : null, novejse = j >= 0 ? vrsta[j + 1] : null;
   const vsebina = `<div class="vhead">
       <a class="btn" href="#/p/${p.id}" aria-label="Nazaj">${SVG.prev}</a>
       ${tile(g.vrsta, 'sm')}
@@ -1138,7 +1258,6 @@ function stranNalozi(p) {
         <span id="up-ime">📄 Izberi ali sem povleci datoteko<br><small class="note">PDF, Word, JPG ali PNG, do ${NAJVEC_MB} MB</small></span>
       </label></div>
       <div class="field"><label for="up-naslov">Naslov, ki ga vidijo učenci</label><input type="text" id="up-naslov" maxlength="200" autocomplete="off"></div>
-      <div class="field"><label for="up-datum">Datum (teden, v katerem se pokaže)</label><input type="date" id="up-datum" value="${danes}"></div>
       <label class="chk"><input type="checkbox" id="up-objavi" checked> Učenci ga vidijo takoj</label>
       <div class="ed-actions"><span class="msg" id="up-msg"></span>
         <button class="btn btn-go btn-big" type="submit" id="up-ok">Naloži ⬆</button></div>
@@ -1165,7 +1284,6 @@ function stranNalozi(p) {
     if (!datoteka) { $msg.textContent = 'Najprej izberi datoteko.'; return; }
     if (!$n.value.trim()) { $msg.textContent = 'Vpiši naslov.'; $n.focus(); return; }
     const k = datoteka.name.split('.').pop().toLowerCase(), [vrsta, mime] = NALAGANJE[k];
-    const dan = document.getElementById('up-datum').value || danes;
     $ok.disabled = true; $ok.textContent = 'Nalagam …'; $msg.textContent = '';
     const konec = t => { $ok.disabled = false; $ok.textContent = 'Naloži ⬆'; $msg.textContent = t; };
     const pot = await rpc('sola_nalaganje_zacni', { p_seja: ucitelj.seja, p_predmet: p.id, p_koncnica: k });
@@ -1179,7 +1297,7 @@ function stranNalozi(p) {
     } catch (err) { return konec('Povezava se je prekinila. Poskusi znova.'); }
     if (!r.ok) { let t = ''; try { t = (await r.json()).message || ''; } catch (err) {} return konec(`Shramba je zavrnila datoteko (${r.status}${t ? ': ' + t : ''}).`); }
     const id = await rpc('sola_gradivo_dodaj', { p_seja: ucitelj.seja, p_pot: pot, p_naslov: $n.value.trim(), p_vrsta: vrsta,
-      p_ime_datoteke: datoteka.name, p_velikost: datoteka.size, p_datum: new Date(`${dan}T08:00:00`).toISOString(),
+      p_ime_datoteke: datoteka.name, p_velikost: datoteka.size, p_datum: new Date().toISOString(),
       p_objavljeno: document.getElementById('up-objavi').checked });
     if (typeof id !== 'string') return konec('Datoteka je naložena, a je ni bilo mogoče dodati med gradiva. Poskusi znova.');
     await naloziObjave();
@@ -1295,7 +1413,7 @@ function stranUra(p, g, korak) {
   const vsebina = `<div class="vhead">
       <a class="btn" href="#/p/${p.id}" aria-label="Nazaj">${SVG.prev}</a>
       ${tile('ura', 'sm')}
-      <h1>${esc(g.ime)}<small class="sub">Učna ura · ${kdaj(g.datum)}</small></h1>
+      <h1>${esc(g.ime)}<small class="sub">Učna ura</small></h1>
     </div>
     <ol class="steps">${g.koraki.map((x, j) => korakPika(p, g, x, j, i)).join('')}</ol>
     <div class="vhead step-h"><span class="badge">Korak ${i + 1} od ${n}</span><h2>${esc(k.ime)}</h2>${gumbiOgleda(k, imePrenosa(g, k))}</div>

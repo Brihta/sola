@@ -2,9 +2,9 @@
 
 Spletna stran za učence: https://brihta.github.io/sola/
 
-Učenec izbere predmet (pri Računalništvu še skupino) in na vrhu vidi zadnje
-objavljeno gradivo, ki ga odpre z enim klikom. Starejša gradiva so spodaj,
-razvrščena po tednih.
+Učenec izbere predmet (pri Računalništvu še skupino) in vidi seznam gradiv po
+naslovih, brez datumov in tednov. Učitelj ga uredi sam: naslovi, zložljivi moduli
+in vrstni red (glej »Učitelj na strani«).
 
 ## Kako objavim gradivo
 
@@ -49,9 +49,8 @@ posebej na seznamu gradiv. `1 Navodila.md` je Markdown (`## naslov`, `- točka`,
 
 - **Ime datoteke je naslov**, ki ga vidijo učenci. Podčrtaji postanejo
   presledki: `Navodila_Scratch_labirint.pdf` → »Navodila Scratch labirint«.
-- **Najnovejše je na vrhu** (»Danes na uri«).
-- Datum na začetku imena določi datum gradiva in se ne pokaže:
-  `2026-10-20 Kviz.pptx`.
+- Brez učiteljevega razporeda je najnovejše na vrhu. Datum na začetku imena
+  (`2026-10-20 Kviz.pptx`) določi samo ta privzeti vrstni red in se ne pokaže.
 - **Povezava:** naredi besedilno datoteko s končnico `.url`, v kateri je samo
   spletni naslov, npr. `Scratch.url` z vsebino `https://scratch.mit.edu`.
 - **HTML z več datotekami:** naloži celo mapo, v kateri je `index.html`.
@@ -76,15 +75,16 @@ Ko je učitelj prijavljen (»Prijava za učitelje«):
   so v Supabase shrambi (ne v repozitoriju); učitelj jih lahko izbriše
   (🗑 pri ogledu).
 
-- **Naslovi in vrstni red** (predmeti s seznamom brez tednov, zdaj Reading):
-  **＋ Naslov** doda podnaslov (npr. »Animals«), ki ni gradivo, samo razdeli seznam.
-  Vse vrstice premikaš s puščicama ↑ ↓ ali jih povlečeš za ročaj ⋮⋮. Naslov preimenuješ (✎)
-  ali izbrišeš (🗑; gradiva ostanejo). Učenci ne vidijo naslova, pod katerim ni nič objavljenega.
+- **Razpored strani predmeta** (vsi predmeti): **＋ Naslov** doda podnaslov (samo besedilo,
+  ne zloži se), **＋ Modul** pa zložljivo skupino (📁), v katero daš gradiva. Vse vrstice
+  premikaš s puščicama ↑ ↓ (gradivo s puščico tudi vstopi v modul ali izstopi iz njega),
+  z izbiro 📁 pri gradivu ali z vlečenjem za ročaj ⋮⋮ (gradivo spustiš tudi na glavo modula).
+  ✎ preimenuje, 🗑 izbriše naslov ali modul (gradiva ostanejo). Učenci ne vidijo praznih
+  modulov in naslovov, pod katerimi ni nič objavljenega; moduli so zaprti, dokler jih ne odprejo.
   Na novo naložena gradiva se pokažejo na vrhu, dokler jih ne premakneš.
-  Predmet dobi tak seznam z `brezDatumov: true` v `PREDMETI` (index.html).
 
-Za to mora biti v Supabase enkrat zagnan `supabase_gradiva.sql` (za naslove in vrstni red še
-`supabase_razpored.sql`). Pozor: skrivanje
+Za to mora biti v Supabase enkrat zagnan `supabase_gradiva.sql` (za naslove, module in vrstni red še
+`supabase_razpored.sql`, zadnjo različico). Pozor: skrivanje
 datoteko samo umakne s strani. Datoteke v repozitoriju so na GitHubu javne,
 naložene pa dosegljive vsakomur, ki pozna njihov (naključen) naslov.
 
@@ -105,7 +105,7 @@ V Supabase → SQL Editor zaženi:
 2. `supabase_kvizi_ucitelj.sql` (učiteljske seje, objava s strani),
 3. `~/.config/brihta-sola/NASTAVI_SKRIVNOST.sql` — samo ob novi skrivnosti za skripto,
 4. `supabase_gradiva.sql` (objava/skrivanje gradiv in nalaganje datotek),
-5. `supabase_razpored.sql` (naslovi in vrstni red na strani predmeta).
+5. `supabase_razpored.sql` (naslovi, moduli in vrstni red na strani predmeta; varno večkrat).
 
 ### Kako objavim kviz (na strani)
 
