@@ -139,8 +139,10 @@ Pravilo točkovanja na listih: vse natisnjene besede (tudi zvezdica) se točkuje
 
 ## Fleksi Reading: tedensko besedilo
 
-Očiščeni PDF-ji (brez Twinkl noge) so v `~/Documents/Brihta-reading/` (ZUNAJ repozitorija; original na
-OneDrivu `.../English/Reading` se ne spreminja; skripta za čiščenje je `_odstrani_twinkl_nogo.py` v isti mapi).
+Reading PDF-ji na OneDrivu (`.../English/Reading`) so od 16. 11. 2026 že očiščeni (brez Twinkl noge; Nino
+je tako želel). Enaka kopija je v `~/Documents/Brihta-reading/`, originali s Twinkl nogo pa v
+`~/Documents/Brihta-reading-originali-twinkl/`. Skripta za čiščenje novih datotek:
+`~/Documents/Brihta-reading/_odstrani_twinkl_nogo.py` (nad nogo se ne sme spremeniti noben piksel).
 Objavljamo SAMO raven **Tree** (`... 3 Tree.pdf`) iz `KS1 (Year 1 in 2)/<mesec>/`, BREZ strani z rešitvami
 (stran z naslovom »Answers«), kot `gradiva/fleksi-reading/<ponedeljek> <Naslov>.pdf`. Ena na teden, isti
 ponedeljki kot Spelling. Tedni do 1. 2. 2027 so naloženi vnaprej (skriti, dokler jih Nino ne objavi s stikalom):
