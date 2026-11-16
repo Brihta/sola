@@ -262,6 +262,20 @@
     .upl .chk { display: flex; gap: 10px; align-items: center; font-weight: 700; margin-bottom: 18px; }
     .upl .chk input { width: 20px; height: 20px; }
     @media (max-width: 560px) { .vis .lbl { display: none; } }
+    /* Naslovi in vrstni red (supabase_razpored.sql) */
+    .items .naslov-v { display: flex; align-items: center; gap: 8px; padding: 16px 2px 2px; min-width: 0; }
+    .items .naslov-v:first-child { padding-top: 0; }
+    .naslov-v h3 { flex: 1; min-width: 0; margin: 0; font-size: 1.2rem; font-weight: 900; color: var(--ink); overflow-wrap: anywhere; }
+    .naslov-v h3::before { content: ''; display: inline-block; width: 6px; height: 1em; border-radius: 3px; margin-right: 10px; vertical-align: -.12em;
+                           background: linear-gradient(var(--c1), var(--c2)); }
+    .premik { display: flex; align-items: center; gap: 2px; flex-shrink: 0; }
+    .premik button, .premik .rocaj { width: 30px; height: 30px; border-radius: 9px; border: 1.5px solid var(--line-2); background: var(--surface);
+           color: var(--muted); font: inherit; font-weight: 900; font-size: .9rem; cursor: pointer; display: flex; align-items: center; justify-content: center; padding: 0; }
+    .premik .rocaj { cursor: grab; border-style: dashed; letter-spacing: -2px; }
+    .premik button:disabled { opacity: .3; cursor: default; }
+    .items li.vlecem { opacity: .35; }
+    .nasl-akc { display: flex; gap: 6px; flex-shrink: 0; }
+    @media (max-width: 560px) { .premik .rocaj { display: none; } }
 
     .empty { background: var(--surface); border-radius: var(--r-xl); padding: 36px 24px; text-align: center; color: var(--muted); font-weight: 600; box-shadow: var(--shadow); }
     .empty img { width: 104px; height: 104px; display: block; margin: 0 auto 12px; animation: bob 4s ease-in-out infinite; }
@@ -734,10 +748,12 @@ function uraKviza(id, kviz) {
    Naložene datoteke (PDF, Word, slike) so v Supabase shrambi in se pomešajo med gradiva. */
 let STANJE = {};          // kljuc objave → true (objavljeno) / false (skrito)
 let DODANA = [];
+let RAZPORED = {}, NASLOVI = [];   // predmet → [ključi v vrstnem redu]; naslovi, ki jih vpiše učitelj
 const SHRAMBA = 'sola-gradiva';
 const potShrambe = pot => pot.split('/').map(encodeURIComponent).join('/');
 async function naloziObjave() {
-  const [s, d] = await Promise.all([rpc('sola_gradiva_stanje'), rpc('sola_gradiva_dodana')]);
+  const [s, d, r] = await Promise.all([rpc('sola_gradiva_stanje'), rpc('sola_gradiva_dodana'), rpc('sola_razpored_vse')]);
+  if (r && Array.isArray(r.naslovi)) { NASLOVI = r.naslovi; RAZPORED = r.razpored || {}; }
   if (Array.isArray(s)) { STANJE = {}; s.forEach(x => { STANJE[x.kljuc] = x.objavljeno; }); }
   if (Array.isArray(d)) DODANA = d.map(x => ({ vrsta: x.vrsta, ime: x.naslov, datum: x.datum, velikost: x.velikost,
     predmet: x.predmet, dodano: x.id, imeDatoteke: x.ime_datoteke,
@@ -904,9 +920,9 @@ function oznaka(g, brezDatuma) {
   if (o) return `<span class="tag done">✓ ${o.tocke}/${o.vseh}</span>`;
   return !brezDatuma && jeDanes(g.datum) ? '<span class="tag new">Novo</span>' : '';
 }
-function vrsticaGradiva(p, g) {
+function vrsticaGradiva(p, g, premik) {
   const ucit = ucitelj && kljucObjave(g), bd = p.brezDatumov;
-  return `<li class="item${ucit ? ' ucit' : ''}${ucit && skrito(g) ? ' skrito' : ''}"><a href="${hrefGradiva(p, g)}">
+  return `<li class="item${ucit || premik ? ' ucit' : ''}${ucit && skrito(g) ? ' skrito' : ''}"${premik ? ` data-k="${esc(kljucReda(g))}"` : ''}>${premik || ''}<a href="${hrefGradiva(p, g)}" draggable="false">
     ${tile(g.vrsta, 'sm')}
     <span class="nm"><b>${esc(g.ime)}</b><small>${IMENA_VRST[g.vrsta] || 'Datoteka'}${bd ? '' : ' · ' + kdaj(g.datum)}${g.vrsta === 'ura' ? ' · ' + g.koraki.map(k => k.ime).join(' → ') : g.velikost ? ' · ' + velikost(g.velikost) : ''}</small></span>
     ${oznaka(g, bd)}<svg class="arrow" viewBox="0 0 20 20" fill="none" stroke="currentColor" stroke-width="2.4" stroke-linecap="round" stroke-linejoin="round"><path d="M7.5 4.5L13 10l-5.5 5.5"/></svg>
@@ -921,7 +937,7 @@ function okvirPredmeta(p, zavihek, vsebina, stranska, zadnjaDrobtina) {
   const pas = ['gradivo', 'kviz', 'urejevalnik'].includes(zavihek) ? '' : `<section class="banner" style="${barve(p)}">
       <div class="banner-top"><span class="emoji" aria-hidden="true">${p.emoji}</span>
         <div><h1>${esc(p.ime)}</h1><p>${esc(p.opis || p.koda)}</p></div>
-        ${ucitelj ? `<div class="banner-akcije"><a class="btn banner-btn" href="#/p/${p.id}/nalozi">⬆ Naloži</a><a class="btn banner-btn" href="#/p/${p.id}/nov-kviz">＋ Nov kviz</a></div>` : ''}</div>
+        ${ucitelj ? `<div class="banner-akcije"><a class="btn banner-btn" href="#/p/${p.id}/nalozi">⬆ Naloži</a><a class="btn banner-btn" href="#/p/${p.id}/nov-kviz">＋ Nov kviz</a>${p.brezDatumov && zavihek === 'domov' ? `<button class="btn banner-btn" type="button" id="dodaj-naslov">＋ Naslov</button>` : ''}</div>` : ''}</div>
       ${s ? `<div class="banner-sw">${s.otroci.filter(o => o !== p).map(o => `<a href="${hrefPredmeta(o)}">${o.emoji} ${esc(o.kratko || o.ime)}</a>`).join('')}</div>` : ''}
       <nav class="tabs" aria-label="Zavihki">
         <a href="#/p/${p.id}" class="${zavihek === 'domov' ? 'active' : ''}">Domov</a>
@@ -931,6 +947,81 @@ function okvirPredmeta(p, zavihek, vsebina, stranska, zadnjaDrobtina) {
   const ozko = zavihek === 'kviz' && !stranska;
   $main.innerHTML = `${pas}<div class="layout${stranska ? '' : ' solo'}${ozko ? ' ozko' : ''}" style="${barve(p)}">
     <div>${vsebina}</div>${stranska ? `<aside class="side">${stranska}</aside>` : ''}</div>`;
+}
+
+/* Ročni vrstni red z naslovi (predmeti z brezDatumov). Gradiva, ki jih v shranjenem redu še ni
+   (na novo naložena), so na vrhu; brez shranjenega reda: objavljena (najnovejša zgoraj), nato skrita. */
+const kljucReda = g => g.vrsta === 'naslov' ? 'naslov:' + g.id : kljuc(g);
+function razvrsceno(p, seznam) {
+  const vidni = seznam.filter(g => !skrito(g)), skriti = seznam.filter(g => skrito(g)).reverse();
+  const vsi = [...NASLOVI.filter(n => n.predmet === p.id).map(n => ({ vrsta: 'naslov', id: n.id, ime: n.besedilo })), ...vidni, ...skriti];
+  const mesto = new Map((RAZPORED[p.id] || []).map((k, i) => [k, i]));
+  return [...vsi.filter(g => !mesto.has(kljucReda(g))),
+          ...vsi.filter(g => mesto.has(kljucReda(g))).sort((a, b) => mesto.get(kljucReda(a)) - mesto.get(kljucReda(b)))];
+}
+async function shraniRazpored(p, kljuci) {
+  RAZPORED[p.id] = kljuci;
+  const y = window.scrollY; stranPredmet(p); window.scrollTo(0, y);
+  const r = await rpc('sola_razpored_shrani', { p_seja: ucitelj.seja, p_predmet: p.id, p_red: kljuci });
+  if (r !== true) alert(r === NEDOSEGLJIVO ? 'Strežnik ni dosegljiv, vrstni red ni shranjen.' : 'Vrstni red ni shranjen. Se moraš znova prijaviti? (Ali pa v Supabase še ni zagnan supabase_razpored.sql.)');
+}
+function urejanjeRazporeda(p) {
+  const ul = document.getElementById('razpored');
+  const kljuci = () => ul ? [...ul.children].map(li => li.dataset.k) : [];
+  document.getElementById('dodaj-naslov')?.addEventListener('click', async () => {
+    const t = (prompt('Naslov (npr. »Animals« ali »Stories«):') || '').trim();
+    if (!t) return;
+    const id = await rpc('sola_naslov_dodaj', { p_seja: ucitelj.seja, p_predmet: p.id, p_besedilo: t.slice(0, 120) });
+    if (typeof id !== 'string') { alert(id === NEDOSEGLJIVO ? 'Strežnik ni dosegljiv.' : 'Naslova ni bilo mogoče dodati. Se moraš znova prijaviti? (Ali pa v Supabase še ni zagnan supabase_razpored.sql.)'); return; }
+    NASLOVI.push({ id, predmet: p.id, besedilo: t.slice(0, 120) });
+    await shraniRazpored(p, ['naslov:' + id, ...kljuci()]);
+  });
+  if (!ul) return;
+  ul.addEventListener('click', async e => {
+    const b = e.target.closest('button');
+    if (!b) return;
+    if (b.dataset.premik) {
+      const li = b.closest('li'), k = kljuci(), i = k.indexOf(li.dataset.k), j = i + Number(b.dataset.premik);
+      if (j < 0 || j >= k.length) return;
+      [k[i], k[j]] = [k[j], k[i]];
+      return shraniRazpored(p, k);
+    }
+    if (b.dataset.naslovUredi) {
+      const n = NASLOVI.find(x => x.id === b.dataset.naslovUredi);
+      const t = (prompt('Nov naslov:', n ? n.besedilo : '') || '').trim();
+      if (!t || !n || t === n.besedilo) return;
+      const r = await rpc('sola_naslov_uredi', { p_seja: ucitelj.seja, p_id: n.id, p_besedilo: t.slice(0, 120) });
+      if (r !== true) return alert('Ni uspelo. Se moraš znova prijaviti?');
+      n.besedilo = t.slice(0, 120); const y = window.scrollY; stranPredmet(p); window.scrollTo(0, y);
+    }
+    if (b.dataset.naslovIzbrisi) {
+      const id = b.dataset.naslovIzbrisi, n = NASLOVI.find(x => x.id === id);
+      if (!confirm(`Izbrišem naslov »${n ? n.besedilo : ''}«? Gradiva pod njim ostanejo.`)) return;
+      const r = await rpc('sola_naslov_izbrisi', { p_seja: ucitelj.seja, p_id: id });
+      if (r !== true) return alert('Ni uspelo. Se moraš znova prijaviti?');
+      NASLOVI = NASLOVI.filter(x => x.id !== id);
+      await shraniRazpored(p, kljuci().filter(k => k !== 'naslov:' + id));
+    }
+  });
+  /* Vlečenje z miško (za ročaj ⋮⋮); na telefonu sta puščici. */
+  let vlecem = null;
+  ul.addEventListener('pointerdown', e => { const r = e.target.closest('.rocaj'); if (r) r.closest('li').draggable = true; });
+  ul.addEventListener('dragstart', e => { vlecem = e.target.closest('li'); vlecem.classList.add('vlecem'); e.dataTransfer.effectAllowed = 'move'; e.dataTransfer.setData('text/plain', ''); });
+  ul.addEventListener('dragover', e => {
+    if (!vlecem) return;
+    e.preventDefault();
+    const li = e.target.closest('#razpored > li');
+    if (!li || li === vlecem) return;
+    const r = li.getBoundingClientRect();
+    ul.insertBefore(vlecem, e.clientY > r.top + r.height / 2 ? li.nextSibling : li);
+  });
+  ul.addEventListener('drop', e => e.preventDefault());
+  ul.addEventListener('dragend', () => {
+    if (!vlecem) return;
+    vlecem.classList.remove('vlecem'); vlecem.draggable = false; vlecem = null;
+    const k = kljuci();
+    if (JSON.stringify(k) !== JSON.stringify(RAZPORED[p.id] || [])) shraniRazpored(p, k);
+  });
 }
 
 function stranPredmet(p) {
@@ -945,9 +1036,15 @@ function stranPredmet(p) {
   } else if (p.brezDatumov) {
     /* Brez datumov in tednov (npr. Reading): samo seznam naslovov. Najprej objavljeni (najnovejši zgoraj),
        učitelj pod njimi vidi še skrite po vrsti, v kateri pridejo na vrsto. */
-    const vidni = seznam.filter(g => !skrito(g)), skriti = seznam.filter(g => skrito(g)).reverse();
-    vsebina = `<section class="week"><div class="week-h" style="cursor:default"><h3>${esc(p.naslovSeznama || 'Gradiva')}</h3><span class="count">${vidni.length}</span></div>
-      <ul class="items">${[...vidni, ...skriti].map(g => vrsticaGradiva(p, g)).join('')}</ul></section>`;
+    const vrstice = razvrsceno(p, seznam);
+    /* Učenec ne vidi naslova, pod katerim (do naslednjega naslova) ni ničesar. */
+    const prikaz = ucitelj ? vrstice : vrstice.filter((g, i) => g.vrsta !== 'naslov' || (vrstice[i + 1] && vrstice[i + 1].vrsta !== 'naslov'));
+    const imaNaslove = prikaz.some(g => g.vrsta === 'naslov'), n = prikaz.length;
+    const premik = i => ucitelj ? `<span class="premik"><span class="rocaj" title="Povleci">⋮⋮</span><button type="button" data-premik="-1" title="Gor" ${i ? '' : 'disabled'}>↑</button><button type="button" data-premik="1" title="Dol" ${i < n - 1 ? '' : 'disabled'}>↓</button></span>` : '';
+    vsebina = `<section class="week">${imaNaslove ? '' : `<div class="week-h" style="cursor:default"><h3>${esc(p.naslovSeznama || 'Gradiva')}</h3><span class="count">${prikaz.filter(g => !skrito(g)).length}</span></div>`}
+      <ul class="items" id="razpored">${prikaz.map((g, i) => g.vrsta === 'naslov'
+        ? `<li class="naslov-v"${ucitelj ? ` data-k="${esc(kljucReda(g))}"` : ''}>${premik(i)}<h3>${esc(g.ime)}</h3>${ucitelj ? `<span class="nasl-akc"><button class="vis" type="button" data-naslov-uredi="${esc(g.id)}" title="Preimenuj">✎</button><button class="vis" type="button" data-naslov-izbrisi="${esc(g.id)}" title="Izbriši naslov">🗑</button></span>` : ''}</li>`
+        : vrsticaGradiva(p, g, premik(i))).join('')}</ul></section>`;
   } else {
     const jeUra = zadnje && zadnje.vrsta === 'ura';
     const gumb = !zadnje ? '' : zadnje.vrsta === 'kviz' ? (MOJE[zadnje.id] ? 'Poglej rezultat' : 'Reši kviz')
@@ -966,6 +1063,7 @@ function stranPredmet(p) {
   }
   vsebina += povezaveHtml(p);
   okvirPredmeta(p, 'domov', vsebina, null);
+  if (ucitelj && p.brezDatumov) urejanjeRazporeda(p);
   $main.querySelectorAll('button.week-h').forEach(b => b.addEventListener('click', () => {
     const m = b.parentElement; m.classList.toggle('closed'); b.setAttribute('aria-expanded', !m.classList.contains('closed'));
   }));
@@ -1916,7 +2014,7 @@ window.addEventListener('hashchange', usmeri);
 /* Ko se zavihek spet pokaže, preveri nova gradiva (ne med ogledom gradiva). */
 document.addEventListener('visibilitychange', async () => {
   if (document.hidden) return;
-  const stanje = () => JSON.stringify([GRADIVA, KVIZI, MOJE, STANJE, DODANA]);
+  const stanje = () => JSON.stringify([GRADIVA, KVIZI, MOJE, STANJE, DODANA, RAZPORED, NASLOVI]);
   const prej = stanje();
   await Promise.all([naloziGradiva(), naloziKvize(), naloziMoje(), naloziObjave()]);
   const ogled = /^#\/p\/[^/]+\/(?!datoteke$)./.test(location.hash);

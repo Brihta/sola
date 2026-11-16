@@ -76,7 +76,15 @@ Ko je učitelj prijavljen (»Prijava za učitelje«):
   so v Supabase shrambi (ne v repozitoriju); učitelj jih lahko izbriše
   (🗑 pri ogledu).
 
-Za to mora biti v Supabase enkrat zagnan `supabase_gradiva.sql`. Pozor: skrivanje
+- **Naslovi in vrstni red** (predmeti s seznamom brez tednov, zdaj Reading):
+  **＋ Naslov** doda podnaslov (npr. »Animals«), ki ni gradivo, samo razdeli seznam.
+  Vse vrstice premikaš s puščicama ↑ ↓ ali jih povlečeš za ročaj ⋮⋮. Naslov preimenuješ (✎)
+  ali izbrišeš (🗑; gradiva ostanejo). Učenci ne vidijo naslova, pod katerim ni nič objavljenega.
+  Na novo naložena gradiva se pokažejo na vrhu, dokler jih ne premakneš.
+  Predmet dobi tak seznam z `brezDatumov: true` v `PREDMETI` (index.html).
+
+Za to mora biti v Supabase enkrat zagnan `supabase_gradiva.sql` (za naslove in vrstni red še
+`supabase_razpored.sql`). Pozor: skrivanje
 datoteko samo umakne s strani. Datoteke v repozitoriju so na GitHubu javne,
 naložene pa dosegljive vsakomur, ki pozna njihov (naključen) naslov.
 
@@ -96,7 +104,8 @@ V Supabase → SQL Editor zaženi:
 1. `supabase_kvizi.sql` (tabele in funkcije),
 2. `supabase_kvizi_ucitelj.sql` (učiteljske seje, objava s strani),
 3. `~/.config/brihta-sola/NASTAVI_SKRIVNOST.sql` — samo ob novi skrivnosti za skripto,
-4. `supabase_gradiva.sql` (objava/skrivanje gradiv in nalaganje datotek).
+4. `supabase_gradiva.sql` (objava/skrivanje gradiv in nalaganje datotek),
+5. `supabase_razpored.sql` (naslovi in vrstni red na strani predmeta).
 
 ### Kako objavim kviz (na strani)
 
