@@ -141,3 +141,11 @@ Pravilo točkovanja na listih: vse natisnjene besede (tudi zvezdica) se točkuje
 
 Vse znanje o programu Moja besedila (baza, načini popravljanja, objava, odločitve)
 je v `pisanje-besedil/CLAUDE.md`. Preberi ga, preden kaj spreminjaš.
+
+## Emojiji (pisava Brihta Emoji)
+
+Pisave strežemo sami iz `pisave/` (brez Google Fonts, GDPR): Nunito (`pisave/nunito.css`) in emojije. `index.html` nalaga lastno podmnožico Noto Color Emoji (COLRv1) iz `pisave/brihta-emoji.woff2`,
+da so emojiji (tudi zastave) na Windows enaki kot drugod. Ko dodaš nov emoji v `index.html` ali v
+gradivo (npr. `emoji=` v `.url`), poženi `python3 scripts/emoji_pisava.py` (potrebuje
+`pip3 install --user fonttools brotli`) in commitaj `pisave/` in `index.html`. Emoji, ki ga v
+podmnožici ni, se pokaže s sistemsko pisavo.

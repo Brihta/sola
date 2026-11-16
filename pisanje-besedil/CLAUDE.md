@@ -7,7 +7,8 @@ slovenščini. Program uporabljajo v razredu, med živo uro, zato so popravki nu
 in morajo biti varni: majhni, preverjeni, takoj objavljeni.
 
 ## Datoteke
-- `pisanje-besedil/index.html` je cela aplikacija v eni datoteki (HTML, CSS, JS). Urejevalnik je Quill.
+- `pisanje-besedil/index.html` je cela aplikacija v eni datoteki (HTML, CSS, JS). Urejevalnik je Quill 2.0.3,
+  strežemo ga sami iz `pisanje-besedil/quill-2.0.3/` (nespremenjene datoteke iz npm, brez CDN zaradi GDPR).
 - `supabase_pisanje.sql` (v korenu repozitorija) je baza: tabele, RPC funkcije, granti.
   Celo datoteko je mogoče pognati znova (`create or replace`, `add column if not exists`).
 - Supabase projekt je isti kot pri Brihta-MAT in kvizih. Učenci se prijavijo z računom
