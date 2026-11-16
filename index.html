@@ -433,6 +433,8 @@
 
     /* ─── Nov kviz ─── */
     .banner-btn { margin-left: auto; align-self: flex-start; background: rgba(255,255,255,.95); border: 0; color: var(--ink); }
+    .banner-akcije { margin-left: auto; align-self: flex-start; display: flex; gap: 10px; flex-wrap: wrap; justify-content: flex-end; }
+    .banner-akcije .banner-btn { margin-left: 0; }
     .editor { display: grid; grid-template-columns: minmax(0, 1fr) minmax(0, 1fr); gap: 26px; align-items: start; }
     .ed-right { position: sticky; top: 84px; max-height: calc(100vh - 100px); overflow-y: auto; padding: 2px 6px 20px 2px; }
     .editor textarea {
@@ -908,7 +910,7 @@ function okvirPredmeta(p, zavihek, vsebina, stranska, zadnjaDrobtina) {
   const pas = ['gradivo', 'kviz', 'urejevalnik'].includes(zavihek) ? '' : `<section class="banner" style="${barve(p)}">
       <div class="banner-top"><span class="emoji" aria-hidden="true">${p.emoji}</span>
         <div><h1>${esc(p.ime)}</h1><p>${esc(p.opis || p.koda)}</p></div>
-        ${ucitelj ? `<a class="btn banner-btn" href="#/p/${p.id}/nalozi">⬆ Naloži</a><a class="btn banner-btn" href="#/p/${p.id}/nov-kviz">＋ Nov kviz</a>` : ''}</div>
+        ${ucitelj ? `<div class="banner-akcije"><a class="btn banner-btn" href="#/p/${p.id}/nalozi">⬆ Naloži</a><a class="btn banner-btn" href="#/p/${p.id}/nov-kviz">＋ Nov kviz</a></div>` : ''}</div>
       ${s ? `<div class="banner-sw">${s.otroci.filter(o => o !== p).map(o => `<a href="${hrefPredmeta(o)}">${o.emoji} ${esc(o.kratko || o.ime)}</a>`).join('')}</div>` : ''}
       <nav class="tabs" aria-label="Zavihki">
         <a href="#/p/${p.id}" class="${zavihek === 'domov' ? 'active' : ''}">Domov</a>
