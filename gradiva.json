@@ -1,6 +1,16 @@
 {
  "predmeti": {
-  "fleksi": [],
+  "fleksi-matematika": [],
+  "fleksi-reading": [],
+  "fleksi-spelling": [
+   {
+    "ime": "Week 1 dge ge",
+    "vrsta": "pdf",
+    "datum": "2026-11-16T08:00:00+02:00",
+    "pot": "gradiva/fleksi-spelling/2026-11-16 Week 1 dge ge.pdf",
+    "velikost": 106480
+   }
+  ],
   "racunalnistvo-3": [
    {
     "ime": "Tehniški dan",
@@ -583,5 +593,5 @@
    }
   ]
  },
- "posodobljeno": "2026-11-13T07:17:55+00:00"
+ "posodobljeno": "2026-11-16T08:49:48+00:00"
 }

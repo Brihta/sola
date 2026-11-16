@@ -17,7 +17,9 @@ Vsak predmet ima svojo mapo v `gradiva/`:
 | `gradiva/racunalnistvo-5` | Računalništvo 5 |
 | `gradiva/racunalnistvo-6` | Računalništvo 6 |
 | `gradiva/racunalnistvo-6-9` | Računalništvo 6–9 |
-| `gradiva/fleksi` | Fleksi (3. skupina) |
+| `gradiva/fleksi-matematika` | Fleksi › Matematika |
+| `gradiva/fleksi-spelling` | Fleksi › Angleščina › Spelling |
+| `gradiva/fleksi-reading` | Fleksi › Angleščina › Reading |
 
 **Na GitHubu (najhitreje):** odpri mapo predmeta → *Add file* → *Upload files*
 → povleci datoteko → *Commit changes*. Čez 1–2 minuti je gradivo na strani.

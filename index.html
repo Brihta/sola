@@ -559,15 +559,34 @@ const PREDMETI = [
       { id: 'racunalnistvo-6',   ime: 'Računalništvo 6',   kratko: '6. razred',    koda: 'RAČ 6',   c1: '#10b981', c2: '#0ea5e9', emoji: '🤖', opis: '6. razred' },
       { id: 'racunalnistvo-6-9', ime: 'Računalništvo 6–9', kratko: '6.–9. razred', koda: 'RAČ 6–9', c1: '#f97316', c2: '#e11d48', emoji: '🧑‍💻', opis: 'od 6. do 9. razreda' },
     ] },
-  { id: 'fleksi',             ime: 'Fleksi',                   koda: '3. skupina',          c1: '#f43f5e', c2: '#a855f7', emoji: '🤸' },
+  { id: 'fleksi', ime: 'Fleksi', koda: '3. skupina', c1: '#f43f5e', c2: '#a855f7', emoji: '🤸',
+    izbira: 'Izberi predmet', vprasanje: 'Kateri predmet?', enota: 'predmeta',
+    otroci: [
+      { id: 'fleksi-matematika', ime: 'Matematika', kratko: 'Matematika', koda: 'Fleksi', c1: '#0ea5e9', c2: '#6366f1', emoji: '🔢', opis: 'Fleksi matematika' },
+      { id: 'fleksi-anglescina', ime: 'Angleščina', kratko: 'Angleščina', koda: 'Fleksi', c1: '#f43f5e', c2: '#f97316', emoji: '🇬🇧',
+        izbira: 'Izberi sklop', vprasanje: 'Kaj bomo delali?', enota: 'sklopa',
+        otroci: [
+          { id: 'fleksi-spelling', ime: 'Spelling', kratko: 'Spelling', koda: 'Angleščina', c1: '#8b5cf6', c2: '#ec4899', emoji: '✏️', opis: 'Spelling: words of the week' },
+          { id: 'fleksi-reading',  ime: 'Reading',  kratko: 'Reading',  koda: 'Angleščina', c1: '#10b981', c2: '#0ea5e9', emoji: '📖', opis: 'Reading: texts and questions' },
+        ] },
+    ] },
 ];
 /* Orodja: lastne kartice na glavni strani (vodijo na svojo stran). samoUcitelj = vidijo jo le učitelji in testni učenci. */
 const ORODJA = [
   { ime: 'Moja besedila', opis: 'Pisanje in popravljanje besedil', url: 'pisanje-besedil/', emoji: '✍️', c1: '#0ea5e9', c2: '#22c55e' },
 ];
-const VSI = [];
-PREDMETI.forEach(p => { if (p.otroci) p.otroci.forEach(o => { o.stars = p; VSI.push(o); }); else VSI.push(p); });
-const najdi = id => VSI.find(p => p.id === id) || PREDMETI.find(p => p.id === id);
+/* VSI = predmeti z gradivi (listi), SKUPINE = predmeti z otroki (lahko gnezdeni). */
+const VSI = [], SKUPINE = [];
+(function razvij(seznam, stars) {
+  seznam.forEach(p => {
+    if (stars) p.stars = stars;
+    p.polno = stars && stars.polno ? stars.polno + ' › ' + p.ime : (stars ? stars.ime + ' › ' + p.ime : p.ime);
+    if (p.otroci) { SKUPINE.push(p); razvij(p.otroci, p); } else VSI.push(p);
+  });
+})(PREDMETI);
+const najdi = id => VSI.find(p => p.id === id) || SKUPINE.find(p => p.id === id);
+const hrefPredmeta = p => p.otroci ? `#/${p.id}` : `#/p/${p.id}`;
+const predniki = p => { const v = []; for (let s = p.stars; s; s = s.stars) v.unshift([s.ime, hrefPredmeta(s)]); return v; };
 const barve = p => `--c1:${p.c1};--c2:${p.c2}`;
 
 /* ─── Ikone ─── */
@@ -680,7 +699,7 @@ function uraKviza(id, kviz) {
 }
 const gradivaZa = id => [...(GRADIVA[id] || []), ...KVIZI.filter(k => k.predmet === id && !uraKviza(id, k))]
   .sort((a, b) => new Date(b.datum) - new Date(a.datum));
-const vsaZa = p => p.otroci ? p.otroci.flatMap(o => gradivaZa(o.id)) : gradivaZa(p.id);
+const vsaZa = p => p.otroci ? p.otroci.flatMap(o => vsaZa(o)) : gradivaZa(p.id);
 const kljuc = g => g.vrsta === 'kviz' ? 'kviz:' + g.id : (g.pot || g.url);
 const hrefGradiva = (p, g) => `#/p/${p.id}/${encodeURIComponent(kljuc(g))}`;
 
@@ -719,8 +738,8 @@ function kartica(p) {
   if (p.otroci) {
     return `<div class="card wide" style="${barve(p)}">
       <a href="#/${p.id}">${art}
-        <div class="card-body"><div><h3>${esc(p.ime)}</h3><p>Izberi svoj razred</p></div>${PUSCICA}</div></a>
-      <div class="chips">${p.otroci.map(o => `<a class="chip" style="${barve(o)}" href="#/p/${o.id}">${o.emoji} ${esc(o.kratko)}${nova(o) ? '<span class="dot" title="Novo danes"></span>' : ''}</a>`).join('')}</div>
+        <div class="card-body"><div><h3>${esc(p.ime)}</h3><p>${esc(p.izbira || 'Izberi svoj razred')}</p></div>${PUSCICA}</div></a>
+      <div class="chips">${p.otroci.map(o => `<a class="chip" style="${barve(o)}" href="${hrefPredmeta(o)}">${o.emoji} ${esc(o.kratko)}${nova(o) ? '<span class="dot" title="Novo danes"></span>' : ''}</a>`).join('')}</div>
     </div>`;
   }
   const vseh = vsaZa(p).length;
@@ -757,11 +776,11 @@ function stranNadzorna() {
 }
 
 function stranSkupina(p) {
-  drobtine([['Domov', '#/'], [p.ime]]);
+  drobtine([['Domov', '#/'], ...predniki(p), [p.ime]]);
   $main.innerHTML = `
     <section class="banner" style="${barve(p)};padding-bottom:26px">
       <div class="banner-top"><span class="emoji" aria-hidden="true">${p.emoji}</span>
-        <div><h1>${esc(p.ime)}</h1><p>V kateri razred hodiš?</p></div></div>
+        <div><h1>${esc(p.ime)}</h1><p>${esc(p.vprasanje || 'V kateri razred hodiš?')}</p></div></div>
     </section>
     <div class="cards">${p.otroci.map(kartica).join('')}</div>
     ${povezaveHtml(p)}`;
@@ -815,12 +834,12 @@ function vrsticaGradiva(p, g) {
    in po želji stranski stolpec. */
 function okvirPredmeta(p, zavihek, vsebina, stranska, zadnjaDrobtina) {
   const s = p.stars;
-  drobtine([['Domov', '#/'], ...(s ? [[s.ime, `#/${s.id}`]] : []), [p.ime, `#/p/${p.id}`], ...(zadnjaDrobtina ? [[zadnjaDrobtina]] : [])]);
+  drobtine([['Domov', '#/'], ...predniki(p), [p.ime, `#/p/${p.id}`], ...(zadnjaDrobtina ? [[zadnjaDrobtina]] : [])]);
   const pas = ['gradivo', 'kviz', 'urejevalnik'].includes(zavihek) ? '' : `<section class="banner" style="${barve(p)}">
       <div class="banner-top"><span class="emoji" aria-hidden="true">${p.emoji}</span>
         <div><h1>${esc(p.ime)}</h1><p>${esc(p.opis || p.koda)}</p></div>
         ${ucitelj ? `<a class="btn banner-btn" href="#/p/${p.id}/nov-kviz">＋ Nov kviz</a>` : ''}</div>
-      ${s ? `<div class="banner-sw">${s.otroci.filter(o => o !== p).map(o => `<a href="#/p/${o.id}">${o.emoji} ${esc(o.kratko)}</a>`).join('')}</div>` : ''}
+      ${s ? `<div class="banner-sw">${s.otroci.filter(o => o !== p).map(o => `<a href="${hrefPredmeta(o)}">${o.emoji} ${esc(o.kratko || o.ime)}</a>`).join('')}</div>` : ''}
       <nav class="tabs" aria-label="Zavihki">
         <a href="#/p/${p.id}" class="${zavihek === 'domov' ? 'active' : ''}">Domov</a>
         <a href="#/p/${p.id}/datoteke" class="${zavihek === 'datoteke' ? 'active' : ''}">Vsa gradiva</a>
@@ -1457,7 +1476,7 @@ async function stranNovKviz(p, urejamId) {
     izvorDatoteka = !x.vir;
     vir = x.vir || '';
   }
-  const moznosti = VSI.map(o => `<option value="${o.id}"${o.id === p.id ? ' selected' : ''}>${o.emoji} ${esc(o.ime)}</option>`).join('');
+  const moznosti = VSI.map(o => `<option value="${o.id}"${o.id === p.id ? ' selected' : ''}>${o.emoji} ${esc(o.polno)}</option>`).join('');
   okvirPredmeta(p, 'urejevalnik', `
     <div class="vhead"><a class="btn" href="#/p/${p.id}" aria-label="Nazaj">${SVG.prev}</a>${tile('kviz', 'sm')}<h1>${urejamId ? 'Uredi kviz' : 'Nov kviz'}</h1></div>
     ${izvorDatoteka ? '<div class="help">Ta kviz je bil objavljen iz datoteke na računalniku, zato njegovega besedila tukaj ni. Prilepi ga znova.</div>' : ''}
@@ -1672,10 +1691,13 @@ function izrisiRacun(pogled) {
 
 /* ─── Okna: predmeti, račun ─── */
 function napolniPredal() {
-  document.getElementById('tray-list').innerHTML = PREDMETI.map(p => p.otroci
-    ? `<li><a href="#/${p.id}" style="${barve(p)}"><span class="ic">${p.emoji}</span><span>${esc(p.ime)}<small>${p.otroci.length} razredi</small></span></a></li>` +
-      p.otroci.map(o => `<li class="sub"><a href="#/p/${o.id}" style="${barve(o)}"><span class="ic">${o.emoji}</span><span>${o.emoji} ${esc(o.kratko)}</span></a></li>`).join('')
-    : `<li><a href="#/p/${p.id}" style="${barve(p)}"><span class="ic">${p.emoji}</span><span>${esc(p.ime)}<small>${esc(p.koda)}</small></span></a></li>`).join('')
+  const vrstica = (p, globina) => globina === 0
+    ? (p.otroci
+      ? `<li><a href="#/${p.id}" style="${barve(p)}"><span class="ic">${p.emoji}</span><span>${esc(p.ime)}<small>${p.otroci.length} ${esc(p.enota || 'razredi')}</small></span></a></li>`
+      : `<li><a href="#/p/${p.id}" style="${barve(p)}"><span class="ic">${p.emoji}</span><span>${esc(p.ime)}<small>${esc(p.koda)}</small></span></a></li>`)
+    : `<li class="sub"${globina > 1 ? ` style="padding-left:${(globina - 1) * 22}px"` : ''}><a href="${hrefPredmeta(p)}" style="${barve(p)}"><span class="ic">${p.emoji}</span><span>${p.emoji} ${esc(p.kratko || p.ime)}</span></a></li>`;
+  const drevo = (p, globina) => vrstica(p, globina) + (p.otroci ? p.otroci.map(o => drevo(o, globina + 1)).join('') : '');
+  document.getElementById('tray-list').innerHTML = PREDMETI.map(p => drevo(p, 0)).join('')
     + ORODJA.filter(vidi).map(o => `<li><a href="${esc(o.url)}" style="${barve(o)}"><span class="ic">${o.emoji}</span><span>${esc(o.ime)}<small>${esc(o.opis)}</small></span></a></li>`).join('');
 }
 const PREDALI = {

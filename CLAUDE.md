@@ -28,7 +28,7 @@ Pravila za skripto:
 - Ime datoteke določa kviz: preimenovanje (brez `_`) naredi NOV kviz.
 
 `<predmet>` je eden od: racunalnistvo-3, racunalnistvo-4, racunalnistvo-5, racunalnistvo-6,
-racunalnistvo-6-9, fleksi.
+racunalnistvo-6-9, fleksi-matematika, fleksi-spelling, fleksi-reading.
 
 ### Oblika
 
