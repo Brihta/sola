@@ -598,7 +598,7 @@ const PREDMETI = [
         izbira: 'Izberi sklop', vprasanje: 'Kaj bomo delali?', enota: 'sklopa',
         otroci: [
           { id: 'fleksi-spelling', ime: 'Spelling', kratko: 'Spelling', koda: 'Angleščina', c1: '#8b5cf6', c2: '#ec4899', emoji: '✏️', opis: 'Spelling: words of the week' },
-          { id: 'fleksi-reading',  ime: 'Reading',  kratko: 'Reading',  koda: 'Angleščina', c1: '#10b981', c2: '#0ea5e9', emoji: '📖', opis: 'Reading: texts and questions' },
+          { id: 'fleksi-reading',  ime: 'Reading',  kratko: 'Reading',  koda: 'Angleščina', c1: '#10b981', c2: '#0ea5e9', emoji: '📖', opis: 'Reading: texts and questions', brezDatumov: true, naslovSeznama: 'Texts' },
         ] },
     ] },
 ];
@@ -898,18 +898,18 @@ function poTednih(seznam) {
   });
 }
 
-function oznaka(g) {
+function oznaka(g, brezDatuma) {
   if (ucitelj && skrito(g)) return '<span class="tag hid">Skrito</span>';
   const o = g.vrsta === 'kviz' && MOJE[g.id];
   if (o) return `<span class="tag done">✓ ${o.tocke}/${o.vseh}</span>`;
-  return jeDanes(g.datum) ? '<span class="tag new">Novo</span>' : '';
+  return !brezDatuma && jeDanes(g.datum) ? '<span class="tag new">Novo</span>' : '';
 }
 function vrsticaGradiva(p, g) {
-  const ucit = ucitelj && kljucObjave(g);
+  const ucit = ucitelj && kljucObjave(g), bd = p.brezDatumov;
   return `<li class="item${ucit ? ' ucit' : ''}${ucit && skrito(g) ? ' skrito' : ''}"><a href="${hrefGradiva(p, g)}">
     ${tile(g.vrsta, 'sm')}
-    <span class="nm"><b>${esc(g.ime)}</b><small>${IMENA_VRST[g.vrsta] || 'Datoteka'} · ${kdaj(g.datum)}${g.vrsta === 'ura' ? ' · ' + g.koraki.map(k => k.ime).join(' → ') : g.velikost ? ' · ' + velikost(g.velikost) : ''}</small></span>
-    ${oznaka(g)}<svg class="arrow" viewBox="0 0 20 20" fill="none" stroke="currentColor" stroke-width="2.4" stroke-linecap="round" stroke-linejoin="round"><path d="M7.5 4.5L13 10l-5.5 5.5"/></svg>
+    <span class="nm"><b>${esc(g.ime)}</b><small>${IMENA_VRST[g.vrsta] || 'Datoteka'}${bd ? '' : ' · ' + kdaj(g.datum)}${g.vrsta === 'ura' ? ' · ' + g.koraki.map(k => k.ime).join(' → ') : g.velikost ? ' · ' + velikost(g.velikost) : ''}</small></span>
+    ${oznaka(g, bd)}<svg class="arrow" viewBox="0 0 20 20" fill="none" stroke="currentColor" stroke-width="2.4" stroke-linecap="round" stroke-linejoin="round"><path d="M7.5 4.5L13 10l-5.5 5.5"/></svg>
   </a>${ucit ? gumbObjave(g) : ''}</li>`;
 }
 
@@ -942,6 +942,12 @@ function stranPredmet(p) {
     vsebina = `<div class="empty"><img src="brihta.png" alt=""><strong>Ups!</strong>Gradiv trenutno ni mogoče naložiti. Osveži stran.</div>`;
   } else if (!seznam.length) {
     vsebina = `<div class="empty"><img src="brihta.png" alt=""><strong>Tukaj je še prazno</strong>Ko učitelj objavi gradivo, se pokaže tukaj.</div>`;
+  } else if (p.brezDatumov) {
+    /* Brez datumov in tednov (npr. Reading): samo seznam naslovov. Najprej objavljeni (najnovejši zgoraj),
+       učitelj pod njimi vidi še skrite po vrsti, v kateri pridejo na vrsto. */
+    const vidni = seznam.filter(g => !skrito(g)), skriti = seznam.filter(g => skrito(g)).reverse();
+    vsebina = `<section class="week"><div class="week-h" style="cursor:default"><h3>${esc(p.naslovSeznama || 'Gradiva')}</h3><span class="count">${vidni.length}</span></div>
+      <ul class="items">${[...vidni, ...skriti].map(g => vrsticaGradiva(p, g)).join('')}</ul></section>`;
   } else {
     const jeUra = zadnje && zadnje.vrsta === 'ura';
     const gumb = !zadnje ? '' : zadnje.vrsta === 'kviz' ? (MOJE[zadnje.id] ? 'Poglej rezultat' : 'Reši kviz')
@@ -960,16 +966,17 @@ function stranPredmet(p) {
   }
   vsebina += povezaveHtml(p);
   okvirPredmeta(p, 'domov', vsebina, null);
-  $main.querySelectorAll('.week-h').forEach(b => b.addEventListener('click', () => {
+  $main.querySelectorAll('button.week-h').forEach(b => b.addEventListener('click', () => {
     const m = b.parentElement; m.classList.toggle('closed'); b.setAttribute('aria-expanded', !m.classList.contains('closed'));
   }));
 }
 
 function stranDatoteke(p) {
   const seznam = gradivaZa(p.id);
-  const vsebina = seznam.length ? `<table class="ftable"><thead><tr><th>Ime</th><th>Objavljeno</th><th class="hide-m">Vrsta</th><th class="hide-m">Velikost</th></tr></thead><tbody>
+  const bd = p.brezDatumov;
+  const vsebina = seznam.length ? `<table class="ftable"><thead><tr><th>Ime</th>${bd ? '' : '<th>Objavljeno</th>'}<th class="hide-m">Vrsta</th><th class="hide-m">Velikost</th></tr></thead><tbody>
       ${seznam.map(g => `<tr><td class="n"><a href="${hrefGradiva(p, g)}">${tile(g.vrsta, 'xs')}${esc(g.ime)}${ucitelj && skrito(g) ? ' <span class="tag hid">Skrito</span>' : ''}</a></td>
-        <td class="m">${kdaj(g.datum)}</td><td class="m hide-m">${IMENA_VRST[g.vrsta] || ''}</td><td class="m hide-m">${velikost(g.velikost)}</td></tr>`).join('')}
+        ${bd ? '' : `<td class="m">${kdaj(g.datum)}</td>`}<td class="m hide-m">${IMENA_VRST[g.vrsta] || ''}</td><td class="m hide-m">${velikost(g.velikost)}</td></tr>`).join('')}
     </tbody></table>` : `<div class="empty"><img src="brihta.png" alt=""><strong>Tukaj je še prazno</strong>Ko učitelj objavi gradivo, se pokaže tukaj.</div>`;
   okvirPredmeta(p, 'datoteke', vsebina, null, 'Vsa gradiva');
 }
