@@ -123,6 +123,10 @@ Nino reče npr. »Spelling, teden 2«. Takrat:
 3. Shrani v `gradiva/fleksi-spelling/<YYYY-MM-DD> Week <N> <vzorec>.pdf`: datum je ponedeljek, ko je ura
    (če Nino ne reče drugače, najbližji ponedeljek), N brez vodilne ničle, vzorec iz imena vira
    (npr. `Teden 02 soft g.pdf` → `2026-11-23 Week 2 soft g.pdf`).
+   Poleg lista objavi še narek: stavek za ta teden je v `00 Seznam besed in narek Stopnja <N>.pdf`
+   (v mapi stopnje, stolpec »Narek«). Zapiši ga v `gradiva/fleksi-spelling/<isti datum> Week <N> Dictation.html`
+   po vzoru `2026-11-16 Week 1 Dictation.html` (stavek velik, besede tedna obarvane). Viden je vsem, tudi učencem
+   (Nino se je tako odločil).
 4. `python3 scripts/gradiva.py`, nato commit in push na `main`.
 5. Ninu povej naslov in da je čez 1 do 2 minuti na strani (Fleksi › Angleščina › Spelling).
 
