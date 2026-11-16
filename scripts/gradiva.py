@@ -14,6 +14,10 @@ Posebni primeri:
                   ne pokaže). *.md se prikaže kar na strani, *.kviz vsebuje
                   naslov ali id kviza, ki je korak ure.
   .ime, _ime      skrito (ni objavljeno)
+
+Gradivo, ki je naloženo vnaprej (datum v imenu je kasnejši od dneva, ko je
+datoteka prvič prišla v repozitorij), dobi "vnaprej": true. Stran ga učencem
+ne pokaže, dokler ga učitelj ne objavi s stikalom (samo se nikoli ne objavi).
 """
 import datetime as dt
 import json
@@ -51,6 +55,29 @@ def git_datum(pot):
         return out or None
     except (OSError, subprocess.CalledProcessError):
         return None
+
+
+def git_prvi_dan(pot):
+    """Dan, ko je datoteka/mapa prvič prišla v repozitorij (YYYY-MM-DD); za neshranjene danes."""
+    try:
+        out = subprocess.run(
+            ["git", "log", "--format=%cs", "--reverse", "--", pot],
+            cwd=KOREN, capture_output=True, text=True, check=True,
+        ).stdout.split()
+        if out:
+            return out[0]
+    except (OSError, subprocess.CalledProcessError):
+        pass
+    return dt.date.today().isoformat()
+
+
+VNAPREJ_OD = "2026-11-16"  # pravilo velja od tega dne; starejša gradiva ostanejo, kot so bila (objavljena)
+
+
+def oznaci_vnaprej(zapis, dan_v_imenu, rel):
+    if dan_v_imenu and dan_v_imenu > VNAPREJ_OD and dan_v_imenu > git_prvi_dan(rel):
+        zapis["vnaprej"] = True
+    return zapis
 
 
 def datum_mape(pot):
@@ -126,7 +153,8 @@ def ura(predmet, vnos, pot, rel):
         return None
     m = DATUM_V_IMENU.match(vnos)
     datum = m.group(1) + "T08:00:00+02:00" if m else (datum_mape(rel) or mtime(pot))
-    return {"ime": lepo_ime(vnos), "vrsta": "ura", "datum": datum, "pot": rel, "koraki": koraki}
+    return oznaci_vnaprej({"ime": lepo_ime(vnos), "vrsta": "ura", "datum": datum, "pot": rel, "koraki": koraki},
+                          m and m.group(1), rel)
 
 
 def gradivo(predmet, vnos):
@@ -161,7 +189,7 @@ def gradivo(predmet, vnos):
         zapis["pot"] = rel_odpri
         if velikost is not None:
             zapis["velikost"] = velikost
-    return zapis
+    return oznaci_vnaprej(zapis, m and m.group(1), rel)
 
 
 def main():

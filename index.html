@@ -729,7 +729,8 @@ function uraKviza(id, kviz) {
   return ure(id).find(u => u.koraki.some(k => k.vrsta === 'kviz' && kvizKoraka(id, k.kviz) === kviz));
 }
 /* Objava in naložena gradiva (supabase_gradiva.sql). Učitelj gradivo ročno objavi ali skrije;
-   brez ročne izbire je gradivo z datumom v prihodnosti skrito, ostalo objavljeno.
+   brez ročne izbire je skrito gradivo, naloženo vnaprej (g.vnaprej iz gradiva.json), ostalo objavljeno.
+   Nič se ne objavi samo od sebe: vnaprej naloženo ostane skrito, dokler ga učitelj ne objavi.
    Naložene datoteke (PDF, Word, slike) so v Supabase shrambi in se pomešajo med gradiva. */
 let STANJE = {};          // kljuc objave → true (objavljeno) / false (skrito)
 let DODANA = [];
@@ -747,7 +748,7 @@ function skrito(g) {
   const k = kljucObjave(g);
   if (!k) return false;
   if (k in STANJE) return !STANJE[k];
-  return new Date(g.datum) > new Date();
+  return !!g.vnaprej;
 }
 const gradivaZa = id => [...(GRADIVA[id] || []), ...DODANA.filter(g => g.predmet === id), ...KVIZI.filter(k => k.predmet === id && !uraKviza(id, k))]
   .filter(g => ucitelj || !skrito(g))

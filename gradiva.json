@@ -7,70 +7,80 @@
     "vrsta": "pdf",
     "datum": "2027-02-01T08:00:00+02:00",
     "pot": "gradiva/fleksi-reading/2027-02-01 Rumpelstiltskin.pdf",
-    "velikost": 1169188
+    "velikost": 1169188,
+    "vnaprej": true
    },
    {
     "ime": "British Garden Birds",
     "vrsta": "pdf",
     "datum": "2027-01-25T08:00:00+02:00",
     "pot": "gradiva/fleksi-reading/2027-01-25 British Garden Birds.pdf",
-    "velikost": 926285
+    "velikost": 926285,
+    "vnaprej": true
    },
    {
     "ime": "All About Penguins",
     "vrsta": "pdf",
     "datum": "2027-01-18T08:00:00+02:00",
     "pot": "gradiva/fleksi-reading/2027-01-18 All About Penguins.pdf",
-    "velikost": 897585
+    "velikost": 897585,
+    "vnaprej": true
    },
    {
     "ime": "The Snowball Fight Poem",
     "vrsta": "pdf",
     "datum": "2027-01-11T08:00:00+02:00",
     "pot": "gradiva/fleksi-reading/2027-01-11 The Snowball Fight Poem.pdf",
-    "velikost": 754149
+    "velikost": 754149,
+    "vnaprej": true
    },
    {
     "ime": "Epiphany",
     "vrsta": "pdf",
     "datum": "2027-01-04T08:00:00+02:00",
     "pot": "gradiva/fleksi-reading/2027-01-04 Epiphany.pdf",
-    "velikost": 844780
+    "velikost": 844780,
+    "vnaprej": true
    },
    {
     "ime": "New Year Celebrations Around the World",
     "vrsta": "pdf",
     "datum": "2026-12-21T08:00:00+02:00",
     "pot": "gradiva/fleksi-reading/2026-12-21 New Year Celebrations Around the World.pdf",
-    "velikost": 1146839
+    "velikost": 1146839,
+    "vnaprej": true
    },
    {
     "ime": "Winter",
     "vrsta": "pdf",
     "datum": "2026-12-14T08:00:00+02:00",
     "pot": "gradiva/fleksi-reading/2026-12-14 Winter.pdf",
-    "velikost": 2591770
+    "velikost": 2591770,
+    "vnaprej": true
    },
    {
     "ime": "Hanukkah",
     "vrsta": "pdf",
     "datum": "2026-12-07T08:00:00+02:00",
     "pot": "gradiva/fleksi-reading/2026-12-07 Hanukkah.pdf",
-    "velikost": 2053917
+    "velikost": 2053917,
+    "vnaprej": true
    },
    {
     "ime": "Planting Trees",
     "vrsta": "pdf",
     "datum": "2026-11-30T08:00:00+02:00",
     "pot": "gradiva/fleksi-reading/2026-11-30 Planting Trees.pdf",
-    "velikost": 850157
+    "velikost": 850157,
+    "vnaprej": true
    },
    {
     "ime": "Road Safety Week",
     "vrsta": "pdf",
     "datum": "2026-11-23T08:00:00+02:00",
     "pot": "gradiva/fleksi-reading/2026-11-23 Road Safety Week.pdf",
-    "velikost": 936552
+    "velikost": 936552,
+    "vnaprej": true
    },
    {
     "ime": "All About Badgers",
@@ -86,140 +96,160 @@
     "vrsta": "html",
     "datum": "2027-02-01T08:00:00+02:00",
     "pot": "gradiva/fleksi-spelling/2027-02-01 Week 11 Dictation.html",
-    "velikost": 1604
+    "velikost": 1604,
+    "vnaprej": true
    },
    {
     "ime": "Week 11 ied ier iest",
     "vrsta": "pdf",
     "datum": "2027-02-01T08:00:00+02:00",
     "pot": "gradiva/fleksi-spelling/2027-02-01 Week 11 ied ier iest.pdf",
-    "velikost": 95985
+    "velikost": 95985,
+    "vnaprej": true
    },
    {
     "ime": "Week 10 Dictation",
     "vrsta": "html",
     "datum": "2027-01-25T08:00:00+02:00",
     "pot": "gradiva/fleksi-spelling/2027-01-25 Week 10 Dictation.html",
-    "velikost": 1591
+    "velikost": 1591,
+    "vnaprej": true
    },
    {
     "ime": "Week 10 ies",
     "vrsta": "pdf",
     "datum": "2027-01-25T08:00:00+02:00",
     "pot": "gradiva/fleksi-spelling/2027-01-25 Week 10 ies.pdf",
-    "velikost": 96130
+    "velikost": 96130,
+    "vnaprej": true
    },
    {
     "ime": "Week 9 Dictation",
     "vrsta": "html",
     "datum": "2027-01-18T08:00:00+02:00",
     "pot": "gradiva/fleksi-spelling/2027-01-18 Week 9 Dictation.html",
-    "velikost": 1597
+    "velikost": 1597,
+    "vnaprej": true
    },
    {
     "ime": "Week 9 y says igh",
     "vrsta": "pdf",
     "datum": "2027-01-18T08:00:00+02:00",
     "pot": "gradiva/fleksi-spelling/2027-01-18 Week 9 y says igh.pdf",
-    "velikost": 96387
+    "velikost": 96387,
+    "vnaprej": true
    },
    {
     "ime": "Week 8 Dictation",
     "vrsta": "html",
     "datum": "2027-01-11T08:00:00+02:00",
     "pot": "gradiva/fleksi-spelling/2027-01-11 Week 8 Dictation.html",
-    "velikost": 1614
+    "velikost": 1614,
+    "vnaprej": true
    },
    {
     "ime": "Week 8 al il",
     "vrsta": "pdf",
     "datum": "2027-01-11T08:00:00+02:00",
     "pot": "gradiva/fleksi-spelling/2027-01-11 Week 8 al il.pdf",
-    "velikost": 96009
+    "velikost": 96009,
+    "vnaprej": true
    },
    {
     "ime": "Week 7 Dictation",
     "vrsta": "html",
     "datum": "2027-01-04T08:00:00+02:00",
     "pot": "gradiva/fleksi-spelling/2027-01-04 Week 7 Dictation.html",
-    "velikost": 1579
+    "velikost": 1579,
+    "vnaprej": true
    },
    {
     "ime": "Week 7 el",
     "vrsta": "pdf",
     "datum": "2027-01-04T08:00:00+02:00",
     "pot": "gradiva/fleksi-spelling/2027-01-04 Week 7 el.pdf",
-    "velikost": 96259
+    "velikost": 96259,
+    "vnaprej": true
    },
    {
     "ime": "Week 6 Dictation",
     "vrsta": "html",
     "datum": "2026-12-21T08:00:00+02:00",
     "pot": "gradiva/fleksi-spelling/2026-12-21 Week 6 Dictation.html",
-    "velikost": 1597
+    "velikost": 1597,
+    "vnaprej": true
    },
    {
     "ime": "Week 6 le",
     "vrsta": "pdf",
     "datum": "2026-12-21T08:00:00+02:00",
     "pot": "gradiva/fleksi-spelling/2026-12-21 Week 6 le.pdf",
-    "velikost": 96079
+    "velikost": 96079,
+    "vnaprej": true
    },
    {
     "ime": "Week 5 Dictation",
     "vrsta": "html",
     "datum": "2026-12-14T08:00:00+02:00",
     "pot": "gradiva/fleksi-spelling/2026-12-14 Week 5 Dictation.html",
-    "velikost": 1573
+    "velikost": 1573,
+    "vnaprej": true
    },
    {
     "ime": "Week 5 wr",
     "vrsta": "pdf",
     "datum": "2026-12-14T08:00:00+02:00",
     "pot": "gradiva/fleksi-spelling/2026-12-14 Week 5 wr.pdf",
-    "velikost": 95584
+    "velikost": 95584,
+    "vnaprej": true
    },
    {
     "ime": "Week 4 Dictation",
     "vrsta": "html",
     "datum": "2026-12-07T08:00:00+02:00",
     "pot": "gradiva/fleksi-spelling/2026-12-07 Week 4 Dictation.html",
-    "velikost": 1600
+    "velikost": 1600,
+    "vnaprej": true
    },
    {
     "ime": "Week 4 kn gn",
     "vrsta": "pdf",
     "datum": "2026-12-07T08:00:00+02:00",
     "pot": "gradiva/fleksi-spelling/2026-12-07 Week 4 kn gn.pdf",
-    "velikost": 95751
+    "velikost": 95751,
+    "vnaprej": true
    },
    {
     "ime": "Week 3 Dictation",
     "vrsta": "html",
     "datum": "2026-11-30T08:00:00+02:00",
     "pot": "gradiva/fleksi-spelling/2026-11-30 Week 3 Dictation.html",
-    "velikost": 1591
+    "velikost": 1591,
+    "vnaprej": true
    },
    {
     "ime": "Week 3 soft c",
     "vrsta": "pdf",
     "datum": "2026-11-30T08:00:00+02:00",
     "pot": "gradiva/fleksi-spelling/2026-11-30 Week 3 soft c.pdf",
-    "velikost": 95712
+    "velikost": 95712,
+    "vnaprej": true
    },
    {
     "ime": "Week 2 Dictation",
     "vrsta": "html",
     "datum": "2026-11-23T08:00:00+02:00",
     "pot": "gradiva/fleksi-spelling/2026-11-23 Week 2 Dictation.html",
-    "velikost": 1603
+    "velikost": 1603,
+    "vnaprej": true
    },
    {
     "ime": "Week 2 soft g",
     "vrsta": "pdf",
     "datum": "2026-11-23T08:00:00+02:00",
     "pot": "gradiva/fleksi-spelling/2026-11-23 Week 2 soft g.pdf",
-    "velikost": 95322
+    "velikost": 95322,
+    "vnaprej": true
    },
    {
     "ime": "Week 1 Dictation",
@@ -460,7 +490,8 @@
       "opis": "Vpiši svoje podatke in kodo za svoj razred s table. Imaš 40 minut.",
       "emoji": "🦫"
      }
-    ]
+    ],
+    "vnaprej": true
    },
    {
     "ime": "Vaje za Bober doma",
@@ -651,7 +682,8 @@
       "opis": "Vpiši svoje podatke in kodo za svoj razred s table. Imaš 40 minut.",
       "emoji": "🦫"
      }
-    ]
+    ],
+    "vnaprej": true
    },
    {
     "ime": "Vaje za Bober doma",
@@ -818,5 +850,5 @@
    }
   ]
  },
- "posodobljeno": "2026-11-16T18:01:14+01:00"
+ "posodobljeno": "2026-11-16T18:25:31+01:00"
 }

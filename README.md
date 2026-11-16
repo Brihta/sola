@@ -68,9 +68,9 @@ Ko je učitelj prijavljen (»Prijava za učitelje«):
 
 - **Stikalo ob vsakem gradivu** (👁 Objavljeno / 🙈 Skrito). Skritega gradiva
   učenci ne vidijo; učitelj ga vidi črtkano.
-- **Gradivo z datumom v prihodnosti je samo skrito**, dokler ga učitelj ne objavi
-  ali ne pride tisti dan (ob 8.00). Tako lahko gradiva za naslednje tedne
-  naložiš vnaprej.
+- **Nič se ne objavi samo od sebe.** Gradivo, naloženo vnaprej (datum v imenu je
+  kasnejši od dneva, ko je prišlo v repozitorij), je skrito, dokler ga učitelj ne
+  objavi s stikalom, tudi ko tisti dan pride. `gradiva.py` mu doda `"vnaprej": true`.
 - **⬆ Naloži** pri vsakem predmetu: PDF, Word (.doc, .docx), JPG ali PNG, do
   25 MB. Izbereš naslov, datum in ali ga učenci vidijo takoj. Naložene datoteke
   so v Supabase shrambi (ne v repozitoriju); učitelj jih lahko izbriše
