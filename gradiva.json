@@ -1,7 +1,15 @@
 {
  "predmeti": {
   "fleksi-matematika": [],
-  "fleksi-reading": [],
+  "fleksi-reading": [
+   {
+    "ime": "All About Badgers",
+    "vrsta": "pdf",
+    "datum": "2026-11-16T08:00:00+02:00",
+    "pot": "gradiva/fleksi-reading/2026-11-16 All About Badgers.pdf",
+    "velikost": 1485421
+   }
+  ],
   "fleksi-spelling": [
    {
     "ime": "Week 1 dge ge",
@@ -593,5 +601,5 @@
    }
   ]
  },
- "posodobljeno": "2026-11-16T08:49:48+00:00"
+ "posodobljeno": "2026-11-16T10:08:10+01:00"
 }
