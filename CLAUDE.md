@@ -162,3 +162,9 @@ da so emojiji (tudi zastave) na Windows enaki kot drugod. Ko dodaš nov emoji v 
 gradivo (npr. `emoji=` v `.url`), poženi `python3 scripts/emoji_pisava.py` (potrebuje
 `pip3 install --user fonttools brotli`) in commitaj `pisave/` in `index.html`. Emoji, ki ga v
 podmnožici ni, se pokaže s sistemsko pisavo.
+
+## Ikona in logotip
+
+Rdeča sova (`brihta.png`, `apple-touch-icon.png`, `ikona-*.png`, `favicon-32.png`, `manifest.webmanifest`).
+Izvor je `ikona-1024.png`: logotip iz `matematika/Brihta.svg`, zeleni deli prebarvani v rdečo (odtenek ~359°),
+da se Šola loči od Matematike. Nove velikosti delaj iz `ikona-1024.png`.
