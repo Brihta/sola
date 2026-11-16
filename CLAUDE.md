@@ -110,6 +110,25 @@ neposredno v mapi predmeta še delujejo, a uro vedno objavi kot mapo.
 
 Več v README.md.
 
+## Fleksi Spelling: tedenski postopek
+
+Nino reče npr. »Spelling, teden 2«. Takrat:
+
+1. Vir: `/Users/ninokokalj/Library/CloudStorage/OneDrive-OŠŠempetervSavinjskidolini/1. Šolsko leto 26-27/Dejavnosti/Fleksi Angleščina/English/Spelling/Stopnja 2 (Year 2)/<1. ali 2.> ocenjevalno obdobje/Teden NN <vzorec>.pdf`
+   (tedni 1 do 16 so v 1., 17 do 30 v 2. ocenjevalnem obdobju). Trenutna stopnja je **2**, skupina **Tree**.
+   Če Nino reče drugo stopnjo ali skupino, uporabi tisto.
+2. Vsak PDF ima 3 strani: 1 Kite, 2 Boat, 3 Tree. Vzemi SAMO stran Tree (3. stran) in preveri,
+   da je na njej »Tree« in »My test«. Uporabi pypdf ali pymupdf (če ga ni: `pip3 install --user pypdf`).
+   Originala na OneDrivu ne spreminjaj.
+3. Shrani v `gradiva/fleksi-spelling/<YYYY-MM-DD> Week <N> <vzorec>.pdf`: datum je ponedeljek, ko je ura
+   (če Nino ne reče drugače, najbližji ponedeljek), N brez vodilne ničle, vzorec iz imena vira
+   (npr. `Teden 02 soft g.pdf` → `2026-11-23 Week 2 soft g.pdf`).
+4. `python3 scripts/gradiva.py`, nato commit in push na `main`.
+5. Ninu povej naslov in da je čez 1 do 2 minuti na strani (Fleksi › Angleščina › Spelling).
+
+Pravilo točkovanja na listih: vse natisnjene besede (tudi zvezdica) se točkujejo, okvir je »My test ___ / N«
+(Kite 6, Boat 9, Tree 12). Če kdaj popravljaš liste, ostane tako v vseh stopnjah.
+
 ## Moja besedila (pisanje-besedil/)
 
 Vse znanje o programu Moja besedila (baza, načini popravljanja, objava, odločitve)
