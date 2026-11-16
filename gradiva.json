@@ -3,6 +3,76 @@
   "fleksi-matematika": [],
   "fleksi-reading": [
    {
+    "ime": "Rumpelstiltskin",
+    "vrsta": "pdf",
+    "datum": "2027-02-01T08:00:00+02:00",
+    "pot": "gradiva/fleksi-reading/2027-02-01 Rumpelstiltskin.pdf",
+    "velikost": 1169188
+   },
+   {
+    "ime": "British Garden Birds",
+    "vrsta": "pdf",
+    "datum": "2027-01-25T08:00:00+02:00",
+    "pot": "gradiva/fleksi-reading/2027-01-25 British Garden Birds.pdf",
+    "velikost": 926285
+   },
+   {
+    "ime": "All About Penguins",
+    "vrsta": "pdf",
+    "datum": "2027-01-18T08:00:00+02:00",
+    "pot": "gradiva/fleksi-reading/2027-01-18 All About Penguins.pdf",
+    "velikost": 897585
+   },
+   {
+    "ime": "The Snowball Fight Poem",
+    "vrsta": "pdf",
+    "datum": "2027-01-11T08:00:00+02:00",
+    "pot": "gradiva/fleksi-reading/2027-01-11 The Snowball Fight Poem.pdf",
+    "velikost": 754149
+   },
+   {
+    "ime": "Epiphany",
+    "vrsta": "pdf",
+    "datum": "2027-01-04T08:00:00+02:00",
+    "pot": "gradiva/fleksi-reading/2027-01-04 Epiphany.pdf",
+    "velikost": 844780
+   },
+   {
+    "ime": "New Year Celebrations Around the World",
+    "vrsta": "pdf",
+    "datum": "2026-12-21T08:00:00+02:00",
+    "pot": "gradiva/fleksi-reading/2026-12-21 New Year Celebrations Around the World.pdf",
+    "velikost": 1146839
+   },
+   {
+    "ime": "Winter",
+    "vrsta": "pdf",
+    "datum": "2026-12-14T08:00:00+02:00",
+    "pot": "gradiva/fleksi-reading/2026-12-14 Winter.pdf",
+    "velikost": 2591770
+   },
+   {
+    "ime": "Hanukkah",
+    "vrsta": "pdf",
+    "datum": "2026-12-07T08:00:00+02:00",
+    "pot": "gradiva/fleksi-reading/2026-12-07 Hanukkah.pdf",
+    "velikost": 2053917
+   },
+   {
+    "ime": "Planting Trees",
+    "vrsta": "pdf",
+    "datum": "2026-11-30T08:00:00+02:00",
+    "pot": "gradiva/fleksi-reading/2026-11-30 Planting Trees.pdf",
+    "velikost": 850157
+   },
+   {
+    "ime": "Road Safety Week",
+    "vrsta": "pdf",
+    "datum": "2026-11-23T08:00:00+02:00",
+    "pot": "gradiva/fleksi-reading/2026-11-23 Road Safety Week.pdf",
+    "velikost": 936552
+   },
+   {
     "ime": "All About Badgers",
     "vrsta": "pdf",
     "datum": "2026-11-16T08:00:00+02:00",
@@ -748,5 +818,5 @@
    }
   ]
  },
- "posodobljeno": "2026-11-16T11:19:39+01:00"
+ "posodobljeno": "2026-11-16T18:01:14+01:00"
 }

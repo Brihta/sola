@@ -137,6 +137,17 @@ Nino reče npr. »Spelling, teden 2«. Takrat:
 Pravilo točkovanja na listih: vse natisnjene besede (tudi zvezdica) se točkujejo, okvir je »My test ___ / N«
 (Kite 6, Boat 9, Tree 12). Če kdaj popravljaš liste, ostane tako v vseh stopnjah.
 
+## Fleksi Reading: tedensko besedilo
+
+Očiščeni PDF-ji (brez Twinkl noge) so v `~/Documents/Brihta-reading/` (ZUNAJ repozitorija; original na
+OneDrivu `.../English/Reading` se ne spreminja; skripta za čiščenje je `_odstrani_twinkl_nogo.py` v isti mapi).
+Objavljamo SAMO raven **Tree** (`... 3 Tree.pdf`) iz `KS1 (Year 1 in 2)/<mesec>/`, BREZ strani z rešitvami
+(stran z naslovom »Answers«), kot `gradiva/fleksi-reading/<ponedeljek> <Naslov>.pdf`. Ena na teden, isti
+ponedeljki kot Spelling. Tedni do 1. 2. 2027 so naloženi vnaprej (skriti do ponedeljka ob 8.00):
+Road Safety Week, Planting Trees, Hanukkah, Winter, New Year Celebrations Around the World, Epiphany,
+The Snowball Fight Poem, All About Penguins, British Garden Birds, Rumpelstiltskin.
+Pred objavo preveri: ni besede »twinkl« in ni »Answers« v besedilu, in poglej vse strani.
+
 ## Moja besedila (pisanje-besedil/)
 
 Vse znanje o programu Moja besedila (baza, načini popravljanja, objava, odločitve)
