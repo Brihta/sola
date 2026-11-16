@@ -233,6 +233,25 @@
     .tag { font-size: .75rem; font-weight: 800; padding: 3px 10px; border-radius: 999px; flex-shrink: 0; white-space: nowrap; }
     .tag.new { background: var(--sun); color: #3b2500; }
     .tag.done { background: #dcfce7; color: #166534; }
+    .tag.hid { background: #ede9fe; color: #5b21b6; }
+    /* Učitelj: objava/skrivanje in nalaganje */
+    .item.ucit { display: flex; align-items: center; gap: 8px; min-width: 0; }
+    .item.ucit > a { flex: 1; min-width: 0; }
+    .item.skrito > a { opacity: .6; border-style: dashed; border-color: var(--line-2); }
+    .vis { flex-shrink: 0; border: 1.5px solid var(--line-2); background: var(--surface); color: var(--ink); border-radius: 999px;
+           padding: 8px 12px; font: inherit; font-size: .82rem; font-weight: 800; cursor: pointer; white-space: nowrap; }
+    .vis.on { background: #dcfce7; border-color: #86efac; color: #166534; }
+    .vis:disabled { opacity: .5; cursor: wait; }
+    .upl { background: var(--surface); border-radius: var(--r-xl); padding: 24px; box-shadow: var(--shadow); max-width: 640px; }
+    .upl .field { margin-bottom: 16px; }
+    .upl label { display: block; font-weight: 800; margin-bottom: 6px; }
+    .upl input[type=text], .upl input[type=date] { width: 100%; font: inherit; padding: 10px 12px; border-radius: 12px; border: 1.5px solid var(--line-2); background: var(--surface); color: var(--ink); }
+    .upl .drop { display: block; border: 2px dashed var(--line-2); border-radius: 16px; padding: 22px; text-align: center; cursor: pointer; font-weight: 700; color: var(--muted); }
+    .upl .drop.ima { border-color: color-mix(in srgb, var(--c1) 60%, white); color: var(--ink); }
+    .upl .drop input { display: none; }
+    .upl .chk { display: flex; gap: 10px; align-items: center; font-weight: 700; margin-bottom: 18px; }
+    .upl .chk input { width: 20px; height: 20px; }
+    @media (max-width: 560px) { .vis .lbl { display: none; } }
 
     .empty { background: var(--surface); border-radius: var(--r-xl); padding: 36px 24px; text-align: center; color: var(--muted); font-weight: 600; box-shadow: var(--shadow); }
     .empty img { width: 104px; height: 104px; display: block; margin: 0 auto 12px; animation: bob 4s ease-in-out infinite; }
@@ -697,8 +716,54 @@ function kvizKoraka(id, ref) {
 function uraKviza(id, kviz) {
   return ure(id).find(u => u.koraki.some(k => k.vrsta === 'kviz' && kvizKoraka(id, k.kviz) === kviz));
 }
-const gradivaZa = id => [...(GRADIVA[id] || []), ...KVIZI.filter(k => k.predmet === id && !uraKviza(id, k))]
+/* Objava in naložena gradiva (supabase_gradiva.sql). Učitelj gradivo ročno objavi ali skrije;
+   brez ročne izbire je gradivo z datumom v prihodnosti skrito, ostalo objavljeno.
+   Naložene datoteke (PDF, Word, slike) so v Supabase shrambi in se pomešajo med gradiva. */
+let STANJE = {};          // kljuc objave → true (objavljeno) / false (skrito)
+let DODANA = [];
+const SHRAMBA = 'sola-gradiva';
+const potShrambe = pot => pot.split('/').map(encodeURIComponent).join('/');
+async function naloziObjave() {
+  const [s, d] = await Promise.all([rpc('sola_gradiva_stanje'), rpc('sola_gradiva_dodana')]);
+  if (Array.isArray(s)) { STANJE = {}; s.forEach(x => { STANJE[x.kljuc] = x.objavljeno; }); }
+  if (Array.isArray(d)) DODANA = d.map(x => ({ vrsta: x.vrsta, ime: x.naslov, datum: x.datum, velikost: x.velikost,
+    predmet: x.predmet, dodano: x.id, imeDatoteke: x.ime_datoteke,
+    url: `${SUPABASE.url}/storage/v1/object/public/${SHRAMBA}/${potShrambe(x.pot)}` }));
+}
+const kljucObjave = g => g.vrsta === 'kviz' ? null : g.dodano ? 'dodano:' + g.dodano : (g.pot || g.url);
+function skrito(g) {
+  const k = kljucObjave(g);
+  if (!k) return false;
+  if (k in STANJE) return !STANJE[k];
+  return new Date(g.datum) > new Date();
+}
+const gradivaZa = id => [...(GRADIVA[id] || []), ...DODANA.filter(g => g.predmet === id), ...KVIZI.filter(k => k.predmet === id && !uraKviza(id, k))]
+  .filter(g => ucitelj || !skrito(g))
   .sort((a, b) => new Date(b.datum) - new Date(a.datum));
+function gumbObjave(g) {
+  if (!ucitelj || !kljucObjave(g)) return '';
+  const s = skrito(g);
+  return `<button class="vis${s ? '' : ' on'}" type="button" data-objava="${esc(kljucObjave(g))}" data-skrito="${s ? 1 : 0}"
+    title="${s ? 'Učenci tega ne vidijo. Klikni, da objaviš.' : 'Učenci to vidijo. Klikni, da skriješ.'}">${s ? '🙈 <span class="lbl">Skrito</span>' : '👁 <span class="lbl">Objavljeno</span>'}</button>`;
+}
+document.addEventListener('click', async e => {
+  const b = e.target.closest('[data-objava]');
+  if (!b || !ucitelj) return;
+  e.preventDefault();
+  const objavi = b.dataset.skrito === '1';
+  b.disabled = true;
+  const r = await rpc('sola_gradivo_objavi', { p_seja: ucitelj.seja, p_kljuc: b.dataset.objava, p_objavljeno: objavi });
+  if (r === true) {
+    STANJE[b.dataset.objava] = objavi;
+    const y = window.scrollY, odprti = [...$main.querySelectorAll('.week')].map(w => !w.classList.contains('closed'));
+    usmeri();
+    $main.querySelectorAll('.week').forEach((w, i) => { if (i in odprti) { w.classList.toggle('closed', !odprti[i]); } });
+    window.scrollTo(0, y);
+    return;
+  }
+  b.disabled = false;
+  alert(r === NEDOSEGLJIVO ? 'Strežnik ni dosegljiv.' : 'Ni uspelo. Se moraš znova prijaviti? (Ali pa v Supabase še ni zagnan supabase_gradiva.sql.)');
+});
 const vsaZa = p => p.otroci ? p.otroci.flatMap(o => vsaZa(o)) : gradivaZa(p.id);
 const kljuc = g => g.vrsta === 'kviz' ? 'kviz:' + g.id : (g.pot || g.url);
 const hrefGradiva = (p, g) => `#/p/${p.id}/${encodeURIComponent(kljuc(g))}`;
@@ -809,25 +874,30 @@ function poTednih(seznam) {
     tedni.get(k).push(g);
   });
   const ta = ponedeljek(new Date()).getTime();
-  return [...tedni.entries()].sort((a, b) => b[0] - a[0]).map(([k, g]) => {
+  /* Ta teden, nato prihodnji (vidi jih samo učitelj) po vrsti, nato pretekli od najnovejšega. */
+  const rang = k => k === ta ? 0 : k > ta ? 1 : 2;
+  return [...tedni.entries()].sort((a, b) => rang(a[0]) - rang(b[0]) || (rang(a[0]) === 1 ? a[0] - b[0] : b[0] - a[0])).map(([k, g]) => {
     const pon = new Date(k), pet = new Date(k); pet.setDate(pet.getDate() + 4);
     const raz = Math.round((ta - k) / (7 * 864e5));
     const obseg = `${kratek(pon)} – ${kratek(pet)}`;
-    return { ime: raz === 0 ? 'Ta teden' : raz === 1 ? 'Prejšnji teden' : `Teden ${obseg}`, pod: raz <= 1 ? obseg : String(pon.getFullYear()), gradiva: g, odprt: raz <= 1 };
+    return { ime: raz === 0 ? 'Ta teden' : raz === 1 ? 'Prejšnji teden' : raz === -1 ? 'Naslednji teden' : `Teden ${obseg}`,
+      pod: Math.abs(raz) <= 1 ? obseg : String(pon.getFullYear()), gradiva: g, odprt: raz === 0 || raz === 1 };
   });
 }
 
 function oznaka(g) {
+  if (ucitelj && skrito(g)) return '<span class="tag hid">Skrito</span>';
   const o = g.vrsta === 'kviz' && MOJE[g.id];
   if (o) return `<span class="tag done">✓ ${o.tocke}/${o.vseh}</span>`;
   return jeDanes(g.datum) ? '<span class="tag new">Novo</span>' : '';
 }
 function vrsticaGradiva(p, g) {
-  return `<li class="item"><a href="${hrefGradiva(p, g)}">
+  const ucit = ucitelj && kljucObjave(g);
+  return `<li class="item${ucit ? ' ucit' : ''}${ucit && skrito(g) ? ' skrito' : ''}"><a href="${hrefGradiva(p, g)}">
     ${tile(g.vrsta, 'sm')}
     <span class="nm"><b>${esc(g.ime)}</b><small>${IMENA_VRST[g.vrsta] || 'Datoteka'} · ${kdaj(g.datum)}${g.vrsta === 'ura' ? ' · ' + g.koraki.map(k => k.ime).join(' → ') : g.velikost ? ' · ' + velikost(g.velikost) : ''}</small></span>
     ${oznaka(g)}<svg class="arrow" viewBox="0 0 20 20" fill="none" stroke="currentColor" stroke-width="2.4" stroke-linecap="round" stroke-linejoin="round"><path d="M7.5 4.5L13 10l-5.5 5.5"/></svg>
-  </a></li>`;
+  </a>${ucit ? gumbObjave(g) : ''}</li>`;
 }
 
 /* Okvir strani predmeta: barvni pas z zavihki (ne pri ogledu gradiva), nato vsebina
@@ -838,7 +908,7 @@ function okvirPredmeta(p, zavihek, vsebina, stranska, zadnjaDrobtina) {
   const pas = ['gradivo', 'kviz', 'urejevalnik'].includes(zavihek) ? '' : `<section class="banner" style="${barve(p)}">
       <div class="banner-top"><span class="emoji" aria-hidden="true">${p.emoji}</span>
         <div><h1>${esc(p.ime)}</h1><p>${esc(p.opis || p.koda)}</p></div>
-        ${ucitelj ? `<a class="btn banner-btn" href="#/p/${p.id}/nov-kviz">＋ Nov kviz</a>` : ''}</div>
+        ${ucitelj ? `<a class="btn banner-btn" href="#/p/${p.id}/nalozi">⬆ Naloži</a><a class="btn banner-btn" href="#/p/${p.id}/nov-kviz">＋ Nov kviz</a>` : ''}</div>
       ${s ? `<div class="banner-sw">${s.otroci.filter(o => o !== p).map(o => `<a href="${hrefPredmeta(o)}">${o.emoji} ${esc(o.kratko || o.ime)}</a>`).join('')}</div>` : ''}
       <nav class="tabs" aria-label="Zavihki">
         <a href="#/p/${p.id}" class="${zavihek === 'domov' ? 'active' : ''}">Domov</a>
@@ -853,23 +923,23 @@ function okvirPredmeta(p, zavihek, vsebina, stranska, zadnjaDrobtina) {
 function stranPredmet(p) {
   shrani('sola_zadnji', p.id);
   const seznam = gradivaZa(p.id);
-  const zadnje = seznam[0];
+  const zadnje = seznam.find(g => !skrito(g));
   let vsebina = '';
   if (napaka) {
     vsebina = `<div class="empty"><img src="brihta.png" alt=""><strong>Ups!</strong>Gradiv trenutno ni mogoče naložiti. Osveži stran.</div>`;
-  } else if (!zadnje) {
+  } else if (!seznam.length) {
     vsebina = `<div class="empty"><img src="brihta.png" alt=""><strong>Tukaj je še prazno</strong>Ko učitelj objavi gradivo, se pokaže tukaj.</div>`;
   } else {
-    const jeUra = zadnje.vrsta === 'ura';
-    const gumb = zadnje.vrsta === 'kviz' ? (MOJE[zadnje.id] ? 'Poglej rezultat' : 'Reši kviz')
+    const jeUra = zadnje && zadnje.vrsta === 'ura';
+    const gumb = !zadnje ? '' : zadnje.vrsta === 'kviz' ? (MOJE[zadnje.id] ? 'Poglej rezultat' : 'Reši kviz')
       : jeUra ? (videniKoraki(zadnje).length ? 'Nadaljuj uro' : 'Začni uro') : 'Odpri';
-    vsebina = `<section class="today" aria-label="Zadnje gradivo">
+    vsebina = (!zadnje ? '' : `<section class="today" aria-label="Zadnje gradivo">
         <span class="label">${jeDanes(zadnje.datum) ? '⭐ Danes na uri' : jeUra ? 'Zadnja ura' : 'Zadnje objavljeno'}</span>
         ${tile(zadnje.vrsta)}
         <div class="txt"><h2>${esc(zadnje.ime)}</h2><p>${IMENA_VRST[zadnje.vrsta] || 'Datoteka'} · ${kdaj(zadnje.datum)}</p></div>
         <a class="btn btn-go btn-big" href="${jeUra ? hrefKoraka(p, zadnje, naslednjiKorak(zadnje)) : hrefGradiva(p, zadnje)}">${gumb} ${SVG.next}</a>
         ${jeUra ? `<ol class="steps mini">${zadnje.koraki.map((k, i) => korakPika(p, zadnje, k, i, -1)).join('')}</ol>` : ''}
-      </section>` +
+      </section>`) +
       poTednih(seznam).map(t => `<section class="week${t.odprt ? '' : ' closed'}">
         <button class="week-h" type="button" aria-expanded="${t.odprt}"><h3>${esc(t.ime)}</h3><small class="note" style="margin:0">${esc(t.pod)}</small><span class="count">${t.gradiva.length}</span><span class="chev">${SVG.chev}</span></button>
         <ul class="items">${t.gradiva.map(g => vrsticaGradiva(p, g)).join('')}</ul>
@@ -885,7 +955,7 @@ function stranPredmet(p) {
 function stranDatoteke(p) {
   const seznam = gradivaZa(p.id);
   const vsebina = seznam.length ? `<table class="ftable"><thead><tr><th>Ime</th><th>Objavljeno</th><th class="hide-m">Vrsta</th><th class="hide-m">Velikost</th></tr></thead><tbody>
-      ${seznam.map(g => `<tr><td class="n"><a href="${hrefGradiva(p, g)}">${tile(g.vrsta, 'xs')}${esc(g.ime)}</a></td>
+      ${seznam.map(g => `<tr><td class="n"><a href="${hrefGradiva(p, g)}">${tile(g.vrsta, 'xs')}${esc(g.ime)}${ucitelj && skrito(g) ? ' <span class="tag hid">Skrito</span>' : ''}</a></td>
         <td class="m">${kdaj(g.datum)}</td><td class="m hide-m">${IMENA_VRST[g.vrsta] || ''}</td><td class="m hide-m">${velikost(g.velikost)}</td></tr>`).join('')}
     </tbody></table>` : `<div class="empty"><img src="brihta.png" alt=""><strong>Tukaj je še prazno</strong>Ko učitelj objavi gradivo, se pokaže tukaj.</div>`;
   okvirPredmeta(p, 'datoteke', vsebina, null, 'Vsa gradiva');
@@ -906,7 +976,8 @@ function stranGradivo(p, k, korak) {
       <a class="btn" href="#/p/${p.id}" aria-label="Nazaj">${SVG.prev}</a>
       ${tile(g.vrsta, 'sm')}
       <h1>${esc(g.ime)}</h1>
-      ${gumbiOgleda(g)}
+      ${gumbObjave(g)}${ucitelj && g.dodano ? `<button class="btn" type="button" id="v-izbrisi" title="Izbriši naloženo datoteko">🗑 <span class="lbl">Izbriši</span></button>` : ''}
+      ${gumbiOgleda(g, g.imeDatoteke)}
     </div>
     <div class="frame" id="frame">${notri}</div>
     ${opomba ? `<p class="note">${opomba}</p>` : ''}
@@ -916,6 +987,86 @@ function stranGradivo(p, k, korak) {
     </div>`;
   okvirPredmeta(p, 'gradivo', vsebina, null, g.ime);
   poveziCelZaslon(url);
+  const izb = document.getElementById('v-izbrisi');
+  if (izb) izb.addEventListener('click', async () => {
+    if (!confirm(`Izbrišem »${g.ime}«? Datoteka bo odstranjena s strani za vedno.`)) return;
+    izb.disabled = true;
+    const pot = await rpc('sola_gradivo_izbrisi', { p_seja: ucitelj.seja, p_id: g.dodano });
+    if (typeof pot !== 'string') { izb.disabled = false; alert('Brisanje ni uspelo. Se moraš znova prijaviti?'); return; }
+    try {
+      await fetch(`${SUPABASE.url}/storage/v1/object/${SHRAMBA}/${potShrambe(pot)}`,
+        { method: 'DELETE', headers: { apikey: SUPABASE.key, Authorization: `Bearer ${SUPABASE.key}` } });
+    } catch (e) {}
+    await naloziObjave();
+    location.hash = `#/p/${p.id}`;
+  });
+}
+
+/* ─── Učitelj: naloži datoteko (PDF, Word, JPG, PNG) ─── */
+const NALAGANJE = {
+  pdf: ['pdf', 'application/pdf'], doc: ['word', 'application/msword'],
+  docx: ['word', 'application/vnd.openxmlformats-officedocument.wordprocessingml.document'],
+  jpg: ['slika', 'image/jpeg'], jpeg: ['slika', 'image/jpeg'], png: ['slika', 'image/png'],
+};
+const NAJVEC_MB = 25;
+function stranNalozi(p) {
+  if (!ucitelj) { location.replace(`#/p/${p.id}`); odpriPredal('racun'); return; }
+  const d = new Date(), danes = `${d.getFullYear()}-${String(d.getMonth() + 1).padStart(2, '0')}-${String(d.getDate()).padStart(2, '0')}`;
+  okvirPredmeta(p, 'urejevalnik', `
+    <div class="vhead"><a class="btn" href="#/p/${p.id}" aria-label="Nazaj">${SVG.prev}</a>${tile('datoteka', 'sm')}<h1>Naloži gradivo</h1></div>
+    <form class="upl" id="up-form" novalidate>
+      <div class="field"><label class="drop" id="up-drop">
+        <input type="file" id="up-file" accept=".pdf,.doc,.docx,.jpg,.jpeg,.png,application/pdf,image/jpeg,image/png">
+        <span id="up-ime">📄 Izberi ali sem povleci datoteko<br><small class="note">PDF, Word, JPG ali PNG, do ${NAJVEC_MB} MB</small></span>
+      </label></div>
+      <div class="field"><label for="up-naslov">Naslov, ki ga vidijo učenci</label><input type="text" id="up-naslov" maxlength="200" autocomplete="off"></div>
+      <div class="field"><label for="up-datum">Datum (teden, v katerem se pokaže)</label><input type="date" id="up-datum" value="${danes}"></div>
+      <label class="chk"><input type="checkbox" id="up-objavi" checked> Učenci ga vidijo takoj</label>
+      <div class="ed-actions"><span class="msg" id="up-msg"></span>
+        <button class="btn btn-go btn-big" type="submit" id="up-ok">Naloži ⬆</button></div>
+    </form>`, null, 'Naloži gradivo');
+  const $f = document.getElementById('up-file'), $drop = document.getElementById('up-drop'), $n = document.getElementById('up-naslov'),
+        $msg = document.getElementById('up-msg'), $ok = document.getElementById('up-ok');
+  let datoteka = null;
+  const izberi = f => {
+    if (!f) return;
+    const k = (f.name.split('.').pop() || '').toLowerCase();
+    if (!NALAGANJE[k]) { $msg.textContent = 'Naložiš lahko samo PDF, Word (.doc, .docx), JPG ali PNG.'; return; }
+    if (f.size > NAJVEC_MB * 1048576) { $msg.textContent = `Datoteka je prevelika (največ ${NAJVEC_MB} MB).`; return; }
+    datoteka = f; $msg.textContent = '';
+    $drop.classList.add('ima');
+    document.getElementById('up-ime').innerHTML = `✅ <b>${esc(f.name)}</b> <small class="note">(${velikost(f.size)})</small>`;
+    if (!$n.value.trim()) $n.value = f.name.replace(/\.[^.]+$/, '').replace(/_/g, ' ');
+  };
+  $f.addEventListener('change', () => izberi($f.files[0]));
+  $drop.addEventListener('dragover', e => { e.preventDefault(); $drop.classList.add('ima'); });
+  $drop.addEventListener('dragleave', () => { if (!datoteka) $drop.classList.remove('ima'); });
+  $drop.addEventListener('drop', e => { e.preventDefault(); izberi(e.dataTransfer.files[0]); });
+  document.getElementById('up-form').addEventListener('submit', async e => {
+    e.preventDefault();
+    if (!datoteka) { $msg.textContent = 'Najprej izberi datoteko.'; return; }
+    if (!$n.value.trim()) { $msg.textContent = 'Vpiši naslov.'; $n.focus(); return; }
+    const k = datoteka.name.split('.').pop().toLowerCase(), [vrsta, mime] = NALAGANJE[k];
+    const dan = document.getElementById('up-datum').value || danes;
+    $ok.disabled = true; $ok.textContent = 'Nalagam …'; $msg.textContent = '';
+    const konec = t => { $ok.disabled = false; $ok.textContent = 'Naloži ⬆'; $msg.textContent = t; };
+    const pot = await rpc('sola_nalaganje_zacni', { p_seja: ucitelj.seja, p_predmet: p.id, p_koncnica: k });
+    if (typeof pot !== 'string') return konec(pot === NEDOSEGLJIVO ? 'Strežnik ni dosegljiv.' : 'Nalaganje ni dovoljeno. Se moraš znova prijaviti? (Ali pa v Supabase še ni zagnan supabase_gradiva.sql.)');
+    let r;
+    try {
+      r = await fetch(`${SUPABASE.url}/storage/v1/object/${SHRAMBA}/${potShrambe(pot)}`, {
+        method: 'POST', body: datoteka,
+        headers: { apikey: SUPABASE.key, Authorization: `Bearer ${SUPABASE.key}`, 'Content-Type': mime, 'x-upsert': 'false', 'cache-control': '3600' },
+      });
+    } catch (err) { return konec('Povezava se je prekinila. Poskusi znova.'); }
+    if (!r.ok) { let t = ''; try { t = (await r.json()).message || ''; } catch (err) {} return konec(`Shramba je zavrnila datoteko (${r.status}${t ? ': ' + t : ''}).`); }
+    const id = await rpc('sola_gradivo_dodaj', { p_seja: ucitelj.seja, p_pot: pot, p_naslov: $n.value.trim(), p_vrsta: vrsta,
+      p_ime_datoteke: datoteka.name, p_velikost: datoteka.size, p_datum: new Date(`${dan}T08:00:00`).toISOString(),
+      p_objavljeno: document.getElementById('up-objavi').checked });
+    if (typeof id !== 'string') return konec('Datoteka je naložena, a je ni bilo mogoče dodati med gradiva. Poskusi znova.');
+    await naloziObjave();
+    location.hash = `#/p/${p.id}`;
+  });
 }
 
 /* Ime prenesene datoteke pri koraku ure: »6. ura Razgradnja in vzorci - Zapis.pdf«. */
@@ -1583,7 +1734,7 @@ function izrisiRacun(pogled) {
     $b.innerHTML = `<div class="who"><span class="big">${ucitelj ? '👨‍🏫' : esc(ucenec.emoji || '🦉')}</span>
         <div><strong>${esc(ucitelj ? ucitelj.username : (ucenec.display_name || ucenec.username))}</strong>
         <small>${ucitelj ? 'Učitelj' : 'Uporabniško ime: ' + esc(ucenec.username)}</small></div></div>
-      ${ucenec ? `<p class="note">Rešenih kvizov: <b>${oddanih}</b></p>` : '<p class="note">Pri vsakem predmetu imaš gumb <b>＋ Nov kviz</b>. Ko odpreš kviz, vidiš rezultate učencev. Prijava velja 12 ur.</p>'}
+      ${ucenec ? `<p class="note">Rešenih kvizov: <b>${oddanih}</b></p>` : '<p class="note">Pri vsakem predmetu imaš gumba <b>⬆ Naloži</b> (PDF, Word, JPG, PNG) in <b>＋ Nov kviz</b>. Ob vsakem gradivu je stikalo <b>👁 Objavljeno / 🙈 Skrito</b>. Ko odpreš kviz, vidiš rezultate učencev. Prijava velja 12 ur.</p>'}
       <button class="btn btn-block" type="button" id="a-odjava">Odjava</button>
       <p class="note" style="text-align:center">Isti račun velja tudi za Brihta-MAT.</p>`;
     document.getElementById('a-odjava').addEventListener('click', () => { if (ucitelj) rpc('sola_ucitelj_odjava', { p_seja: ucitelj.seja }); ucenec = null; ucitelj = null; MOJE = {}; poPrijavi(); });
@@ -1730,6 +1881,7 @@ function usmeri() {
     if (!p || p.otroci) return stranNadzorna();
     if (deli[2] === 'datoteke') return stranDatoteke(p);
     if (deli[2] === 'nov-kviz') return stranNovKviz(p);
+    if (deli[2] === 'nalozi') return stranNalozi(p);
     if (deli[2] === 'uredi' && deli[3]) return stranNovKviz(p, decodeURIComponent(deli.slice(3).join('/')));
     if (deli[2]) return stranGradivo(p, decodeURIComponent(deli[2]), deli[3]);
     return stranPredmet(p);
@@ -1744,9 +1896,9 @@ window.addEventListener('hashchange', usmeri);
 /* Ko se zavihek spet pokaže, preveri nova gradiva (ne med ogledom gradiva). */
 document.addEventListener('visibilitychange', async () => {
   if (document.hidden) return;
-  const stanje = () => JSON.stringify([GRADIVA, KVIZI, MOJE]);
+  const stanje = () => JSON.stringify([GRADIVA, KVIZI, MOJE, STANJE, DODANA]);
   const prej = stanje();
-  await Promise.all([naloziGradiva(), naloziKvize(), naloziMoje()]);
+  await Promise.all([naloziGradiva(), naloziKvize(), naloziMoje(), naloziObjave()]);
   const ogled = /^#\/p\/[^/]+\/(?!datoteke$)./.test(location.hash);
   if (!ogled && stanje() !== prej) usmeri();
 });
@@ -1758,7 +1910,7 @@ const preveriUcitelja = async () => {
   const r = await rpc('sola_ucitelj_preveri', { p_seja: ucitelj.seja });
   if (r === false || r === null) { ucitelj = null; shraniRacun(); posodobiNav(); }
 };
-Promise.all([naloziGradiva(), naloziKvize(), naloziMoje(), preveriUcitelja()]).then(usmeri);
+Promise.all([naloziGradiva(), naloziKvize(), naloziMoje(), naloziObjave(), preveriUcitelja()]).then(usmeri);
 if (new URLSearchParams(location.search).has('prijava')) odpriPredal('racun');
 </script>
 </body>

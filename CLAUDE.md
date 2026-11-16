@@ -127,6 +127,10 @@ Nino reče npr. »Spelling, teden 2«. Takrat:
    (v mapi stopnje, stolpec »Narek«). Zapiši ga v `gradiva/fleksi-spelling/<isti datum> Week <N> Dictation.html`
    po vzoru `2026-11-16 Week 1 Dictation.html` (stavek velik, besede tedna obarvane). Viden je vsem, tudi učencem
    (Nino se je tako odločil).
+   Tedni 2 do 11 (do 1. 2. 2027) so že naloženi vnaprej. Gradivo z datumom v prihodnosti je na strani
+   samodejno skrito, dokler ga Nino ne objavi (stikalo 👁/🙈, ko je prijavljen kot učitelj) ali ne pride
+   tisti ponedeljek ob 8.00. Ko Nino reče »Spelling, teden N« za že naložen teden, preveri, da sta list in
+   narek tam, in mu povej, da se pokažeta v ponedeljek ali ob kliku na stikalo.
 4. `python3 scripts/gradiva.py`, nato commit in push na `main`.
 5. Ninu povej naslov in da je čez 1 do 2 minuti na strani (Fleksi › Angleščina › Spelling).
 

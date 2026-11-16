@@ -62,6 +62,24 @@ Podprto: PDF, slike (PNG, JPG …), Word, PowerPoint, Excel, HTML, video, zvok,
 povezave. PDF, slike in HTML se odprejo kar na strani; Word in PowerPoint
 prikaže Microsoftov pregledovalnik.
 
+## Učitelj na strani: objava, skrivanje, nalaganje
+
+Ko je učitelj prijavljen (»Prijava za učitelje«):
+
+- **Stikalo ob vsakem gradivu** (👁 Objavljeno / 🙈 Skrito). Skritega gradiva
+  učenci ne vidijo; učitelj ga vidi črtkano.
+- **Gradivo z datumom v prihodnosti je samo skrito**, dokler ga učitelj ne objavi
+  ali ne pride tisti dan (ob 8.00). Tako lahko gradiva za naslednje tedne
+  naložiš vnaprej.
+- **⬆ Naloži** pri vsakem predmetu: PDF, Word (.doc, .docx), JPG ali PNG, do
+  25 MB. Izbereš naslov, datum in ali ga učenci vidijo takoj. Naložene datoteke
+  so v Supabase shrambi (ne v repozitoriju); učitelj jih lahko izbriše
+  (🗑 pri ogledu).
+
+Za to mora biti v Supabase enkrat zagnan `supabase_gradiva.sql`. Pozor: skrivanje
+datoteko samo umakne s strani. Datoteke v repozitoriju so na GitHubu javne,
+naložene pa dosegljive vsakomur, ki pozna njihov (naključen) naslov.
+
 ## Prijava in kvizi
 
 Učenci se prijavijo z **istim računom kot v Brihta-MAT** (uporabniško ime +
@@ -77,7 +95,8 @@ Gradiva so dostopna brez prijave. Prijava je potrebna samo za kvize.
 V Supabase → SQL Editor zaženi:
 1. `supabase_kvizi.sql` (tabele in funkcije),
 2. `supabase_kvizi_ucitelj.sql` (učiteljske seje, objava s strani),
-3. `~/.config/brihta-sola/NASTAVI_SKRIVNOST.sql` — samo ob novi skrivnosti za skripto.
+3. `~/.config/brihta-sola/NASTAVI_SKRIVNOST.sql` — samo ob novi skrivnosti za skripto,
+4. `supabase_gradiva.sql` (objava/skrivanje gradiv in nalaganje datotek).
 
 ### Kako objavim kviz (na strani)
 
