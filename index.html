@@ -38,9 +38,9 @@
        Safari na iPadih obdrži svoje emojije. */
     @font-face {
       font-family: 'Brihta Emoji';
-      src: url('pisave/brihta-emoji.woff2?v=b0db2541') format('woff2') tech(color-COLRv1);
+      src: url('pisave/brihta-emoji.woff2?v=ab8d41cf') format('woff2') tech(color-COLRv1);
       font-display: swap;
-      unicode-range: U+200D, U+26A0-26A1, U+26BD, U+2705, U+270D, U+270F, U+2728, U+2B50, U+1F1E7, U+1F1EC, U+1F308, U+1F31F, U+1F355, U+1F389, U+1F3A8, U+1F3AE-1F3AF, U+1F3C6, U+1F3EB, U+1F409-1F40A, U+1F40C, U+1F418-1F419, U+1F41D, U+1F422, U+1F427, U+1F42C, U+1F431, U+1F436, U+1F438, U+1F441, U+1F44B, U+1F44D, U+1F464, U+1F468, U+1F4A1, U+1F4AA, U+1F4BB, U+1F4BE, U+1F4C4, U+1F4CA, U+1F4CC, U+1F4D6, U+1F501, U+1F512, U+1F522, U+1F5B1, U+1F5D1, U+1F5FA, U+1F648, U+1F64B, U+1F680, U+1F6A2, U+1F916, U+1F938, U+1F981, U+1F984, U+1F989-1F98B, U+1F992, U+1F996, U+1F9AB, U+1F9D1, U+1F9E9;
+      unicode-range: U+200D, U+26A0-26A1, U+26BD, U+2705, U+270D, U+270F, U+2728, U+1F1E7, U+1F1EC, U+1F308, U+1F31F, U+1F355, U+1F389, U+1F3A8, U+1F3AE-1F3AF, U+1F3C6, U+1F3EB, U+1F409-1F40A, U+1F40C, U+1F418-1F419, U+1F41D, U+1F422, U+1F427, U+1F42C, U+1F431, U+1F436, U+1F438, U+1F441, U+1F44B, U+1F44D, U+1F464-1F465, U+1F468, U+1F4A1, U+1F4AA, U+1F4BB, U+1F4BE, U+1F4C1, U+1F4C4, U+1F4CA, U+1F4CC, U+1F4D6, U+1F501, U+1F511-1F512, U+1F522, U+1F5B1, U+1F5D1, U+1F5FA, U+1F648, U+1F64B, U+1F680, U+1F6A2, U+1F916, U+1F938, U+1F981, U+1F984, U+1F989-1F98B, U+1F992, U+1F996, U+1F9AB, U+1F9D1, U+1F9E9;
     }
     /* emoji-pisava:konec */
     html, body { margin: 0; }
@@ -551,6 +551,31 @@
     .emojis button { font-size: 20px; padding: 4px 0; }
     .emojis button.on { border-color: var(--accent); background: #f3efff; }
     .animals-row { display: flex; justify-content: space-between; align-items: center; font-size: .88rem; color: var(--muted); font-weight: 700; margin-top: 6px; }
+    /* Računi učencev (učitelj; supabase_racuni_ucencev.sql) */
+    .ru { max-width: 900px; margin: 0 auto; }
+    .ru-head { display: flex; align-items: center; gap: 14px; margin: 6px 0 18px; flex-wrap: wrap; }
+    .ru-head h1 { font-size: 1.9rem; margin-right: auto; }
+    .ru-bar { display: flex; gap: 10px; flex-wrap: wrap; margin-bottom: 14px; }
+    .ru-bar input, .ru-bar select, .ru-row select { font: inherit; font-weight: 700; padding: 10px 12px; border: 2px solid var(--line); border-radius: var(--r-md); background: #fffdf9; color: var(--ink); }
+    .ru-bar input { flex: 1 1 220px; min-width: 0; }
+    .ru-bar input:focus, .ru-bar select:focus, .ru-row select:focus { outline: none; border-color: var(--accent); }
+    .ru-list { list-style: none; margin: 0; padding: 0; background: var(--surface); border-radius: var(--r-xl); box-shadow: var(--shadow); overflow: hidden; }
+    .ru-row { border-top: 1px solid var(--line); padding: 10px 16px; }
+    .ru-row:first-child { border-top: 0; }
+    .ru-main { display: flex; align-items: center; gap: 12px; flex-wrap: wrap; }
+    .ru-em { font-size: 26px; width: 34px; text-align: center; flex-shrink: 0; }
+    .ru-nm { flex: 1 1 160px; min-width: 0; }
+    .ru-nm b { display: block; overflow: hidden; text-overflow: ellipsis; white-space: nowrap; }
+    .ru-nm small { color: var(--muted); font-weight: 700; }
+    .ru-row select { padding: 7px 10px; cursor: pointer; }
+    .ru-ok { color: var(--good); font-weight: 800; font-size: .9rem; min-width: 1.2em; }
+    .ru-ok.napaka { color: var(--bad); }
+    .ru-row .btn { height: 40px; padding: 0 14px; font-size: .92rem; }
+    .ru-geslo { margin: 12px 0 4px 46px; max-width: 380px; }
+    .ru-geslo .vrstica { display: flex; gap: 8px; margin-top: 10px; }
+    .ru-novo { font-size: 2rem; letter-spacing: .15em; background: #f3efff; border-radius: var(--r-md); padding: 8px 12px; text-align: center; margin: 6px 0 8px; }
+    .ru-vec { text-align: center; padding: 12px; color: var(--muted); font-weight: 700; }
+    @media (max-width: 560px) { .ru-geslo { margin-left: 0; } }
     .reg-user { font-family: var(--head); font-size: 2rem; font-weight: 900; background: #f3efff; border-radius: var(--r-md); padding: 10px 12px; text-align: center; margin: 8px 0 12px; color: var(--accent-ink); }
 
     /* ─── Responsive ─── */
@@ -1951,6 +1976,120 @@ async function stranNovKviz(p, urejamId) {
   });
 }
 
+/* ─── Računi učencev (samo učitelj; supabase_racuni_ucencev.sql) ───────────
+   Isti računi kot v Brihta-MAT: premik v razred in novo geslo (4 živali). */
+const RAZREDI = ['1A','1B','2A','3A','4A','4B','5A','5B','6A','6B','7A','7B','8A','8B','8C','9A'];
+const OBISK = 'OBISK';
+const imeRazreda = r => r === OBISK ? 'Obiskovalec' : r || 'Brez razreda';
+async function stranRacuni() {
+  drobtine([['Domov', '#/'], ['Računi učencev']]);
+  if (!ucitelj) {
+    $main.innerHTML = `<div class="ru"><div class="empty"><strong>Samo za učitelje</strong>Prijavi se kot učitelj (👤 zgoraj desno).</div></div>`;
+    return;
+  }
+  $main.innerHTML = `<div class="ru"><div class="empty">Nalagam račune …</div></div>`;
+  const r = await rpc('sola_ucenci_seznam', { p_seja: ucitelj.seja });
+  if (location.hash.replace(/^#\/?/, '') !== 'racuni') return;
+  if (!Array.isArray(r)) {
+    $main.innerHTML = `<div class="ru"><div class="empty"><strong>Računov ni bilo mogoče naložiti</strong>${r === NEDOSEGLJIVO
+      ? 'Strežnik ni dosegljiv.' : 'Se moraš znova prijaviti? (Ali pa v Supabase še ni zagnan supabase_racuni_ucencev.sql.)'}</div></div>`;
+    return;
+  }
+  if (r.length === 0) {
+    $main.innerHTML = `<div class="ru"><div class="empty"><strong>Ni računov</strong>Ali pa je prijava potekla: odjavi se in se prijavi znova.</div></div>`;
+    return;
+  }
+  const UCENCI = r;
+  const shranjen = preberi('sola_ru_razred') || '';
+  const moznosti = (izbran, prazna) => (prazna ? `<option value="">${prazna}</option>` : '')
+    + RAZREDI.map(x => `<option value="${x}"${x === izbran ? ' selected' : ''}>${x}</option>`).join('')
+    + `<option value="${OBISK}"${izbran === OBISK ? ' selected' : ''}>Obiskovalec</option>`;
+  $main.innerHTML = `<div class="ru">
+    <div class="ru-head"><h1>👥 Računi učencev</h1><small class="note">${UCENCI.length} računov · isti kot v Brihta-MAT</small></div>
+    <div class="ru-bar">
+      <input id="ru-isci" type="search" placeholder="Išči po imenu ali uporabniškem imenu" autocomplete="off" spellcheck="false">
+      <select id="ru-filter" aria-label="Razred">
+        <option value="">Vsi razredi</option>
+        ${RAZREDI.map(x => `<option value="${x}"${x === shranjen ? ' selected' : ''}>${x}</option>`).join('')}
+        <option value="${OBISK}"${shranjen === OBISK ? ' selected' : ''}>Obiskovalci</option>
+        <option value="-"${shranjen === '-' ? ' selected' : ''}>Brez razreda</option>
+      </select>
+    </div>
+    <p class="note" style="margin:0 0 12px">Razred se shrani takoj, ko ga izbereš. Pri <b>🔑 Novo geslo</b> izbereš 4 živali in jih poveš učencu.</p>
+    <ul class="ru-list" id="ru-list"></ul></div>`;
+  const $isci = document.getElementById('ru-isci'), $filter = document.getElementById('ru-filter'), $list = document.getElementById('ru-list');
+  const MEJA = 150;
+  function izris() {
+    const q = $isci.value.trim().toLowerCase(), f = $filter.value;
+    const vsi = UCENCI.filter(u => (!f || (f === '-' ? !u.razred : u.razred === f))
+      && (!q || String(u.username).toLowerCase().includes(q) || String(u.display_name || '').toLowerCase().includes(q)))
+      .sort((a, b) => String(a.display_name || a.username).localeCompare(String(b.display_name || b.username), 'sl'));
+    $list.innerHTML = vsi.length ? vsi.slice(0, MEJA).map(u => `<li class="ru-row" data-u="${esc(u.username)}">
+        <div class="ru-main">
+          <span class="ru-em" aria-hidden="true">${esc(u.emoji || '🦉')}</span>
+          <span class="ru-nm"><b>${esc(u.display_name || u.username)}</b><small>${esc(u.username)}</small></span>
+          <select data-razred aria-label="Razred za ${esc(u.username)}">${moznosti(u.razred, u.razred ? '' : 'Brez razreda')}</select>
+          <span class="ru-ok" data-ok></span>
+          <button class="btn" type="button" data-geslo>🔑 Novo geslo</button>
+        </div></li>`).join('')
+      + (vsi.length > MEJA ? `<li class="ru-vec">Prikazanih je prvih ${MEJA} od ${vsi.length}. Izberi razred ali poišči ime.</li>` : '')
+      : '<li class="ru-vec">Ni takih računov.</li>';
+  }
+  $isci.addEventListener('input', izris);
+  $filter.addEventListener('change', () => { try { localStorage.setItem('sola_ru_razred', $filter.value); } catch (e) {} izris(); });
+  const najdiU = el => UCENCI.find(u => u.username === el.closest('[data-u]').dataset.u);
+  $list.addEventListener('change', async e => {
+    const sel = e.target.closest('[data-razred]'); if (!sel) return;
+    const u = najdiU(sel), ok = sel.parentNode.querySelector('[data-ok]'), nov = sel.value;
+    if (!nov || nov === u.razred) return;
+    sel.disabled = true; ok.className = 'ru-ok'; ok.textContent = '…';
+    const res = await rpc('sola_ucenec_razred', { p_seja: ucitelj.seja, p_username: u.username, p_razred: nov });
+    sel.disabled = false;
+    if (res === 'OK') {
+      u.razred = nov; ok.textContent = `✓ ${imeRazreda(nov)}`;
+      const prazna = sel.querySelector('option[value=""]'); if (prazna) prazna.remove();
+      return;
+    }
+    sel.value = u.razred || '';
+    ok.className = 'ru-ok napaka';
+    ok.textContent = res === NEDOSEGLJIVO ? 'Strežnik ni dosegljiv.' : res === 'NI_UCENCA' ? 'Tega računa ni več.'
+      : res === 'SLAB_RAZRED' ? 'Neveljaven razred.' : 'Ni shranjeno. Prijavi se znova.';
+  });
+  $list.addEventListener('click', e => {
+    const b = e.target.closest('[data-geslo]'); if (!b) return;
+    const li = b.closest('.ru-row'), u = najdiU(b);
+    const odprt = li.querySelector('.ru-geslo');
+    $list.querySelectorAll('.ru-geslo').forEach(x => x.remove());
+    if (odprt) return;
+    const box = document.createElement('div');
+    box.className = 'ru-geslo';
+    box.innerHTML = `<div class="field" style="margin:0"><label>Novo geslo za ${esc(u.display_name || u.username)}: izberi 4 živali</label><div data-zivali></div></div>
+      <div class="vrstica"><button class="btn btn-go" type="button" data-potrdi>Ponastavi geslo ✓</button><button class="btn" type="button" data-preklici>Prekliči</button></div>
+      <div class="msg" data-msg></div>`;
+    const z = izbiraZivali(); box.querySelector('[data-zivali]').appendChild(z.el);
+    li.appendChild(box);
+    box.querySelector('[data-preklici]').addEventListener('click', () => box.remove());
+    box.querySelector('[data-potrdi]').addEventListener('click', async ev => {
+      const msg = box.querySelector('[data-msg]'), pin = z.geslo();
+      if (!pin) return void (msg.textContent = 'Izberi vse 4 živali.');
+      const btn = ev.currentTarget; btn.disabled = true; btn.textContent = 'Ponastavljam …';
+      const res = await rpc('sola_ucenec_geslo', { p_seja: ucitelj.seja, p_username: u.username, p_pin: pin });
+      if (res === 'OK') {
+        box.innerHTML = `<div class="help" style="margin:0">✅ Geslo za <b>${esc(u.username)}</b> je ponastavljeno. Povej učencu:
+          <div class="ru-novo">${pin.split(',').map(i => ZIVALI[+i]).join(' ')}</div>
+          <button class="btn" type="button" data-zapri>Zapri</button></div>`;
+        box.querySelector('[data-zapri]').addEventListener('click', () => box.remove());
+        return;
+      }
+      btn.disabled = false; btn.textContent = 'Ponastavi geslo ✓';
+      msg.textContent = res === NEDOSEGLJIVO ? 'Strežnik ni dosegljiv.' : res === 'NI_UCENCA' ? 'Tega računa ni več.'
+        : res === 'SLABO_GESLO' ? 'Izberi 4 živali.' : 'Ni uspelo. Prijavi se znova.';
+    });
+  });
+  izris();
+  $isci.focus();
+}
+
 /* ─── Račun: prijava, nov račun, učitelj ─── */
 function izbiraZivali() {
   const el = document.createElement('div');
@@ -1996,8 +2135,11 @@ function izrisiRacun(pogled) {
         <div><strong>${esc(ucitelj ? ucitelj.username : (ucenec.display_name || ucenec.username))}</strong>
         <small>${ucitelj ? 'Učitelj' : 'Uporabniško ime: ' + esc(ucenec.username)}</small></div></div>
       ${ucenec ? `<p class="note">Rešenih kvizov: <b>${oddanih}</b></p>` : '<p class="note">Pri vsakem predmetu imaš gumba <b>⬆ Naloži</b> (PDF, Word, JPG, PNG) in <b>＋ Nov kviz</b>. Ob vsakem gradivu je stikalo <b>👁 Objavljeno / 🙈 Skrito</b>. Ko odpreš kviz, vidiš rezultate učencev. Prijava velja 12 ur.</p>'}
+      ${ucitelj ? '<a class="btn btn-go btn-block" href="#/racuni" id="a-racuni" style="margin-bottom:10px">👥 Računi učencev</a>' : ''}
       <button class="btn btn-block" type="button" id="a-odjava">Odjava</button>
       <p class="note" style="text-align:center">Isti račun velja tudi za Brihta-MAT.</p>`;
+    const $ru = document.getElementById('a-racuni');
+    if ($ru) $ru.addEventListener('click', () => odpriPredal(null));
     document.getElementById('a-odjava').addEventListener('click', () => { if (ucitelj) rpc('sola_ucitelj_odjava', { p_seja: ucitelj.seja }); ucenec = null; ucitelj = null; MOJE = {}; poPrijavi(); });
     return;
   }
@@ -2147,6 +2289,7 @@ function usmeri() {
     if (deli[2]) return stranGradivo(p, decodeURIComponent(deli[2]), deli[3]);
     return stranPredmet(p);
   }
+  if (deli[0] === 'racuni') return stranRacuni();
   const p = deli[0] && najdi(deli[0]);
   if (p && p.otroci) return stranSkupina(p);
   if (p) { location.replace(`#/p/${p.id}`); return; }
