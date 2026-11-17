@@ -49,6 +49,12 @@
   .btn-sun { border: 0; color: #4a2b00; background: linear-gradient(135deg, #ffd166, #ffb020); }
   .btn-bad { border-color: #fecdd3; color: var(--bad); }
   .btn-sm { min-height: 34px; padding: 0 12px; font-size: .9rem; }
+  /* Video navodila (gumb v glavi, okno z videom) */
+  .hero .btn-video { margin-top: 14px; background: rgba(255,255,255,.95); color: #075985; border: 0; }
+  dialog.video { width: min(1100px, 94vw, 140vh); padding: 0; border: 0; border-radius: 18px; background: #000; }
+  dialog.video::backdrop { background: rgba(8,15,25,.75); }
+  dialog.video video { display: block; width: 100%; aspect-ratio: 16/10; background: #000; }
+  dialog.video .zapri { position: absolute; top: 8px; right: 8px; z-index: 1; }
   .row { display: flex; gap: 10px; flex-wrap: wrap; align-items: center; }
 
   .cards { display: grid; grid-template-columns: repeat(auto-fill, minmax(290px, 1fr)); gap: 18px; }
@@ -218,6 +224,7 @@
   <p class="racun-op">Isti račun velja za vso Brihto.</p>
 </div>
 <div id="tisk"></div>
+<dialog class="video" id="video-okno" aria-label="Video: kako začnem"><button class="btn btn-sm zapri" type="button" data-video-zapri>✕ Zapri</button><video controls playsinline preload="none" src="navodila.mp4"></video></dialog>
 
 <script src="quill-2.0.3/quill.js"></script>
 <script>
@@ -594,7 +601,7 @@ function zapustiUrejevalnik() { if (aktivni) { aktivni.unici(); aktivni = null; 
 async function ucenecDomov() {
   const r = await rpc('sola_pis_moji', { p_student: ucenec.id });
   if (r === NEDOSEGLJIVO || !Array.isArray(r)) return napaka(NI_POVEZAVE);
-  $main.innerHTML = `<section class="hero"><h1>✍️ Moja besedila</h1><p>Izberi projekt in piši. Besedilo se samo shranjuje.</p></section>
+  $main.innerHTML = `<section class="hero"><h1>✍️ Moja besedila</h1><p>Izberi projekt in piši. Besedilo se samo shranjuje.</p>${VIDEO_GUMB}</section>
     ${r.length ? `<div class="cards">${r.map(p => {
       const b = p.besedilo, z = p.naloge;
       return `<div class="card">
@@ -697,7 +704,7 @@ async function uciteljDomov() {
   SKRBNIK = Array.isArray(sk) ? sk : null;
   if (r === NEDOSEGLJIVO) return napaka(NI_POVEZAVE);
   if (!Array.isArray(r)) return napaka('Prijava je potekla. <a href="../?prijava=pisanje">Prijavi se znova</a>.');
-  $main.innerHTML = `<section class="hero"><h1>✍️ Moja besedila</h1><p>Projekti, besedila učencev, vrstniška presoja in izvoz v PDF.</p></section>
+  $main.innerHTML = `<section class="hero"><h1>✍️ Moja besedila</h1><p>Projekti, besedila učencev, vrstniška presoja in izvoz v PDF.</p>${VIDEO_GUMB}</section>
     ${skrbnikZavihki('moji')}
     ${ZA_UCENCE ? '' : '<div class="note warn">🔒 Stran je zaenkrat vidna samo učiteljem. Učenci je ne vidijo.</div>'}
     <div class="panel">
@@ -1036,8 +1043,16 @@ async function izvozi(p, ids, sKomentarjem, sPresojami) {
 }
 
 /* ═══════════════════ USMERJANJE ═══════════════════ */
+/* Video navodila za učence (navodila.mp4): gumb v glavi odpre okno z videom. */
+const VIDEO_GUMB = '<button class="btn btn-video" type="button" data-video>▶ Video: kako začnem</button>';
+document.addEventListener('click', e => {
+  const okno = document.getElementById('video-okno'), v = okno.querySelector('video');
+  if (e.target.closest('[data-video]')) { okno.showModal(); v.play().catch(() => {}); }
+  else if (e.target.closest('[data-video-zapri]') || e.target === okno) okno.close();
+});
+document.getElementById('video-okno').addEventListener('close', e => e.target.querySelector('video').pause());
 function prijavaPotrebna(besedilo) {
-  $main.innerHTML = `<section class="hero"><h1>✍️ Moja besedila</h1><p>${besedilo}</p></section>
+  $main.innerHTML = `<section class="hero"><h1>✍️ Moja besedila</h1><p>${besedilo}</p>${VIDEO_GUMB}</section>
     <div class="panel" style="text-align:center"><a class="btn btn-go" href="../?prijava=pisanje">Prijava na Brihti</a></div>`;
 }
 function usmeri() {

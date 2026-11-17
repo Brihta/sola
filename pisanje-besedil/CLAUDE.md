@@ -63,6 +63,10 @@ in morajo biti varni: majhni, preverjeni, takoj objavljeni.
   preklopljen na »Popravi sam«. Štirje že popravljeni teksti so bili vrnjeni učencem (oblikovanje izgubljeno).
 - Podrobna zgodovina: `git log -- pisanje-besedil supabase_pisanje.sql`.
 
+- Video navodila za učence (17. 11. 2026): `pisanje-besedil/navodila.mp4`, gumb »▶ Video: kako začnem« v glavi
+  (učenec, učitelj, stran pred prijavo) odpre `<dialog id="video-okno">`. Izdelava (posnetek zaslona z lažnim
+  strežnikom, snemalnica glasu, sestava s ffmpeg) je zunaj repozitorija v `~/Documents/Brihta-video/moja-besedila/`.
+
 ## Ideje za naprej
 - Skupno lastništvo projekta (dva učitelja); zdaj ima projekt samo enega lastnika.
 - Morda: učenec sam vidi gumb za vrnitev rezerve.
