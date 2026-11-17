@@ -38,7 +38,7 @@
        Safari na iPadih obdrži svoje emojije. */
     @font-face {
       font-family: 'Brihta Emoji';
-      src: url('pisave/brihta-emoji.woff2?v=ab8d41cf') format('woff2') tech(color-COLRv1);
+      src: url('pisave/brihta-emoji.woff2?v=cc1c414b') format('woff2') tech(color-COLRv1);
       font-display: swap;
       unicode-range: U+200D, U+26A0-26A1, U+26BD, U+2705, U+270D, U+270F, U+2728, U+1F1E7, U+1F1EC, U+1F308, U+1F31F, U+1F355, U+1F389, U+1F3A8, U+1F3AE-1F3AF, U+1F3C6, U+1F3EB, U+1F409-1F40A, U+1F40C, U+1F418-1F419, U+1F41D, U+1F422, U+1F427, U+1F42C, U+1F431, U+1F436, U+1F438, U+1F441, U+1F44B, U+1F44D, U+1F464-1F465, U+1F468, U+1F4A1, U+1F4AA, U+1F4BB, U+1F4BE, U+1F4C1, U+1F4C4, U+1F4CA, U+1F4CC, U+1F4D6, U+1F501, U+1F511-1F512, U+1F522, U+1F5B1, U+1F5D1, U+1F5FA, U+1F648, U+1F64B, U+1F680, U+1F6A2, U+1F916, U+1F938, U+1F981, U+1F984, U+1F989-1F98B, U+1F992, U+1F996, U+1F9AB, U+1F9D1, U+1F9E9;
     }
@@ -571,7 +571,11 @@
     .ru-ok { color: var(--good); font-weight: 800; font-size: .9rem; min-width: 1.2em; }
     .ru-ok.napaka { color: var(--bad); }
     .ru-row .btn { height: 40px; padding: 0 14px; font-size: .92rem; }
-    .ru-geslo { margin: 12px 0 4px 46px; max-width: 380px; }
+    .ru-geslo { margin: 12px 0 4px 46px; max-width: 420px; }
+    .ru-akcije { display: flex; gap: 8px; align-items: center; flex-wrap: wrap; margin-left: auto; }
+    .ru-row .ru-brisi { padding: 0 11px; }
+    .ru-row .ru-brisi:hover, .ru-brisi-go { border-color: var(--bad); }
+    .ru-brisi-go:not(:disabled) { background: var(--bad); color: #fff; }
     .ru-geslo .vrstica { display: flex; gap: 8px; margin-top: 10px; }
     .ru-novo { font-size: 2rem; letter-spacing: .15em; background: #f3efff; border-radius: var(--r-md); padding: 8px 12px; text-align: center; margin: 6px 0 8px; }
     .ru-vec { text-align: center; padding: 12px; color: var(--muted); font-weight: 700; }
@@ -1980,6 +1984,8 @@ async function stranNovKviz(p, urejamId) {
    Isti računi kot v Brihta-MAT: premik v razred in novo geslo (4 živali). */
 const RAZREDI = ['1A','1B','2A','3A','4A','4B','5A','5B','6A','6B','7A','7B','8A','8B','8C','9A'];
 const OBISK = 'OBISK';
+/* Enako kot v Brihta-MAT: prva črka velika, ostale male ("BRIN" → "Brin"). */
+const velikaZacetnica = ime => String(ime || '').trim().toLowerCase().replace(/(^|[\s-])(\p{L})/gu, (m, a, b) => a + b.toUpperCase());
 const imeRazreda = r => r === OBISK ? 'Obiskovalec' : r || 'Brez razreda';
 async function stranRacuni() {
   drobtine([['Domov', '#/'], ['Računi učencev']]);
@@ -2015,7 +2021,7 @@ async function stranRacuni() {
         <option value="-"${shranjen === '-' ? ' selected' : ''}>Brez razreda</option>
       </select>
     </div>
-    <p class="note" style="margin:0 0 12px">Razred se shrani takoj, ko ga izbereš. Pri <b>🔑 Novo geslo</b> izbereš 4 živali in jih poveš učencu.</p>
+    <p class="note" style="margin:0 0 12px">Razred se shrani takoj, ko ga izbereš. Pri <b>🔑 Geslo</b> izbereš 4 živali in jih poveš učencu. <b>✏️ Ime</b> spremeni prikazano ime, <b>🗑️</b> izbriše račun.</p>
     <ul class="ru-list" id="ru-list"></ul></div>`;
   const $isci = document.getElementById('ru-isci'), $filter = document.getElementById('ru-filter'), $list = document.getElementById('ru-list');
   const MEJA = 150;
@@ -2028,9 +2034,13 @@ async function stranRacuni() {
         <div class="ru-main">
           <span class="ru-em" aria-hidden="true">${esc(u.emoji || '🦉')}</span>
           <span class="ru-nm"><b>${esc(u.display_name || u.username)}</b><small>${esc(u.username)}</small></span>
-          <select data-razred aria-label="Razred za ${esc(u.username)}">${moznosti(u.razred, u.razred ? '' : 'Brez razreda')}</select>
           <span class="ru-ok" data-ok></span>
-          <button class="btn" type="button" data-geslo>🔑 Novo geslo</button>
+          <span class="ru-akcije">
+          <select data-razred aria-label="Razred za ${esc(u.username)}">${moznosti(u.razred, u.razred ? '' : 'Brez razreda')}</select>
+          <button class="btn" type="button" data-geslo>🔑 Geslo</button>
+          <button class="btn" type="button" data-ime title="Preimenuj">✏️ Ime</button>
+          <button class="btn ru-brisi" type="button" data-brisi title="Izbriši račun" aria-label="Izbriši račun ${esc(u.username)}">🗑️</button>
+          </span>
         </div></li>`).join('')
       + (vsi.length > MEJA ? `<li class="ru-vec">Prikazanih je prvih ${MEJA} od ${vsi.length}. Izberi razred ali poišči ime.</li>` : '')
       : '<li class="ru-vec">Ni takih računov.</li>';
@@ -2040,7 +2050,7 @@ async function stranRacuni() {
   const najdiU = el => UCENCI.find(u => u.username === el.closest('[data-u]').dataset.u);
   $list.addEventListener('change', async e => {
     const sel = e.target.closest('[data-razred]'); if (!sel) return;
-    const u = najdiU(sel), ok = sel.parentNode.querySelector('[data-ok]'), nov = sel.value;
+    const u = najdiU(sel), ok = sel.closest('.ru-row').querySelector('[data-ok]'), nov = sel.value;
     if (!nov || nov === u.razred) return;
     sel.disabled = true; ok.className = 'ru-ok'; ok.textContent = '…';
     const res = await rpc('sola_ucenec_razred', { p_seja: ucitelj.seja, p_username: u.username, p_razred: nov });
@@ -2056,13 +2066,74 @@ async function stranRacuni() {
       : res === 'SLAB_RAZRED' ? 'Neveljaven razred.' : 'Ni shranjeno. Prijavi se znova.';
   });
   $list.addEventListener('click', e => {
-    const b = e.target.closest('[data-geslo]'); if (!b) return;
+    const b = e.target.closest('[data-geslo], [data-ime], [data-brisi]'); if (!b) return;
+    const vrsta = 'geslo' in b.dataset ? 'geslo' : 'ime' in b.dataset ? 'ime' : 'brisi';
     const li = b.closest('.ru-row'), u = najdiU(b);
     const odprt = li.querySelector('.ru-geslo');
     $list.querySelectorAll('.ru-geslo').forEach(x => x.remove());
-    if (odprt) return;
+    if (odprt && odprt.dataset.vrsta === vrsta) return;
     const box = document.createElement('div');
     box.className = 'ru-geslo';
+    box.dataset.vrsta = vrsta;
+    const kdo = esc(u.display_name || u.username);
+    if (vrsta === 'ime') {
+      box.innerHTML = `<div class="field" style="margin:0"><label for="ru-ime">Ime za ${esc(u.username)}</label>
+          <input id="ru-ime" maxlength="30" autocomplete="off" value="${esc(u.display_name || '')}"></div>
+        <p class="note" style="margin:6px 0 0">Uporabniško ime za prijavo (${esc(u.username)}) ostane enako.</p>
+        <div class="vrstica"><button class="btn btn-go" type="button" data-potrdi>Shrani ime ✓</button><button class="btn" type="button" data-preklici>Prekliči</button></div>
+        <div class="msg" data-msg></div>`;
+      li.appendChild(box);
+      const $in = box.querySelector('input'); $in.focus(); $in.select();
+      box.querySelector('[data-preklici]').addEventListener('click', () => box.remove());
+      const shrani = async () => {
+        const msg = box.querySelector('[data-msg]'), ime = velikaZacetnica($in.value);
+        if (!ime) return void (msg.textContent = 'Vpiši ime.');
+        const btn = box.querySelector('[data-potrdi]'); btn.disabled = true; btn.textContent = 'Shranjujem …';
+        const res = await rpc('sola_ucenec_ime', { p_seja: ucitelj.seja, p_username: u.username, p_ime: ime });
+        if (res === 'OK') {
+          u.display_name = ime;
+          li.querySelector('.ru-nm b').textContent = ime;
+          li.querySelector('[data-ok]').className = 'ru-ok';
+          li.querySelector('[data-ok]').textContent = '✓ Ime';
+          box.remove();
+          return;
+        }
+        btn.disabled = false; btn.textContent = 'Shrani ime ✓';
+        msg.textContent = res === NEDOSEGLJIVO ? 'Strežnik ni dosegljiv.' : res === 'NI_UCENCA' ? 'Tega računa ni več.'
+          : res === 'SLABO_IME' ? 'Ime naj ima od 1 do 30 znakov.' : 'Ni shranjeno. Prijavi se znova (ali zaženi supabase_racuni_ucencev_ime_brisanje.sql).';
+      };
+      box.querySelector('[data-potrdi]').addEventListener('click', shrani);
+      $in.addEventListener('keydown', ev => { if (ev.key === 'Enter') shrani(); });
+      return;
+    }
+    if (vrsta === 'brisi') {
+      box.innerHTML = `<div class="help" style="margin:0;background:#ffe4e6">⚠️ <b>Brisanje je dokončno.</b> Izgubi se vsa vadba v Brihta-MAT, oddani kvizi in besedila na Šoli.
+          Če ima učenec dva računa, raje izbriši tistega, ki ga ne uporablja.</div>
+        <div class="field" style="margin:10px 0 0"><label for="ru-potrdi">Za potrditev vpiši uporabniško ime: <b>${esc(u.username)}</b></label>
+          <input id="ru-potrdi" autocomplete="off" autocapitalize="none" spellcheck="false"></div>
+        <div class="vrstica"><button class="btn ru-brisi-go" type="button" data-potrdi disabled>🗑️ Izbriši ${kdo}</button><button class="btn" type="button" data-preklici>Prekliči</button></div>
+        <div class="msg" data-msg></div>`;
+      li.appendChild(box);
+      const $in = box.querySelector('input'), btn = box.querySelector('[data-potrdi]');
+      $in.focus();
+      $in.addEventListener('input', () => { btn.disabled = $in.value.trim().toLowerCase() !== String(u.username).toLowerCase(); });
+      box.querySelector('[data-preklici]').addEventListener('click', () => box.remove());
+      btn.addEventListener('click', async () => {
+        const msg = box.querySelector('[data-msg]');
+        btn.disabled = true; btn.textContent = 'Brišem …';
+        const res = await rpc('sola_ucenec_izbrisi', { p_seja: ucitelj.seja, p_username: u.username });
+        if (res === 'OK') {
+          UCENCI.splice(UCENCI.indexOf(u), 1);
+          li.innerHTML = `<div class="ru-vec" style="padding:4px">🗑️ Račun ${esc(u.username)} je izbrisan.</div>`;
+          return;
+        }
+        btn.disabled = false; btn.textContent = `🗑️ Izbriši ${u.display_name || u.username}`;
+        msg.textContent = res === NEDOSEGLJIVO ? 'Strežnik ni dosegljiv.' : res === 'NI_UCENCA' ? 'Tega računa ni več.'
+          : typeof res === 'string' && res.startsWith('NAPAKA') ? res
+          : 'Ni izbrisano. Prijavi se znova (ali zaženi supabase_racuni_ucencev_ime_brisanje.sql).';
+      });
+      return;
+    }
     box.innerHTML = `<div class="field" style="margin:0"><label>Novo geslo za ${esc(u.display_name || u.username)}: izberi 4 živali</label><div data-zivali></div></div>
       <div class="vrstica"><button class="btn btn-go" type="button" data-potrdi>Ponastavi geslo ✓</button><button class="btn" type="button" data-preklici>Prekliči</button></div>
       <div class="msg" data-msg></div>`;
