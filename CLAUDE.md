@@ -155,6 +155,11 @@ Pred objavo preveri: ni besede »twinkl« in ni »Answers« v besedilu, in pogle
 Vse znanje o programu Moja besedila (baza, načini popravljanja, objava, odločitve)
 je v `pisanje-besedil/CLAUDE.md`. Preberi ga, preden kaj spreminjaš.
 
+## Video navodila za učence
+
+Ko Nino prosi za video (»pripravi video: …«, »sestavi«), uporabi skill `video-navodila` in orodje v
+`~/Documents/Brihta-video/` (zunaj repozitorija; README tam). Ne začenjaj znova. Nino posname samo glas.
+
 ## Emojiji (pisava Brihta Emoji)
 
 Pisave strežemo sami iz `pisave/` (brez Google Fonts, GDPR): Nunito (`pisave/nunito.css`) in emojije. `index.html` nalaga lastno podmnožico Noto Color Emoji (COLRv1) iz `pisave/brihta-emoji.woff2`,
