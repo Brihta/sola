@@ -38,9 +38,9 @@
        Safari na iPadih obdrži svoje emojije. */
     @font-face {
       font-family: 'Brihta Emoji';
-      src: url('pisave/brihta-emoji.woff2?v=cc1c414b') format('woff2') tech(color-COLRv1);
+      src: url('pisave/brihta-emoji.woff2?v=ef3a8665') format('woff2') tech(color-COLRv1);
       font-display: swap;
-      unicode-range: U+200D, U+26A0-26A1, U+26BD, U+2705, U+270D, U+270F, U+2728, U+1F1E7, U+1F1EC, U+1F308, U+1F31F, U+1F355, U+1F389, U+1F3A8, U+1F3AE-1F3AF, U+1F3C6, U+1F3EB, U+1F409-1F40A, U+1F40C, U+1F418-1F419, U+1F41D, U+1F422, U+1F427, U+1F42C, U+1F431, U+1F436, U+1F438, U+1F441, U+1F44B, U+1F44D, U+1F464-1F465, U+1F468, U+1F4A1, U+1F4AA, U+1F4BB, U+1F4BE, U+1F4C1, U+1F4C4, U+1F4CA, U+1F4CC, U+1F4D6, U+1F501, U+1F511-1F512, U+1F522, U+1F5B1, U+1F5D1, U+1F5FA, U+1F648, U+1F64B, U+1F680, U+1F6A2, U+1F916, U+1F938, U+1F981, U+1F984, U+1F989-1F98B, U+1F992, U+1F996, U+1F9AB, U+1F9D1, U+1F9E9;
+      unicode-range: U+200D, U+26A0-26A1, U+26BD, U+2705, U+270D, U+270F, U+2728, U+1F1E7, U+1F1EC, U+1F308, U+1F31F, U+1F355, U+1F389, U+1F3A8, U+1F3AE-1F3AF, U+1F3C6, U+1F3EB, U+1F409-1F40A, U+1F40C, U+1F418-1F419, U+1F41D, U+1F422, U+1F427, U+1F42C, U+1F431, U+1F436, U+1F438, U+1F441, U+1F44B, U+1F44D, U+1F464-1F465, U+1F468, U+1F4A1, U+1F4AA, U+1F4BB, U+1F4BE, U+1F4C1, U+1F4C4, U+1F4CA, U+1F4CC, U+1F4D6, U+1F501, U+1F511-1F512, U+1F517, U+1F522, U+1F5B1, U+1F5D1, U+1F5FA, U+1F648, U+1F64B, U+1F680, U+1F6A2, U+1F916, U+1F938, U+1F981, U+1F984, U+1F989-1F98B, U+1F992, U+1F996, U+1F9AB, U+1F9D1, U+1F9E9;
     }
     /* emoji-pisava:konec */
     html, body { margin: 0; }
@@ -2021,7 +2021,7 @@ async function stranRacuni() {
         <option value="-"${shranjen === '-' ? ' selected' : ''}>Brez razreda</option>
       </select>
     </div>
-    <p class="note" style="margin:0 0 12px">Razred se shrani takoj, ko ga izbereš. Pri <b>🔑 Geslo</b> izbereš 4 živali in jih poveš učencu. <b>✏️ Ime</b> spremeni prikazano ime, <b>🗑️</b> izbriše račun.</p>
+    <p class="note" style="margin:0 0 12px">Razred se shrani takoj, ko ga izbereš. Pri <b>🔑 Geslo</b> izbereš 4 živali in jih poveš učencu. <b>✏️ Ime</b> spremeni prikazano ime, <b>🔗</b> združi dva računa istega učenca, <b>🗑️</b> izbriše račun.</p>
     <ul class="ru-list" id="ru-list"></ul></div>`;
   const $isci = document.getElementById('ru-isci'), $filter = document.getElementById('ru-filter'), $list = document.getElementById('ru-list');
   const MEJA = 150;
@@ -2039,6 +2039,7 @@ async function stranRacuni() {
           <select data-razred aria-label="Razred za ${esc(u.username)}">${moznosti(u.razred, u.razred ? '' : 'Brez razreda')}</select>
           <button class="btn" type="button" data-geslo>🔑 Geslo</button>
           <button class="btn" type="button" data-ime title="Preimenuj">✏️ Ime</button>
+          <button class="btn ru-brisi" type="button" data-zdruzi title="Združi z drugim računom" aria-label="Združi račun ${esc(u.username)} z drugim">🔗</button>
           <button class="btn ru-brisi" type="button" data-brisi title="Izbriši račun" aria-label="Izbriši račun ${esc(u.username)}">🗑️</button>
           </span>
         </div></li>`).join('')
@@ -2066,8 +2067,8 @@ async function stranRacuni() {
       : res === 'SLAB_RAZRED' ? 'Neveljaven razred.' : 'Ni shranjeno. Prijavi se znova.';
   });
   $list.addEventListener('click', e => {
-    const b = e.target.closest('[data-geslo], [data-ime], [data-brisi]'); if (!b) return;
-    const vrsta = 'geslo' in b.dataset ? 'geslo' : 'ime' in b.dataset ? 'ime' : 'brisi';
+    const b = e.target.closest('[data-geslo], [data-ime], [data-brisi], [data-zdruzi]'); if (!b) return;
+    const vrsta = ['geslo', 'ime', 'zdruzi'].find(k => k in b.dataset) || 'brisi';
     const li = b.closest('.ru-row'), u = najdiU(b);
     const odprt = li.querySelector('.ru-geslo');
     $list.querySelectorAll('.ru-geslo').forEach(x => x.remove());
@@ -2104,6 +2105,48 @@ async function stranRacuni() {
       };
       box.querySelector('[data-potrdi]').addEventListener('click', shrani);
       $in.addEventListener('keydown', ev => { if (ev.key === 'Enter') shrani(); });
+      return;
+    }
+    if (vrsta === 'zdruzi') {
+      const ime = x => `${x.display_name || x.username} (${x.username}${x.razred ? ', ' + imeRazreda(x.razred) : ''})`;
+      const drugi = UCENCI.filter(x => x !== u).sort((a, b) => ime(a).localeCompare(ime(b), 'sl'));
+      const isti = drugi.filter(x => u.razred && x.razred === u.razred), ostali = drugi.filter(x => !isti.includes(x));
+      const opt = x => `<option value="${esc(x.username)}">${esc(ime(x))}</option>`;
+      box.innerHTML = `<div class="help" style="margin:0">🔗 Vse iz računa <b>${esc(u.username)}</b> (vadba v Brihta-MAT, kvizi, besedila in izdelki na Šoli)
+          se prenese v račun, ki ga izbereš. Račun <b>${esc(u.username)}</b> se nato <b>izbriše</b>.</div>
+        <div class="field" style="margin:10px 0 0"><label for="ru-v">Prenesi v račun, ki ga učenec obdrži:</label>
+          <select id="ru-v" style="width:100%"><option value="">Izberi račun …</option>
+            ${isti.length ? `<optgroup label="${esc(imeRazreda(u.razred))}">${isti.map(opt).join('')}</optgroup><optgroup label="Ostali">` : ''}${ostali.map(opt).join('')}${isti.length ? '</optgroup>' : ''}
+          </select></div>
+        <div class="vrstica"><button class="btn btn-go" type="button" data-potrdi>🔗 Združi</button><button class="btn" type="button" data-preklici>Prekliči</button></div>
+        <div class="msg" data-msg></div>`;
+      li.appendChild(box);
+      const $v = box.querySelector('select'), btn = box.querySelector('[data-potrdi]');
+      $v.focus();
+      box.querySelector('[data-preklici]').addEventListener('click', () => box.remove());
+      btn.addEventListener('click', async () => {
+        const msg = box.querySelector('[data-msg]'), v = UCENCI.find(x => x.username === $v.value);
+        if (!v) return void (msg.textContent = 'Izberi račun, ki ga učenec obdrži.');
+        if (!confirm(`Vse iz računa ${u.username} se prenese v ${v.username}.\nRačun ${u.username} se nato izbriše. Nadaljujem?`)) return;
+        btn.disabled = true; btn.textContent = 'Združujem …';
+        const res = await rpc('sola_ucenec_zdruzi', { p_seja: ucitelj.seja, p_from: u.username, p_into: v.username });
+        if (res === 'OK') {
+          UCENCI.splice(UCENCI.indexOf(u), 1);
+          if (!v.display_name) v.display_name = u.display_name;
+          if (!v.razred) v.razred = u.razred;
+          const vli = [...$list.querySelectorAll('[data-u]')].find(x => x.dataset.u === v.username);
+          if (vli) {
+            vli.querySelector('.ru-nm b').textContent = v.display_name || v.username;
+            if (v.razred) { const vs = vli.querySelector('[data-razred]'); vs.value = v.razred; const pr = vs.querySelector('option[value=""]'); if (pr) pr.remove(); }
+          }
+          li.innerHTML = `<div class="ru-vec" style="padding:4px">🔗 Račun ${esc(u.username)} je združen v <b>${esc(v.username)}</b> in izbrisan.</div>`;
+          return;
+        }
+        btn.disabled = false; btn.textContent = '🔗 Združi';
+        msg.textContent = res === NEDOSEGLJIVO ? 'Strežnik ni dosegljiv.' : res === 'NI_UCENCA' ? 'Enega od računov ni več.'
+          : res === 'ISTI' ? 'Izberi drug račun.' : typeof res === 'string' && res.startsWith('NAPAKA') ? res
+          : 'Ni združeno. Prijavi se znova (ali zaženi supabase_racuni_ucencev_zdruzi.sql).';
+      });
       return;
     }
     if (vrsta === 'brisi') {
