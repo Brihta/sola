@@ -558,37 +558,56 @@ function zdruzi(ops) {
   return out;
 }
 // HTML: zbrisano prečrtano, dodano rdeče. Presledki (·) in novi odstavki (¶) se vidijo.
-// Oblika vrstic (poravnava, podnaslov) iz Quill delte; samo če se njeno besedilo ujema z golim besedilom (getText().trim()).
-function oblikaVrstic(vsebina, besedilo) {
+// Oblika popravljenega besedila iz Quill delte: vr = vrstice {a: poravnava, h: podnaslov},
+// zn = slog vsakega znaka (krepko, ležeče, podčrtano, barva, velikost). Samo če se besedilo delte
+// ujema z golim besedilom (getText().trim()), sicer null.
+const VELIKOSTI = ['14px', '24px', '32px'];
+function oblika(vsebina, besedilo) {
   if (!vsebina || !Array.isArray(vsebina.ops)) return null;
   let cel = '';
-  const por = [];
+  const vr = [], zn = [];
   for (const op of vsebina.ops) {
     if (typeof op.insert !== 'string') continue;
     const at = op.attributes || {};
     const o = { a: ['center', 'right', 'justify'].includes(at.align) ? at.align : '', h: at.header === 1 || at.header === 2 ? at.header : 0 };
-    for (const ch of op.insert) { cel += ch; if (ch === '\n') por.push(o); }
+    const st = (at.bold ? 'font-weight:800;' : '') + (at.italic ? 'font-style:italic;' : '') + (at.underline ? 'text-decoration:underline;' : '')
+      + (BARVA_OK(at.color) ? `color:${at.color};` : '') + (VELIKOSTI.includes(at.size) ? `font-size:${at.size};` : '');
+    for (let k = 0; k < op.insert.length; k++) { const ch = op.insert[k]; cel += ch; zn.push(ch === '\n' ? '' : st); if (ch === '\n') vr.push(o); }
   }
   if (cel.trim() !== (besedilo || '')) return null;
-  const spredaj = cel.slice(0, cel.length - cel.trimStart().length).split('\n').length - 1;
-  const p = por.slice(spredaj);
-  return p.some(x => x.a || x.h) ? p : null;
+  const odrezano = cel.length - cel.trimStart().length;
+  const ob = { vr: vr.slice(cel.slice(0, odrezano).split('\n').length - 1), zn: zn.slice(odrezano) };
+  return ob.vr.some(x => x.a || x.h) || ob.zn.some(x => x) ? ob : null;
 }
-function primerjavaHtml(a, b, por) {
+function primerjavaHtml(a, b, ob) {
   const kosi = primerjaj(a, b);
   if (!kosi.some(d => d[0] !== '=')) return null;
-  if (por) { // vrstico za vrstico, z obliko popravljenega besedila (podpis desno, podnaslovi)
+  if (ob) { // vrstico za vrstico, z obliko popravljenega besedila (podpis desno, podnaslovi, krepko …)
     const vr = [''];
-    const dodaj = (s, ovij) => s.split('\n').forEach((del, i) => {
-      if (i) { if (ovij) vr[vr.length - 1] += ovij('<span class="zn">¶</span>'); vr.push(''); }
-      if (del) vr[vr.length - 1] += ovij ? ovij(del) : del;
-    });
+    let pos = 0; // položaj v b (popravljenem besedilu)
+    const pisi = (s, ins) => {
+      const presl = ins && !s.trim();
+      let del = '';
+      const izprazni = () => { if (del) vr[vr.length - 1] += ins ? `<ins title="Učitelj je to dodal">${del}</ins>` : del; del = ''; };
+      for (let i = 0; i < s.length;) {
+        if (s[i] === '\n') { if (ins) del += '<span class="zn">¶</span>'; izprazni(); vr.push(''); i++; continue; }
+        const st = ob.zn[pos + i] || '';
+        let j = i + 1;
+        while (j < s.length && s[j] !== '\n' && (ob.zn[pos + j] || '') === st) j++;
+        let h = esc(s.slice(i, j));
+        if (presl) h = h.replace(/[ \t ]/g, '·');
+        const slog = ins ? st.replace(/color:[^;]*;/, '') : st; // dodano ostane rdeče
+        del += slog ? `<span style="${slog}">${h}</span>` : h;
+        i = j;
+      }
+      izprazni();
+      pos += s.length;
+    };
     for (const [t, s] of kosi) {
-      if (t === '=') dodaj(esc(s));
-      else if (t === '-') vr[vr.length - 1] += oznaci(t, s);
-      else dodaj(!s.trim() ? esc(s).replace(/[ \t\u00a0]/g, '·') : esc(s), h => `<ins title="Učitelj je to dodal">${h}</ins>`);
+      if (t === '-') vr[vr.length - 1] += oznaci(t, s);
+      else pisi(s, t === '+');
     }
-    return vr.map((h, i) => { const o = por[i] || {};
+    return vr.map((h, i) => { const o = ob.vr[i] || {};
       return `<div${o.h ? ` class="h${o.h}"` : ''}${o.a ? ` style="text-align:${o.a}"` : ''}>${h || '<br>'}</div>`; }).join('');
   }
   return kosi.map(([t, s]) => t === '=' ? esc(s) : oznaci(t, s)).join('');
@@ -606,7 +625,7 @@ function oznaci(t, s) {
     return `<ins title="Učitelj je to dodal">${h}</ins>`;
 }
 function popravkiHtml(pred, po, cas_, o = {}) {
-  const n = primerjavaHtml(pred.naslov, po.naslov), b = primerjavaHtml(pred.besedilo, po.besedilo, oblikaVrstic(po.vsebina, po.besedilo));
+  const n = primerjavaHtml(pred.naslov, po.naslov), b = primerjavaHtml(pred.besedilo, po.besedilo, oblika(po.vsebina, po.besedilo));
   const ns = naslovSlog(po.vsebina) ? ` style="${naslovSlog(po.vsebina)}"` : '';
   return `<div class="glava-p">${o.zavihki || ''}<h2>${o.naslov || '✏️ Popravki učitelja'}${cas_ ? ` <small style="font-weight:700;color:var(--muted)">· ${cas(cas_)}</small>` : ''}</h2>
     <div class="legenda"><span><del>prečrtano</del> = zbrisal</span><span><ins>${o.zeleno ? 'zeleno' : 'rdeče'}</ins> = dodal ali popravil</span><span><del>·</del> presledek</span><span><ins>¶</ins> nov odstavek</span></div></div>

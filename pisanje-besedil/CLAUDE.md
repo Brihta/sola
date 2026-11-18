@@ -57,8 +57,9 @@ in morajo biti varni: majhni, preverjeni, takoj objavljeni.
   velikosti sta onemogočena. Ko je kazalec v naslovu, poravnava in barva
   veljata za naslov.
 - Rdeča/zelena primerjava (18. 11. 2026) prevzame obliko »po« različice: poravnavo vrstic, podnaslove
-  (h1/h2) ter poravnavo in barvo glavnega naslova (`oblikaVrstic`, samo če se besedilo delte ujema z
-  golim besedilom). Krepko, ležeče, barve in velikost znotraj besedila se tam ne kažejo. Povod: Anejev
+  (h1/h2), krepko, ležeče, podčrtano, barve in velikost ter poravnavo in barvo glavnega naslova
+  (`oblika`, samo če se besedilo delte ujema z golim besedilom). Dodano (`ins`) ostane rdeče, brez
+  barve iz besedila; zbrisano je brez oblike. Povod: Anejev
   podpis desno, njegov podnaslov in barvni naslov so bili levo videti, kot da jih je Teja pokvarila.
 - Brez strežniške zgodovine različic, razen `rezerve`. Če učenec zbriše in shrani, je prejšnje
   besedilo ohranjeno samo v rezervi ali v `popravki.pred`/`po`.
