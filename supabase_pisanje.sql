@@ -67,6 +67,9 @@ alter table sola_pis_besedila add column if not exists popravki jsonb;
 -- Varovalka: ko se besedilo naenkrat močno skrajša (npr. Ctrl+A in tipka), se prejšnja
 -- različica shrani sem: {naslov, vsebina, besedilo, besed, cas}. Učitelj jo vrne z enim klikom.
 alter table sola_pis_besedila add column if not exists rezerva jsonb;
+-- Odklep za enega učenca (npr. testni učenec): vidi in ureja projekt, tudi če je zaklenjen,
+-- zaprt ali za drug razred.
+alter table sola_pis_besedila add column if not exists odklenjen boolean not null default false;
 alter table sola_pis_besedila enable row level security;
 create index if not exists sola_pis_besedila_student on sola_pis_besedila (student_id);
 
@@ -84,7 +87,7 @@ alter table sola_pis_presoje enable row level security;
 create index if not exists sola_pis_presoje_ocenjevalec on sola_pis_presoje (ocenjevalec);
 
 -- ── 2. Pomožne ────────────────────────────────────────────────────────────
--- Ali učenec vidi projekt (ni arhiviran in se ujema razred, če je določen).
+-- Ali učenec vidi projekt (ni arhiviran in se ujema razred, če je določen; ali je zanj odklenjen).
 create or replace function public._sola_pis_vidi(p_student uuid, p_projekt uuid)
 returns boolean language sql stable security definer set search_path = public as $$
   select exists (
@@ -92,7 +95,9 @@ returns boolean language sql stable security definer set search_path = public as
      where p.id = p_projekt and s.id = p_student and not p.arhiviran
        and (p.razred is null or p.razred = ''
             or public.razred_na_dan(s.letnik, s.oddelek, current_date) is null
-            or public.razred_na_dan(s.letnik, s.oddelek, current_date) like p.razred || '%'));
+            or public.razred_na_dan(s.letnik, s.oddelek, current_date) like p.razred || '%'))
+      or exists (select 1 from sola_pis_besedila b
+                  where b.projekt_id = p_projekt and b.student_id = p_student and b.odklenjen);
 $$;
 revoke execute on function public._sola_pis_vidi(uuid, uuid) from public, anon, authenticated;
 
@@ -186,7 +191,9 @@ revoke execute on function public._sola_pis_zapisi(uuid, int, text, jsonb, text,
 create or replace function public.sola_pis_moji(p_student uuid)
 returns jsonb language sql stable security definer set search_path = public as $$
   select coalesce(jsonb_agg(jsonb_build_object(
-           'id', p.id, 'ime', p.ime, 'opis', p.opis, 'presoja', p.presoja, 'zaklenjen', p.zaklenjen, 'popravi_sam', p.popravi_sam, 'ustvarjeno', p.ustvarjeno,
+           'id', p.id, 'ime', p.ime, 'opis', p.opis, 'presoja', p.presoja, 'popravi_sam', p.popravi_sam, 'ustvarjeno', p.ustvarjeno,
+           'zaklenjen', p.zaklenjen and not coalesce((select b.odklenjen from sola_pis_besedila b
+                                                       where b.projekt_id = p.id and b.student_id = p_student), false),
            'ucitelj', public._sola_pis_ucitelj_ime(p.ucitelj_id),
            'besedilo', (select jsonb_build_object('id', b.id, 'naslov', b.naslov, 'besed', b.besed,
                                                   'posodobljeno', b.posodobljeno, 'urejal', b.urejal,
@@ -215,7 +222,7 @@ begin
   on conflict (projekt_id, student_id) do nothing;
   select * into b from sola_pis_besedila where projekt_id = p_projekt and student_id = p_student;
   return jsonb_build_object(
-    'projekt', jsonb_build_object('id', p.id, 'ime', p.ime, 'opis', p.opis, 'presoja', p.presoja, 'zaklenjen', p.zaklenjen, 'popravi_sam', p.popravi_sam,
+    'projekt', jsonb_build_object('id', p.id, 'ime', p.ime, 'opis', p.opis, 'presoja', p.presoja, 'zaklenjen', p.zaklenjen and not b.odklenjen, 'popravi_sam', p.popravi_sam,
                                   'ucitelj', public._sola_pis_ucitelj_ime(p.ucitelj_id)),
     'id', b.id, 'naslov', b.naslov, 'vsebina', b.vsebina, 'verzija', b.verzija, 'urejal', b.urejal,
     'komentar', b.komentar, 'komentar_cas', b.komentar_cas, 'posodobljeno', b.posodobljeno, 'popravki', b.popravki,
@@ -232,7 +239,8 @@ begin
   select projekt_id into pid from sola_pis_besedila where id = p_id and student_id = p_student;
   if pid is null then return jsonb_build_object('ok', false, 'napaka', 'NI'); end if;
   if not public._sola_pis_vidi(p_student, pid)
-     or (select zaklenjen from sola_pis_projekti where id = pid) then
+     or ((select zaklenjen from sola_pis_projekti where id = pid)
+         and not (select odklenjen from sola_pis_besedila where id = p_id)) then
     return jsonb_build_object('ok', false, 'napaka', 'ZAKLENJENO');
   end if;
   return public._sola_pis_zapisi(p_id, p_verzija, p_naslov, p_vsebina, p_besedilo, 'ucenec');

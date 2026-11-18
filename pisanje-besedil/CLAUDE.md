@@ -35,6 +35,10 @@ in morajo biti varni: majhni, preverjeni, takoj objavljeni.
 - `rezerva = {naslov, vsebina, besedilo, besed, cas}` je varovalka. `_sola_pis_zapisi` jo zapiše,
   ko se besedilo z vsaj 15 besedami naenkrat več kot prepolovi. Učitelj jo vrne z gumbom
   »↶ Vrni prejšnjo različico« (`sola_pis_u_vrni_rezervo`, ki zamenja trenutno besedilo in rezervo).
+- `sola_pis_besedila.odklenjen` (18. 11. 2026): odklep za enega učenca. Ta učenec vidi in ureja projekt,
+  tudi če je zaklenjen, zaprt ali za drug razred (`_sola_pis_vidi`, `sola_pis_shrani`). Uporaba: testni
+  učenec **Piki** je dobil kopijo Anejevega besedila s Tejinimi popravki za preizkus »Preveri«.
+  V vmesniku tega ni, nastavi se s SQL.
 - `sola_pis_presoje`: vrstniška presoja »dve zvezdi in želja« (anonimno).
 - `sola_pis_ucitelji`: ime učitelja, ki ga vidijo učenci (npr. »ga. Teja«).
 
