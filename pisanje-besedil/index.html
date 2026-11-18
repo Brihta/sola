@@ -515,7 +515,7 @@ window.addEventListener('beforeunload', e => { if (aktivni && aktivni.neshranjen
 /* ─── Primerjava: kaj je učitelj spremenil ─── */
 // Besedilo razreže na besede, presledke, nove vrstice in ločila; nato najde najdaljše skupno zaporedje.
 const deli = t => (t || '').match(/\n|[ \t\u00a0]+|[\p{L}\p{N}]+|[^\s\p{L}\p{N}]/gu) || [];
-function primerjaj(a, b) {
+function primerjaj(a, b, surovo) { // surovo: brez združevanja v fraze
   const A = deli(a), B = deli(b);
   let z = 0; while (z < A.length && z < B.length && A[z] === B[z]) z++;
   let k = 0; while (k < A.length - z && k < B.length - z && A[A.length - 1 - k] === B[B.length - 1 - k]) k++;
@@ -545,7 +545,7 @@ function primerjaj(a, b) {
     izprazni();
   }
   if (k) out.push(['=', A.slice(A.length - k).join('')]);
-  return zdruzi(out);
+  return surovo ? out : zdruzi(out);
 }
 // Sosednje spremembe, ločene samo s presledkom, združi v eno frazo:
 // »so je biti bilo« → prečrtano »so biti«, dodano »je bilo«.
@@ -560,9 +560,9 @@ function zdruzi(ops) {
   const besede = x => /[^\s]/.test(x['-'] + x['+']);
   for (let i = 0; i + 2 < g.length;) {
     const a = g[i], m = g[i + 1], b = g[i + 2];
-    if (a.t === 'x' && m.t === '=' && b.t === 'x' && /^[ \t\u00a0]+$/.test(m.s) && besede(a) && besede(b)) {
+    if (a.t === 'x' && m.t === '=' && b.t === 'x' && /^[ \t\u00a0]+$/.test(m.s) && besede(a) && besede(b) && a['+'] && b['+']) {
       a['-'] = a['-'] && b['-'] ? a['-'] + m.s + b['-'] : a['-'] + b['-'];
-      a['+'] = a['+'] && b['+'] ? a['+'] + m.s + b['+'] : a['+'] + b['+'];
+      a['+'] = a['+'] + m.s + b['+'];
       g.splice(i + 1, 2);
     } else i++;
   }
@@ -650,57 +650,70 @@ function popravkiHtml(pred, po, cas_, o = {}) {
 }
 
 /* ─── Preverjanje: ali je učenec vnesel učiteljeve popravke ─── */
-// Primerjava a → b v skupinah: '=' enako, 'x' sprememba; zac/kon = obseg v b.
-function skupine(a, b) {
+// Spremembe a → b kot kosi na a: {zac, kon} = obseg v a, nov = besedilo, ki ga v b nadomesti.
+// Spremembe, ločene samo s presledkom, so ena fraza (»so je biti bilo« = en popravek).
+function spremembe(a, b) {
   const out = [];
-  let pos = 0;
-  for (const [t, s] of primerjaj(a, b)) {
-    if (t === '=') { out.push({ t, s, zac: pos, kon: pos += s.length }); continue; }
-    let z = out[out.length - 1];
-    if (!z || z.t !== 'x') out.push(z = { t: 'x', '-': '', '+': '', zac: pos, kon: pos });
-    z[t] += s;
-    if (t === '+') z.kon = pos += s.length;
+  let pa = 0, h = null;
+  for (const [t, s] of primerjaj(a, b, true)) {
+    if (t === '=') { h = null; pa += s.length; continue; }
+    if (!h) out.push(h = { zac: pa, kon: pa, nov: '' });
+    if (t === '-') h.kon = pa += s.length; else h.nov += s;
   }
-  return out;
+  const besede = h => /\S/.test(a.slice(h.zac, h.kon) + h.nov);
+  const zdr = [];
+  for (const h of out) {
+    const z = zdr[zdr.length - 1], vmes = z ? a.slice(z.kon, h.zac) : '';
+    if (z && /^[ \t\u00a0]+$/.test(vmes) && besede(z) && besede(h)) { z.nov += vmes + h.nov; z.kon = h.kon; }
+    else zdr.push({ ...h });
+  }
+  return zdr;
 }
-const prekriva = (a, b) => a.zac < a.kon && b.zac < b.kon ? a.zac < b.kon && b.zac < a.kon : a.zac <= b.kon && b.zac <= a.kon;
-// Učiteljev popravek (pred → po) je vnesen, če se učenčevo besedilo (zdaj) tam ujema s popravkom.
-// Razlike drugje (učenec je spremenil kaj, česar učitelj ni) so oranžne.
+const dotika = (a, b) => a.zac < a.kon && b.zac < b.kon ? a.zac < b.kon && b.zac < a.kon : a.zac <= b.kon && b.zac <= a.kon;
+// Kot pri treh različicah: učiteljeve spremembe (pred → po) in učenčeve (pred → zdaj) primerjamo na istem
+// izhodišču (pred). Kjer se prekrivajo, je območje; učiteljev popravek je vnesen, če je učenčeva različica
+// območja enaka učiteljevi. Učenčeve spremembe, kjer učitelj ni popravljal ničesar, so oranžne.
 function preveriKose(pred, po, zdaj) {
-  const uc = skupine(pred, po), raz = skupine(zdaj, po).filter(g => g.t === 'x');
-  const proste = raz.filter(r => !uc.some(g => g.t === 'x' && prekriva(g, r)));
+  const vsi = [...spremembe(pred, po).map(h => ({ ...h, u: true })), ...spremembe(pred, zdaj).map(h => ({ ...h, u: false }))]
+    .sort((x, y) => x.zac - y.zac || x.kon - y.kon);
+  const obm = [];
+  for (const h of vsi) {
+    const z = obm[obm.length - 1];
+    if (z && dotika(z, h)) { z.kon = Math.max(z.kon, h.kon); z.h.push(h); }
+    else obm.push({ zac: h.zac, kon: h.kon, h: [h] });
+  }
+  const razlicica = (hs, zac, kon) => { let r = '', p = zac; for (const h of hs) { r += pred.slice(p, h.zac) + h.nov; p = h.kon; } return r + pred.slice(p, kon); };
   const kosi = [];
-  let vseh = 0, ok = 0, drugace = 0;
-  for (const g of uc) {
-    if (g.t === 'x') {
-      vseh++;
-      if (raz.some(r => prekriva(g, r))) {
-        if (g['-']) kosi.push(['-', g['-']]);
-        if (g['+']) kosi.push(['+', g['+']]);
-        kosi.push(['m', '<span class="pr ne" title="Tega še nisi popravil">✗</span>']);
-      } else {
-        ok++;
-        if (g['+']) kosi.push(['=', g['+'], 'ok']);
-        kosi.push(['m', '<span class="pr da" title="Pravilno popravljeno">✓</span>']);
+  let vseh = 0, ok = 0, drugace = 0, p = 0;
+  for (const o of obm) {
+    if (o.zac > p) kosi.push(['=', pred.slice(p, o.zac)]);
+    const uc = o.h.filter(h => h.u), ucen = o.h.filter(h => !h.u);
+    if (uc.length) {
+      const prav = razlicica(uc, o.zac, o.kon) === razlicica(ucen, o.zac, o.kon);
+      vseh += uc.length; if (prav) ok += uc.length;
+      let q = o.zac;
+      for (const h of uc) {
+        if (h.zac > q) kosi.push(['=', pred.slice(q, h.zac)]);
+        if (prav) {
+          if (h.nov) kosi.push(['=', h.nov, 'ok']);
+          kosi.push(['m', '<span class="pr da" title="Pravilno popravljeno">✓</span>']);
+        } else {
+          if (h.kon > h.zac) kosi.push(['-', pred.slice(h.zac, h.kon)]);
+          if (h.nov) kosi.push(['+', h.nov]);
+          kosi.push(['m', '<span class="pr ne" title="Tega še nisi popravil">✗</span>']);
+        }
+        q = h.kon;
       }
-      continue;
+      if (o.kon > q) kosi.push(['=', pred.slice(q, o.kon)]);
+    } else {
+      drugace++;
+      const pri = razlicica(ucen, o.zac, o.kon);
+      if (pri) kosi.push(['-', pri, 'o']);
+      if (o.kon > o.zac) kosi.push(['+', pred.slice(o.zac, o.kon), 'o']);
     }
-    let p = g.zac;
-    for (const r of proste) {
-      if (r.porabljen || r.zac < g.zac || r.kon > g.kon) continue;
-      r.porabljen = true; drugace++;
-      if (r.zac > p) kosi.push(['=', po.slice(p, r.zac)]);
-      if (r['-']) kosi.push(['-', r['-'], 'o']);
-      if (r['+']) kosi.push(['+', r['+'], 'o']);
-      p = r.kon;
-    }
-    if (g.kon > p) kosi.push(['=', po.slice(p, g.kon)]);
+    p = o.kon;
   }
-  for (const r of proste) if (!r.porabljen) { // npr. prazno besedilo
-    drugace++;
-    if (r['-']) kosi.push(['-', r['-'], 'o']);
-    if (r['+']) kosi.push(['+', r['+'], 'o']);
-  }
+  if (pred.length > p) kosi.push(['=', pred.slice(p)]);
   return { kosi, vseh, ok, drugace };
 }
 function preveriStevila(pred, po, zdaj) {

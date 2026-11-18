@@ -47,11 +47,15 @@ in morajo biti varni: majhni, preverjeni, takoj objavljeni.
   KOPIJO (`popravki.vsebina`), učenčevo besedilo ostane. Učenec levo vidi rdeče popravke,
   desno sam popravi svoje besedilo. Učitelj nato zeleno vidi, kaj je učenec popravil.
 - **Preveri** (18. 11. 2026, za uro, ko učenci popravljajo): v »Popravi sam« ima učenec v rdečem okvirju gumb
-  »✔ Preveri«. Za vsak učiteljev popravek (skupina sprememb `pred → po`) preveri, ali se učenčevo
-  trenutno besedilo tam ujema s `po`: ✓ zeleno = vneseno, ✗ rdeče = še ne (pokaže prvotni popravek).
+  »✔ Preveri«. Primerja kot pri treh različicah: učiteljeve (`pred → po`) in učenčeve (`pred → zdaj`)
+  spremembe na istem izhodišču `pred`; prekrivajoče so eno območje, popravek je vnesen, če je učenčeva
+  različica območja enaka učiteljevi. (Neposredna primerjava `zdaj → po` se je pri veliko spremembah
+  zamaknila: ✓ in oranžna vejica namesto ✗.) Oznake: ✓ zeleno = vneseno, ✗ rdeče = še ne (pokaže prvotni popravek).
   Razlike drugje (nova napaka, dodan stavek) so oranžne »drugače kot v popravku«. Primerja se samo
   golo besedilo (tudi presledki), ne oblika. Učiteljica ima isti pogled kot zavihek »✔ Preverjanje«
   (privzet, ko je učenec po popravkih kaj spremenil). Koda: `preveriKose`, `preveriHtml`.
+  `primerjaj(a, b, true)` vrne surovo primerjavo; `zdruzi` združi frazo samo, če imata oba dela dodano
+  besedilo, sicer bi se presledek izgubil in bi se položaji (oblika, preverjanje) zamaknili.
   Na seznamu učencev projekta je stolpec »Popravljeno« (npr. 7/9, ✓ 9/9, 🟠 = drugače): stran ga
   izračuna v brskalniku iz `sola_pis_u_besedila` (brez spremembe baze), `preveriStevila`.
 - **Popravljam jaz**: učitelj piše naravnost v učenčevo besedilo. Nino tega načina ne želi kot privzetega.
