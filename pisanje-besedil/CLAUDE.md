@@ -64,7 +64,8 @@ in morajo biti varni: majhni, preverjeni, takoj objavljeni.
   pretežak): levo zavihek »👣 Korak za korakom« (drugi zavihek »📄 Vsi popravki« = stari prikaz s »Preveri«).
   En popravek naenkrat: navodilo z besedami (`navodilo`: dodaj vejico, velika začetnica, zbriši besedo,
   ne začni novega odstavka …), »Zdaj piše« / »Pravilno« (`odlomek`), pike za vse korake. Mesto je v
-  urejevalniku rumeno (`oznaciMesto`: plast nad Quillom, besedila ne spreminja; pri dodajanju rdeč kazalec
+  urejevalniku rumeno (`oznaciMesto`: plast nad Quillom, besedila ne spreminja; pri dodajanju tanka rdeča
+  črta s puščico nad vrstico, ne utripa in ne zakriva črk (Nino 18. 11.),
   in sosednji besedi). »📍 Pokaži v besedilu« postavi kazalec tja. Sproti preverja (ob `o.ob`, 400 ms);
   ko je popravek prav, po 1,4 s preide na naslednjega. Na koncu »🎉 Odlično!« ali oranžni koraki
   (»drugače kot v popravku«). Koraki in položaji pridejo iz `preveriKose` (`koraki`, `dodatno`).

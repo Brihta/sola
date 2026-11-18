@@ -186,7 +186,9 @@
   .vod .bravo { font-size: 1.6rem; font-weight: 900; color: #15803d; text-align: center; padding: 14px 0 6px; line-height: 1.3; }
   .vod-plast { position: absolute; inset: 0; pointer-events: none; z-index: 2; transition: opacity .15s; }
   .vod-plast i { position: absolute; background: rgba(253, 224, 71, .55); box-shadow: 0 0 0 2px #f59e0b; border-radius: 4px; mix-blend-mode: multiply; }
-  .vod-plast i.kaz { position: absolute; margin: 0; width: 4px !important; background: #dc2626; box-shadow: 0 0 0 2px #fff, 0 0 0 4px #dc2626; mix-blend-mode: normal; }
+  /* Mesto za dodajanje: tanka črta in puščica nad vrstico (ne zakriva črk; ne utripa, da je ne zamenjaš s kazalcem) */
+  .vod-plast i.kaz { position: absolute; margin: 0; width: 2px !important; background: rgba(220, 38, 38, .75); box-shadow: none; border-radius: 1px; mix-blend-mode: normal; animation: none; }
+  .vod-plast i.kaz::before { content: ''; position: absolute; left: 50%; top: -9px; transform: translateX(-50%); border: 6px solid transparent; border-top: 8px solid #dc2626; border-bottom: 0; }
   .vod-plast i.sosed { background: rgba(253, 224, 71, .4); box-shadow: none; }
   .ed-title.vod-oznaka { background: #fef9c3 !important; box-shadow: inset 0 0 0 3px #f59e0b; }
   .popravki .brez-pop { padding: 20px; color: var(--muted); font-weight: 700; }
@@ -937,8 +939,8 @@ function oznaciMesto(ed, k, pomakni) {
   for (const x of k.zZac === k.zKon ? pravok.slice(0, 1) : pravok) {
     const el = document.createElement('i');
     if (k.zZac === k.zKon) el.className = 'kaz';
-    Object.assign(el.style, { left: (x.left - c.left - (k.zZac === k.zKon ? 1 : 2)) + 'px', top: (x.top - c.top - 1) + 'px',
-      width: (k.zZac === k.zKon ? 3 : x.width + 4) + 'px', height: (x.height + 2) + 'px' });
+    Object.assign(el.style, { left: (x.left - c.left + (k.zZac === k.zKon ? 1 : -2)) + 'px', top: (x.top - c.top - 1) + 'px',
+      width: (k.zZac === k.zKon ? 2 : x.width + 4) + 'px', height: (x.height + 2) + 'px' });
     plast.appendChild(el);
   }
   if (pomakni && plast.lastChild) plast.lastChild.scrollIntoView({ block: 'center', behavior: 'smooth' });
