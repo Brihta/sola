@@ -341,7 +341,7 @@ function urejevalnik(el, o) {
   const vsebinaZdaj = () => { const v = { ops: q.getContents().ops }; if (nf.a || nf.c) v.naslov = { ...nf }; return v; };
 
   let tikOb = null;
-  const javi = uporabnik => { if (o.ob) o.ob($naslov.value.trim(), q.getText().trim(), !!uporabnik); };
+  const javi = uporabnik => { if (o.ob) o.ob($naslov.value.trim(), q.getText().trim(), !!uporabnik, vsebinaZdaj()); };
   const javiKmalu = () => { clearTimeout(tikOb); tikOb = setTimeout(() => javi(true), 400); };
   function nalozi(naslov, vsebina) {
     $naslov.value = naslov || '';
@@ -556,11 +556,40 @@ function zdruzi(ops) {
   return out;
 }
 // HTML: zbrisano prečrtano, dodano rdeče. Presledki (·) in novi odstavki (¶) se vidijo.
-function primerjavaHtml(a, b) {
+// Poravnava vrstic iz Quill delte; samo če se njeno besedilo ujema z golim besedilom (getText().trim()).
+function poravnaveVrstic(vsebina, besedilo) {
+  if (!vsebina || !Array.isArray(vsebina.ops)) return null;
+  let cel = '';
+  const por = [];
+  for (const op of vsebina.ops) {
+    if (typeof op.insert !== 'string') continue;
+    const a = op.attributes && ['center', 'right', 'justify'].includes(op.attributes.align) ? op.attributes.align : '';
+    for (const ch of op.insert) { cel += ch; if (ch === '\n') por.push(a); }
+  }
+  if (cel.trim() !== (besedilo || '')) return null;
+  const spredaj = cel.slice(0, cel.length - cel.trimStart().length).split('\n').length - 1;
+  const p = por.slice(spredaj);
+  return p.some(x => x) ? p : null;
+}
+function primerjavaHtml(a, b, por) {
   const kosi = primerjaj(a, b);
   if (!kosi.some(d => d[0] !== '=')) return null;
-  return kosi.map(([t, s]) => {
-    if (t === '=') return esc(s);
+  if (por) { // vrstico za vrstico, z učiteljevo poravnavo (npr. podpis desno)
+    const vr = [''];
+    const dodaj = (s, ovij) => s.split('\n').forEach((del, i) => {
+      if (i) { if (ovij) vr[vr.length - 1] += ovij('<span class="zn">¶</span>'); vr.push(''); }
+      if (del) vr[vr.length - 1] += ovij ? ovij(del) : del;
+    });
+    for (const [t, s] of kosi) {
+      if (t === '=') dodaj(esc(s));
+      else if (t === '-') vr[vr.length - 1] += oznaci(t, s);
+      else dodaj(!s.trim() ? esc(s).replace(/[ \t\u00a0]/g, '·') : esc(s), h => `<ins title="Učitelj je to dodal">${h}</ins>`);
+    }
+    return vr.map((h, i) => `<div${por[i] ? ` style="text-align:${por[i]}"` : ''}>${h || '<br>'}</div>`).join('');
+  }
+  return kosi.map(([t, s]) => t === '=' ? esc(s) : oznaci(t, s)).join('');
+}
+function oznaci(t, s) {
     const samoPresledki = !s.trim();
     let h = esc(s);
     if (t === '-') {
@@ -571,13 +600,13 @@ function primerjavaHtml(a, b) {
     if (samoPresledki) h = h.replace(/[ \t\u00a0]/g, '·');
     h = h.replace(/\n/g, '<span class="zn">¶</span>\n');
     return `<ins title="Učitelj je to dodal">${h}</ins>`;
-  }).join('');
 }
 function popravkiHtml(pred, po, cas_, o = {}) {
-  const n = primerjavaHtml(pred.naslov, po.naslov), b = primerjavaHtml(pred.besedilo, po.besedilo);
+  const n = primerjavaHtml(pred.naslov, po.naslov), b = primerjavaHtml(pred.besedilo, po.besedilo, poravnaveVrstic(po.vsebina, po.besedilo));
+  const ns = po.vsebina && po.vsebina.naslov && ['left', 'center', 'right'].includes(po.vsebina.naslov.a) ? ` style="text-align:${po.vsebina.naslov.a}"` : '';
   return `<div class="glava-p">${o.zavihki || ''}<h2>${o.naslov || '✏️ Popravki učitelja'}${cas_ ? ` <small style="font-weight:700;color:var(--muted)">· ${cas(cas_)}</small>` : ''}</h2>
     <div class="legenda"><span><del>prečrtano</del> = zbrisal</span><span><ins>${o.zeleno ? 'zeleno' : 'rdeče'}</ins> = dodal ali popravil</span><span><del>·</del> presledek</span><span><ins>¶</ins> nov odstavek</span></div></div>
-    ${n || b ? `<div class="p-naslov">${n || esc(po.naslov || '')}</div><div class="p-besedilo">${b || esc(po.besedilo || '')}</div>`
+    ${n || b ? `<div class="p-naslov"${ns}>${n || esc(po.naslov || '')}</div><div class="p-besedilo">${b || esc(po.besedilo || '')}</div>`
       : `<div class="brez-pop">${o.prazno || 'Popravkov še ni.'}</div>`}`;
 }
 const imaPopravke = (pred, po) => !!(primerjavaHtml(pred.naslov, po.naslov) || primerjavaHtml(pred.besedilo, po.besedilo));
@@ -637,7 +666,7 @@ async function ucenecPisi(pid) {
       : '✏️ Učitelj je popravil tvoje besedilo. V rdečem okvirju vidiš, kaj je spremenil; v urejevalniku je tvoje besedilo s popravki.'}
       <button class="btn btn-sm" id="pop-tg" type="button">Skrij popravke</button></div>` : ''}
     ${r.komentar ? `<div class="komentar"><h3>💬 Komentar učitelja <small style="color:var(--muted);font-weight:700">· ${cas(r.komentar_cas)}</small></h3><p>${esc(r.komentar)}</p></div>` : ''}
-    ${pop ? `<div class="razdeli" id="razdeli"><section class="popravki" aria-label="Popravki učitelja">${popravkiHtml(r.popravki.pred, r.popravki.po, r.popravki.cas, sam ? { naslov: '✏️ Popravi sam' } : {})}</section><div id="ed"></div></div>` : '<div id="ed"></div>'}
+    ${pop ? `<div class="razdeli" id="razdeli"><section class="popravki" aria-label="Popravki učitelja">${popravkiHtml(r.popravki.pred, { ...r.popravki.po, vsebina: r.popravki.vsebina || (r.urejal === 'ucitelj' ? r.vsebina : null) }, r.popravki.cas, sam ? { naslov: '✏️ Popravi sam' } : {})}</section><div id="ed"></div></div>` : '<div id="ed"></div>'}
     ${r.presoje.length ? `<div class="panel"><h2>⭐⭐🪄 Kaj so ti napisali sošolci</h2>${presojeHtml(r.presoje, false)}</div>` : ''}`;
   urejevalnik(document.getElementById('ed'), {
     id: r.id, naslov: r.naslov, vsebina: r.vsebina, verzija: r.verzija, jaz: 'ucenec', kdoDrug: 'učitelj', zaklenjeno: r.projekt.zaklenjen,
@@ -935,7 +964,7 @@ async function uciteljBesedilo(pid, bid) {
   let pred = P ? (kopija ? pop.pred : null) : (d.urejal === 'ucitelj' && pop && !pop.vsebina ? pop.pred : null);
   let novKrog = P && !kopija, uredil = false, zadnje = null;
   // Zeleno: kaj je učenec spremenil po zadnjih popravkih.
-  const zel = pop && d.urejal === 'ucenec' ? { od: pop.vsebina ? pop.pred : pop.po, do: { naslov: d.naslov || '', besedilo: d.besedilo || '' } } : null;
+  const zel = pop && d.urejal === 'ucenec' ? { od: pop.vsebina ? pop.pred : pop.po, do: { naslov: d.naslov || '', besedilo: d.besedilo || '', vsebina: d.vsebina } } : null;
   const imaZel = !!(zel && imaPopravke(zel.od, zel.do));
   let zavihek = imaZel ? 'g' : 'r';
   function narisi() {
@@ -946,7 +975,7 @@ async function uciteljBesedilo(pid, bid) {
     if (zavihek === 'g') el.innerHTML = popravkiHtml(zel.od, zel.do, d.posodobljeno, { zavihki: zav, zeleno: true,
       naslov: P && pop.vsebina ? '🟢 Kaj je učenec popravil sam' : '🟢 Kaj je učenec spremenil po vaših popravkih' });
     else if (!uredil && !kopija && pop && !(pred && imaPopravke(pred, z)))
-      el.innerHTML = popravkiHtml(pop.pred, pop.po, pop.cas, { zavihki: zav, naslov: '✏️ Vaši zadnji popravki' });
+      el.innerHTML = popravkiHtml(pop.pred, { ...pop.po, vsebina: pop.vsebina || d.vsebina }, pop.cas, { zavihki: zav, naslov: '✏️ Vaši zadnji popravki' });
     else el.innerHTML = popravkiHtml(pred || z, z, null, { zavihki: zav, naslov: '✏️ Vaši popravki',
       prazno: P ? 'Popravke pišite v besedilo desno; tukaj se pokažejo rdeče.' : 'Popravkov še ni.' });
     el.querySelectorAll('[data-z]').forEach(b => b.addEventListener('click', () => { zavihek = b.dataset.z; narisi(); }));
@@ -978,9 +1007,9 @@ async function uciteljBesedilo(pid, bid) {
     id: d.id, jaz: 'ucitelj', kdoDrug: 'učenec', kljuc: P ? 'k_' + d.id : d.id,
     naslov: kopija ? pop.po.naslov : d.naslov, vsebina: kopija ? pop.vsebina : d.vsebina,
     verzija: P ? (kopija ? pop.verzija || 0 : 0) : d.verzija,
-    ob: (naslov, besedilo, uporabnik) => {
+    ob: (naslov, besedilo, uporabnik, vsebina) => {
       if (!pred) pred = { naslov, besedilo };
-      zadnje = { naslov, besedilo };
+      zadnje = { naslov, besedilo, vsebina };
       if (uporabnik && !uredil) { uredil = true; zavihek = 'r'; }
       narisi();
     },

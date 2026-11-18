@@ -56,6 +56,9 @@ in morajo biti varni: majhni, preverjeni, takoj objavljeni.
   glavnega naslova). Ko je kazalec v glavnem naslovu, meni pokaže »Glavni naslov«, meni vrste in
   velikosti sta onemogočena. Ko je kazalec v naslovu, poravnava in barva
   veljata za naslov.
+- Rdeča/zelena primerjava (18. 11. 2026) upošteva poravnavo vrstic in naslova iz »po« različice
+  (`poravnaveVrstic`, samo če se besedilo delte ujema z golim besedilom). Povod: Anej je podpis
+  porinil desno s presledki, Teja jih je zbrisala in poravnala desno, levo pa je bil podpis videti levo.
 - Brez strežniške zgodovine različic, razen `rezerve`. Če učenec zbriše in shrani, je prejšnje
   besedilo ohranjeno samo v rezervi ali v `popravki.pred`/`po`.
 - Prenos projekta k drugi učiteljici: skrbnik (`sola_pis_a_prenesi`) ali SQL `update sola_pis_projekti set ucitelj_id = …`.
