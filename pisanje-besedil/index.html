@@ -703,6 +703,11 @@ function preveriKose(pred, po, zdaj) {
   }
   return { kosi, vseh, ok, drugace };
 }
+function preveriStevila(pred, po, zdaj) {
+  const n = preveriKose(pred.naslov || '', po.naslov || '', zdaj.naslov || ''),
+    b = preveriKose(pred.besedilo || '', po.besedilo || '', zdaj.besedilo || '');
+  return { vseh: n.vseh + b.vseh, ok: n.ok + b.ok, dr: n.drugace + b.drugace };
+}
 function preveriHtml(pred, po, zdaj, o = {}) {
   const n = preveriKose(pred.naslov || '', po.naslov || '', zdaj.naslov || ''),
     b = preveriKose(pred.besedilo || '', po.besedilo || '', zdaj.besedilo || '');
@@ -939,6 +944,7 @@ async function uciteljProjekt(pid) {
   const b = p.besedila.slice().sort((x, y) => (x.ucenec.razred || '').localeCompare(y.ucenec.razred || '') || x.ucenec.ime.localeCompare(y.ucenec.ime, 'sl'));
   const izbrani = new Set();
   const tuj = SKRBNIK && !p.moj;
+  const prevStolpec = !!(p.popravi_sam && b.some(x => x.popravljeno)); // »Popravi sam«: koliko popravkov je učenec vnesel
   $main.innerHTML = `<div class="crumb">${tuj ? `<a href="#/ucitelji/${p.ucitelj_id || 'brez'}">← Projekti: ${esc(p.ucitelj || 'brez lastnice')}</a>` : '<a href="#/">← Vsi projekti</a>'}</div>
     ${tuj ? `<div class="note warn">👩‍🏫 To je projekt učitelja <b>${esc(p.ucitelj || 'brez lastnice')}</b>. Kot skrbnik ga lahko urejate; spremembe vidita učitelj in učenci.</div>` : ''}
     <section class="hero"><h1>${esc(p.ime)}</h1><p>${p.razred ? esc(p.razred) + '. razred · ' : ''}${besedil(b.filter(x => x.besed).length)}${p.zaklenjen ? ' · 🔒 zaklenjen (učenci besedil ne morejo spreminjati)' : ''}${p.arhiviran ? ' · 🗄️ zaprt (učenci ga ne vidijo)' : ''}</p></section>
@@ -968,7 +974,7 @@ async function uciteljProjekt(pid) {
         </div>
       </div>
       ${b.length ? `<div class="tabela"><table class="ucenci">
-        <thead><tr><th><input type="checkbox" id="vsi" title="Izberi vse" aria-label="Izberi vse"></th><th>Učenec</th><th>Naslov</th><th>Dolžina</th><th>Nazadnje</th><th></th>${p.razdeljeno ? '<th>Presoje</th>' : ''}</tr></thead>
+        <thead><tr><th><input type="checkbox" id="vsi" title="Izberi vse" aria-label="Izberi vse"></th><th>Učenec</th><th>Naslov</th><th>Dolžina</th><th>Nazadnje</th><th></th>${prevStolpec ? '<th title="Koliko vaših popravkov je učenec pravilno vnesel">Popravljeno</th>' : ''}${p.razdeljeno ? '<th>Presoje</th>' : ''}</tr></thead>
         <tbody>${b.map(x => `<tr class="klik" data-id="${x.id}">
           <td><input type="checkbox" data-iz="${x.id}" aria-label="Izberi"></td>
           <td><b>${esc(x.ucenec.emoji || '')} ${esc(x.ucenec.ime)}</b>${x.ucenec.razred ? ` <span class="tag grey">${esc(x.ucenec.razred)}</span>` : ''}</td>
@@ -976,6 +982,7 @@ async function uciteljProjekt(pid) {
           <td class="st">${besed(x.besed)}</td>
           <td class="st">${cas(x.posodobljeno)}</td>
           <td>${x.komentar ? '<span class="tag sun" title="Komentar je napisan">💬</span>' : ''}${x.urejal === 'ucitelj' ? ' <span class="tag pink" title="Nazadnje ste urejali vi">✏️</span>' : ''}${x.urejal === 'ucenec' && x.popravljeno ? ' <span class="tag ok" title="Učenec je po vaših popravkih spremenil besedilo">🟢</span>' : ''}</td>
+          ${prevStolpec ? `<td class="st" data-prev="${x.id}">${x.popravljeno ? '<span style="color:var(--muted)">…</span>' : ''}</td>` : ''}
           ${p.razdeljeno ? `<td class="st" title="prejel/a · napisal/a">⭐ ${x.prejetih}/${x.dodeljenih} · ✍️ ${x.napisal}/${x.naj_napise}</td>` : ''}
         </tr>`).join('')}</tbody></table></div>` : '<div class="empty">Noben učenec še ni začel pisati.</div>'}
     </div>
@@ -1014,6 +1021,20 @@ async function uciteljProjekt(pid) {
   const $vsi = document.getElementById('vsi');
   if ($vsi) $vsi.addEventListener('change', () => { $main.querySelectorAll('[data-iz]').forEach(c => { c.checked = $vsi.checked; c.checked ? izbrani.add(c.dataset.iz) : izbrani.delete(c.dataset.iz); }); osvezi(); });
   $main.querySelectorAll('tr.klik').forEach(tr => tr.addEventListener('click', e => { if (!e.target.closest('input')) location.hash = `#/u/${pid}/${tr.dataset.id}`; }));
+  if (prevStolpec) (async () => { // stolpec »Popravljeno«: naloži besedila s popravki in jih preveri
+    const r = await rpc('sola_pis_u_besedila', { p_seja: S(), p_ids: b.filter(x => x.popravljeno).map(x => x.id) });
+    for (const d of Array.isArray(r) ? r : []) {
+      const td = document.querySelector(`[data-prev="${d.id}"]`), pop = d.popravki;
+      if (!td) continue;
+      if (!pop || !pop.vsebina || !pop.pred || !pop.po) { td.textContent = ''; continue; }
+      const st = preveriStevila(pop.pred, pop.po, { naslov: d.naslov || '', besedilo: d.besedilo || '' });
+      td.innerHTML = !st.vseh ? ''
+        : (st.ok === st.vseh && !st.dr ? `<span class="tag ok" title="Vsi popravki so pravilno vneseni">✓ ${st.ok}/${st.vseh}</span>`
+          : `<span class="tag ${st.ok ? 'sun' : 'pink'}" title="Pravilno vnesenih popravkov: ${st.ok} od ${st.vseh}">${st.ok}/${st.vseh}</span>`)
+          + (st.dr ? ` <span class="tag" style="background:#ffedd5;color:#c2410c" title="Mest, kjer je besedilo drugače kot v popravku (nova napaka ali dodano besedilo)">🟠 ${st.dr}</span>` : '');
+    }
+    document.querySelectorAll('[data-prev]').forEach(td => { if (td.textContent === '…') td.textContent = ''; });
+  })();
   $izvozi.addEventListener('click', async () => {
     const ids = izbrani.size ? b.filter(x => izbrani.has(x.id)).map(x => x.id) : b.filter(x => x.besed).map(x => x.id);
     $izvozi.disabled = true; $izvozi.textContent = 'Pripravljam …';

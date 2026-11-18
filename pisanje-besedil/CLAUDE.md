@@ -48,6 +48,8 @@ in morajo biti varni: majhni, preverjeni, takoj objavljeni.
   Razlike drugje (nova napaka, dodan stavek) so oranžne »drugače kot v popravku«. Primerja se samo
   golo besedilo (tudi presledki), ne oblika. Učiteljica ima isti pogled kot zavihek »✔ Preverjanje«
   (privzet, ko je učenec po popravkih kaj spremenil). Koda: `preveriKose`, `preveriHtml`.
+  Na seznamu učencev projekta je stolpec »Popravljeno« (npr. 7/9, ✓ 9/9, 🟠 = drugače): stran ga
+  izračuna v brskalniku iz `sola_pis_u_besedila` (brez spremembe baze), `preveriStevila`.
 - **Popravljam jaz**: učitelj piše naravnost v učenčevo besedilo. Nino tega načina ne želi kot privzetega.
 
 ## Odločitve in zgodovina
