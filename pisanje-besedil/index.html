@@ -677,8 +677,8 @@ function popravkiHtml(pred, po, cas_, o = {}) {
 
 /* ─── Preverjanje: ali je učenec vnesel učiteljeve popravke ─── */
 // Spremembe a → b kot kosi na a: {zac, kon} = obseg v a, nov = besedilo, ki ga v b nadomesti.
-// Spremembe, ločene samo s presledkom, so ena fraza (»so je biti bilo« = en popravek).
-function spremembe(a, b) {
+// Spremembe, ločene samo s presledkom, so ena fraza (»so je biti bilo« = en popravek); samo, če fraze = true.
+function spremembe(a, b, fraze = true) {
   const out = [];
   let pa = 0, h = null;
   for (const [t, s] of primerjaj(a, b, true)) {
@@ -686,6 +686,7 @@ function spremembe(a, b) {
     if (!h) out.push(h = { zac: pa, kon: pa, nov: '' });
     if (t === '-') h.kon = pa += s.length; else h.nov += s;
   }
+  if (!fraze) return out;
   const besede = h => /\S/.test(a.slice(h.zac, h.kon) + h.nov);
   const zdr = [];
   for (const h of out) {
@@ -700,7 +701,7 @@ const dotika = (a, b) => a.zac < a.kon && b.zac < b.kon ? a.zac < b.kon && b.zac
 // izhodišču (pred). Kjer se prekrivajo, je območje; učiteljev popravek je vnesen, če je učenčeva različica
 // območja enaka učiteljevi. Učenčeve spremembe, kjer učitelj ni popravljal ničesar, so oranžne.
 function preveriKose(pred, po, zdaj) {
-  const vsi = [...spremembe(pred, po).map(h => ({ ...h, u: true })), ...spremembe(pred, zdaj).map(h => ({ ...h, u: false }))]
+  const vsi = [...spremembe(pred, po).map(h => ({ ...h, u: true })), ...spremembe(pred, zdaj, false).map(h => ({ ...h, u: false }))]
     .sort((x, y) => x.zac - y.zac || x.kon - y.kon);
   const obm = [];
   for (const h of vsi) {
@@ -709,6 +710,17 @@ function preveriKose(pred, po, zdaj) {
     else obm.push({ zac: h.zac, kon: h.kon, h: [h] });
   }
   const razlicica = (hs, zac, kon) => { let r = '', p = zac; for (const h of hs) { r += pred.slice(p, h.zac) + h.nov; p = h.kon; } return r + pred.slice(p, kon); };
+  // Enaka sprememba je lahko zamaknjena za presledek (učitelj: »nesli « pred »sveče«, učenec: » nesli« za »smo«).
+  // Sosednji območji, ločeni samo s presledki, združi, če se tako učenčeva različica ujema z učiteljevo.
+  const ujema = o => razlicica(o.h.filter(h => h.u), o.zac, o.kon) === razlicica(o.h.filter(h => !h.u), o.zac, o.kon);
+  for (let i = 0; i + 1 < obm.length;) {
+    const A = obm[i], B = obm[i + 1];
+    if (/^[ \t\u00a0]*$/.test(pred.slice(A.kon, B.zac)) && (!ujema(A) || !ujema(B))) {
+      const M = { zac: A.zac, kon: B.kon, h: [...A.h, ...B.h] };
+      if (ujema(M)) { obm.splice(i, 2, M); continue; }
+    }
+    i++;
+  }
   const kosi = [], koraki = [], dodatno = [];
   let vseh = 0, ok = 0, drugace = 0, p = 0, dz = 0, dp = 0; // dz, dp: zamik zdaj in po glede na pred
   for (const o of obm) {

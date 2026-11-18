@@ -50,7 +50,9 @@ in morajo biti varni: majhni, preverjeni, takoj objavljeni.
   »✔ Preveri«. Primerja kot pri treh različicah: učiteljeve (`pred → po`) in učenčeve (`pred → zdaj`)
   spremembe na istem izhodišču `pred`; prekrivajoče so eno območje, popravek je vnesen, če je učenčeva
   različica območja enaka učiteljevi. (Neposredna primerjava `zdaj → po` se je pri veliko spremembah
-  zamaknila: ✓ in oranžna vejica namesto ✗.) Oznake: ✓ zeleno = vneseno, ✗ rdeče = še ne (pokaže prvotni popravek).
+  zamaknila: ✓ in oranžna vejica namesto ✗.) Učenčeve spremembe se ne združujejo v fraze (le učiteljeve).
+  Sosednji območji, ločeni samo s presledki, se združita, če se tako ujemata (učiteljica »nesli « pred
+  »sveče«, učenec » nesli« za »smo« je ista sprememba). Oznake: ✓ zeleno = vneseno, ✗ rdeče = še ne (pokaže prvotni popravek).
   Razlike drugje (nova napaka, dodan stavek) so oranžne »drugače kot v popravku«. Primerja se samo
   golo besedilo (tudi presledki), ne oblika. Učiteljica ima isti pogled kot zavihek »✔ Preverjanje«
   (privzet, ko je učenec po popravkih kaj spremenil). Koda: `preveriKose`, `preveriHtml`.
