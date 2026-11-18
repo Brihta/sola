@@ -164,6 +164,31 @@
   .popravki .napredek { height: 8px; border-radius: 999px; background: #fee2e2; margin-top: 6px; overflow: hidden; }
   .popravki .napredek i { display: block; height: 100%; background: #16a34a; border-radius: 999px; }
   .popravki .pz button.on.p { background: #0284c7; border-color: #0284c7; color: #fff; }
+  .vod { padding: 12px 18px 20px; }
+  .vod .pike { display: flex; flex-wrap: wrap; gap: 5px; margin-bottom: 12px; }
+  .vod .pika { min-width: 30px; height: 30px; padding: 0 6px; border-radius: 999px; border: 2px solid var(--line-2); background: #fff; font-weight: 900; font-size: .82rem; cursor: pointer; color: var(--ink); }
+  .vod .pika.da { background: #16a34a; border-color: #16a34a; color: #fff; }
+  .vod .pika.o { background: #ffedd5; border-color: #fb923c; color: #c2410c; }
+  .vod .pika.zdaj { outline: 3px solid #0ea5e9; outline-offset: 2px; }
+  .vod .naslov-k { font-weight: 900; color: var(--muted); font-size: .95rem; }
+  .vod .naslov-k.o { color: #c2410c; }
+  .vod .naloga { font-size: 1.3rem; font-weight: 900; line-height: 1.4; margin: 6px 0 14px; }
+  .vod .naloga b { color: #b91c1c; }
+  .vod .opomba { margin: -6px 0 12px; color: var(--muted); font-weight: 700; font-size: .92rem; }
+  .vod .vr { font-size: 1.08rem; line-height: 1.75; padding: 8px 12px 10px; border-radius: 14px; background: #fefce8; border: 1.5px solid #fde68a; margin-bottom: 8px; overflow-wrap: anywhere; }
+  .vod .vr.ok { background: #f0fdf4; border-color: #bbf7d0; }
+  .vod .vr .lbl { display: block; font-size: .75rem; font-weight: 900; color: var(--muted); text-transform: uppercase; letter-spacing: .05em; }
+  .vod mark.zdaj { background: #fde047; border-radius: 4px; padding: 0 2px; box-shadow: 0 0 0 2px #f59e0b; }
+  .vod mark.prav { background: #86efac; border-radius: 4px; padding: 0 2px; font-weight: 900; }
+  .vod .kazalec, .vod-plast i.kaz { display: inline-block; width: 3px; height: 1.15em; background: #dc2626; vertical-align: -.2em; margin: 0 1px; border-radius: 2px; animation: utrip 1s steps(2) infinite; }
+  @keyframes utrip { 50% { opacity: .15; } }
+  .vod .gumbi { display: flex; gap: 8px; flex-wrap: wrap; justify-content: space-between; margin-top: 14px; }
+  .vod .bravo { font-size: 1.6rem; font-weight: 900; color: #15803d; text-align: center; padding: 14px 0 6px; line-height: 1.3; }
+  .vod-plast { position: absolute; inset: 0; pointer-events: none; z-index: 2; transition: opacity .15s; }
+  .vod-plast i { position: absolute; background: rgba(253, 224, 71, .55); box-shadow: 0 0 0 2px #f59e0b; border-radius: 4px; mix-blend-mode: multiply; }
+  .vod-plast i.kaz { position: absolute; margin: 0; width: 4px !important; background: #dc2626; box-shadow: 0 0 0 2px #fff, 0 0 0 4px #dc2626; mix-blend-mode: normal; }
+  .vod-plast i.sosed { background: rgba(253, 224, 71, .4); box-shadow: none; }
+  .ed-title.vod-oznaka { background: #fef9c3 !important; box-shadow: inset 0 0 0 3px #f59e0b; }
   .popravki .brez-pop { padding: 20px; color: var(--muted); font-weight: 700; }
   @media (max-width: 900px) {
     .razdeli { grid-template-columns: minmax(0, 1fr); }
@@ -498,6 +523,7 @@ function urejevalnik(el, o) {
   const ctl = {
     shrani, preveri,
     trenutno: () => ({ naslov: $naslov.value.trim(), besedilo: q.getText().trim() }),
+    q, naslovEl: $naslov,
     neshranjeno: () => umazano || shranjujem,
     unici() { clearInterval(tik); shrani(true); },
   };
@@ -683,16 +709,21 @@ function preveriKose(pred, po, zdaj) {
     else obm.push({ zac: h.zac, kon: h.kon, h: [h] });
   }
   const razlicica = (hs, zac, kon) => { let r = '', p = zac; for (const h of hs) { r += pred.slice(p, h.zac) + h.nov; p = h.kon; } return r + pred.slice(p, kon); };
-  const kosi = [];
-  let vseh = 0, ok = 0, drugace = 0, p = 0;
+  const kosi = [], koraki = [], dodatno = [];
+  let vseh = 0, ok = 0, drugace = 0, p = 0, dz = 0, dp = 0; // dz, dp: zamik zdaj in po glede na pred
   for (const o of obm) {
     if (o.zac > p) kosi.push(['=', pred.slice(p, o.zac)]);
     const uc = o.h.filter(h => h.u), ucen = o.h.filter(h => !h.u);
+    const pri = razlicica(ucen, o.zac, o.kon), zZac = o.zac + dz, zKon = zZac + pri.length;
     if (uc.length) {
-      const prav = razlicica(uc, o.zac, o.kon) === razlicica(ucen, o.zac, o.kon);
+      const cilj = razlicica(uc, o.zac, o.kon), prav = cilj === pri, poZac = o.zac + dp;
       vseh += uc.length; if (prav) ok += uc.length;
       let q = o.zac;
       for (const h of uc) {
+        // Položaj v učenčevem besedilu: natančno ta popravek, če učenec tu ni nič spreminjal, sicer celo območje.
+        koraki.push(ucen.length ? { prav, zZac, zKon, cilj, poZac, poKon: poZac + cilj.length }
+          : { prav, zZac: h.zac + dz, zKon: h.kon + dz, cilj: h.nov, poZac: h.zac + dp, poKon: h.zac + dp + h.nov.length });
+        dp += h.nov.length - (h.kon - h.zac);
         if (h.zac > q) kosi.push(['=', pred.slice(q, h.zac)]);
         if (prav) {
           if (h.nov) kosi.push(['=', h.nov, 'ok']);
@@ -707,14 +738,15 @@ function preveriKose(pred, po, zdaj) {
       if (o.kon > q) kosi.push(['=', pred.slice(q, o.kon)]);
     } else {
       drugace++;
-      const pri = razlicica(ucen, o.zac, o.kon);
+      dodatno.push({ dodatno: true, prav: false, zZac, zKon, cilj: pred.slice(o.zac, o.kon), poZac: o.zac + dp, poKon: o.kon + dp });
       if (pri) kosi.push(['-', pri, 'o']);
       if (o.kon > o.zac) kosi.push(['+', pred.slice(o.zac, o.kon), 'o']);
     }
+    dz += pri.length - (o.kon - o.zac);
     p = o.kon;
   }
   if (pred.length > p) kosi.push(['=', pred.slice(p)]);
-  return { kosi, vseh, ok, drugace };
+  return { kosi, vseh, ok, drugace, koraki, dodatno };
 }
 function preveriStevila(pred, po, zdaj) {
   const n = preveriKose(pred.naslov || '', po.naslov || '', zdaj.naslov || ''),
@@ -734,6 +766,182 @@ function preveriHtml(pred, po, zdaj, o = {}) {
     <div class="napredek"><i style="width:${vseh ? Math.round(100 * ok / vseh) : 100}%"></i></div>
     <div class="legenda"><span><span class="pr da">✓</span> pravilno popravljeno</span><span><ins>rdeče</ins> <span class="pr ne">✗</span> še popravi</span>${dr ? '<span><del class="o">oranžno</del> drugače kot v popravku</span>' : ''}</div></div>
     <div class="p-naslov"${ns}>${izrisi(n.kosi)}</div><div class="p-besedilo">${izrisi(b.kosi, oblika(po.vsebina, po.besedilo))}</div>`;
+}
+/* ─── Vodeno popravljanje: en popravek naenkrat, mesto označeno v učenčevem besedilu ─── */
+// Koraki: najprej naslov, nato besedilo; na koncu mesta, ki so drugače kot v popravku (dodatno).
+function vodenoStanje(pred, po, zdaj) {
+  const n = preveriKose(pred.naslov || '', po.naslov || '', zdaj.naslov || ''),
+    b = preveriKose(pred.besedilo || '', po.besedilo || '', zdaj.besedilo || '');
+  const k = [...n.koraki.map(x => ({ ...x, polje: 'naslov' })), ...b.koraki.map(x => ({ ...x, polje: 'besedilo' }))];
+  const d = [...n.dodatno.map(x => ({ ...x, polje: 'naslov' })), ...b.dodatno.map(x => ({ ...x, polje: 'besedilo' }))];
+  return { koraki: [...k, ...d], vseh: k.length, ok: k.filter(x => x.prav).length, po, zdaj };
+}
+const LOCILA = { ',': 'vejico', '.': 'piko', '!': 'klicaj', '?': 'vprašaj', ':': 'dvopičje', ';': 'podpičje', '-': 'vezaj',
+  '–': 'pomišljaj', '—': 'pomišljaj', '"': 'narekovaj', '»': 'narekovaj', '«': 'narekovaj', '„': 'narekovaj', '“': 'narekovaj', '(': 'oklepaj', ')': 'zaklepaj' };
+const LOCILA_RD = { vejico: 'vejice', piko: 'pike', klicaj: 'klicaja', 'vprašaj': 'vprašaja', 'dvopičje': 'dvopičja', 'podpičje': 'podpičja',
+  vezaj: 'vezaja', 'pomišljaj': 'pomišljaja', narekovaj: 'narekovaja', oklepaj: 'oklepaja', zaklepaj: 'zaklepaja' };
+const jedro = s => s.replace(/^[ \t ]+|[ \t ]+$/g, '');
+const samoLocila = s => !!s.trim() && /^[^\p{L}\p{N}]+$/u.test(s.replace(/\s/g, ''));
+const navBes = s => `»<b>${esc(s.replace(/\n/g, ' ¶ '))}</b>«`;
+// Navodilo z besedami: kaj naj učenec naredi, da t[zac, kon) postane nov.
+function navodilo(t, zac, kon, nov) {
+  const star = t.slice(zac, kon);
+  const L = (t.slice(0, zac).match(/([\p{L}\p{N}]+)[^\p{L}\p{N}]*$/u) || [])[1] || '';
+  const R = (t.slice(kon).match(/^[^\p{L}\p{N}]*([\p{L}\p{N}]+)/u) || [])[1] || '';
+  const za = L ? ` za besedo ${navBes(L)}` : ' na začetek';
+  const pred_ = R ? ` pred besedo ${navBes(R)}` : za;
+  const besed = x => (x.match(/[\p{L}\p{N}]+/gu) || []).length;
+  const ime = x => { const c = x.replace(/\s/g, ''); return c.length === 1 && LOCILA[c] ? LOCILA[c] : navBes(c); };
+  if (!star) {
+    if (!nov.trim()) return nov.includes('\n')
+      ? (nov.split('\n').length > 2 ? `Naredi prazno vrstico${pred_}.` : `Začni nov odstavek${pred_} (tipka Enter).`)
+      : `Dodaj presledek${L && R ? ` med ${navBes(L)} in ${navBes(R)}` : ''}.`;
+    if (samoLocila(nov)) return `Dodaj ${ime(nov)}${za}.`;
+    if (/^[\p{L}\p{N}\s]+$/u.test(jedro(nov))) return `Dodaj ${besed(nov) > 1 ? 'besede' : 'besedo'} ${navBes(jedro(nov))}${pred_}.`;
+    return `Dodaj ${navBes(jedro(nov))}${za}.`;
+  }
+  if (!nov) {
+    if (!star.trim()) {
+      if (star.includes('\n')) return star.split('\n').length > 2 ? `Zbriši prazno vrstico${pred_}.`
+        : `Tukaj ne začni novega odstavka: ${R ? navBes(R) : 'besedilo'} naj bo v isti vrstici kot ${L ? navBes(L) : 'prej'}.`;
+      if (star.length > 2) return `Zbriši odvečne presledke${pred_}.`
+        + (zac === 0 || t[zac - 1] === '\n' ? ' Če želiš, da je to na desni, uporabi gumb za poravnavo (Poravnaj desno).' : '');
+      return `Zbriši odvečen presledek${L && R ? ` med ${navBes(L)} in ${navBes(R)}` : ''}.`;
+    }
+    if (samoLocila(star)) return `Zbriši ${ime(star)}${L ? ` za besedo ${navBes(L)}` : ''}.`;
+    if (/^[\p{L}\p{N}\s]+$/u.test(jedro(star))) return `Zbriši ${besed(star) > 1 ? 'besede' : 'besedo'} ${navBes(jedro(star))}.`;
+    return `Zbriši ${navBes(jedro(star))}.`;
+  }
+  // Obe strani nekaj vsebujeta: odstavke (Enter) opišemo posebej, nato še besedilo.
+  const nlA = (star.match(/\n/g) || []).length, nlB = (nov.match(/\n/g) || []).length;
+  const zeVrstica = zac === 0 || t[zac - 1] === '\n';
+  let odst = '';
+  if (nlA > nlB) odst = nlB === 0 && !zeVrstica
+    ? (nlA > 1 ? 'Zbriši prazno vrstico in tukaj ne začni novega odstavka.' : 'Tukaj ne začni novega odstavka (zbriši Enter).')
+    : (nlA - nlB > 1 ? 'Zbriši prazne vrstice.' : 'Zbriši prazno vrstico.');
+  else if (nlB > nlA) odst = nlA === 0 && !zeVrstica && nlB === 1 ? 'Tukaj začni nov odstavek (tipka Enter).' : 'Tukaj naredi prazno vrstico.';
+  const a = star.replace(/\s+/g, ' ').trim(), b = nov.replace(/\s+/g, ' ').trim();
+  let bes = '';
+  if (a === b) {
+    if (!odst) bes = star.length > nov.length ? 'Zbriši odvečen presledek.' : 'Dodaj presledek.';
+  } else if (!a) bes = `Dodaj ${navBes(b)}.`;
+  else if (!b) bes = `Zbriši ${navBes(a)}.`;
+  else if (a.toLowerCase() === b.toLowerCase()) {
+    bes = /^\p{Lu}/u.test(b) && /^\p{Ll}/u.test(a) ? `Začni z veliko začetnico: ${navBes(a)} → ${navBes(b)}.`
+      : /^\p{Ll}/u.test(b) && /^\p{Lu}/u.test(a) ? `Piši z malo začetnico: ${navBes(a)} → ${navBes(b)}.`
+      : `Popravi velike in male črke: ${navBes(a)} → ${navBes(b)}.`;
+  } else {
+    const crke = x => x.replace(/[^\p{L}\p{N}]/gu, '').toLowerCase();
+    const brez = x => x.replace(/\s/g, '');
+    bes = brez(a) === brez(b) ? `${b.length > a.length ? 'Dodaj presledek' : 'Zbriši presledek'}: ${navBes(a)} → ${navBes(b)}.`
+      : LOCILA[a] && LOCILA[b] ? `Namesto ${LOCILA_RD[LOCILA[a]]} napiši ${LOCILA[b]}${L ? ` za besedo ${navBes(L)}` : ''}.`
+      : crke(a) === crke(b) ? `Popravi ločila: ${navBes(a)} → ${navBes(b)}.`
+      : !/\s/.test(a) && !/\s/.test(b) ? `Popravi črkovanje: ${navBes(a)} → ${navBes(b)}.`
+      : `Popravi ta del: ${navBes(a)} → ${navBes(b)}.`;
+  }
+  return [odst, bes].filter(Boolean).join(' ');
+}
+// Odlomek okrog t[a, b) (do konca povedi), z označenim delom.
+function odlomek(t, a, b, raz) {
+  let s = a, e = b;
+  while (s > 0 && a - s < 80 && !/[.!?\n]/.test(t[s - 1])) s--;
+  const zr = s > 0 && !/[.!?\n]/.test(t[s - 1]);
+  if (zr) { const sp = t.indexOf(' ', s); if (sp >= 0 && sp < a) s = sp + 1; }
+  while (e < t.length && e - b < 80 && !/[.!?\n]/.test(t[e])) e++;
+  if (e < t.length && /[.!?]/.test(t[e])) e++;
+  const kr = e < t.length && !/[.!?\n]/.test(t[e - 1]);
+  if (kr) { const sp = t.lastIndexOf(' ', e); if (sp > b) e = sp; }
+  let sred = esc(t.slice(a, b));
+  if (!t.slice(a, b).trim()) sred = sred.replace(/[ \t ]/g, '·');
+  sred = sred.replace(/\n/g, '¶');
+  return `${zr ? '… ' : ''}${esc(t.slice(s, a).trimStart())}${a === b ? '<span class="kazalec"></span>' : `<mark class="${raz}">${sred}</mark>`}${esc(t.slice(b, e))}${kr ? ' …' : ''}`;
+}
+function vodenoHtml(st, i, zavihki) {
+  const k = st.koraki[i], dod = st.koraki.length - st.vseh;
+  const pike = st.koraki.map((x, j) => `<button type="button" class="pika${x.dodatno ? ' o' : x.prav ? ' da' : ''}${j === i ? ' zdaj' : ''}" data-korak="${j}"
+    title="${x.dodatno ? 'Drugače kot v popravku' : `Popravek ${j + 1}${x.prav ? ': popravljen' : ''}`}">${x.prav ? '✓' : x.dodatno ? '!' : j + 1}</button>`).join('');
+  const glava = `<div class="glava-p">${zavihki}<div class="povzetek${st.ok === st.vseh ? ' vse' : ''}">Popravljeno: <b>${st.ok} od ${st.vseh}</b></div>
+    <div class="napredek"><i style="width:${st.vseh ? Math.round(100 * st.ok / st.vseh) : 100}%"></i></div></div>`;
+  if (st.ok === st.vseh && !dod) return `${glava}<div class="vod"><div class="bravo">🎉 Odlično!<br>Vsi popravki so vneseni.</div>
+    <p style="text-align:center;margin:0 0 12px">Pokaži učiteljici, da si končal/-a.</p><div class="pike">${pike}</div></div>`;
+  if (!k) return glava;
+  const t = k.polje === 'naslov' ? st.zdaj.naslov || '' : st.zdaj.besedilo || '', tp = k.polje === 'naslov' ? st.po.naslov || '' : st.po.besedilo || '';
+  const kje = k.polje === 'naslov' ? '<span class="tag">v glavnem naslovu</span> ' : '';
+  return `${glava}<div class="vod">
+    <div class="pike">${pike}</div>
+    ${k.dodatno
+      ? `<div class="naslov-k o">🔎 Tukaj je tvoje besedilo drugače kot v popravku</div>
+         <div class="naloga">${kje}${navodilo(t, k.zZac, k.zKon, k.cilj)}</div>
+         <p class="opomba">Če si to spremenil/-a namenoma, je lahko v redu. Vprašaj učiteljico.</p>`
+      : `<div class="naslov-k">Popravek ${i + 1} od ${st.vseh}${k.prav ? ' <span class="pr da">✓</span>' : ''}</div>
+         <div class="naloga">${k.prav ? '✓ To je že pravilno popravljeno.' : kje + navodilo(t, k.zZac, k.zKon, k.cilj)}</div>`}
+    ${k.prav ? `<div class="vr ok"><span class="lbl">Tvoje besedilo</span>${odlomek(t, k.zZac, k.zKon, 'prav')}</div>`
+      : `<div class="vr"><span class="lbl">Zdaj piše</span>${odlomek(t, k.zZac, k.zKon, 'zdaj')}</div>
+         <div class="vr ok"><span class="lbl">Pravilno</span>${odlomek(tp, k.poZac, k.poKon, 'prav')}</div>`}
+    <div class="gumbi">
+      <button type="button" class="btn btn-sm" data-korak="${Math.max(0, i - 1)}" ${i ? '' : 'disabled'}>← Nazaj</button>
+      ${k.prav ? '' : '<button type="button" class="btn btn-sm btn-go" data-pojdi>📍 Pokaži v besedilu</button>'}
+      <button type="button" class="btn btn-sm" data-korak="${Math.min(st.koraki.length - 1, i + 1)}" ${i < st.koraki.length - 1 ? '' : 'disabled'}>Naprej →</button>
+    </div></div>`;
+}
+let vodPrerisi = null; // ponovni izris rumene oznake (ob spremembi velikosti okna)
+window.addEventListener('resize', () => { if (vodPrerisi) vodPrerisi(); });
+// Iz učenčevega položaja (golo besedilo brez začetnih presledkov) v DOM obseg urejevalnika.
+function obsegQuill(q, a, b) {
+  try {
+    const pos = i => { const [leaf, off] = q.getLeaf(i); return leaf ? leaf.position(off, true) : null; };
+    const x = pos(a), y = pos(b);
+    if (!x || !y) return null;
+    const r = document.createRange();
+    r.setStart(x[0], x[1]); r.setEnd(y[0], y[1]);
+    return r;
+  } catch (e) { return null; }
+}
+// Rumena oznaka mesta v urejevalniku (plast nad besedilom; besedila in oblike ne spremeni).
+function oznaciMesto(ed, k, pomakni) {
+  const q = ed.q, cont = q.container;
+  let plast = cont.querySelector('.vod-plast');
+  if (!plast) { plast = document.createElement('div'); plast.className = 'vod-plast'; cont.appendChild(plast); }
+  plast.innerHTML = ''; plast.style.opacity = '';
+  ed.naslovEl.classList.toggle('vod-oznaka', !!(k && !k.prav && k.polje === 'naslov'));
+  if (!k || k.prav) return;
+  if (k.polje === 'naslov') { if (pomakni) ed.naslovEl.scrollIntoView({ block: 'center', behavior: 'smooth' }); return; }
+  const t = q.getText(), zam = t.length - t.trimStart().length;
+  const r = obsegQuill(q, k.zZac + zam, k.zKon + zam);
+  if (!r) return;
+  const c = cont.getBoundingClientRect();
+  if (k.zZac === k.zKon) { // dodajanje: rahlo osvetli še sosednji besedi, da otrok mesto hitreje najde
+    const a = k.zZac + zam, levo = (t.slice(0, a).match(/[\p{L}\p{N}]+[^\p{L}\p{N}\s]*\s*$/u) || [''])[0], desno = (t.slice(a).match(/^\s*[^\p{L}\p{N}\s]*[\p{L}\p{N}]+/u) || [''])[0];
+    for (const [x, y] of [[a - levo.length, a], [a, a + desno.length]]) {
+      const rr = y > x && obsegQuill(q, x, y);
+      if (rr) for (const p of rr.getClientRects()) if (p.width > 0) {
+        const el = document.createElement('i'); el.className = 'sosed';
+        Object.assign(el.style, { left: (p.left - c.left - 1) + 'px', top: (p.top - c.top) + 'px', width: (p.width + 2) + 'px', height: p.height + 'px' });
+        plast.appendChild(el);
+      }
+    }
+  }
+  const pravok = [...r.getClientRects()].filter(x => x.height > 0 && (k.zZac === k.zKon || x.width > 0));
+  for (const x of k.zZac === k.zKon ? pravok.slice(0, 1) : pravok) {
+    const el = document.createElement('i');
+    if (k.zZac === k.zKon) el.className = 'kaz';
+    Object.assign(el.style, { left: (x.left - c.left - (k.zZac === k.zKon ? 1 : 2)) + 'px', top: (x.top - c.top - 1) + 'px',
+      width: (k.zZac === k.zKon ? 3 : x.width + 4) + 'px', height: (x.height + 2) + 'px' });
+    plast.appendChild(el);
+  }
+  if (pomakni && plast.lastChild) plast.lastChild.scrollIntoView({ block: 'center', behavior: 'smooth' });
+}
+// »Pokaži v besedilu«: kazalec (ali izbor) na mesto popravka.
+function pojdiNaMesto(ed, k) {
+  if (!k) return;
+  if (k.polje === 'naslov') {
+    const v = ed.naslovEl.value, zam = v.length - v.trimStart().length;
+    ed.naslovEl.focus(); ed.naslovEl.setSelectionRange(k.zZac + zam, k.zKon + zam);
+    return;
+  }
+  const t = ed.q.getText(), zam = t.length - t.trimStart().length;
+  ed.q.setSelection(k.zZac + zam, k.zKon - k.zZac, 'user');
+  oznaciMesto(ed, k, true);
 }
 const imaPopravke = (pred, po) => !!(primerjavaHtml(pred.naslov, po.naslov) || primerjavaHtml(pred.besedilo, po.besedilo));
 
@@ -790,33 +998,73 @@ async function ucenecPisi(pid) {
     <section class="hero" style="padding:18px 24px"><h1 style="font-size:1.6rem">${esc(r.projekt.ime)}</h1>${r.projekt.opis ? `<p>${esc(r.projekt.opis)}</p>` : ''}${r.projekt.ucitelj ? `<p style="opacity:.9;font-size:.9rem">👩‍🏫 ${esc(r.projekt.ucitelj)}</p>` : ''}</section>
     ${r.projekt.zaklenjen ? '<div class="note warn">🔒 Učitelj je zaklenil projekt. Svoje besedilo lahko prebereš, spreminjati ga ne moreš.</div>' : ''}
     ${pop ? `<div class="note info row" style="justify-content:space-between">${sam
-      ? '✏️ Učitelj je označil, kaj moraš popraviti (v rdečem okvirju). Popravke vnesi sam v svoje besedilo.'
+      ? '✏️ Učitelj je popravil tvoje besedilo. Popravke vnesi sam, enega za drugim: levo piše, kaj narediš, v tvojem besedilu je mesto obarvano rumeno.'
       : '✏️ Učitelj je popravil tvoje besedilo. V rdečem okvirju vidiš, kaj je spremenil; v urejevalniku je tvoje besedilo s popravki.'}
       <button class="btn btn-sm" id="pop-tg" type="button">Skrij popravke</button></div>` : ''}
     ${r.komentar ? `<div class="komentar"><h3>💬 Komentar učitelja <small style="color:var(--muted);font-weight:700">· ${cas(r.komentar_cas)}</small></h3><p>${esc(r.komentar)}</p></div>` : ''}
     ${pop ? `<div class="razdeli" id="razdeli"><section class="popravki" id="levo" aria-label="Popravki učitelja">${popravkiHtml(r.popravki.pred, poZ, r.popravki.cas, sam ? { naslov: '✏️ Popravi sam', gumb: GUMB_PREVERI('✔ Preveri') } : {})}</section><div id="ed"></div></div>` : '<div id="ed"></div>'}
     ${r.presoje.length ? `<div class="panel"><h2>⭐⭐🪄 Kaj so ti napisali sošolci</h2>${presojeHtml(r.presoje, false)}</div>` : ''}`;
-  const ed = urejevalnik(document.getElementById('ed'), {
+  // »Popravi sam«: levo vodeno popravljanje (korak za korakom), vsi popravki ali preverjanje.
+  const levo = document.getElementById('levo');
+  let st = null, korak = -1, pogled = 'vod', tikV = null, zdaj = null, ed = null;
+  const ZAV = () => `<div class="pz"><button type="button" data-pogled="vod" class="p ${pogled === 'vod' ? 'on' : ''}">👣 Korak za korakom</button><button type="button" data-pogled="vsi" class="r ${pogled !== 'vod' ? 'on' : ''}">📄 Vsi popravki</button></div>`;
+  const naslednji = i => {
+    const n = st.koraki.findIndex((x, j) => j > i && !x.prav && !x.dodatno);
+    if (n >= 0) return n;
+    const m = st.koraki.findIndex(x => !x.prav && !x.dodatno);
+    if (m >= 0) return m;
+    return st.koraki.length > st.vseh ? st.vseh : -1;
+  };
+  function narisiLevo(pomakni) {
+    if (!sam || !st) return;
+    levo.classList.toggle('preverjeno', pogled !== 'vsi');
+    const skrito = document.getElementById('razdeli').classList.contains('brez');
+    if (pogled === 'vod') { levo.innerHTML = vodenoHtml(st, korak, ZAV()); oznaciMesto(ed, skrito ? null : st.koraki[korak], pomakni); return; }
+    oznaciMesto(ed, null);
+    levo.innerHTML = pogled === 'prev'
+      ? preveriHtml(r.popravki.pred, poZ, zdaj, { zavihki: ZAV(), naslov: '✔ Preverjanje', gumb: `<div class="row" style="gap:6px">${GUMB_PREVERI('✔ Preveri znova')}<button class="btn btn-sm" data-pogled="vsi" type="button">✏️ Popravki</button></div>` })
+      : popravkiHtml(r.popravki.pred, poZ, r.popravki.cas, { zavihki: ZAV(), naslov: '✏️ Popravi sam', gumb: GUMB_PREVERI('✔ Preveri') });
+  }
+  function osveziVodeno() {
+    if (!sam || !ed || !zdaj) return;
+    const prej = st;
+    st = vodenoStanje(r.popravki.pred, poZ, zdaj);
+    if (korak < 0 || korak >= st.koraki.length) korak = naslednji(-1);
+    const k = st.koraki[korak], pk = prej && prej.koraki[korak];
+    if (k && k.prav && pk && !pk.prav && !pk.dodatno) { // pravkar popravljeno: čez trenutek naslednji popravek
+      clearTimeout(tikV);
+      tikV = setTimeout(() => { tikV = null; korak = naslednji(korak); narisiLevo(true); }, 1400);
+    } else if (st.ok === st.vseh && k && !k.dodatno && st.koraki.length > st.vseh && !tikV) korak = st.vseh;
+    if (pogled !== 'prev') narisiLevo(false);
+  }
+  ed = urejevalnik(document.getElementById('ed'), {
     id: r.id, naslov: r.naslov, vsebina: r.vsebina, verzija: r.verzija, jaz: 'ucenec', kdoDrug: 'učitelj', zaklenjeno: r.projekt.zaklenjen,
     shrani: (d, keep) => rpc('sola_pis_shrani', { p_student: ucenec.id, p_id: d.id, p_verzija: d.verzija, p_naslov: d.naslov, p_vsebina: d.vsebina, p_besedilo: d.besedilo }, keep),
     osvezi: async () => { const x = await rpc('sola_pis_odpri', { p_student: ucenec.id, p_projekt: pid }); return x && x.id ? x : null; },
+    ob: sam ? (naslov, besedilo) => { zdaj = { naslov, besedilo }; osveziVodeno(); } : null,
   });
-  // »Preveri«: ali je učenec v svoje besedilo vnesel učiteljeve popravke (✓ / ✗).
-  const levo = document.getElementById('levo');
-  if (sam) levo.addEventListener('click', e => {
-    const preveri = !!e.target.closest('[data-preveri]');
-    if (!preveri && !e.target.closest('[data-nazaj]')) return;
-    levo.classList.toggle('preverjeno', preveri);
-    levo.innerHTML = preveri
-      ? preveriHtml(r.popravki.pred, poZ, ed.trenutno(), { naslov: '✔ Preverjanje', gumb: `<div class="row" style="gap:6px">${GUMB_PREVERI('✔ Preveri znova')}<button class="btn btn-sm" data-nazaj type="button">✏️ Popravki</button></div>` })
-      : popravkiHtml(r.popravki.pred, poZ, r.popravki.cas, { naslov: '✏️ Popravi sam', gumb: GUMB_PREVERI('✔ Preveri') });
-    levo.scrollTop = 0;
-  });
+  if (sam) {
+    zdaj = ed.trenutno(); osveziVodeno();
+    // med tipkanjem rumena oznaka zbledi (besedilo se premika); po preverjanju se nariše znova
+    ed.q.on('text-change', (d, x, src) => { const pl = ed.q.container.querySelector('.vod-plast'); if (pl && src === 'user') pl.style.opacity = '0'; });
+    vodPrerisi = () => { if (!levo.isConnected) return void (vodPrerisi = null); if (pogled === 'vod' && st) oznaciMesto(ed, st.koraki[korak]); };
+    setTimeout(() => vodPrerisi && vodPrerisi(), 600);
+    if (document.fonts) document.fonts.ready.then(() => vodPrerisi && vodPrerisi());
+    levo.addEventListener('click', e => {
+      const b = e.target.closest('button');
+      if (!b || b.disabled) return;
+      if (b.dataset.pogled) { pogled = b.dataset.pogled; if (pogled === 'vod') zdaj = ed.trenutno(), osveziVodeno(); narisiLevo(pogled === 'vod'); levo.scrollTop = 0; }
+      else if (b.dataset.korak != null) { clearTimeout(tikV); tikV = null; korak = +b.dataset.korak; narisiLevo(true); }
+      else if (b.hasAttribute('data-pojdi')) pojdiNaMesto(ed, st.koraki[korak]);
+      else if (b.hasAttribute('data-preveri')) { zdaj = ed.trenutno(); pogled = 'prev'; narisiLevo(false); levo.scrollTop = 0; }
+    });
+  }
   const tg = document.getElementById('pop-tg');
   if (tg) tg.addEventListener('click', () => {
     const skrij = document.getElementById('razdeli').classList.toggle('brez');
     tg.textContent = skrij ? 'Pokaži popravke' : 'Skrij popravke';
     $main.classList.toggle('siroko', !skrij);
+    narisiLevo(false);
   });
 }
 

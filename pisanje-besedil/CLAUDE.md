@@ -58,6 +58,14 @@ in morajo biti varni: majhni, preverjeni, takoj objavljeni.
   besedilo, sicer bi se presledek izgubil in bi se položaji (oblika, preverjanje) zamaknili.
   Na seznamu učencev projekta je stolpec »Popravljeno« (npr. 7/9, ✓ 9/9, 🟠 = drugače): stran ga
   izračuna v brskalniku iz `sola_pis_u_besedila` (brez spremembe baze), `preveriStevila`.
+- **Vodeno popravljanje** (18. 11. 2026, privzeto v »Popravi sam«; Nino: prejšnji prikaz je bil za otroke
+  pretežak): levo zavihek »👣 Korak za korakom« (drugi zavihek »📄 Vsi popravki« = stari prikaz s »Preveri«).
+  En popravek naenkrat: navodilo z besedami (`navodilo`: dodaj vejico, velika začetnica, zbriši besedo,
+  ne začni novega odstavka …), »Zdaj piše« / »Pravilno« (`odlomek`), pike za vse korake. Mesto je v
+  urejevalniku rumeno (`oznaciMesto`: plast nad Quillom, besedila ne spreminja; pri dodajanju rdeč kazalec
+  in sosednji besedi). »📍 Pokaži v besedilu« postavi kazalec tja. Sproti preverja (ob `o.ob`, 400 ms);
+  ko je popravek prav, po 1,4 s preide na naslednjega. Na koncu »🎉 Odlično!« ali oranžni koraki
+  (»drugače kot v popravku«). Koraki in položaji pridejo iz `preveriKose` (`koraki`, `dodatno`).
 - **Popravljam jaz**: učitelj piše naravnost v učenčevo besedilo. Nino tega načina ne želi kot privzetega.
 
 ## Odločitve in zgodovina
