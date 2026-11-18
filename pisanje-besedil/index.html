@@ -132,6 +132,8 @@
   .popravki .legenda { font-size: .85rem; font-weight: 700; color: var(--muted); margin-top: 4px; display: flex; gap: 12px; flex-wrap: wrap; }
   .popravki .p-naslov { text-align: center; font-size: 2rem; font-weight: 900; padding: 14px 20px 6px; }
   .popravki .p-besedilo { padding: 6px 20px 24px; font-size: 18px; line-height: 1.75; white-space: pre-wrap; overflow-wrap: anywhere; }
+  .popravki .p-besedilo .h1 { font-size: 1.7em; font-weight: 900; line-height: 1.3; margin: .3em 0 .2em; }
+  .popravki .p-besedilo .h2 { font-size: 1.45em; font-weight: 800; line-height: 1.3; margin: .3em 0 .2em; color: #075985; }
   .popravki del, .popravki ins { border-radius: 4px; padding: 0 1px; }
   .popravki del { color: #be123c; text-decoration: line-through 2px; background: #ffe4e6; }
   .popravki ins { color: #dc2626; font-weight: 900; text-decoration: underline 2px; text-underline-offset: 3px; background: #fee2e2; }
@@ -556,25 +558,26 @@ function zdruzi(ops) {
   return out;
 }
 // HTML: zbrisano prečrtano, dodano rdeče. Presledki (·) in novi odstavki (¶) se vidijo.
-// Poravnava vrstic iz Quill delte; samo če se njeno besedilo ujema z golim besedilom (getText().trim()).
-function poravnaveVrstic(vsebina, besedilo) {
+// Oblika vrstic (poravnava, podnaslov) iz Quill delte; samo če se njeno besedilo ujema z golim besedilom (getText().trim()).
+function oblikaVrstic(vsebina, besedilo) {
   if (!vsebina || !Array.isArray(vsebina.ops)) return null;
   let cel = '';
   const por = [];
   for (const op of vsebina.ops) {
     if (typeof op.insert !== 'string') continue;
-    const a = op.attributes && ['center', 'right', 'justify'].includes(op.attributes.align) ? op.attributes.align : '';
-    for (const ch of op.insert) { cel += ch; if (ch === '\n') por.push(a); }
+    const at = op.attributes || {};
+    const o = { a: ['center', 'right', 'justify'].includes(at.align) ? at.align : '', h: at.header === 1 || at.header === 2 ? at.header : 0 };
+    for (const ch of op.insert) { cel += ch; if (ch === '\n') por.push(o); }
   }
   if (cel.trim() !== (besedilo || '')) return null;
   const spredaj = cel.slice(0, cel.length - cel.trimStart().length).split('\n').length - 1;
   const p = por.slice(spredaj);
-  return p.some(x => x) ? p : null;
+  return p.some(x => x.a || x.h) ? p : null;
 }
 function primerjavaHtml(a, b, por) {
   const kosi = primerjaj(a, b);
   if (!kosi.some(d => d[0] !== '=')) return null;
-  if (por) { // vrstico za vrstico, z učiteljevo poravnavo (npr. podpis desno)
+  if (por) { // vrstico za vrstico, z obliko popravljenega besedila (podpis desno, podnaslovi)
     const vr = [''];
     const dodaj = (s, ovij) => s.split('\n').forEach((del, i) => {
       if (i) { if (ovij) vr[vr.length - 1] += ovij('<span class="zn">¶</span>'); vr.push(''); }
@@ -585,7 +588,8 @@ function primerjavaHtml(a, b, por) {
       else if (t === '-') vr[vr.length - 1] += oznaci(t, s);
       else dodaj(!s.trim() ? esc(s).replace(/[ \t\u00a0]/g, '·') : esc(s), h => `<ins title="Učitelj je to dodal">${h}</ins>`);
     }
-    return vr.map((h, i) => `<div${por[i] ? ` style="text-align:${por[i]}"` : ''}>${h || '<br>'}</div>`).join('');
+    return vr.map((h, i) => { const o = por[i] || {};
+      return `<div${o.h ? ` class="h${o.h}"` : ''}${o.a ? ` style="text-align:${o.a}"` : ''}>${h || '<br>'}</div>`; }).join('');
   }
   return kosi.map(([t, s]) => t === '=' ? esc(s) : oznaci(t, s)).join('');
 }
@@ -602,8 +606,8 @@ function oznaci(t, s) {
     return `<ins title="Učitelj je to dodal">${h}</ins>`;
 }
 function popravkiHtml(pred, po, cas_, o = {}) {
-  const n = primerjavaHtml(pred.naslov, po.naslov), b = primerjavaHtml(pred.besedilo, po.besedilo, poravnaveVrstic(po.vsebina, po.besedilo));
-  const ns = po.vsebina && po.vsebina.naslov && ['left', 'center', 'right'].includes(po.vsebina.naslov.a) ? ` style="text-align:${po.vsebina.naslov.a}"` : '';
+  const n = primerjavaHtml(pred.naslov, po.naslov), b = primerjavaHtml(pred.besedilo, po.besedilo, oblikaVrstic(po.vsebina, po.besedilo));
+  const ns = naslovSlog(po.vsebina) ? ` style="${naslovSlog(po.vsebina)}"` : '';
   return `<div class="glava-p">${o.zavihki || ''}<h2>${o.naslov || '✏️ Popravki učitelja'}${cas_ ? ` <small style="font-weight:700;color:var(--muted)">· ${cas(cas_)}</small>` : ''}</h2>
     <div class="legenda"><span><del>prečrtano</del> = zbrisal</span><span><ins>${o.zeleno ? 'zeleno' : 'rdeče'}</ins> = dodal ali popravil</span><span><del>·</del> presledek</span><span><ins>¶</ins> nov odstavek</span></div></div>
     ${n || b ? `<div class="p-naslov"${ns}>${n || esc(po.naslov || '')}</div><div class="p-besedilo">${b || esc(po.besedilo || '')}</div>`
