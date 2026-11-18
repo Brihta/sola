@@ -149,6 +149,21 @@
   .popravki .pz button.on.r { background: #e11d48; border-color: #e11d48; color: #fff; }
   .popravki .pz button.on.g { background: #16a34a; border-color: #16a34a; color: #fff; }
   .popravki .zn { font-weight: 900; font-size: .9em; padding: 0 2px; }
+  .popravki .glava-vr { display: flex; justify-content: space-between; align-items: center; gap: 8px; flex-wrap: wrap; }
+  .popravki .ok { background: #dcfce7; border-radius: 4px; }
+  .popravki .pr { display: inline-block; font-weight: 900; font-size: .8em; line-height: 1.35; border-radius: 999px; padding: 0 .4em; margin: 0 2px; vertical-align: .1em; text-decoration: none; font-style: normal; }
+  .popravki .pr.da { background: #16a34a; color: #fff; }
+  .popravki .pr.ne { background: #dc2626; color: #fff; }
+  .popravki del.o { color: #c2410c; background: #ffedd5; }
+  .popravki ins.o { color: #c2410c; background: #fed7aa; }
+  .popravki.preverjeno { border-color: #bae6fd; }
+  .popravki.preverjeno .glava-p { background: #f0f9ff; border-color: #bae6fd; }
+  .popravki.preverjeno .glava-p h2 { color: #075985; }
+  .popravki .povzetek { font-weight: 800; margin-top: 6px; }
+  .popravki .povzetek.vse { color: #15803d; font-size: 1.1rem; }
+  .popravki .napredek { height: 8px; border-radius: 999px; background: #fee2e2; margin-top: 6px; overflow: hidden; }
+  .popravki .napredek i { display: block; height: 100%; background: #16a34a; border-radius: 999px; }
+  .popravki .pz button.on.p { background: #0284c7; border-color: #0284c7; color: #fff; }
   .popravki .brez-pop { padding: 20px; color: var(--muted); font-weight: 700; }
   @media (max-width: 900px) {
     .razdeli { grid-template-columns: minmax(0, 1fr); }
@@ -482,6 +497,7 @@ function urejevalnik(el, o) {
 
   const ctl = {
     shrani, preveri,
+    trenutno: () => ({ naslov: $naslov.value.trim(), besedilo: q.getText().trim() }),
     neshranjeno: () => umazano || shranjujem,
     unici() { clearInterval(tik); shrani(true); },
   };
@@ -557,7 +573,6 @@ function zdruzi(ops) {
   }
   return out;
 }
-// HTML: zbrisano prečrtano, dodano rdeče. Presledki (·) in novi odstavki (¶) se vidijo.
 // Oblika popravljenega besedila iz Quill delte: vr = vrstice {a: poravnava, h: podnaslov},
 // zn = slog vsakega znaka (krepko, ležeče, podčrtano, barva, velikost). Samo če se besedilo delte
 // ujema z golim besedilom (getText().trim()), sicer null.
@@ -579,58 +594,128 @@ function oblika(vsebina, besedilo) {
   const ob = { vr: vr.slice(cel.slice(0, odrezano).split('\n').length - 1), zn: zn.slice(odrezano) };
   return ob.vr.some(x => x.a || x.h) || ob.zn.some(x => x) ? ob : null;
 }
+// Izris kosov v vrsticah, z obliko besedila b (ob). Kosi: ['=', s, razred?] in ['+', s, razred?] sta iz b
+// (po vrsti), ['-', s, razred?] je zbrisano (ni v b), ['m', html] je oznaka (✓, ✗).
+function izrisi(kosi, ob) {
+  ob = ob || { vr: [], zn: [] };
+  const vr = [''];
+  let pos = 0; // položaj v b
+  const pisi = (s, ins, raz) => {
+    const presl = ins && !s.trim();
+    const ovij = h => ins ? `<ins${raz ? ` class="${raz}"` : ''} title="${raz === 'o' ? 'V popravku je tako' : 'Učitelj je to dodal'}">${h}</ins>`
+      : raz ? `<span class="${raz}">${h}</span>` : h;
+    let del = '';
+    const izprazni = () => { if (del) vr[vr.length - 1] += ovij(del); del = ''; };
+    for (let i = 0; i < s.length;) {
+      if (s[i] === '\n') { if (ins) del += '<span class="zn">¶</span>'; izprazni(); vr.push(''); i++; continue; }
+      const st = ob.zn[pos + i] || '';
+      let j = i + 1;
+      while (j < s.length && s[j] !== '\n' && (ob.zn[pos + j] || '') === st) j++;
+      let h = esc(s.slice(i, j));
+      if (presl) h = h.replace(/[ \t ]/g, '·');
+      const slog = ins ? st.replace(/color:[^;]*;/, '') : st; // dodano ostane rdeče
+      del += slog ? `<span style="${slog}">${h}</span>` : h;
+      i = j;
+    }
+    izprazni();
+    pos += s.length;
+  };
+  for (const [t, s, raz] of kosi) {
+    if (t === 'm') vr[vr.length - 1] += s;
+    else if (t === '-') vr[vr.length - 1] += zbrisano(s, raz);
+    else pisi(s, t === '+', raz);
+  }
+  return vr.map((h, i) => { const o = ob.vr[i] || {};
+    return `<div${o.h ? ` class="h${o.h}"` : ''}${o.a ? ` style="text-align:${o.a}"` : ''}>${h || '<br>'}</div>`; }).join('');
+}
+function zbrisano(s, raz) {
+  let h = esc(s);
+  if (!s.trim()) h = h.replace(/[ \t ]/g, '·');
+  h = h.replace(/\n/g, '<span class="zn">¶</span>');
+  return `<del${raz ? ` class="${raz}"` : ''} title="${raz === 'o' ? 'Tega v popravku ni' : 'Učitelj je to zbrisal'}">${h}</del>`;
+}
+// HTML: zbrisano prečrtano, dodano rdeče. Presledki (·) in novi odstavki (¶) se vidijo.
 function primerjavaHtml(a, b, ob) {
   const kosi = primerjaj(a, b);
   if (!kosi.some(d => d[0] !== '=')) return null;
-  if (ob) { // vrstico za vrstico, z obliko popravljenega besedila (podpis desno, podnaslovi, krepko …)
-    const vr = [''];
-    let pos = 0; // položaj v b (popravljenem besedilu)
-    const pisi = (s, ins) => {
-      const presl = ins && !s.trim();
-      let del = '';
-      const izprazni = () => { if (del) vr[vr.length - 1] += ins ? `<ins title="Učitelj je to dodal">${del}</ins>` : del; del = ''; };
-      for (let i = 0; i < s.length;) {
-        if (s[i] === '\n') { if (ins) del += '<span class="zn">¶</span>'; izprazni(); vr.push(''); i++; continue; }
-        const st = ob.zn[pos + i] || '';
-        let j = i + 1;
-        while (j < s.length && s[j] !== '\n' && (ob.zn[pos + j] || '') === st) j++;
-        let h = esc(s.slice(i, j));
-        if (presl) h = h.replace(/[ \t ]/g, '·');
-        const slog = ins ? st.replace(/color:[^;]*;/, '') : st; // dodano ostane rdeče
-        del += slog ? `<span style="${slog}">${h}</span>` : h;
-        i = j;
-      }
-      izprazni();
-      pos += s.length;
-    };
-    for (const [t, s] of kosi) {
-      if (t === '-') vr[vr.length - 1] += oznaci(t, s);
-      else pisi(s, t === '+');
-    }
-    return vr.map((h, i) => { const o = ob.vr[i] || {};
-      return `<div${o.h ? ` class="h${o.h}"` : ''}${o.a ? ` style="text-align:${o.a}"` : ''}>${h || '<br>'}</div>`; }).join('');
-  }
-  return kosi.map(([t, s]) => t === '=' ? esc(s) : oznaci(t, s)).join('');
-}
-function oznaci(t, s) {
-    const samoPresledki = !s.trim();
-    let h = esc(s);
-    if (t === '-') {
-      h = samoPresledki ? h.replace(/[ \t\u00a0]/g, '·') : h;
-      h = h.replace(/\n/g, '<span class="zn">¶</span>');
-      return `<del title="Učitelj je to zbrisal">${h}</del>`;
-    }
-    if (samoPresledki) h = h.replace(/[ \t\u00a0]/g, '·');
-    h = h.replace(/\n/g, '<span class="zn">¶</span>\n');
-    return `<ins title="Učitelj je to dodal">${h}</ins>`;
+  return izrisi(kosi, ob);
 }
 function popravkiHtml(pred, po, cas_, o = {}) {
   const n = primerjavaHtml(pred.naslov, po.naslov), b = primerjavaHtml(pred.besedilo, po.besedilo, oblika(po.vsebina, po.besedilo));
   const ns = naslovSlog(po.vsebina) ? ` style="${naslovSlog(po.vsebina)}"` : '';
-  return `<div class="glava-p">${o.zavihki || ''}<h2>${o.naslov || '✏️ Popravki učitelja'}${cas_ ? ` <small style="font-weight:700;color:var(--muted)">· ${cas(cas_)}</small>` : ''}</h2>
+  return `<div class="glava-p">${o.zavihki || ''}<div class="glava-vr"><h2>${o.naslov || '✏️ Popravki učitelja'}${cas_ ? ` <small style="font-weight:700;color:var(--muted)">· ${cas(cas_)}</small>` : ''}</h2>${o.gumb || ''}</div>
     <div class="legenda"><span><del>prečrtano</del> = zbrisal</span><span><ins>${o.zeleno ? 'zeleno' : 'rdeče'}</ins> = dodal ali popravil</span><span><del>·</del> presledek</span><span><ins>¶</ins> nov odstavek</span></div></div>
     ${n || b ? `<div class="p-naslov"${ns}>${n || esc(po.naslov || '')}</div><div class="p-besedilo">${b || esc(po.besedilo || '')}</div>`
       : `<div class="brez-pop">${o.prazno || 'Popravkov še ni.'}</div>`}`;
+}
+
+/* ─── Preverjanje: ali je učenec vnesel učiteljeve popravke ─── */
+// Primerjava a → b v skupinah: '=' enako, 'x' sprememba; zac/kon = obseg v b.
+function skupine(a, b) {
+  const out = [];
+  let pos = 0;
+  for (const [t, s] of primerjaj(a, b)) {
+    if (t === '=') { out.push({ t, s, zac: pos, kon: pos += s.length }); continue; }
+    let z = out[out.length - 1];
+    if (!z || z.t !== 'x') out.push(z = { t: 'x', '-': '', '+': '', zac: pos, kon: pos });
+    z[t] += s;
+    if (t === '+') z.kon = pos += s.length;
+  }
+  return out;
+}
+const prekriva = (a, b) => a.zac < a.kon && b.zac < b.kon ? a.zac < b.kon && b.zac < a.kon : a.zac <= b.kon && b.zac <= a.kon;
+// Učiteljev popravek (pred → po) je vnesen, če se učenčevo besedilo (zdaj) tam ujema s popravkom.
+// Razlike drugje (učenec je spremenil kaj, česar učitelj ni) so oranžne.
+function preveriKose(pred, po, zdaj) {
+  const uc = skupine(pred, po), raz = skupine(zdaj, po).filter(g => g.t === 'x');
+  const proste = raz.filter(r => !uc.some(g => g.t === 'x' && prekriva(g, r)));
+  const kosi = [];
+  let vseh = 0, ok = 0, drugace = 0;
+  for (const g of uc) {
+    if (g.t === 'x') {
+      vseh++;
+      if (raz.some(r => prekriva(g, r))) {
+        if (g['-']) kosi.push(['-', g['-']]);
+        if (g['+']) kosi.push(['+', g['+']]);
+        kosi.push(['m', '<span class="pr ne" title="Tega še nisi popravil">✗</span>']);
+      } else {
+        ok++;
+        if (g['+']) kosi.push(['=', g['+'], 'ok']);
+        kosi.push(['m', '<span class="pr da" title="Pravilno popravljeno">✓</span>']);
+      }
+      continue;
+    }
+    let p = g.zac;
+    for (const r of proste) {
+      if (r.porabljen || r.zac < g.zac || r.kon > g.kon) continue;
+      r.porabljen = true; drugace++;
+      if (r.zac > p) kosi.push(['=', po.slice(p, r.zac)]);
+      if (r['-']) kosi.push(['-', r['-'], 'o']);
+      if (r['+']) kosi.push(['+', r['+'], 'o']);
+      p = r.kon;
+    }
+    if (g.kon > p) kosi.push(['=', po.slice(p, g.kon)]);
+  }
+  for (const r of proste) if (!r.porabljen) { // npr. prazno besedilo
+    drugace++;
+    if (r['-']) kosi.push(['-', r['-'], 'o']);
+    if (r['+']) kosi.push(['+', r['+'], 'o']);
+  }
+  return { kosi, vseh, ok, drugace };
+}
+function preveriHtml(pred, po, zdaj, o = {}) {
+  const n = preveriKose(pred.naslov || '', po.naslov || '', zdaj.naslov || ''),
+    b = preveriKose(pred.besedilo || '', po.besedilo || '', zdaj.besedilo || '');
+  const vseh = n.vseh + b.vseh, ok = n.ok + b.ok, dr = n.drugace + b.drugace;
+  const ns = naslovSlog(po.vsebina) ? ` style="${naslovSlog(po.vsebina)}"` : '';
+  const vse = ok === vseh && !dr;
+  const povzetek = vse ? '🎉 Odlično! Vsi popravki so pravilno vneseni.'
+    : `Pravilno popravljeno: <b>${ok} od ${vseh}</b>${ok < vseh ? ` · še popravi: <b>${vseh - ok}</b> <span class="pr ne">✗</span>` : ''}${dr ? ` · drugače kot v popravku: <b>${dr}</b>` : ''}`;
+  return `<div class="glava-p">${o.zavihki || ''}<div class="glava-vr"><h2>${o.naslov || '✔ Preverjanje'}</h2>${o.gumb || ''}</div>
+    <div class="povzetek${vse ? ' vse' : ''}">${povzetek}</div>
+    <div class="napredek"><i style="width:${vseh ? Math.round(100 * ok / vseh) : 100}%"></i></div>
+    <div class="legenda"><span><span class="pr da">✓</span> pravilno popravljeno</span><span><ins>rdeče</ins> <span class="pr ne">✗</span> še popravi</span>${dr ? '<span><del class="o">oranžno</del> drugače kot v popravku</span>' : ''}</div></div>
+    <div class="p-naslov"${ns}>${izrisi(n.kosi)}</div><div class="p-besedilo">${izrisi(b.kosi, oblika(po.vsebina, po.besedilo))}</div>`;
 }
 const imaPopravke = (pred, po) => !!(primerjavaHtml(pred.naslov, po.naslov) || primerjavaHtml(pred.besedilo, po.besedilo));
 
@@ -680,6 +765,8 @@ async function ucenecPisi(pid) {
   if (!r) return napaka('Tega projekta ni ali je zaprt. <a href="#/">Nazaj</a>');
   const pop = r.popravki && r.popravki.pred && r.popravki.po && imaPopravke(r.popravki.pred, r.popravki.po);
   const sam = pop && r.projekt.popravi_sam && r.popravki.vsebina; // »Popravi sam«
+  const poZ = pop ? { ...r.popravki.po, vsebina: r.popravki.vsebina || (r.urejal === 'ucitelj' ? r.vsebina : null) } : null;
+  const GUMB_PREVERI = t => `<button class="btn btn-sm btn-go" data-preveri type="button" title="Preveri, ali si pravilno vnesel/-la vse popravke">${t}</button>`;
   $main.classList.toggle('siroko', !!pop);
   $main.innerHTML = `<div class="crumb"><a href="#/">← Moji projekti</a></div>
     <section class="hero" style="padding:18px 24px"><h1 style="font-size:1.6rem">${esc(r.projekt.ime)}</h1>${r.projekt.opis ? `<p>${esc(r.projekt.opis)}</p>` : ''}${r.projekt.ucitelj ? `<p style="opacity:.9;font-size:.9rem">👩‍🏫 ${esc(r.projekt.ucitelj)}</p>` : ''}</section>
@@ -689,12 +776,23 @@ async function ucenecPisi(pid) {
       : '✏️ Učitelj je popravil tvoje besedilo. V rdečem okvirju vidiš, kaj je spremenil; v urejevalniku je tvoje besedilo s popravki.'}
       <button class="btn btn-sm" id="pop-tg" type="button">Skrij popravke</button></div>` : ''}
     ${r.komentar ? `<div class="komentar"><h3>💬 Komentar učitelja <small style="color:var(--muted);font-weight:700">· ${cas(r.komentar_cas)}</small></h3><p>${esc(r.komentar)}</p></div>` : ''}
-    ${pop ? `<div class="razdeli" id="razdeli"><section class="popravki" aria-label="Popravki učitelja">${popravkiHtml(r.popravki.pred, { ...r.popravki.po, vsebina: r.popravki.vsebina || (r.urejal === 'ucitelj' ? r.vsebina : null) }, r.popravki.cas, sam ? { naslov: '✏️ Popravi sam' } : {})}</section><div id="ed"></div></div>` : '<div id="ed"></div>'}
+    ${pop ? `<div class="razdeli" id="razdeli"><section class="popravki" id="levo" aria-label="Popravki učitelja">${popravkiHtml(r.popravki.pred, poZ, r.popravki.cas, sam ? { naslov: '✏️ Popravi sam', gumb: GUMB_PREVERI('✔ Preveri') } : {})}</section><div id="ed"></div></div>` : '<div id="ed"></div>'}
     ${r.presoje.length ? `<div class="panel"><h2>⭐⭐🪄 Kaj so ti napisali sošolci</h2>${presojeHtml(r.presoje, false)}</div>` : ''}`;
-  urejevalnik(document.getElementById('ed'), {
+  const ed = urejevalnik(document.getElementById('ed'), {
     id: r.id, naslov: r.naslov, vsebina: r.vsebina, verzija: r.verzija, jaz: 'ucenec', kdoDrug: 'učitelj', zaklenjeno: r.projekt.zaklenjen,
     shrani: (d, keep) => rpc('sola_pis_shrani', { p_student: ucenec.id, p_id: d.id, p_verzija: d.verzija, p_naslov: d.naslov, p_vsebina: d.vsebina, p_besedilo: d.besedilo }, keep),
     osvezi: async () => { const x = await rpc('sola_pis_odpri', { p_student: ucenec.id, p_projekt: pid }); return x && x.id ? x : null; },
+  });
+  // »Preveri«: ali je učenec v svoje besedilo vnesel učiteljeve popravke (✓ / ✗).
+  const levo = document.getElementById('levo');
+  if (sam) levo.addEventListener('click', e => {
+    const preveri = !!e.target.closest('[data-preveri]');
+    if (!preveri && !e.target.closest('[data-nazaj]')) return;
+    levo.classList.toggle('preverjeno', preveri);
+    levo.innerHTML = preveri
+      ? preveriHtml(r.popravki.pred, poZ, ed.trenutno(), { naslov: '✔ Preverjanje', gumb: `<div class="row" style="gap:6px">${GUMB_PREVERI('✔ Preveri znova')}<button class="btn btn-sm" data-nazaj type="button">✏️ Popravki</button></div>` })
+      : popravkiHtml(r.popravki.pred, poZ, r.popravki.cas, { naslov: '✏️ Popravi sam', gumb: GUMB_PREVERI('✔ Preveri') });
+    levo.scrollTop = 0;
   });
   const tg = document.getElementById('pop-tg');
   if (tg) tg.addEventListener('click', () => {
@@ -989,13 +1087,16 @@ async function uciteljBesedilo(pid, bid) {
   // Zeleno: kaj je učenec spremenil po zadnjih popravkih.
   const zel = pop && d.urejal === 'ucenec' ? { od: pop.vsebina ? pop.pred : pop.po, do: { naslov: d.naslov || '', besedilo: d.besedilo || '', vsebina: d.vsebina } } : null;
   const imaZel = !!(zel && imaPopravke(zel.od, zel.do));
-  let zavihek = imaZel ? 'g' : 'r';
+  const imaPrev = !!(P && pop && pop.vsebina && imaZel); // »Popravi sam«: ali je učenec vnesel popravke
+  let zavihek = imaPrev ? 'p' : imaZel ? 'g' : 'r';
   function narisi() {
     const el = document.getElementById('pop');
-    const zav = imaZel ? `<div class="pz"><button type="button" data-z="r" class="r ${zavihek === 'r' ? 'on' : ''}">✏️ Moji popravki</button><button type="button" data-z="g" class="g ${zavihek === 'g' ? 'on' : ''}">🟢 Spremembe učenca</button></div>` : '';
+    const zav = imaZel ? `<div class="pz"><button type="button" data-z="r" class="r ${zavihek === 'r' ? 'on' : ''}">✏️ Moji popravki</button><button type="button" data-z="g" class="g ${zavihek === 'g' ? 'on' : ''}">🟢 Spremembe učenca</button>${imaPrev ? `<button type="button" data-z="p" class="p ${zavihek === 'p' ? 'on' : ''}">✔ Preverjanje</button>` : ''}</div>` : '';
     el.classList.toggle('zeleno', zavihek === 'g');
+    el.classList.toggle('preverjeno', zavihek === 'p');
     const z = zadnje || { naslov: '', besedilo: '' };
-    if (zavihek === 'g') el.innerHTML = popravkiHtml(zel.od, zel.do, d.posodobljeno, { zavihki: zav, zeleno: true,
+    if (zavihek === 'p') el.innerHTML = preveriHtml(pop.pred, { ...pop.po, vsebina: pop.vsebina }, zel.do, { zavihki: zav, naslov: '✔ Ali je učenec vnesel vaše popravke' });
+    else if (zavihek === 'g') el.innerHTML = popravkiHtml(zel.od, zel.do, d.posodobljeno, { zavihki: zav, zeleno: true,
       naslov: P && pop.vsebina ? '🟢 Kaj je učenec popravil sam' : '🟢 Kaj je učenec spremenil po vaših popravkih' });
     else if (!uredil && !kopija && pop && !(pred && imaPopravke(pred, z)))
       el.innerHTML = popravkiHtml(pop.pred, { ...pop.po, vsebina: pop.vsebina || d.vsebina }, pop.cas, { zavihki: zav, naslov: '✏️ Vaši zadnji popravki' });

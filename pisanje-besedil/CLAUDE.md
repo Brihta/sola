@@ -42,6 +42,12 @@ in morajo biti varni: majhni, preverjeni, takoj objavljeni.
 - **Popravi sam** (privzeto; Nino želi tako, ker se le tako učenec kaj nauči): učitelj popravlja
   KOPIJO (`popravki.vsebina`), učenčevo besedilo ostane. Učenec levo vidi rdeče popravke,
   desno sam popravi svoje besedilo. Učitelj nato zeleno vidi, kaj je učenec popravil.
+- **Preveri** (18. 11. 2026, za uro, ko učenci popravljajo): v »Popravi sam« ima učenec v rdečem okvirju gumb
+  »✔ Preveri«. Za vsak učiteljev popravek (skupina sprememb `pred → po`) preveri, ali se učenčevo
+  trenutno besedilo tam ujema s `po`: ✓ zeleno = vneseno, ✗ rdeče = še ne (pokaže prvotni popravek).
+  Razlike drugje (nova napaka, dodan stavek) so oranžne »drugače kot v popravku«. Primerja se samo
+  golo besedilo (tudi presledki), ne oblika. Učiteljica ima isti pogled kot zavihek »✔ Preverjanje«
+  (privzet, ko je učenec po popravkih kaj spremenil). Koda: `preveriKose`, `preveriHtml`.
 - **Popravljam jaz**: učitelj piše naravnost v učenčevo besedilo. Nino tega načina ne želi kot privzetega.
 
 ## Odločitve in zgodovina
