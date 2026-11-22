@@ -139,14 +139,20 @@ Pravilo točkovanja na listih: vse natisnjene besede (tudi zvezdica) se točkuje
 
 ## Objava gradiva brez prijave
 
-Ko Nino reče »objavi …« ali »skrij …«, to naredi sam prek vrste na njegovem Macu (Supabase iz
-Claudovih okolij NI dosegljiv, zato `scripts/objavi.py` ne teče tam). V povezano mapo
-`~/.config/brihta-sola/vrsta/` (device_bash: `$HOME/mnt/brihta-sola/vrsta`) zapiši datoteko `<ime>.zahteva`:
-`{"predmet":"fleksi-spelling","ime":"Week 2 soft g","objavi":true}` (`"objavi":false` skrije,
-`"vse":true` če se ime ujema z več gradivi). Opravilo launchd `si.brihta.objave` jo takoj izvede
-in zapiše `<ime>.rezultat` (vrstica `OK …` ali `NAPAKA …`); po ~20 s ga preberi in Ninu povej izid.
-Skrivnosti NIKOLI ne beri. Če rezultata ni, je Mac ugasnjen ali spi: Ninu povej, naj objavi s stikalom.
-V Supabase je zagnan `supabase_gradiva_skrivnost.sql`; namestitev: `~/.config/brihta-sola/namesti_vrsto.sh`.
+Ko Nino reče »objavi …« ali »skrij …« (tudi s telefona, v katerem koli klepetu), to narediš sam:
+
+1. `python3 scripts/zahteva.py <predmet> "<del imena>"` (dodaj `--skrij` za skrivanje). Skripta preveri ime
+   v gradiva.json in doda vrstico v `objave/zahteve.jsonl`. Vse, kar se ujema, se objavi ali skrije
+   (»Week 2« = list in narek).
+2. Commit in push na `main`.
+3. Ninov Mac (launchd `si.brihta.objave`) vsaki 2 minuti pogleda datoteko na GitHubu, izvede nove
+   zahteve in mu pokaže obvestilo. Ninu povej, kaj si zahteval, in da bo na strani v največ 2 do 3 minutah,
+   če je Mac prižgan. Potrditve ne vidiš: ne trdi, da je že objavljeno.
+
+Če je klepet povezan z Macom in je dodana mapa `~/.config/brihta-sola`, lahko namesto tega zahtevo
+odložiš v `$HOME/mnt/brihta-sola/vrsta/<ime>.zahteva` (JSON kot zgoraj) in po ~20 s prebereš
+`<ime>.rezultat` (to je potrditev). Skrivnosti NIKOLI ne beri. Supabase iz Claudovih okolij ni dosegljiv.
+V Supabase je zagnan `supabase_gradiva_skrivnost.sql`; namestitev na Macu: `~/.config/brihta-sola/namesti_vrsto.sh`.
 
 ## Fleksi Reading: tedensko besedilo
 
