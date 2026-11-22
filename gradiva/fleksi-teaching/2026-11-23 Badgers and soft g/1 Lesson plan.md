@@ -17,7 +17,8 @@
 
 ## 🧑‍🏫 Have ready
 
-- Week 1 sheets (test column) and the **Week 2 soft g** sheet, printed
+- Pupils' exercise books, and the **Week 2 soft g** sheet, printed
+- **Week 1 Test** (Spelling, hidden) open on your phone or laptop
 - **All About Badgers**, the copies from last week
 - Brihta: **Week 2** published (spelling), **Road Safety Week** stays hidden
 - Plan B if time runs short: skip Writing, set it as homework

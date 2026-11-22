@@ -2,14 +2,16 @@
 
 ## 🧒 Pupils
 
-1. Take out your **Week 1** sheet. Fold it so you only see the **TEST** column.
-2. Write each word your teacher says.
-3. Then write the sentence.
-4. Swap sheets with your partner. Tick the correct words. Write the score: **__ / 12**.
+1. Open your exercise book. Write today's date and **Spelling test Week 1**.
+2. Write the numbers **1 to 12** down the page.
+3. Listen to each word and the sentence. Write only the **word**.
+4. Then write the **sentence** your teacher reads.
 
 ## 🧑‍🏫 Teacher
 
-- Say each word, use it in a sentence, say it again.
-- Words: badge, edge, bridge, page, cage, hedge, large, change, knowledge, sausage, challenge, **door** (star word)
-- Dictation: **The cage was by the door at the edge of the bridge.** Read it once, then slowly in chunks, then once more.
-- Collect the sheets.
+- Open **Week 1 Test** (Spelling) on your phone or laptop, **not** on the board. It stays hidden for pupils.
+- For each word: say the word, say the sentence, say the word again.
+- The words are in a different order from the sheet on purpose.
+- Dictation: read it once, then slowly in chunks, then once more.
+- Collect the books.
+- Later, publish **Week 1 Test** so pupils can practise from it.

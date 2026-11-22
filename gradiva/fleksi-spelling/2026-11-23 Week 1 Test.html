@@ -1,0 +1,51 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Week 1 Test</title>
+<style>
+  :root { --bg: #fffdf7; --ink: #1f2937; --muted: #6b7280; --accent: #16a34a; --card: #ffffff; }
+  @media (prefers-color-scheme: dark) {
+    :root { --bg: #111827; --ink: #f3f4f6; --muted: #9ca3af; --accent: #4ade80; --card: #1f2937; }
+  }
+  * { box-sizing: border-box; }
+  body { margin: 0; background: var(--bg); color: var(--ink);
+         font-family: "Segoe UI", system-ui, -apple-system, sans-serif; padding: 16px; }
+  main { max-width: 760px; margin: 0 auto; }
+  .tag { color: var(--accent); font-weight: 800; letter-spacing: .08em; text-transform: uppercase; font-size: 1rem; text-align: center; }
+  h1 { font-size: 1.4rem; margin: 6px 0 20px; color: var(--muted); font-weight: 600; text-align: center; }
+  ol { list-style: none; padding: 0; margin: 0; counter-reset: n; }
+  li { counter-increment: n; background: var(--card); border-radius: 14px; padding: 12px 16px 12px 56px;
+       margin-bottom: 10px; box-shadow: 0 3px 12px rgba(0,0,0,.06); position: relative; font-size: 1.15rem; line-height: 1.4; }
+  li::before { content: counter(n); position: absolute; left: 16px; top: 12px; font-weight: 800; color: var(--muted); }
+  li b { color: var(--accent); font-size: 1.35rem; display: block; }
+  .dict { background: var(--card); border-radius: 20px; padding: 24px; margin-top: 20px;
+          box-shadow: 0 6px 24px rgba(0,0,0,.08); font-size: 1.6rem; font-weight: 700; text-align: center; line-height: 1.35; }
+  .dict b { color: var(--accent); }
+  .note { color: var(--muted); text-align: center; margin-top: 12px; }
+</style>
+</head>
+<body>
+<main>
+  <div class="tag">Stage 2 · Week 1 · dge ge</div>
+  <h1>Spelling test</h1>
+  <ol>
+    <li><b>hedge</b>The cat hid under the hedge in our garden.</li>
+    <li><b>knowledge</b>You can grow your knowledge by reading lots of books.</li>
+    <li><b>cage</b>The tiger walked up and down in its cage.</li>
+    <li><b>door</b>Please close the door when you come in.</li>
+    <li><b>bridge</b>We walked across the old stone bridge.</li>
+    <li><b>sausage</b>I had a hot sausage with mustard for lunch.</li>
+    <li><b>page</b>Open your book on page ten.</li>
+    <li><b>challenge</b>Climbing the mountain was a big challenge.</li>
+    <li><b>badge</b>The winner got a shiny gold badge.</li>
+    <li><b>large</b>An elephant is a very large animal.</li>
+    <li><b>edge</b>Don't stand too close to the edge of the cliff.</li>
+    <li><b>change</b>The leaves change colour in autumn.</li>
+  </ol>
+  <div class="dict">The <b>cage</b> was by the door at the <b>edge</b> of the <b>bridge</b>.</div>
+  <p class="note">Dictation · Star word: door</p>
+</main>
+</body>
+</html>

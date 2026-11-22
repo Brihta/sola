@@ -236,6 +236,14 @@
     "vnaprej": true
    },
    {
+    "ime": "Week 1 Test",
+    "vrsta": "html",
+    "datum": "2026-11-23T08:00:00+02:00",
+    "pot": "gradiva/fleksi-spelling/2026-11-23 Week 1 Test.html",
+    "velikost": 2790,
+    "vnaprej": true
+   },
+   {
     "ime": "Week 2 Dictation",
     "vrsta": "html",
     "datum": "2026-11-23T08:00:00+02:00",
@@ -277,15 +285,15 @@
       "ime": "Lesson plan",
       "vrsta": "besedilo",
       "pot": "gradiva/fleksi-teaching/2026-11-23 Badgers and soft g/1 Lesson plan.md",
-      "velikost": 626,
-      "besedilo": "## 🎯 Today\n\n- Week 1 spelling test and dictation\n- New spelling pattern: **soft g**\n- Finish and check **All About Badgers**\n- Talk like a badger, then write like one\n\n## ⏱ 45 minutes\n\n1. Spelling test: 8 min\n2. Soft g: 7 min\n3. Reread and finish: 10 min\n4. Check answers: 6 min\n5. Hot seat: 6 min\n6. Writing: 6 min\n7. Close: 2 min\n\n## 🧑‍🏫 Have ready\n\n- Week 1 sheets (test column) and the **Week 2 soft g** sheet, printed\n- **All About Badgers**, the copies from last week\n- Brihta: **Week 2** published (spelling), **Road Safety Week** stays hidden\n- Plan B if time runs short: skip Writing, set it as homework\n"
+      "velikost": 688,
+      "besedilo": "## 🎯 Today\n\n- Week 1 spelling test and dictation\n- New spelling pattern: **soft g**\n- Finish and check **All About Badgers**\n- Talk like a badger, then write like one\n\n## ⏱ 45 minutes\n\n1. Spelling test: 8 min\n2. Soft g: 7 min\n3. Reread and finish: 10 min\n4. Check answers: 6 min\n5. Hot seat: 6 min\n6. Writing: 6 min\n7. Close: 2 min\n\n## 🧑‍🏫 Have ready\n\n- Pupils' exercise books, and the **Week 2 soft g** sheet, printed\n- **Week 1 Test** (Spelling, hidden) open on your phone or laptop\n- **All About Badgers**, the copies from last week\n- Brihta: **Week 2** published (spelling), **Road Safety Week** stays hidden\n- Plan B if time runs short: skip Writing, set it as homework\n"
      },
      {
       "ime": "Spelling test",
       "vrsta": "besedilo",
       "pot": "gradiva/fleksi-teaching/2026-11-23 Badgers and soft g/2 Spelling test.md",
-      "velikost": 606,
-      "besedilo": "## ⏱ 8 minutes\n\n## 🧒 Pupils\n\n1. Take out your **Week 1** sheet. Fold it so you only see the **TEST** column.\n2. Write each word your teacher says.\n3. Then write the sentence.\n4. Swap sheets with your partner. Tick the correct words. Write the score: **__ / 12**.\n\n## 🧑‍🏫 Teacher\n\n- Say each word, use it in a sentence, say it again.\n- Words: badge, edge, bridge, page, cage, hedge, large, change, knowledge, sausage, challenge, **door** (star word)\n- Dictation: **The cage was by the door at the edge of the bridge.** Read it once, then slowly in chunks, then once more.\n- Collect the sheets.\n"
+      "velikost": 695,
+      "besedilo": "## ⏱ 8 minutes\n\n## 🧒 Pupils\n\n1. Open your exercise book. Write today's date and **Spelling test Week 1**.\n2. Write the numbers **1 to 12** down the page.\n3. Listen to each word and the sentence. Write only the **word**.\n4. Then write the **sentence** your teacher reads.\n\n## 🧑‍🏫 Teacher\n\n- Open **Week 1 Test** (Spelling) on your phone or laptop, **not** on the board. It stays hidden for pupils.\n- For each word: say the word, say the sentence, say the word again.\n- The words are in a different order from the sheet on purpose.\n- Dictation: read it once, then slowly in chunks, then once more.\n- Collect the books.\n- Later, publish **Week 1 Test** so pupils can practise from it.\n"
      },
      {
       "ime": "Soft g",
@@ -965,5 +973,5 @@
    }
   ]
  },
- "posodobljeno": "2026-11-22T16:25:00+01:00"
+ "posodobljeno": "2026-11-22T16:32:35+01:00"
 }
