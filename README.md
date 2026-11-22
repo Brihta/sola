@@ -22,6 +22,7 @@ Vsak predmet ima svojo mapo v `gradiva/`:
 | `gradiva/fleksi-reading` | Fleksi › Angleščina › Reading |
 | `gradiva/fleksi-lessons` | Fleksi › Angleščina › Our lessons (povzetek ure za učence, index.html) |
 | `gradiva/fleksi-teaching` | Fleksi › Angleščina › Teaching (samo učitelj; koraki .md) |
+| `ocene/` | Fleksi › Angleščina › Assessment (samo učitelj; podatki v Supabase, glej supabase_ocene.sql) |
 
 **Na GitHubu (najhitreje):** odpri mapo predmeta → *Add file* → *Upload files*
 → povleci datoteko → *Commit changes*. Čez 1–2 minuti je gradivo na strani.

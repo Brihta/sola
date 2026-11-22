@@ -170,6 +170,15 @@ Nino ure gradi po Rosenshineovih načelih. Vsaka ura ima DVE različici z istim 
   nato si zamenjajo zvezke in popravljajo po listu tedna; narek na tablo (Week N Dictation).
 Obe različici sta naloženi vnaprej (skriti). Our lessons se objavi PO uri (povzetek), Teaching se ne objavlja.
 
+## Assessment (ocene/, samo učitelj)
+
+Ploščica **Assessment** (Fleksi › Angleščina, `samoUcitelj`, `url: 'ocene/'`) odpre `ocene/index.html`: vnos točk
+testa spellinga (Tree, 0 do 12) po tednih in pregled (povprečja, barve, trend). Deluje samo s prijavo učitelja
+(seja iz localStorage `sola_ucitelj_v2`). Podatki so v Supabase (`supabase_ocene.sql`, tabeli sola_ocene_ucenci in
+sola_ocene_spelling), skupina `fleksi-5-3`.
+**Imena učencev in točke NIKOLI ne gredo v repozitorij** (je javen), tudi ne v SQL datoteke ali gradiva.json.
+Učence vpiše Nino na strani (👥 Učenci) ali s SQL, ki ga dobi samo v klepetu. Imena: ime, pri enakih še začetnica priimka.
+
 ## Fleksi Reading: tedensko besedilo
 
 Reading PDF-ji na OneDrivu (`.../English/Reading`) so od 16. 11. 2026 že očiščeni (brez Twinkl noge; Nino

@@ -38,7 +38,7 @@
        Safari na iPadih obdrži svoje emojije. */
     @font-face {
       font-family: 'Brihta Emoji';
-      src: url('pisave/brihta-emoji.woff2?v=179ebe47') format('woff2') tech(color-COLRv1);
+      src: url('pisave/brihta-emoji.woff2?v=ea911d60') format('woff2') tech(color-COLRv1);
       font-display: swap;
       unicode-range: U+200D, U+26A0-26A1, U+26BD, U+26D4, U+2705, U+270A, U+270D, U+270F, U+2728, U+1F1E7, U+1F1EC, U+1F308, U+1F31F, U+1F355, U+1F389, U+1F3A8, U+1F3AE-1F3AF, U+1F3C6, U+1F3EB, U+1F409-1F40A, U+1F40C, U+1F418-1F419, U+1F41D, U+1F422, U+1F427, U+1F42C, U+1F431, U+1F436, U+1F438, U+1F441, U+1F44B, U+1F44D, U+1F464-1F465, U+1F468, U+1F4A1, U+1F4AA, U+1F4BB, U+1F4BE, U+1F4C1, U+1F4C4, U+1F4CA, U+1F4CC, U+1F4D0, U+1F4D6, U+1F501, U+1F511-1F512, U+1F517, U+1F522, U+1F590, U+1F5B1, U+1F5D1, U+1F5FA, U+1F648, U+1F64B, U+1F680, U+1F6A2, U+1F916, U+1F938, U+1F981, U+1F984, U+1F989-1F98B, U+1F992, U+1F996, U+1F9A1, U+1F9AB, U+1F9D1-1F9D2, U+1F9E9;
     }
@@ -678,6 +678,7 @@ const PREDMETI = [
           { id: 'fleksi-reading',  ime: 'Reading',  kratko: 'Reading',  koda: 'Angleščina', c1: '#10b981', c2: '#0ea5e9', emoji: '📖', opis: 'Reading: texts and questions', naslovSeznama: 'Texts' },
           { id: 'fleksi-lessons', ime: 'Our lessons', kratko: 'Our lessons', koda: 'Angleščina', c1: '#06b6d4', c2: '#22c55e', emoji: '🦉', opis: 'What we did in class', naslovSeznama: 'Lessons' },
           { id: 'fleksi-teaching', ime: 'Teaching', kratko: 'Teaching', koda: 'Angleščina', c1: '#f59e0b', c2: '#ef4444', emoji: '🧑‍🏫', opis: 'Teacher only: lesson guides', naslovSeznama: 'Lessons', samoUcitelj: true },
+          { id: 'fleksi-assessment', ime: 'Assessment', kratko: 'Assessment', koda: 'Angleščina', c1: '#7c3aed', c2: '#0ea5e9', emoji: '📊', opis: 'Teacher only: spelling scores', samoUcitelj: true, url: 'ocene/' },
         ] },
     ] },
 ];
@@ -695,7 +696,8 @@ const VSI = [], SKUPINE = [];
   });
 })(PREDMETI);
 const najdi = id => VSI.find(p => p.id === id) || SKUPINE.find(p => p.id === id);
-const hrefPredmeta = p => p.otroci ? `#/${p.id}` : `#/p/${p.id}`;
+/* url: podpredmet je samostojna stran (npr. Assessment → ocene/). */
+const hrefPredmeta = p => p.url ? p.url : p.otroci ? `#/${p.id}` : `#/p/${p.id}`;
 const predniki = p => { const v = []; for (let s = p.stars; s; s = s.stars) v.unshift([s.ime, hrefPredmeta(s)]); return v; };
 const barve = p => `--c1:${p.c1};--c2:${p.c2}`;
 
@@ -902,7 +904,7 @@ function kartica(p) {
     </div>`;
   }
   const vseh = vsaZa(p).length;
-  return `<a class="card" style="${barve(p)}" href="#/p/${p.id}">${art}
+  return `<a class="card" style="${barve(p)}" href="${hrefPredmeta(p)}">${art}
     <div class="card-body"><div><h3>${esc(p.ime)}</h3><p>${vseh ? gradiv(vseh) : esc(p.opis || p.koda)}</p></div>${PUSCICA}</div></a>`;
 }
 

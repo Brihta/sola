@@ -1,0 +1,200 @@
+<!DOCTYPE html>
+<html lang="sl">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<meta name="robots" content="noindex">
+<title>Assessment · Brihta</title>
+<link rel="stylesheet" href="../pisave/nunito.css">
+<style>
+  :root { --bg:#f8fafc; --ink:#1e293b; --muted:#64748b; --card:#fff; --line:#e2e8f0; --acc:#7c3aed; }
+  * { box-sizing:border-box; }
+  body { margin:0; background:var(--bg); color:var(--ink); font-family:Nunito,"Segoe UI",system-ui,sans-serif; }
+  main { max-width:960px; margin:0 auto; padding:16px 14px 60px; }
+  a { color:var(--acc); }
+  .top { display:flex; justify-content:space-between; align-items:center; gap:10px; flex-wrap:wrap; }
+  h1 { margin:6px 0; font-size:1.7rem; }
+  h2 { font-size:1.2rem; margin:0 0 10px; }
+  .card { background:var(--card); border-radius:18px; padding:16px; margin:14px 0; box-shadow:0 4px 18px rgba(0,0,0,.06); }
+  .weeks { display:flex; gap:6px; flex-wrap:wrap; }
+  .weeks button { border:2px solid var(--line); background:#fff; border-radius:999px; padding:6px 12px; font:inherit; font-weight:700; cursor:pointer; }
+  .weeks button.on { background:var(--acc); border-color:var(--acc); color:#fff; }
+  .weeks button.has::after { content:" ✓"; }
+  .muted { color:var(--muted); }
+  .vnos { display:grid; grid-template-columns:1fr auto auto; gap:6px 10px; align-items:center; max-width:420px; }
+  .vnos label { font-weight:700; }
+  .vnos input { width:70px; font:inherit; font-size:1.2rem; font-weight:800; text-align:center; padding:6px; border:2px solid var(--line); border-radius:10px; }
+  .vnos input:focus { outline:none; border-color:var(--acc); }
+  .st { width:22px; text-align:center; }
+  table { border-collapse:collapse; width:100%; font-size:.95rem; }
+  .scroll { overflow-x:auto; }
+  th, td { padding:6px 8px; border-bottom:1px solid var(--line); text-align:center; white-space:nowrap; }
+  th:first-child, td:first-child { text-align:left; position:sticky; left:0; background:var(--card); }
+  td.c4 { background:#bbf7d0; } td.c3 { background:#dcfce7; } td.c2 { background:#fef3c7; } td.c1 { background:#fecaca; }
+  tr.razred td { font-weight:800; border-top:2px solid var(--ink); }
+  .summary { display:flex; gap:10px; flex-wrap:wrap; margin-bottom:10px; }
+  .summary div { background:#f1f5f9; border-radius:12px; padding:8px 12px; }
+  .summary b { font-size:1.3rem; display:block; }
+  .btn { background:var(--acc); color:#fff; border:0; border-radius:999px; padding:8px 14px; font:inherit; font-weight:800; cursor:pointer; }
+  .gate { text-align:center; padding:40px 16px; }
+  details input[type=text] { font:inherit; padding:6px 10px; border:2px solid var(--line); border-radius:10px; }
+  .x { background:none; border:0; color:#dc2626; cursor:pointer; font-size:1rem; }
+</style>
+</head>
+<body>
+<main id="app"><p class="muted">Nalagam …</p></main>
+<script>
+const SUPABASE = { url: 'https://ldczgbajbarlgwqzcggh.supabase.co', key: 'sb_publishable_888IYcEb-nSmGO0d67hEwA_rBFuXnv8' };
+const SKUPINA = 'fleksi-5-3', MAKS = 12;
+const $app = document.getElementById('app');
+const esc = s => String(s).replace(/[&<>"']/g, c => ({ '&': '&amp;', '<': '&lt;', '>': '&gt;', '"': '&quot;', "'": '&#39;' }[c]));
+let seja = null;
+try { const t = JSON.parse(localStorage.getItem('sola_ucitelj_v2') || 'null'); if (t && t.seja && new Date(t.potece) > new Date()) seja = t.seja; } catch (e) {}
+
+async function rpc(fn, params) {
+  try {
+    const r = await fetch(`${SUPABASE.url}/rest/v1/rpc/${fn}`, { method: 'POST',
+      headers: { apikey: SUPABASE.key, Authorization: `Bearer ${SUPABASE.key}`, 'Content-Type': 'application/json' },
+      body: JSON.stringify(params) });
+    if (!r.ok) return { napaka: r.status };
+    const t = await r.text(); return t ? JSON.parse(t) : null;
+  } catch (e) { return { napaka: 'mreža' }; }
+}
+
+let UCENCI = [], TOCKE = {}, TEDNI = [], teden = 1;   // TOCKE[ucenec][teden] = tocke
+const kljuc = (u, t) => u + ':' + t;
+
+async function tedniIzGradiv() {
+  try {
+    const g = await (await fetch('../gradiva.json?t=' + Date.now())).json();
+    const m = {};
+    (g.predmeti['fleksi-spelling'] || []).forEach(x => {
+      const r = /^Week (\d+)\s+(.+)$/.exec(x.ime);
+      if (r && !/dictation|test/i.test(r[2])) m[+r[1]] = { n: +r[1], vzorec: r[2], datum: x.datum.slice(0, 10) };
+    });
+    return Object.values(m).sort((a, b) => a.n - b.n);
+  } catch (e) { return []; }
+}
+
+function privzetiTeden() {
+  // Test je iz besed PREJŠNJEGA tedna: zadnji teden z datumom do danes, minus 1.
+  const danes = new Date().toISOString().slice(0, 10);
+  const zadnji = TEDNI.filter(t => t.datum <= danes).pop();
+  return Math.max(1, zadnji ? zadnji.n - 1 : 1);
+}
+
+async function nalozi() {
+  if (!seja) {
+    $app.innerHTML = `<div class="card gate"><h1>🔒 Assessment</h1><p>Ta stran je samo za učitelja.</p>
+      <p><a class="btn" style="text-decoration:none" href="../#/">Prijavi se na Brihti</a></p></div>`;
+    return;
+  }
+  const [d, t] = await Promise.all([rpc('sola_ocene_preberi', { p_seja: seja, p_skupina: SKUPINA }), tedniIzGradiv()]);
+  TEDNI = t;
+  if (!d || d.napaka) {
+    $app.innerHTML = `<div class="card gate"><h1>🔒 Assessment</h1><p>${d && d.napaka === 404
+      ? 'V Supabase še ni zagnan <code>supabase_ocene.sql</code>.' : 'Prijava je potekla ali strežnik ni dosegljiv.'}</p>
+      <p><a class="btn" style="text-decoration:none" href="../#/">Prijavi se znova</a></p></div>`;
+    return;
+  }
+  UCENCI = d.ucenci; TOCKE = {};
+  d.spelling.forEach(s => { TOCKE[kljuc(s.u, s.t)] = s.p; });
+  teden = privzetiTeden();
+  izrisi();
+}
+
+const razred = p => p == null ? '' : p >= MAKS ? 'c4' : p >= MAKS - 2 ? 'c3' : p >= MAKS - 4 ? 'c2' : 'c1';
+const povp = a => a.length ? a.reduce((x, y) => x + y, 0) / a.length : null;
+const f1 = x => x == null ? '·' : (Math.round(x * 10) / 10).toString().replace('.', ',');
+
+function izrisi() {
+  const vsiTedni = [...new Set([...TEDNI.map(t => t.n), ...Object.keys(TOCKE).map(k => +k.split(':')[1])])].sort((a, b) => a - b);
+  const imaTocke = n => UCENCI.some(u => TOCKE[kljuc(u.id, n)] != null);
+  const ime = n => { const t = TEDNI.find(x => x.n === n); return t ? t.vzorec : ''; };
+  const zTockami = vsiTedni.filter(imaTocke);
+  const vTednu = UCENCI.map(u => TOCKE[kljuc(u.id, teden)]).filter(p => p != null);
+
+  $app.innerHTML = `
+  <div class="top"><h1>📊 Assessment · Spelling</h1><a href="../#/fleksi-anglescina">← Fleksi Angleščina</a></div>
+  <p class="muted">Samo za učitelja. Interno spremljanje, ne uradna ocena. Test: Tree, ${MAKS} besed.</p>
+
+  <div class="card">
+    <h2>✏️ Vnos: Week ${teden}${ime(teden) ? ' · ' + esc(ime(teden)) : ''}</h2>
+    <div class="weeks">${vsiTedni.map(n => `<button data-teden="${n}" class="${n === teden ? 'on' : ''} ${imaTocke(n) ? 'has' : ''}">W${n}</button>`).join('')}</div>
+    <p class="muted">Vpiši točke 0 do ${MAKS} in pritisni Enter. Prazno = ni pisal. Shrani se samo.</p>
+    <div class="vnos">${UCENCI.map((u, i) => `
+      <label for="v${u.id}">${esc(u.ime)}</label>
+      <input id="v${u.id}" data-u="${u.id}" data-i="${i}" inputmode="numeric" maxlength="2" value="${TOCKE[kljuc(u.id, teden)] ?? ''}">
+      <span class="st" id="s${u.id}"></span>`).join('')}</div>
+    ${vTednu.length ? `<div class="summary" style="margin-top:14px">
+      <div>Pisalo<b>${vTednu.length} / ${UCENCI.length}</b></div>
+      <div>Povprečje<b>${f1(povp(vTednu))}</b></div>
+      <div>${MAKS}/${MAKS}<b>${vTednu.filter(p => p >= MAKS).length}</b></div>
+      <div>Pod ${MAKS - 4}<b>${vTednu.filter(p => p < MAKS - 4).length}</b></div></div>` : ''}
+  </div>
+
+  <div class="card">
+    <h2>📈 Pregled</h2>
+    ${zTockami.length ? `<div class="scroll"><table>
+      <tr><th>Učenec</th>${zTockami.map(n => `<th title="${esc(ime(n))}">W${n}</th>`).join('')}<th>Povpr.</th><th>Trend</th></tr>
+      ${UCENCI.map(u => {
+        const v = zTockami.map(n => TOCKE[kljuc(u.id, n)]);
+        const ok = v.filter(p => p != null), a = povp(ok);
+        const tr = ok.length >= 2 ? (ok[ok.length - 1] > a + 0.5 ? '↗' : ok[ok.length - 1] < a - 0.5 ? '↘' : '→') : '';
+        return `<tr><td>${esc(u.ime)}</td>${v.map(p => `<td class="${razred(p)}">${p ?? '·'}</td>`).join('')}<td><b>${f1(a)}</b></td><td>${tr}</td></tr>`;
+      }).join('')}
+      <tr class="razred"><td>Skupina</td>${zTockami.map(n => `<td>${f1(povp(UCENCI.map(u => TOCKE[kljuc(u.id, n)]).filter(p => p != null)))}</td>`).join('')}<td>${f1(povp(Object.values(TOCKE)))}</td><td></td></tr>
+    </table></div>
+    <p class="muted">Barve: zeleno ${MAKS}, svetlo zeleno ${MAKS - 2} do ${MAKS - 1}, rumeno ${MAKS - 4} do ${MAKS - 3}, rdeče pod ${MAKS - 4}. Trend: zadnji test proti povprečju.</p>`
+    : '<p class="muted">Še ni vpisanih točk.</p>'}
+  </div>
+
+  <details class="card"><summary><b>👥 Učenci (${UCENCI.length})</b></summary>
+    <p class="muted">Ime, pri enakih imenih še začetnica priimka. Odstranjen učenec izgine s seznama, njegove točke ostanejo v bazi.</p>
+    ${UCENCI.map(u => `<div>${esc(u.ime)} <button class="x" data-odstrani="${u.id}" title="Odstrani">✕</button></div>`).join('')}
+    <p><input type="text" id="novo" placeholder="Ime (npr. Eva D.)"> <button class="btn" id="dodaj">Dodaj</button></p>
+  </details>`;
+}
+
+document.addEventListener('click', async e => {
+  const t = e.target.closest('[data-teden]');
+  if (t) { teden = +t.dataset.teden; izrisi(); const p = document.querySelector('.vnos input'); if (p) p.focus(); return; }
+  if (e.target.id === 'dodaj') {
+    const v = document.getElementById('novo').value.trim();
+    if (v && await rpc('sola_ocene_ucenec_dodaj', { p_seja: seja, p_skupina: SKUPINA, p_ime: v })) nalozi();
+    return;
+  }
+  const o = e.target.closest('[data-odstrani]');
+  if (o && confirm('Odstranim učenca s seznama? Točke ostanejo shranjene.')) {
+    if (await rpc('sola_ocene_ucenec_odstrani', { p_seja: seja, p_ucenec: +o.dataset.odstrani }) === true) nalozi();
+  }
+});
+
+async function shrani(inp) {
+  const u = +inp.dataset.u, s = document.getElementById('s' + u), v = inp.value.trim();
+  const p = v === '' ? null : Number(v);
+  if (p != null && !(Number.isInteger(p) && p >= 0 && p <= MAKS)) { s.textContent = '⚠️'; inp.style.borderColor = '#dc2626'; return false; }
+  if ((TOCKE[kljuc(u, teden)] ?? null) === p) return true;
+  s.textContent = '…';
+  const r = await rpc('sola_ocena_spelling', { p_seja: seja, p_ucenec: u, p_teden: teden, p_tocke: p });
+  if (r === true) {
+    if (p == null) delete TOCKE[kljuc(u, teden)]; else TOCKE[kljuc(u, teden)] = p;
+    s.textContent = '✓'; inp.style.borderColor = '';
+    return true;
+  }
+  s.textContent = '❌'; inp.style.borderColor = '#dc2626';
+  return false;
+}
+document.addEventListener('change', e => { if (e.target.matches('.vnos input')) shrani(e.target); });
+document.addEventListener('keydown', async e => {
+  if (e.key !== 'Enter' || !e.target.matches('.vnos input')) return;
+  e.preventDefault();
+  const i = +e.target.dataset.i, ok = await shrani(e.target);
+  if (!ok) return;
+  const nasl = document.querySelector(`.vnos input[data-i="${i + 1}"]`);
+  if (nasl) { nasl.focus(); nasl.select(); } else { izrisi(); }
+});
+nalozi();
+</script>
+</body>
+</html>
