@@ -165,6 +165,11 @@ Nino ure gradi po Rosenshineovih načelih. Vsaka ura ima DVE različici z istim 
   ena prijazna stran, sklopi 🔁 Look back, 🧩 Something new, 🤝 Practise together, ✍️ On your own,
   🏠 Missed the lesson? (s povezavami `target="_top"` na Spelling/Reading). Risbe v SVG in emojiji, brez fotografij,
   brez imen učencev, BREZ rešitev in testnih besed. Vzor: `2026-11-23 Badgers and soft g`.
+  Fotografije: z Wikimedia Commons (API `commons.wikimedia.org`, slike `upload.wikimedia.org`, z User-Agent
+  `BrihtaSola/1.0 (https://brihta.github.io/sola)`; pri 429 počakaj in poskusi znova) ali Openverse
+  (`api.openverse.org`). Samo prosta licenca (CC0, javna domena, CC BY, CC BY-SA), samo narava, živali, predmeti,
+  NIKOLI ljudje ali liki iz filmov/risank. Sliko VEDNO prenesi v mapo ure (največ 800 px, JPG ~80 %), nikoli ne
+  povezuj na tuj strežnik (GDPR, kot pri pisavah). Na dnu strani navedi avtorja, licenco in povezavo do vira.
 - Besede za test spellinga s povedmi (naključni vrstni red) so posebno gradivo v Spelling:
   `<ponedeljek> Week <N> Test.html` (skrito, dokler ga Nino ne objavi za vajo). Učenci pišejo v zvezek 1 do 12,
   nato si zamenjajo zvezke in popravljajo po listu tedna; narek na tablo (Week N Dictation).

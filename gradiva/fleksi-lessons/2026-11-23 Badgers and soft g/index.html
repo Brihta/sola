@@ -17,7 +17,7 @@
   .sec h2 { margin:0 0 4px; font-size:1.5rem; display:flex; gap:10px; align-items:center; }
   .sec h2 span { font-size:2rem; }
   .sec .what { color:var(--muted); font-weight:700; margin:0 0 12px; }
-  .row { display:flex; gap:18px; align-items:center; flex-wrap:wrap; }
+  .row { display:flex; gap:18px; align-items:center; flex-wrap:wrap; margin:0 0 16px; }
   .row > svg { flex:0 0 auto; }
   .row > div { flex:1 1 260px; }
   .gg { display:flex; gap:12px; flex-wrap:wrap; justify-content:center; margin:10px 0; }
@@ -27,6 +27,8 @@
   .words { display:flex; flex-wrap:wrap; gap:8px; margin-top:8px; }
   .words b { background:#f1f5f9; border-radius:999px; padding:4px 12px; }
   a.btn { display:inline-block; background:var(--c); color:#fff; text-decoration:none; font-weight:800; border-radius:999px; padding:8px 16px; margin:6px 6px 0 0; }
+  .foto { margin:0; } .foto img { width:320px; max-width:100%; height:auto; border-radius:16px; display:block; }
+  .zasluge { color:var(--muted); font-size:.8rem; text-align:center; margin-top:24px; }
   ul { margin:6px 0; padding-left:22px; } li { margin:4px 0; }
 </style>
 </head>
@@ -60,16 +62,7 @@
   <h2><span>🤝</span> Practise together: All About Badgers</h2>
   <p class="what">We finished the reading and checked our answers.</p>
   <div class="row">
-    <svg width="220" height="150" viewBox="0 0 220 150" role="img" aria-label="A drawing of a badger">
-      <ellipse cx="120" cy="98" rx="78" ry="34" fill="#9ca3af"/>
-      <ellipse cx="190" cy="92" rx="14" ry="8" fill="#9ca3af"/>
-      <rect x="62" y="112" width="16" height="26" rx="6" fill="#111827"/><rect x="150" y="112" width="16" height="26" rx="6" fill="#111827"/>
-      <path d="M20 92 Q42 52 82 74 L74 112 Q40 112 20 92Z" fill="#fff" stroke="#111827" stroke-width="2"/>
-      <path d="M26 88 Q46 64 70 78 L64 92 Q44 84 30 94Z" fill="#111827"/>
-      <path d="M40 104 Q58 96 72 100 L72 110 Q54 110 40 104Z" fill="#111827"/>
-      <circle cx="22" cy="93" r="5" fill="#111827"/><circle cx="52" cy="86" r="3" fill="#fff"/>
-      <ellipse cx="74" cy="66" rx="7" ry="9" fill="#111827"/>
-    </svg>
+    <figure class="foto"><img src="jazbec.jpg" alt="A European badger standing by water" width="320"></figure>
     <div>
       <p>Badgers are <b>nocturnal</b>: they are active at night. They are <b>omnivores</b>: they eat plants and animals, and they love earthworms. 🪱</p>
     </div>
@@ -109,6 +102,7 @@
   <a class="btn" href="https://brihta.github.io/sola/#/p/fleksi-reading" target="_top">📖 Reading</a>
   <a class="btn" href="https://brihta.github.io/sola/#/p/fleksi-spelling" target="_top">✏️ Spelling</a>
 </section>
+<p class="zasluge">Photo: <a href="https://commons.wikimedia.org/wiki/File:European_badger_(Meles_meles_taxus)_Drenthe.jpg" target="_blank" rel="noopener">Charles J. Sharp</a>, <a href="https://creativecommons.org/licenses/by-sa/4.0/" target="_blank" rel="noopener">CC BY-SA 4.0</a>, via Wikimedia Commons</p>
 </main>
 </body>
 </html>
