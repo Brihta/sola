@@ -1,5 +1,7 @@
 ## ⏱ 6 minutes
 
+📐 *Rosenshine: Independent practice*
+
 ## 🧒 Pupils
 
 Write **4 or 5 sentences**: *A night in the life of a badger*.

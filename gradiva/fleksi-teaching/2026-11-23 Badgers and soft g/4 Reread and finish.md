@@ -1,5 +1,7 @@
 ## ⏱ 10 minutes
 
+📐 *Rosenshine: Guided practice*
+
 ## 🧒 Pupils
 
 1. Read **All About Badgers** again, on your own.

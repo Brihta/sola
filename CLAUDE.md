@@ -28,7 +28,7 @@ Pravila za skripto:
 - Ime datoteke določa kviz: preimenovanje (brez `_`) naredi NOV kviz.
 
 `<predmet>` je eden od: racunalnistvo-3, racunalnistvo-4, racunalnistvo-5, racunalnistvo-6,
-racunalnistvo-6-9, fleksi-matematika, fleksi-spelling, fleksi-reading, fleksi-teaching.
+racunalnistvo-6-9, fleksi-matematika, fleksi-spelling, fleksi-reading, fleksi-teaching, fleksi-lessons.
 
 ### Oblika
 
@@ -153,6 +153,22 @@ Ko Nino reče »objavi …« ali »skrij …« (tudi s telefona, v katerem koli 
 odložiš v `$HOME/mnt/brihta-sola/vrsta/<ime>.zahteva` (JSON kot zgoraj) in po ~20 s prebereš
 `<ime>.rezultat` (to je potrditev). Skrivnosti NIKOLI ne beri. Supabase iz Claudovih okolij ni dosegljiv.
 V Supabase je zagnan `supabase_gradiva_skrivnost.sql`; namestitev na Macu: `~/.config/brihta-sola/namesti_vrsto.sh`.
+
+## Fleksi Angleščina: Teaching in Our lessons (dve različici vsake ure)
+
+Nino ure gradi po Rosenshineovih načelih. Vsaka ura ima DVE različici z istim datumom in naslovom:
+- `gradiva/fleksi-teaching/<ponedeljek> <Naslov>/` (ploščica **Teaching**, vidi jo SAMO učitelj, `samoUcitelj`):
+  koraki `.md` za učitelja, en zaslon na korak: `## ⏱ N minutes`, vrstica `📐 *Rosenshine: …*`,
+  `## 🧒 Pupils` (kratka navodila za tablo) in `## 🧑‍🏫 Teacher` (kaj reče in naredi, rešitve). Seznam
+  `ol` se ne sme prekiniti z `ul` (številčenje se začne znova). Prvi korak je »Lesson plan« (cilji, časi, kaj pripraviti).
+- `gradiva/fleksi-lessons/<ponedeljek> <Naslov>/index.html` (ploščica **Our lessons**, za učence, starše, odsotne):
+  ena prijazna stran, sklopi 🔁 Look back, 🧩 Something new, 🤝 Practise together, ✍️ On your own,
+  🏠 Missed the lesson? (s povezavami `target="_top"` na Spelling/Reading). Risbe v SVG in emojiji, brez fotografij,
+  brez imen učencev, BREZ rešitev in testnih besed. Vzor: `2026-11-23 Badgers and soft g`.
+- Besede za test spellinga s povedmi (naključni vrstni red) so posebno gradivo v Spelling:
+  `<ponedeljek> Week <N> Test.html` (skrito, dokler ga Nino ne objavi za vajo). Učenci pišejo v zvezek 1 do 12,
+  nato si zamenjajo zvezke in popravljajo po listu tedna; narek na tablo (Week N Dictation).
+Obe različici sta naloženi vnaprej (skriti). Our lessons se objavi PO uri (povzetek), Teaching se ne objavlja.
 
 ## Fleksi Reading: tedensko besedilo
 

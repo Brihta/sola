@@ -1,5 +1,7 @@
 ## ⏱ 6 minutes
 
+📐 *Rosenshine: Check for student understanding*
+
 ## 🧒 Pupils
 
 1. Use a different colour pen.

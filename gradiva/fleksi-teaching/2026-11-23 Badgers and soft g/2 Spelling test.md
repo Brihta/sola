@@ -1,5 +1,7 @@
 ## ⏱ 8 minutes
 
+📐 *Rosenshine: Daily review*
+
 ## 🧒 Pupils
 
 1. Open your exercise book. Write today's date and **Spelling test Week 1**.

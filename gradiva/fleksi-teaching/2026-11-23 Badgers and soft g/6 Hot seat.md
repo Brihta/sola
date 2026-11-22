@@ -1,5 +1,7 @@
 ## ⏱ 6 minutes
 
+📐 *Rosenshine: Ask questions, obtain a high success rate*
+
 ## 🧒 Pupils
 
 1. One pupil sits on the **hot seat**. They are a badger! 🦡

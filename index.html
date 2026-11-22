@@ -38,9 +38,9 @@
        Safari na iPadih obdrži svoje emojije. */
     @font-face {
       font-family: 'Brihta Emoji';
-      src: url('pisave/brihta-emoji.woff2?v=4747889e') format('woff2') tech(color-COLRv1);
+      src: url('pisave/brihta-emoji.woff2?v=179ebe47') format('woff2') tech(color-COLRv1);
       font-display: swap;
-      unicode-range: U+200D, U+26A0-26A1, U+26BD, U+26D4, U+2705, U+270A, U+270D, U+270F, U+2728, U+1F1E7, U+1F1EC, U+1F308, U+1F31F, U+1F355, U+1F389, U+1F3A8, U+1F3AE-1F3AF, U+1F3C6, U+1F3EB, U+1F409-1F40A, U+1F40C, U+1F418-1F419, U+1F41D, U+1F422, U+1F427, U+1F42C, U+1F431, U+1F436, U+1F438, U+1F441, U+1F44B, U+1F44D, U+1F464-1F465, U+1F468, U+1F4A1, U+1F4AA, U+1F4BB, U+1F4BE, U+1F4C1, U+1F4C4, U+1F4CA, U+1F4CC, U+1F4D6, U+1F501, U+1F511-1F512, U+1F517, U+1F522, U+1F590, U+1F5B1, U+1F5D1, U+1F5FA, U+1F648, U+1F64B, U+1F680, U+1F6A2, U+1F916, U+1F938, U+1F981, U+1F984, U+1F989-1F98B, U+1F992, U+1F996, U+1F9A1, U+1F9AB, U+1F9D1-1F9D2, U+1F9E9;
+      unicode-range: U+200D, U+26A0-26A1, U+26BD, U+26D4, U+2705, U+270A, U+270D, U+270F, U+2728, U+1F1E7, U+1F1EC, U+1F308, U+1F31F, U+1F355, U+1F389, U+1F3A8, U+1F3AE-1F3AF, U+1F3C6, U+1F3EB, U+1F409-1F40A, U+1F40C, U+1F418-1F419, U+1F41D, U+1F422, U+1F427, U+1F42C, U+1F431, U+1F436, U+1F438, U+1F441, U+1F44B, U+1F44D, U+1F464-1F465, U+1F468, U+1F4A1, U+1F4AA, U+1F4BB, U+1F4BE, U+1F4C1, U+1F4C4, U+1F4CA, U+1F4CC, U+1F4D0, U+1F4D6, U+1F501, U+1F511-1F512, U+1F517, U+1F522, U+1F590, U+1F5B1, U+1F5D1, U+1F5FA, U+1F648, U+1F64B, U+1F680, U+1F6A2, U+1F916, U+1F938, U+1F981, U+1F984, U+1F989-1F98B, U+1F992, U+1F996, U+1F9A1, U+1F9AB, U+1F9D1-1F9D2, U+1F9E9;
     }
     /* emoji-pisava:konec */
     html, body { margin: 0; }
@@ -676,7 +676,8 @@ const PREDMETI = [
         otroci: [
           { id: 'fleksi-spelling', ime: 'Spelling', kratko: 'Spelling', koda: 'Angleščina', c1: '#8b5cf6', c2: '#ec4899', emoji: '✏️', opis: 'Spelling: words of the week' },
           { id: 'fleksi-reading',  ime: 'Reading',  kratko: 'Reading',  koda: 'Angleščina', c1: '#10b981', c2: '#0ea5e9', emoji: '📖', opis: 'Reading: texts and questions', naslovSeznama: 'Texts' },
-          { id: 'fleksi-teaching', ime: 'Teaching', kratko: 'Teaching', koda: 'Angleščina', c1: '#f59e0b', c2: '#ef4444', emoji: '🧑‍🏫', opis: 'Lessons: step by step', naslovSeznama: 'Lessons' },
+          { id: 'fleksi-lessons', ime: 'Our lessons', kratko: 'Our lessons', koda: 'Angleščina', c1: '#06b6d4', c2: '#22c55e', emoji: '🦉', opis: 'What we did in class', naslovSeznama: 'Lessons' },
+          { id: 'fleksi-teaching', ime: 'Teaching', kratko: 'Teaching', koda: 'Angleščina', c1: '#f59e0b', c2: '#ef4444', emoji: '🧑‍🏫', opis: 'Teacher only: lesson guides', naslovSeznama: 'Lessons', samoUcitelj: true },
         ] },
     ] },
 ];
@@ -897,7 +898,7 @@ function kartica(p) {
     return `<div class="card wide" style="${barve(p)}">
       <a href="#/${p.id}">${art}
         <div class="card-body"><div><h3>${esc(p.ime)}</h3><p>${esc(p.izbira || 'Izberi svoj razred')}</p></div>${PUSCICA}</div></a>
-      <div class="chips">${p.otroci.map(o => `<a class="chip" style="${barve(o)}" href="${hrefPredmeta(o)}">${o.emoji} ${esc(o.kratko)}${nova(o) ? '<span class="dot" title="Novo danes"></span>' : ''}</a>`).join('')}</div>
+      <div class="chips">${vidniOtroci(p).map(o => `<a class="chip" style="${barve(o)}" href="${hrefPredmeta(o)}">${o.emoji} ${esc(o.kratko)}${nova(o) ? '<span class="dot" title="Novo danes"></span>' : ''}</a>`).join('')}</div>
     </div>`;
   }
   const vseh = vsaZa(p).length;
@@ -915,7 +916,7 @@ function stranNadzorna() {
   const zadnji = najdi(preberi('sola_zadnji') || '');
   const d = new Date();
   const ime = imeZaPozdrav();
-  const danes = VSI.filter(p => nova(p));
+  const danes = VSI.filter(p => vidi(p) && nova(p));
   const sporocilo = danes.length
     ? `Novo gradivo pri: ${danes.map(p => p.ime).join(', ')}!`
     : 'Danes še ni novih gradiv. Pokukaj v prejšnja!';
@@ -940,13 +941,15 @@ function stranSkupina(p) {
       <div class="banner-top"><span class="emoji" aria-hidden="true">${p.emoji}</span>
         <div><h1>${esc(p.ime)}</h1><p>${esc(p.vprasanje || 'V kateri razred hodiš?')}</p></div></div>
     </section>
-    <div class="cards">${p.otroci.map(kartica).join('')}</div>
+    <div class="cards">${vidniOtroci(p).map(kartica).join('')}</div>
     ${povezaveHtml(p)}`;
 }
 
 /* Učenčevi računi, ki vidijo tudi povezave »samoUcitelj« (učiteljev testni račun). */
 const TESTNI_UCENCI = ['pik5'];
 const vidi = l => !l.samoUcitelj || ucitelj || (ucenec && TESTNI_UCENCI.includes(ucenec.username));
+/* Podpredmet s samoUcitelj (npr. Fleksi › Teaching) vidi samo učitelj. */
+const vidniOtroci = p => p.otroci.filter(vidi);
 const orodjeKartica = o => `<a class="card" style="${barve(o)}" href="${esc(o.url)}"><div class="art"><span class="emoji" aria-hidden="true">${o.emoji}</span></div>
     <div class="card-body"><div><h3>${esc(o.ime)}</h3><p>${esc(o.opis)}</p></div>${PUSCICA}</div></a>`;
 /* Razdelek »Uporabne povezave« (skupina ali posamezen predmet z lastnostjo povezave). */
@@ -2432,10 +2435,10 @@ function izrisiRacun(pogled) {
 function napolniPredal() {
   const vrstica = (p, globina) => globina === 0
     ? (p.otroci
-      ? `<li><a href="#/${p.id}" style="${barve(p)}"><span class="ic">${p.emoji}</span><span>${esc(p.ime)}<small>${p.otroci.length} ${esc(p.enota || 'razredi')}</small></span></a></li>`
+      ? `<li><a href="#/${p.id}" style="${barve(p)}"><span class="ic">${p.emoji}</span><span>${esc(p.ime)}<small>${vidniOtroci(p).length} ${esc(p.enota || 'razredi')}</small></span></a></li>`
       : `<li><a href="#/p/${p.id}" style="${barve(p)}"><span class="ic">${p.emoji}</span><span>${esc(p.ime)}<small>${esc(p.koda)}</small></span></a></li>`)
     : `<li class="sub"${globina > 1 ? ` style="padding-left:${(globina - 1) * 22}px"` : ''}><a href="${hrefPredmeta(p)}" style="${barve(p)}"><span class="ic">${p.emoji}</span><span>${p.emoji} ${esc(p.kratko || p.ime)}</span></a></li>`;
-  const drevo = (p, globina) => vrstica(p, globina) + (p.otroci ? p.otroci.map(o => drevo(o, globina + 1)).join('') : '');
+  const drevo = (p, globina) => vrstica(p, globina) + (p.otroci ? vidniOtroci(p).map(o => drevo(o, globina + 1)).join('') : '');
   document.getElementById('tray-list').innerHTML = PREDMETI.map(p => drevo(p, 0)).join('')
     + ORODJA.filter(vidi).map(o => `<li><a href="${esc(o.url)}" style="${barve(o)}"><span class="ic">${o.emoji}</span><span>${esc(o.ime)}<small>${esc(o.opis)}</small></span></a></li>`).join('');
 }
@@ -2466,7 +2469,7 @@ function usmeri() {
   window.scrollTo(0, 0);
   if (deli[0] === 'p' && deli[1]) {
     const p = najdi(deli[1]);
-    if (!p || p.otroci) return stranNadzorna();
+    if (!p || p.otroci || !vidi(p)) return stranNadzorna();
     if (deli[2] === 'datoteke') return stranDatoteke(p);
     if (deli[2] === 'nov-kviz') return stranNovKviz(p);
     if (deli[2] === 'nalozi') return stranNalozi(p);

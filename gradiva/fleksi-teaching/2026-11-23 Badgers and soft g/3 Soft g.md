@@ -1,5 +1,7 @@
 ## ⏱ 7 minutes
 
+📐 *Rosenshine: Present new material in small steps, provide models*
+
 ## 🧒 Pupils
 
 1. Listen: is the **g** hard (like *goat*) or soft (like *giant*)?

@@ -1,5 +1,7 @@
 ## ⏱ 2 minutes
 
+📐 *Rosenshine: Weekly and monthly review*
+
 ## 🧒 Pupils
 
 - Practise your **soft g** words at home: **Look, Say, Cover, Write, Check**.
