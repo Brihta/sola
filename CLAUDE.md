@@ -129,13 +129,21 @@ Nino reče npr. »Spelling, teden 2«. Takrat:
    (Nino se je tako odločil).
    Tedni 2 do 11 (do 1. 2. 2027) so že naloženi vnaprej. Vnaprej naloženo gradivo se NIKOLI ne objavi
    samo: ostane skrito, dokler ga Nino ne objavi s stikalom 👁/🙈 (prijavljen kot učitelj). Tako se je odločil.
-   Ko Nino reče »Spelling, teden N« za že naložen teden, preveri, da sta list in narek tam, in mu povej,
-   da ju objavi s stikalom.
+   Ko Nino reče »Spelling, teden N« za že naložen teden, preveri, da sta list in narek tam, in ju objavi
+   sam (glej »Objava gradiva brez prijave« spodaj). Če skripta ne teče, mu povej, da ju objavi s stikalom.
 4. `python3 scripts/gradiva.py`, nato commit in push na `main`.
 5. Ninu povej naslov in da je čez 1 do 2 minuti na strani (Fleksi › Angleščina › Spelling).
 
 Pravilo točkovanja na listih: vse natisnjene besede (tudi zvezdica) se točkujejo, okvir je »My test ___ / N«
 (Kite 6, Boat 9, Tree 12). Če kdaj popravljaš liste, ostane tako v vseh stopnjah.
+
+## Objava gradiva brez prijave
+
+Ko Nino reče »objavi …« ali »skrij …«, to naredi sam na njegovem Macu (device_bash):
+`python3 /Users/ninokokalj/Documents/Shared_documents/GitHub/sola/scripts/objavi.py <predmet> "<del imena>"`
+(dodaj `--skrij` za skrivanje, `--vse` če se ujema več gradiv; brez imena izpiše gradiva predmeta).
+Uporablja isto skrivnost kot kvizi; v Supabase mora biti zagnan `supabase_gradiva_skrivnost.sql`.
+Na strani se spremeni takoj, brez commita.
 
 ## Fleksi Reading: tedensko besedilo
 
