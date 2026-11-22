@@ -169,6 +169,13 @@ Nino ure gradi po Rosenshineovih načelih. Vsaka ura ima DVE različici z istim 
   `<ponedeljek> Week <N> Test.html` (skrito, dokler ga Nino ne objavi za vajo). Učenci pišejo v zvezek 1 do 12,
   nato si zamenjajo zvezke in popravljajo po listu tedna; narek na tablo (Week N Dictation).
 Obe različici sta naloženi vnaprej (skriti). Our lessons se objavi PO uri (povzetek), Teaching se ne objavlja.
+- Kljukice: v Teaching ima učitelj pri vsakem koraku gumb »⬜ Mark as done in class« (Supabase `supabase_kljukice.sql`,
+  ključ = pot koraka). Ninov Mac jih vsaki 2 minuti izvozi v `~/Brihta-max/kljukice.json`.
+
+### Max: tedenski agent za Fleksi (načrtovano opravilo »Claudio › Max«)
+Vsak petek pripravi naslednjo ponedeljkovo uro (vse tri dele, SKRITO), nič ne objavi. Iz `~/Brihta-max/kljukice.json`
+razbere, kateri koraki zadnje ure so bili narejeni; neodkljukane prenese v naslednjo uro (npr. kot Look back) ali
+jih omeni Ninu. Mape `~/.config/brihta-sola` (skrivnost) Max ne potrebuje in je ne bere.
 
 ## Assessment (ocene/, samo učitelj)
 

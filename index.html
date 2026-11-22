@@ -38,9 +38,9 @@
        Safari na iPadih obdrži svoje emojije. */
     @font-face {
       font-family: 'Brihta Emoji';
-      src: url('pisave/brihta-emoji.woff2?v=ea911d60') format('woff2') tech(color-COLRv1);
+      src: url('pisave/brihta-emoji.woff2?v=c320dbd9') format('woff2') tech(color-COLRv1);
       font-display: swap;
-      unicode-range: U+200D, U+26A0-26A1, U+26BD, U+26D4, U+2705, U+270A, U+270D, U+270F, U+2728, U+1F1E7, U+1F1EC, U+1F308, U+1F31F, U+1F355, U+1F389, U+1F3A8, U+1F3AE-1F3AF, U+1F3C6, U+1F3EB, U+1F409-1F40A, U+1F40C, U+1F418-1F419, U+1F41D, U+1F422, U+1F427, U+1F42C, U+1F431, U+1F436, U+1F438, U+1F441, U+1F44B, U+1F44D, U+1F464-1F465, U+1F468, U+1F4A1, U+1F4AA, U+1F4BB, U+1F4BE, U+1F4C1, U+1F4C4, U+1F4CA, U+1F4CC, U+1F4D0, U+1F4D6, U+1F501, U+1F511-1F512, U+1F517, U+1F522, U+1F590, U+1F5B1, U+1F5D1, U+1F5FA, U+1F648, U+1F64B, U+1F680, U+1F6A2, U+1F916, U+1F938, U+1F981, U+1F984, U+1F989-1F98B, U+1F992, U+1F996, U+1F9A1, U+1F9AB, U+1F9D1-1F9D2, U+1F9E9;
+      unicode-range: U+200D, U+26A0-26A1, U+26BD, U+26D4, U+2705, U+270A, U+270D, U+270F, U+2728, U+2B1C, U+1F1E7, U+1F1EC, U+1F308, U+1F31F, U+1F355, U+1F389, U+1F3A8, U+1F3AE-1F3AF, U+1F3C6, U+1F3EB, U+1F409-1F40A, U+1F40C, U+1F418-1F419, U+1F41D, U+1F422, U+1F427, U+1F42C, U+1F431, U+1F436, U+1F438, U+1F441, U+1F44B, U+1F44D, U+1F464-1F465, U+1F468, U+1F4A1, U+1F4AA, U+1F4BB, U+1F4BE, U+1F4C1, U+1F4C4, U+1F4CA, U+1F4CC, U+1F4D0, U+1F4D6, U+1F501, U+1F511-1F512, U+1F517, U+1F522, U+1F590, U+1F5B1, U+1F5D1, U+1F5FA, U+1F648, U+1F64B, U+1F680, U+1F6A2, U+1F916, U+1F938, U+1F981, U+1F984, U+1F989-1F98B, U+1F992, U+1F996, U+1F9A1, U+1F9AB, U+1F9D1-1F9D2, U+1F9E9;
     }
     /* emoji-pisava:konec */
     html, body { margin: 0; }
@@ -814,12 +814,14 @@ function uraKviza(id, kviz) {
    Nič se ne objavi samo od sebe: vnaprej naloženo ostane skrito, dokler ga učitelj ne objavi.
    Naložene datoteke (PDF, Word, slike) so v Supabase shrambi in se pomešajo med gradiva. */
 let STANJE = {};          // kljuc objave → true (objavljeno) / false (skrito)
+let KLJUKICE = {};        // pot koraka ure → čas, ko je učitelj označil »Done in class« (supabase_kljukice.sql)
 let DODANA = [];
 let RAZPORED = {}, NASLOVI = [];   // predmet → [ključi v vrstnem redu]; naslovi, ki jih vpiše učitelj
 const SHRAMBA = 'sola-gradiva';
 const potShrambe = pot => pot.split('/').map(encodeURIComponent).join('/');
 async function naloziObjave() {
-  const [s, d, r] = await Promise.all([rpc('sola_gradiva_stanje'), rpc('sola_gradiva_dodana'), rpc('sola_razpored_vse')]);
+  const [s, d, r, kl] = await Promise.all([rpc('sola_gradiva_stanje'), rpc('sola_gradiva_dodana'), rpc('sola_razpored_vse'), rpc('sola_ura_kljukice')]);
+  if (Array.isArray(kl)) { KLJUKICE = {}; kl.forEach(x => { if (x.opravljeno) KLJUKICE[x.kljuc] = x.posodobljeno; }); }
   if (r && Array.isArray(r.naslovi)) { NASLOVI = r.naslovi; RAZPORED = r.razpored || {}; }
   if (Array.isArray(s)) { STANJE = {}; s.forEach(x => { STANJE[x.kljuc] = x.objavljeno; }); }
   if (Array.isArray(d)) DODANA = d.map(x => ({ vrsta: x.vrsta, ime: x.naslov, datum: x.datum, velikost: x.velikost,
@@ -842,6 +844,18 @@ function gumbObjave(g) {
   return `<button class="vis${s ? '' : ' on'}" type="button" data-objava="${esc(kljucObjave(g))}" data-skrito="${s ? 1 : 0}"
     title="${s ? 'Učenci tega ne vidijo. Klikni, da objaviš.' : 'Učenci to vidijo. Klikni, da skriješ.'}">${s ? '🙈 <span class="lbl">Skrito</span>' : '👁 <span class="lbl">Objavljeno</span>'}</button>`;
 }
+/* Kljukica »Done in class« v Teaching: Max (tedenski agent) iz nje ve, kaj je bilo pri uri narejeno. */
+document.addEventListener('click', async e => {
+  const b = e.target.closest('[data-kljukica]');
+  if (!b || !ucitelj) return;
+  e.preventDefault();
+  const k = b.dataset.kljukica, da = !KLJUKICE[k];
+  b.disabled = true;
+  const r = await rpc('sola_ura_kljukica', { p_seja: ucitelj.seja, p_kljuc: k, p_opravljeno: da });
+  if (r === true) { if (da) KLJUKICE[k] = new Date().toISOString(); else delete KLJUKICE[k]; usmeri(); return; }
+  b.disabled = false;
+  alert(r === NEDOSEGLJIVO ? 'Strežnik ni dosegljiv.' : 'Ni uspelo. Se moraš znova prijaviti? (Ali pa v Supabase še ni zagnan supabase_kljukice.sql.)');
+});
 document.addEventListener('click', async e => {
   const b = e.target.closest('[data-objava]');
   if (!b || !ucitelj) return;
@@ -1434,7 +1448,7 @@ function korakOpravljen(p, g, k, i) {
 }
 function korakPika(p, g, k, i, zdaj) {
   const stanje = i === zdaj ? ' now' : korakOpravljen(p, g, k, i) ? ' done' : '';
-  return `<li class="step${stanje}"><a href="${hrefKoraka(p, g, i)}"${i === zdaj ? ' aria-current="step"' : ''}><span class="n">${i + 1}</span><span class="t">${esc(k.ime)}</span></a></li>`;
+  return `<li class="step${stanje}"><a href="${hrefKoraka(p, g, i)}"${i === zdaj ? ' aria-current="step"' : ''}><span class="n">${i + 1}</span><span class="t">${esc(k.ime)}${k.pot && KLJUKICE[k.pot] ? ' ✅' : ''}</span></a></li>`;
 }
 function vsebinaKoraka(p, g, k) {
   if (k.besedilo != null) return `<article class="md">${md(k.besedilo)}</article>`;
@@ -1478,6 +1492,7 @@ function stranUra(p, g, korak) {
     </div>
     <ol class="steps">${g.koraki.map((x, j) => korakPika(p, g, x, j, i)).join('')}</ol>
     <div class="vhead step-h"><span class="badge">Korak ${i + 1} od ${n}</span><h2>${esc(k.ime)}</h2>${gumbiOgleda(k, imePrenosa(g, k))}</div>
+    ${p.samoUcitelj && ucitelj && k.pot ? `<p><button class="btn${KLJUKICE[k.pot] ? ' btn-go' : ''}" type="button" data-kljukica="${esc(k.pot)}">${KLJUKICE[k.pot] ? '✅ Done in class' : '⬜ Mark as done in class'}</button></p>` : ''}
     ${vsebinaKoraka(p, g, k)}
     <div class="seq">
       ${prej ? `<a class="btn" href="${hrefKoraka(p, g, i - 1)}">${SVG.prev} ${esc(prej.ime)}</a>` : '<span></span>'}
