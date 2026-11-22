@@ -139,11 +139,14 @@ Pravilo točkovanja na listih: vse natisnjene besede (tudi zvezdica) se točkuje
 
 ## Objava gradiva brez prijave
 
-Ko Nino reče »objavi …« ali »skrij …«, to naredi sam na njegovem Macu (device_bash):
-`python3 /Users/ninokokalj/Documents/Shared_documents/GitHub/sola/scripts/objavi.py <predmet> "<del imena>"`
-(dodaj `--skrij` za skrivanje, `--vse` če se ujema več gradiv; brez imena izpiše gradiva predmeta).
-Uporablja isto skrivnost kot kvizi; v Supabase mora biti zagnan `supabase_gradiva_skrivnost.sql`.
-Na strani se spremeni takoj, brez commita.
+Ko Nino reče »objavi …« ali »skrij …«, to naredi sam prek vrste na njegovem Macu (Supabase iz
+Claudovih okolij NI dosegljiv, zato `scripts/objavi.py` ne teče tam). V povezano mapo
+`~/.config/brihta-sola/vrsta/` (device_bash: `$HOME/mnt/brihta-sola/vrsta`) zapiši datoteko `<ime>.zahteva`:
+`{"predmet":"fleksi-spelling","ime":"Week 2 soft g","objavi":true}` (`"objavi":false` skrije,
+`"vse":true` če se ime ujema z več gradivi). Opravilo launchd `si.brihta.objave` jo takoj izvede
+in zapiše `<ime>.rezultat` (vrstica `OK …` ali `NAPAKA …`); po ~20 s ga preberi in Ninu povej izid.
+Skrivnosti NIKOLI ne beri. Če rezultata ni, je Mac ugasnjen ali spi: Ninu povej, naj objavi s stikalom.
+V Supabase je zagnan `supabase_gradiva_skrivnost.sql`; namestitev: `~/.config/brihta-sola/namesti_vrsto.sh`.
 
 ## Fleksi Reading: tedensko besedilo
 
