@@ -20,6 +20,7 @@ Vsak predmet ima svojo mapo v `gradiva/`:
 | `gradiva/fleksi-matematika` | Fleksi › Matematika |
 | `gradiva/fleksi-spelling` | Fleksi › Angleščina › Spelling |
 | `gradiva/fleksi-reading` | Fleksi › Angleščina › Reading |
+| `gradiva/fleksi-teaching` | Fleksi › Angleščina › Teaching (ure za učitelja in učence, koraki .md) |
 
 **Na GitHubu (najhitreje):** odpri mapo predmeta → *Add file* → *Upload files*
 → povleci datoteko → *Commit changes*. Čez 1–2 minuti je gradivo na strani.
