@@ -1,3 +1,4 @@
 # Zahteve za objavo/skrivanje gradiva na Brihti. Ena vrstica JSON na zahtevo, dodajaj samo na konec.
 # {"id":"<enolično>","predmet":"fleksi-spelling","ime":"Week 2 soft g","objavi":true,"vse":false}
 # Ninov Mac (launchd si.brihta.objave) vsaki 2 minuti izvede nove zahteve, vsako enkrat. Glej CLAUDE.md.
+{"id": "20261122-161632-c382c5", "predmet": "fleksi-spelling", "ime": "Week 2", "objavi": true, "vse": true}
