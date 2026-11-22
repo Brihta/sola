@@ -173,7 +173,7 @@ Obe različici sta naloženi vnaprej (skriti). Our lessons se objavi PO uri (pov
   ključ = pot koraka). Ninov Mac jih vsaki 2 minuti izvozi v `~/Brihta-max/kljukice.json`.
 
 ### Max: tedenski agent za Fleksi (načrtovano opravilo »Claudio › Max«)
-Vsak petek pripravi naslednjo ponedeljkovo uro (vse tri dele, SKRITO), nič ne objavi. Iz `~/Brihta-max/kljukice.json`
+Vsako soboto ob 8.49 pripravi naslednjo ponedeljkovo uro (vse tri dele, SKRITO), nič ne objavi. Iz `~/Brihta-max/kljukice.json`
 razbere, kateri koraki zadnje ure so bili narejeni; neodkljukane prenese v naslednjo uro (npr. kot Look back) ali
 jih omeni Ninu. Mape `~/.config/brihta-sola` (skrivnost) Max ne potrebuje in je ne bere.
 
