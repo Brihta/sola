@@ -397,6 +397,62 @@
   ],
   "racunalnistvo-4": [
    {
+    "ime": "6. ura Tipkovnica in domaca vrsta",
+    "vrsta": "ura",
+    "datum": "2026-11-24T08:00:00+02:00",
+    "pot": "gradiva/racunalnistvo-4/2026-11-24 6. ura Tipkovnica in domaca vrsta",
+    "koraki": [
+     {
+      "ime": "Navodila",
+      "vrsta": "besedilo",
+      "pot": "gradiva/racunalnistvo-4/2026-11-24 6. ura Tipkovnica in domaca vrsta/1 Navodila.md",
+      "velikost": 815,
+      "besedilo": "## 🎯 Cilj ure\n\nSpoznam **tipkovnico** in **domačo vrsto**. Prsti vedo, kje je njihov dom.\n\n## ✅ Uspešen sem, če …\n\n- vem, kaj naredijo presledek, Enter, Backspace in Shift,\n- prste položim na domačo vrsto (A S D F, J K L Č) in najdem izboklini na F in J,\n- sedim vzravnano in gledam zaslon, ne tipk,\n- natipkam prve besede iz domače vrste.\n\n## 🗺️ Kako delaš\n\n1. Vsak korak je ena stran. Beri in klikaj **na strani**.\n2. Ko rešiš nalogo, se odklene zeleni gumb **Naslednja naloga**.\n3. Ko piše **🎉 Končano!**, se odklene velik gumb **Naprej** spodaj desno. Z njim greš na naslednji korak.\n4. Če se zatakneš, klikni **💡 Namig**. Po namigih lahko pogledaš rešitev.\n\nDelaš sam, s svojo hitrostjo. Pripravi **zvezek** za zapis. **★★ Izziv** na koncu je za tiste, ki želijo več.\n"
+     },
+     {
+      "ime": "Spoznaj tipkovnico",
+      "vrsta": "html",
+      "pot": "gradiva/racunalnistvo-4/2026-11-24 6. ura Tipkovnica in domaca vrsta/2 Spoznaj tipkovnico.html",
+      "velikost": 69730,
+      "interaktivno": true
+     },
+     {
+      "ime": "Prsti domov",
+      "vrsta": "html",
+      "pot": "gradiva/racunalnistvo-4/2026-11-24 6. ura Tipkovnica in domaca vrsta/3 Prsti domov.html",
+      "velikost": 70026,
+      "interaktivno": true
+     },
+     {
+      "ime": "Prve besede",
+      "vrsta": "html",
+      "pot": "gradiva/racunalnistvo-4/2026-11-24 6. ura Tipkovnica in domaca vrsta/4 Prve besede.html",
+      "velikost": 68843,
+      "interaktivno": true
+     },
+     {
+      "ime": "Zapis v zvezek",
+      "vrsta": "html",
+      "pot": "gradiva/racunalnistvo-4/2026-11-24 6. ura Tipkovnica in domaca vrsta/5 Zapis v zvezek.html",
+      "velikost": 68422,
+      "interaktivno": true
+     },
+     {
+      "ime": "Kviz",
+      "vrsta": "kviz",
+      "kviz": "Tipkovnica in domača vrsta"
+     },
+     {
+      "ime": "Izziv G in H",
+      "vrsta": "html",
+      "pot": "gradiva/racunalnistvo-4/2026-11-24 6. ura Tipkovnica in domaca vrsta/7 Izziv G in H.html",
+      "velikost": 68671,
+      "interaktivno": true
+     }
+    ],
+    "vnaprej": true
+   },
+   {
     "ime": "Vaje za Bobrcek doma",
     "vrsta": "ura",
     "datum": "2026-11-13T08:00:00+02:00",
@@ -547,6 +603,69 @@
    }
   ],
   "racunalnistvo-6": [
+   {
+    "ime": "7. ura Slika in izvoz v PDF",
+    "vrsta": "ura",
+    "datum": "2026-11-27T08:00:00+02:00",
+    "pot": "gradiva/racunalnistvo-6/2026-11-27 7. ura Slika in izvoz v PDF",
+    "koraki": [
+     {
+      "ime": "Navodila",
+      "vrsta": "besedilo",
+      "pot": "gradiva/racunalnistvo-6/2026-11-27 7. ura Slika in izvoz v PDF/1 Navodila.md",
+      "velikost": 855,
+      "besedilo": "## 🎯 Cilj ure\n\nV svoj dokument vstavim **sliko** na pravo mesto, pod njo napišem **vir** in dokument shranim kot **PDF**.\n\n## ✅ Uspešen sem, če …\n\n- sliko postavim ob besedilo, ki ga pojasni,\n- velikost slike spremenim s kotnim krogcem, da se ne raztegne,\n- pod sliko napišem vir: avtor, stran, licenca,\n- dokument shranim kot PDF in znam povedati, zakaj PDF.\n\n## 🗺️ Kako delaš\n\n1. Vsak korak je ena stran. Beri in klikaj **na strani**.\n2. Ko rešiš nalogo, se odklene zeleni gumb **Naslednja naloga**.\n3. Ko piše **🎉 Končano!**, se odklene velik gumb **Naprej** spodaj desno. Z njim greš na naslednji korak.\n4. Če se zatakneš, klikni **💡 Namig**. Po namigih lahko pogledaš rešitev.\n\nDelaš sam, s svojo hitrostjo. Pripravi **zvezek** za zapis in imej odprt **Word**. **★★ Izziv** na koncu je za tiste, ki želijo več.\n"
+     },
+     {
+      "ime": "Ogrevanje prstov",
+      "vrsta": "html",
+      "pot": "gradiva/racunalnistvo-6/2026-11-27 7. ura Slika in izvoz v PDF/2 Ogrevanje prstov.html",
+      "velikost": 68807,
+      "interaktivno": true
+     },
+     {
+      "ime": "Slika v besedilu",
+      "vrsta": "html",
+      "pot": "gradiva/racunalnistvo-6/2026-11-27 7. ura Slika in izvoz v PDF/3 Slika v besedilu.html",
+      "velikost": 414024,
+      "interaktivno": true
+     },
+     {
+      "ime": "Slika v Wordu",
+      "vrsta": "html",
+      "pot": "gradiva/racunalnistvo-6/2026-11-27 7. ura Slika in izvoz v PDF/4 Slika v Wordu.html",
+      "velikost": 185840,
+      "interaktivno": true
+     },
+     {
+      "ime": "Izvoz v PDF",
+      "vrsta": "html",
+      "pot": "gradiva/racunalnistvo-6/2026-11-27 7. ura Slika in izvoz v PDF/5 Izvoz v PDF.html",
+      "velikost": 69589,
+      "interaktivno": true
+     },
+     {
+      "ime": "Zapis v zvezek",
+      "vrsta": "html",
+      "pot": "gradiva/racunalnistvo-6/2026-11-27 7. ura Slika in izvoz v PDF/6 Zapis v zvezek.html",
+      "velikost": 68481,
+      "interaktivno": true
+     },
+     {
+      "ime": "Kviz",
+      "vrsta": "kviz",
+      "kviz": "Slika in izvoz v PDF"
+     },
+     {
+      "ime": "Izziv besedilo ob sliki",
+      "vrsta": "html",
+      "pot": "gradiva/racunalnistvo-6/2026-11-27 7. ura Slika in izvoz v PDF/8 Izziv besedilo ob sliki.html",
+      "velikost": 69872,
+      "interaktivno": true
+     }
+    ],
+    "vnaprej": true
+   },
    {
     "ime": "Tekmovanje Bober",
     "vrsta": "ura",
@@ -982,5 +1101,5 @@
    }
   ]
  },
- "posodobljeno": "2026-11-23T05:31:04+00:00"
+ "posodobljeno": "2026-11-23T10:50:41+00:00"
 }
