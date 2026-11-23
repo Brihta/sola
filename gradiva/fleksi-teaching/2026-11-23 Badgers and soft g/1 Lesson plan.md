@@ -5,6 +5,8 @@
 - Finish and check **All About Badgers**
 - Talk like a badger, then write like one
 
+EVIO: Test in narek črkovanja (1. teden), nov vzorec mehki g (soft g). Branje in razumevanje besedila All About Badgers, govorna vaja vroči stol in kratko pisanje.
+
 ## ⏱ 45 minutes
 
 1. Spelling test: 8 min

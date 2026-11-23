@@ -181,6 +181,8 @@ Obe različici sta naloženi vnaprej (skriti). Our lessons se objavi PO uri (pov
 Vsako soboto ob 8.49 pripravi naslednjo ponedeljkovo uro (vse tri dele, SKRITO), nič ne objavi. Iz `~/Brihta-max/kljukice.json`
 razbere, kateri koraki zadnje ure so bili narejeni; neodkljukane prenese v naslednjo uro (npr. kot Look back) ali
 jih omeni Ninu. Mape `~/.config/brihta-sola` (skrivnost) Max ne potrebuje in je ne bere.
+V `1 Lesson plan.md` vsake ure je pod »🎯 Today« vrstica `EVIO: …` (1 do 2 povedi v slovenščini, brez imen):
+Zora jo prepiše v jutranji planer kot vpis za TJA 5/3.
 
 ## Assessment (ocene/, samo učitelj)
 
