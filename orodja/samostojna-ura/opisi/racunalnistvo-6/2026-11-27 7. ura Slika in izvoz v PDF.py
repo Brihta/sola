@@ -58,9 +58,14 @@ stran('3 Slika v besedilu.html', 'Slika v besedilu', [
 <img src="{HMELJ}" style="width:150px;display:block;margin:8px 0">
 <i style="font-size:13px">{VIR}</i></div>
 <p class="small"><b>CC BY-SA</b> je licenca: avtor dovoli uporabo, če ga navedeš.</p>'''),
-    {'type': 'choose', 'title': 'Kateri zapis vira je dober?', 'intro': '<div>Luka je v svoj dokument dal sliko z interneta. Kaj naj napiše pod njo?</div>',
+    {'type': 'choose', 'title': 'Kateri zapis vira je dober?',
+     'intro': f'''<div>Luka je sliko hmelja našel na strani <b>Wikimedia Commons</b>. Ob sliki je pisalo:</div>
+<div style="display:flex;gap:12px;align-items:center;flex-wrap:wrap;border:1px solid #bbb;background:#fff;padding:10px 12px;margin:8px 0;max-width:520px">
+<img src="{HMELJ}" style="width:80px">
+<div style="font-size:14px;line-height:1.5"><b>Avtor:</b> Magdalena Šajinovićová<br><b>Licenca:</b> CC BY-SA 3.0<br><b>Stran:</b> Wikimedia Commons</div></div>
+<div>Luka je sliko dal v svoj dokument. Kaj naj napiše pod njo?</div>''',
      'options': [
-         ch('Vir: Magdalena Šajinovićová, Wikimedia Commons, CC BY-SA 3.0', ok=True, why='Pove avtorja, stran in licenco. Vsak lahko sliko poišče.'),
+         ch('Vir: Magdalena Šajinovićová, Wikimedia Commons, CC BY-SA 3.0', ok=True, why='Pove avtorja, stran in licenco, točno kot piše ob sliki. Vsak lahko sliko poišče.'),
          ch('Vir: internet', why='Internet je ogromen. Iz tega nihče ne najde slike in ne ve, kdo jo je posnel.'),
          ch('Vir: Google', why='Google je iskalnik, ne avtor. Slika je na neki drugi strani in ima svojega avtorja.'),
          ch('Nič, saj je bila na internetu.', why='Tudi slike na internetu imajo avtorje. Brez vira se delaš, da je slika tvoja.'),
