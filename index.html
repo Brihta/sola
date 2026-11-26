@@ -1821,15 +1821,22 @@ const LICENCA = (l, v) => l === 'cc0' ? 'CC0' : l === 'pdm' ? 'javna domena' : `
 async function prevodiIskanja(q) {
   try {
     const r = await fetch(`https://www.wikidata.org/w/api.php?action=wbsearchentities&search=${encodeURIComponent(q)}&language=sl&uselang=en&limit=5&format=json&origin=*`);
-    const d = await r.json();
-    return [...new Set((d.search || []).map(x => x.label).filter(x => x && x.toLowerCase() !== q.toLowerCase()))].slice(0, 4);
+    const d = await r.json(), mali = q.toLowerCase(), zad = d.search || [];
+    /* Angleška beseda (npr. leaf): išči natanko njo, brez »prevodov«. */
+    if (zad.some(x => x.match && x.match.language !== 'sl' && x.match.text.toLowerCase() === mali)) return [];
+    /* Najprej zadetki, kjer se slovenska beseda ujema v celoti (kmet → farmer), nato ostali (kmetijstvo). */
+    const sl = zad.filter(x => x.label && x.match && x.match.language === 'sl'), tocni = sl.filter(x => x.match.text.toLowerCase() === mali);
+    return [...new Set([...tocni, ...sl.filter(x => !tocni.includes(x))].map(x => x.label).filter(x => x.toLowerCase() !== mali))].slice(0, 4);
   } catch (e) { return []; }
 }
 const zCasom = (url, ms) => { const c = new AbortController(); const t = setTimeout(() => c.abort(), ms);
   return fetch(url, { signal: c.signal }).finally(() => clearTimeout(t)); };
 const brezHtml = h => (new DOMParser().parseFromString(String(h || ''), 'text/html').body.textContent || '').replace(/\s+/g, ' ').trim();
 /* Vrne [{th, polna, n, a, l, u}] iz Wikimedia Commons in Openverse (kar odgovori). */
-async function iskanjeSlik(izraz) {
+/* Wikimedia odgovori v ~1 s, Openverse včasih šele po 20 s: sproti(seznam, koncano) se pokliče ob vsakem odgovoru. */
+const ISKANJA = new Map();
+function iskanjeSlik(izraz, sproti) {
+  if (ISKANJA.has(izraz)) { sproti(ISKANJA.get(izraz), true); return; }
   const commons = zCasom(`https://commons.wikimedia.org/w/api.php?action=query&format=json&origin=*&generator=search&gsrnamespace=6&gsrsearch=${encodeURIComponent(izraz + ' filetype:bitmap')}&gsrlimit=20&prop=imageinfo&iiprop=url|size|extmetadata&iiurlwidth=330&iiextmetadatafilter=Artist|LicenseShortName|ObjectName`, 10000)
     .then(r => r.json()).then(d => Object.values((d.query || {}).pages || {}).sort((a, b) => a.index - b.index).map(p => {
       const ii = (p.imageinfo || [])[0]; if (!ii || !ii.thumburl) return null;
@@ -1838,16 +1845,19 @@ async function iskanjeSlik(izraz) {
       return { th: ii.thumburl, polna: ii.width > 960 ? ii.thumburl.replace(/\/330px-/, '/960px-').replace(/\?.*$/, '') : ii.url,
         n: brezHtml((m.ObjectName || {}).value) || p.title.replace(/^File:|\.[^.]+$/g, ''), a: brezHtml((m.Artist || {}).value).slice(0, 120), l, u: ii.descriptionurl };
     }).filter(Boolean));
-  const openverse = zCasom(`https://api.openverse.org/v1/images/?q=${encodeURIComponent(izraz)}&page_size=20&mature=false`, 10000)
+  const openverse = zCasom(`https://api.openverse.org/v1/images/?q=${encodeURIComponent(izraz)}&page_size=20&mature=false`, 25000)
     .then(r => { if (!r.ok) throw 0; return r.json(); }).then(d => (d.results || []).map(x => ({ th: x.thumbnail,
       polna: x.thumbnail + (x.thumbnail.includes('?') ? '&' : '?') + 'full_size=true', n: x.title || '', a: x.creator || '',
       l: LICENCA(x.license, x.license_version), u: x.foreign_landing_url || x.url || '' })));
-  const [a, b] = await Promise.allSettled([commons, openverse]);
-  const A = a.status === 'fulfilled' ? a.value : [], B = b.status === 'fulfilled' ? b.value : [];
-  if (a.status === 'rejected' && b.status === 'rejected') throw new Error('Ni povezave z iskalnikom slik. Poskusi znova.');
-  const vse = [];   // izmenično iz obeh virov
-  for (let i = 0; i < Math.max(A.length, B.length); i++) { if (A[i]) vse.push(A[i]); if (B[i]) vse.push(B[i]); }
-  return vse;
+  const vse = [];   // v vrstnem redu prihoda (stran doda samo nove na konec)
+  let odgovorov = 0, napak = 0;
+  const javi = () => {
+    const koncano = ++odgovorov === 2;
+    if (koncano && napak === 2) { sproti(null, true); return; }
+    if (koncano) ISKANJA.set(izraz, vse);
+    sproti(vse.slice(), koncano);
+  };
+  [commons, openverse].forEach(v => v.then(x => { vse.push(...x); }, () => { napak++; }).then(javi));
 }
 function iskalnikSlik(zacetno, izberi) {
   const dlg = document.createElement('dialog');
@@ -1866,13 +1876,22 @@ function iskalnikSlik(zacetno, izberi) {
     $msg.textContent = `Iščem »${izraz}« …`; $m.innerHTML = '';
     if (cipi) $c.innerHTML = cipi.map(x => `<button type="button" class="cip${x === izraz ? ' on' : ''}" data-izraz="${esc(x)}">${esc(x)}</button>`).join('');
     else $c.querySelectorAll('.cip').forEach(b => b.classList.toggle('on', b.dataset.izraz === izraz));
-    let rez;
-    try { rez = await iskanjeSlik(izraz); } catch (e) { if (st === zadnje) $msg.textContent = e.message; return; }
-    if (st !== zadnje) return;
-    $msg.textContent = rez.length ? 'Klikni sliko, ki jo želiš.' : `Za »${izraz}« ni slik. ${cipi && cipi.length > 1 ? 'Poskusi z drugo besedo zgoraj ali' : 'Poskusi z'} drugo besedo (tudi angleško).`;
-    $m.innerHTML = rez.map((x, i) => `<button type="button" class="isk-sl" data-i="${i}" title="${esc(x.n)}"><img src="${esc(x.th)}" alt="${esc(x.n || 'slika')}" loading="lazy"></button>`).join('');
-    $m.querySelectorAll('.isk-sl').forEach(b => b.addEventListener('click', async () => {
+    iskanjeSlik(izraz, (vse, koncano) => {
+      if (st !== zadnje || nalagam) return;
+      if (!vse) { $msg.textContent = 'Ni povezave z iskalnikom slik. Poskusi znova.'; return; }
+      rez = vse;
+      $msg.textContent = rez.length ? `Klikni sliko, ki jo želiš.${koncano ? '' : ' Iščem še več …'}`
+        : koncano ? `Za »${izraz}« ni slik. ${cipi && cipi.length > 1 ? 'Poskusi z drugo besedo zgoraj ali' : 'Poskusi z'} drugo besedo (tudi angleško).` : `Iščem »${izraz}« …`;
+      const ze = $m.children.length;   // dodaj samo nove, da se slike ne nalagajo znova
+      $m.insertAdjacentHTML('beforeend', rez.slice(ze).map((x, j) => `<button type="button" class="isk-sl" data-i="${ze + j}" title="${esc(x.n)}"><img src="${esc(x.th)}" alt="${esc(x.n || 'slika')}" loading="lazy"></button>`).join(''));
+    });
+  };
+  let rez = [], nalagam = false;
+  $m.addEventListener('click', async e => {
+      const b = e.target.closest('.isk-sl');
+      if (!b || nalagam) return;
       const x = rez[+b.dataset.i];
+      nalagam = true;
       $m.querySelectorAll('.isk-sl').forEach(y => { y.disabled = true; });
       b.classList.add('izbrana'); $msg.textContent = 'Nalagam sliko …';
       let f;
@@ -1881,12 +1900,11 @@ function iskalnikSlik(zacetno, izberi) {
         if (!r.ok) throw 0;
         const blob = await r.blob();
         f = new File([blob], 'slika.jpg', { type: blob.type || 'image/jpeg' });
-      } catch (e) { $msg.textContent = 'Te slike ni mogoče prenesti. Izberi drugo.'; $m.querySelectorAll('.isk-sl').forEach(y => { y.disabled = false; }); b.classList.remove('izbrana'); return; }
+      } catch (e) { nalagam = false; $msg.textContent = 'Te slike ni mogoče prenesti. Izberi drugo.'; $m.querySelectorAll('.isk-sl').forEach(y => { y.disabled = false; }); b.classList.remove('izbrana'); return; }
       const napaka = await izberi(f, { a: x.a.slice(0, 120), l: x.l, u: x.u, n: x.n.slice(0, 160) });
-      if (napaka) { $msg.textContent = napaka; $m.querySelectorAll('.isk-sl').forEach(y => { y.disabled = false; }); b.classList.remove('izbrana'); return; }
+      if (napaka) { nalagam = false; $msg.textContent = napaka; $m.querySelectorAll('.isk-sl').forEach(y => { y.disabled = false; }); b.classList.remove('izbrana'); return; }
       dlg.close();
-    }));
-  };
+  });
   $c.addEventListener('click', e => { const b = e.target.closest('[data-izraz]'); if (b) isci(b.dataset.izraz); });
   dlg.querySelector('#isk-f').addEventListener('submit', async e => {
     e.preventDefault();
