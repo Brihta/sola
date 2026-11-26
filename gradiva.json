@@ -993,6 +993,68 @@
     "vnaprej": true
    },
    {
+    "ime": "10. ura Zanke",
+    "vrsta": "ura",
+    "datum": "2026-11-13T08:00:00+02:00",
+    "pot": "gradiva/racunalnistvo-6-9/2026-11-13 10. ura Zanke",
+    "koraki": [
+     {
+      "ime": "Navodila",
+      "vrsta": "besedilo",
+      "pot": "gradiva/racunalnistvo-6-9/2026-11-13 10. ura Zanke/1 Navodila.md",
+      "velikost": 798,
+      "besedilo": "## 🎯 Cilj ure\n\nProgramiraš **pisalo**, ki riše kot v Scratchu. Z **zanko** narišeš like s kratkim programom in odkriješ **skrivnost števila 360**.\n\n## ✅ Uspešen sem, če …\n\n- z zanko »ponovi« narišem kvadrat in trikotnik z največ 4 bloki,\n- znam izračunati obrat za pravilni lik (360 : število stranic),\n- najdem hrošča v zanki in ga popravim,\n- razumem zanko v zanki.\n\n## 🗺️ Kako delaš\n\n1. Vsak korak je ena stran. Beri in klikaj **na strani**.\n2. Ko rešiš nalogo, se odklene zeleni gumb **Naslednja naloga**.\n3. Ko piše **🎉 Končano!**, se odklene velik gumb **Naprej** spodaj desno. Z njim greš na naslednji korak.\n4. Če se zatakneš, klikni **💡 Namig**. Po namigih lahko pogledaš rešitev.\n\nKo končaš kviz, reši še ★★ izziv: nariši svoj vzorec.\n"
+     },
+     {
+      "ime": "Pisalo in zanka",
+      "vrsta": "html",
+      "pot": "gradiva/racunalnistvo-6-9/2026-11-13 10. ura Zanke/2 Pisalo in zanka.html",
+      "velikost": 86533,
+      "interaktivno": true
+     },
+     {
+      "ime": "Skrivnost 360",
+      "vrsta": "html",
+      "pot": "gradiva/racunalnistvo-6-9/2026-11-13 10. ura Zanke/3 Skrivnost 360.html",
+      "velikost": 85786,
+      "interaktivno": true
+     },
+     {
+      "ime": "Zanka v zanki",
+      "vrsta": "html",
+      "pot": "gradiva/racunalnistvo-6-9/2026-11-13 10. ura Zanke/4 Zanka v zanki.html",
+      "velikost": 85300,
+      "interaktivno": true
+     },
+     {
+      "ime": "Zapis v zvezek",
+      "vrsta": "html",
+      "pot": "gradiva/racunalnistvo-6-9/2026-11-13 10. ura Zanke/5 Zapis v zvezek.html",
+      "velikost": 83855,
+      "interaktivno": true
+     },
+     {
+      "ime": "Kviz",
+      "vrsta": "kviz",
+      "kviz": "Risanje z zankami"
+     },
+     {
+      "ime": "Izziv Moj vzorec",
+      "vrsta": "html",
+      "pot": "gradiva/racunalnistvo-6-9/2026-11-13 10. ura Zanke/7 Izziv Moj vzorec.html",
+      "velikost": 84030,
+      "interaktivno": true
+     },
+     {
+      "ime": "Izziv v Scratchu",
+      "vrsta": "povezava",
+      "url": "https://scratch.mit.edu/projects/editor/",
+      "opis": "Še v pravem Scratchu: levo spodaj dodaj razširitev Pero, nato sestavi svoj vzorec. Brez prijave, nič se ne shrani.",
+      "emoji": "🐱"
+     }
+    ]
+   },
+   {
     "ime": "Vaje za Bober doma",
     "vrsta": "ura",
     "datum": "2026-11-13T08:00:00+02:00",
@@ -1157,5 +1219,5 @@
    }
   ]
  },
- "posodobljeno": "2026-11-26T21:36:29+00:00"
+ "posodobljeno": "2026-11-26T22:46:02+01:00"
 }
