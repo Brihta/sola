@@ -38,9 +38,9 @@
        Safari na iPadih obdrži svoje emojije. */
     @font-face {
       font-family: 'Brihta Emoji';
-      src: url('pisave/brihta-emoji.woff2?v=d3e54e77') format('woff2') tech(color-COLRv1);
+      src: url('pisave/brihta-emoji.woff2?v=9631d930') format('woff2') tech(color-COLRv1);
       font-display: swap;
-      unicode-range: U+200D, U+2195, U+23F0, U+26A0-26A1, U+26BD, U+26D4, U+2705, U+270A, U+270D, U+270F, U+2728, U+2B1C, U+2B50, U+1F1E7, U+1F1EC, U+1F308, U+1F30D, U+1F319, U+1F31F, U+1F331, U+1F355, U+1F389, U+1F3A8, U+1F3AE-1F3AF, U+1F3B5, U+1F3C1, U+1F3C6, U+1F3EB, U+1F409-1F40A, U+1F40C, U+1F418-1F419, U+1F41D, U+1F422, U+1F427, U+1F42C, U+1F431, U+1F436, U+1F438, U+1F441, U+1F449, U+1F44B, U+1F44D, U+1F464-1F465, U+1F468, U+1F47E, U+1F4A1, U+1F4AA, U+1F4BB, U+1F4BE, U+1F4C1, U+1F4C4, U+1F4CA, U+1F4CC, U+1F4D0, U+1F4D6, U+1F4DA, U+1F501, U+1F507, U+1F50A, U+1F50E, U+1F511-1F512, U+1F517, U+1F522, U+1F590, U+1F5B1, U+1F5BC, U+1F5D1, U+1F5FA, U+1F604, U+1F62C, U+1F648, U+1F64B, U+1F680, U+1F6A2, U+1F914, U+1F916, U+1F938, U+1F947-1F949, U+1F981, U+1F984, U+1F989-1F98B, U+1F992, U+1F996, U+1F9A1, U+1F9AB, U+1F9D1-1F9D2, U+1F9E0, U+1F9E9-1F9EA;
+      unicode-range: U+200D, U+2195, U+23E9, U+23F0, U+26A0-26A1, U+26BD, U+26D4, U+2705, U+270A, U+270D, U+270F, U+2728, U+2B1C, U+2B50, U+1F1E7, U+1F1EC, U+1F308, U+1F30D, U+1F319, U+1F31F, U+1F331, U+1F355, U+1F389, U+1F3A8, U+1F3AE-1F3AF, U+1F3B5, U+1F3C1, U+1F3C6, U+1F3EB, U+1F409-1F40A, U+1F40C, U+1F418-1F419, U+1F41D, U+1F422, U+1F427, U+1F42C, U+1F431, U+1F436, U+1F438, U+1F441, U+1F449, U+1F44B, U+1F44D, U+1F464-1F465, U+1F468, U+1F47E, U+1F4A1, U+1F4AA, U+1F4BB, U+1F4BE, U+1F4C1, U+1F4C4, U+1F4CA, U+1F4CC, U+1F4D0, U+1F4D6, U+1F4DA, U+1F501, U+1F507, U+1F50A, U+1F50E, U+1F511-1F512, U+1F517, U+1F522, U+1F590, U+1F5B1, U+1F5BC, U+1F5D1, U+1F5FA, U+1F604, U+1F62C, U+1F648, U+1F64B, U+1F680, U+1F6A2, U+1F914, U+1F916, U+1F938, U+1F941, U+1F947-1F949, U+1F981, U+1F984, U+1F989-1F98B, U+1F992, U+1F996, U+1F9A1, U+1F9AB, U+1F9D1-1F9D2, U+1F9E0, U+1F9E9-1F9EA;
     }
     /* emoji-pisava:konec */
     html, body { margin: 0; }
@@ -358,6 +358,27 @@
     .ig-av { display: inline-grid; place-items: center; width: 40px; height: 40px; border-radius: 50%; background: #f3efff; font-size: 1.5rem; flex-shrink: 0; }
     @keyframes igpop { from { transform: scale(.6); opacity: 0; } to { transform: none; opacity: 1; } }
     .ig-naprej { display: block; margin: 18px auto 0; font-size: 1.25rem; }
+    .ig-glava { position: relative; }
+    .ig-nast { position: absolute; right: 0; top: calc(100% + 8px); z-index: 20; background: #fff; color: var(--ink); border-radius: 18px; padding: 14px; box-shadow: 0 18px 40px rgba(0,0,0,.3); width: min(560px, 92vw); display: grid; gap: 10px; font-weight: 700; }
+    .ig-nast[hidden] { display: none; }
+    .ig-nast .ig-teme { justify-content: flex-start; margin: 0; align-items: flex-start; flex-wrap: nowrap; }
+    .ig-nast .ig-teme > span { min-width: 90px; text-align: left; padding-top: 6px; color: var(--muted); }
+    .ig-nast .ig-teme > div { display: flex; flex-wrap: wrap; gap: 6px; }
+    .ig-nast .cip { font-size: .9rem; padding: 5px 12px; }
+    .ig-vrst { display: flex; align-items: center; gap: 8px; font: inherit; font-weight: 800; background: #f5f1ff; border: 0; border-radius: 12px; padding: 10px 12px; cursor: pointer; text-align: left; color: var(--ink); }
+    .ig-vrst input { width: 20px; height: 20px; }
+    .ig-lest-velika { max-width: 820px; margin: 0 auto; }
+    .ig-lest-velika li { font-size: clamp(1.1rem, 2vw, 1.5rem); padding: 8px 18px; animation: igvrsta .5s ease backwards; }
+    .ig-lest-velika li:nth-child(1) { background: #ffd24d; } .ig-lest-velika li:nth-child(2) { background: #eef0f6; } .ig-lest-velika li:nth-child(3) { background: #f6d2b5; }
+    @keyframes igvrsta { from { transform: translateX(-60px); opacity: 0; } }
+    .ig-plus-m { color: var(--good); font-size: .85em; }
+    .ig-gor { color: var(--good); font-size: .8em; } .ig-dol { color: var(--bad); font-size: .8em; }
+    .ig-stop .ig-kdo { display: flex; flex-direction: column; align-items: center; gap: 4px; opacity: 0; transform: translateY(30px) scale(.7); transition: all .6s cubic-bezier(.2, 1.6, .4, 1); }
+    .ig-stop .ig-pod { transform: scaleY(0); transform-origin: bottom; transition: transform .6s ease; }
+    .ig-stop.odkrit .ig-kdo { opacity: 1; transform: none; }
+    .ig-stop.odkrit .ig-pod { transform: none; }
+    .ig-stop.prvi.odkrit .ig-av { animation: igskok 1s ease infinite alternate; }
+    @keyframes igskok { to { transform: translateY(-10px) scale(1.1); } }
     .ig-teme { display: flex; justify-content: center; align-items: center; flex-wrap: wrap; gap: 8px; margin-top: 14px; font-weight: 800; }
     .ig-cak .ig-naprej { margin-bottom: 18px; }
     .ig-teme > span { min-width: 130px; text-align: right; }
@@ -3194,11 +3215,11 @@ const GLASBA = (() => {
     o.connect(g).connect(glavna); o.start(t); o.stop(t + dol + 0.05);
   };
   let sum = null;
-  const cinela = (t, jak) => {
+  const cinela = (t, jak, fr = 7000, dol = 0.06) => {
     if (!sum) { sum = ac.createBuffer(1, ac.sampleRate * 0.2, ac.sampleRate); const d = sum.getChannelData(0); for (let i = 0; i < d.length; i++) d[i] = Math.random() * 2 - 1; }
     const s = ac.createBufferSource(), f = ac.createBiquadFilter(), g = ac.createGain();
-    s.buffer = sum; f.type = 'highpass'; f.frequency.value = 7000;
-    g.gain.setValueAtTime(jak, t); g.gain.exponentialRampToValueAtTime(0.0001, t + 0.06);
+    s.buffer = sum; f.type = 'highpass'; f.frequency.value = fr;
+    g.gain.setValueAtTime(jak, t); g.gain.exponentialRampToValueAtTime(0.0001, t + dol);
     s.connect(f).connect(g).connect(glavna); s.start(t); s.stop(t + 0.1);
   };
   const boben = (t, jak) => {
@@ -3287,6 +3308,8 @@ const GLASBA = (() => {
   const ZVOKI = {
     razkrij: t => [72, 76, 79, 84].forEach((m, j) => ton(t + j * 0.07, m, 0.5, 'triangle', 0.35)),
     tik: (t, zadnji) => ton(t, zadnji ? 96 : 89, 0.08, 'sine', 0.4),
+    stopnicka: t => { [60, 64, 67, 72].forEach(m => ton(t, m, 0.7, 'triangle', 0.22)); boben(t, 0.6); },
+    virbel: (t, dol) => { for (let x = 0; x < dol; x += 0.045) cinela(t + x, 0.05 + 0.25 * x / dol, 1800, 0.05); },
     gong: t => { [48, 55, 60, 64].forEach(m => ton(t, m, 1.6, 'triangle', 0.25)); boben(t, 0.7); },
     konec: t => {
       [[67, 0], [72, .15], [76, .3], [79, .45], [76, .75], [79, .9]].forEach(([m, d]) => ton(t + d, m, d >= .9 ? 1.4 : .3, 'square', 0.1));
@@ -3389,13 +3412,20 @@ function stranIgra(id) {
   document.getElementById('ig-prijava').addEventListener('click', () => odpriPredal('racun'));
 }
 
-/* ── Veliki zaslon (učitelj) ── */
+/* ── Veliki zaslon (učitelj) ──
+   Po vsakem vprašanju: najprej pravilni odgovor, nato lestvica (top 10 s premiki).
+   Na koncu se stopničke razkrijejo po vrsti: 3., 2., bobni, 1. s fanfarami. */
+const KLJUC_SAMODEJNO = 'sola_igra_samodejno';
 async function zaslonIgre(id) {
   const gen = ++igraGen;
   document.body.classList.add('igra-full');
   $main.innerHTML = '<div class="ig"><p class="ig-nal">Nalagam igro …</p></div>';
   const $ig = $main.querySelector('.ig');
   let s = null, kljucIzrisa = '', kljucZvoka = '', slike = {}, poslanNaprej = -2, ura, zadnjaSek = 0;
+  let pogled = 'odgovor', nastOdprt = false, samodejno = preberi(KLJUC_SAMODEJNO) !== '0';
+  let prejMesta = {}, prejTocke = {};   // lestvica po prejšnjem vprašanju (za puščice in +točke)
+  const casovniki = [];
+  const pozneje = (fn, ms) => casovniki.push(setTimeout(() => { if (gen === igraGen) fn(); }, ms));
   $ig.addEventListener('click', () => GLASBA.odkleni());
   const naprej = async () => {
     if (!s || poslanNaprej === s.vprasanje + (s.stanje === 'vprasanje' ? 0.5 : 0)) return;
@@ -3403,21 +3433,26 @@ async function zaslonIgre(id) {
     await rpc('sola_igra_naprej', { p_seja: ucitelj.seja, p_igra: id, p_od: s.vprasanje });
     osvezi();
   };
+  const htmlNastavitev = () => `<div class="ig-nast"${nastOdprt ? '' : ' hidden'}>
+      <button type="button" class="ig-vrst" id="ig-tiho">${GLASBA.tiho ? '🔇 Glasba je izklopljena' : '🔊 Glasba je vklopljena'}</button>
+      ${[['cakanje', 'Čakalnica'], ['vprasanje', 'Vprašanja']].map(([d, ime]) => `<div class="ig-teme"><span>${ime}</span><div>${GLASBA.teme.map(x =>
+        `<button type="button" class="cip${x.id === GLASBA.tema(d) ? ' on' : ''}" data-tema="${x.id}" data-del="${d}">${x.ime}</button>`).join('')}</div></div>`).join('')}
+      <label class="ig-vrst"><input type="checkbox" id="ig-samodejno"${samodejno ? ' checked' : ''}> ⏩ Rezultat takoj, ko odgovorijo vsi</label>
+    </div>`;
+  const kljuc = () => [s.stanje, s.vprasanje, s.stanje === 'cakanje' ? JSON.stringify(s.igralci.map(x => x.id)) : '', s.stanje === 'rezultat' ? pogled : ''].join('|');
   const izrisi = () => {
     const igr = s.igralci || [], q = s.q ? { ...s.q, slika: slike[s.q.b] } : null;
     const glava = `<div class="ig-glava"><span class="ig-naslov">${esc(s.naslov)}</span>
       ${s.vprasanje >= 0 && s.stanje !== 'konec' ? `<span class="ig-st">${s.vprasanje + 1} / ${s.vseh}</span>` : ''}
-      <span class="ig-gumbi"><button class="btn" type="button" id="ig-zvok" title="Glasba">${GLASBA.tiho ? '🔇' : '🔊'}</button><button class="btn" type="button" id="ig-cel" title="Cel zaslon">⛶</button>
-      <button class="btn" type="button" id="ig-konec">${s.stanje === 'konec' ? 'Zapri' : 'Končaj igro'}</button></span></div>`;
+      <span class="ig-gumbi"><button class="btn" type="button" id="ig-zvok" title="Glasba in nastavitve" aria-expanded="${nastOdprt}">${GLASBA.tiho ? '🔇' : '🔊'} ▾</button><button class="btn" type="button" id="ig-cel" title="Cel zaslon">⛶</button>
+      <button class="btn" type="button" id="ig-konec">${s.stanje === 'konec' ? 'Zapri' : 'Končaj igro'}</button></span>${htmlNastavitev()}</div>`;
     let telo = '';
     if (s.stanje === 'cakanje') {
       telo = `<div class="ig-cak"><h1>🎮 ${esc(s.naslov)}</h1>
         <p class="ig-nav">Učenci: odprite <b>Brihto</b> in se prijavite. Igra se vam pokaže sama. 👉 <b>Pridruži se!</b></p>
         <p class="ig-st-igr"><b>${igr.length}</b> ${igr.length === 1 ? 'igralec' : igr.length === 2 ? 'igralca' : igr.length < 5 ? 'igralci' : 'igralcev'}</p>
         <div class="ig-igr">${igr.map(x => `<span class="ig-igralec">${avatar(x)}${esc(x.ime)}</span>`).join('')}</div>
-        <button class="btn btn-go btn-big ig-naprej" type="button" id="ig-naprej"${igr.length ? '' : ' disabled'}>Začni igro ▶</button>
-        ${[['cakanje', '🎵 Čakalnica'], ['vprasanje', '🎵 Vprašanja']].map(([d, ime]) => `<div class="ig-teme"><span>${ime}:</span>${GLASBA.teme.map(x =>
-          `<button type="button" class="cip${x.id === GLASBA.tema(d) ? ' on' : ''}" data-tema="${x.id}" data-del="${d}">${x.ime}</button>`).join('')}</div>`).join('')}</div>`;
+        <button class="btn btn-go btn-big ig-naprej" type="button" id="ig-naprej"${igr.length ? '' : ' disabled'}>Začni igro ▶</button></div>`;
     } else if (s.stanje === 'vprasanje') {
       telo = `<div class="ig-vpr"><div class="ig-casbar"><i data-casbar></i></div>
         <h1 class="ig-b">${esc(q.b)}</h1>
@@ -3427,7 +3462,7 @@ async function zaslonIgre(id) {
         ${q.t === 'izbira' || q.t === 'vec' ? htmlPloscic(q) : `<p class="ig-tip">${{ kratek: q.n ? '🔢 Vpiši število na svoji napravi.' : '✏️ Vpiši odgovor na svoji napravi.', povezi: '🔗 Poveži pare na svoji napravi.', vrstni: '↕️ Razvrsti na svoji napravi.' }[q.t] || ''}</p>`}
         ${q.t === 'vec' ? '<p class="ig-tip">Več pravilnih odgovorov!</p>' : ''}
         <button class="btn ig-naprej" type="button" id="ig-naprej">Pokaži rezultat ▶</button></div>`;
-    } else if (s.stanje === 'rezultat') {
+    } else if (s.stanje === 'rezultat' && pogled === 'odgovor') {
       const k = s.kljuc || {}, odg = s.odgovori || [];
       let prav = '';
       if (q.t === 'izbira' || q.t === 'vec') {
@@ -3441,26 +3476,67 @@ async function zaslonIgre(id) {
       else if (q.t === 'vrstni') prav = `<ol class="ig-vrsta">${(k.p || []).map(x => `<li>${esc(x)}</li>`).join('')}</ol>`;
       telo = `<div class="ig-rez"><h1 class="ig-b">${esc(q.b)}</h1>${prav}
         <p class="ig-st-igr">✓ <b>${s.pravilnih}</b> pravilnih od ${igr.length}</p>
-        <div class="ig-spodaj"><div><h2>🏆 Lestvica</h2>${htmlLestvice(igr, 5)}</div>
-        <button class="btn btn-go btn-big ig-naprej" type="button" id="ig-naprej">${s.vprasanje + 1 >= s.vseh ? 'Končni rezultati 🏁' : 'Naslednje vprašanje ▶'}</button></div></div>`;
+        <button class="btn btn-go btn-big ig-naprej" type="button" id="ig-lestvica">🏆 Lestvica ▶</button></div>`;
+    } else if (s.stanje === 'rezultat') {
+      const vrstice = igr.slice(0, 10).map((x, j) => {
+        const pm = prejMesta[x.id], premik = pm ? pm - x.mesto : 0, plus = x.tocke - (prejTocke[x.id] || 0);
+        return `<li style="animation-delay:${(Math.min(igr.length, 10) - j) * 0.08}s"><b class="ig-m">${x.mesto}.</b>${avatar(x)}<span class="ig-ime">${esc(x.ime)}</span>
+          ${plus > 0 ? `<span class="ig-plus-m">+${plus}</span>` : ''}${premik > 0 ? `<span class="ig-gor">▲${premik}</span>` : premik < 0 ? `<span class="ig-dol">▼${-premik}</span>` : ''}
+          <b class="ig-t">${x.tocke}</b></li>`;
+      }).join('');
+      telo = `<div class="ig-rez"><h1 class="ig-b">🏆 Lestvica po ${s.vprasanje + 1}. vprašanju</h1>
+        <ol class="ig-lest ig-lest-velika">${vrstice}</ol>
+        ${igr.length > 10 ? `<p class="ig-siv" style="text-align:center">… in še ${igr.length - 10} ${igr.length - 10 === 1 ? 'igralec' : 'igralcev'}</p>` : ''}
+        <button class="btn btn-go btn-big ig-naprej" type="button" id="ig-naprej">${s.vprasanje + 1 >= s.vseh ? 'Razglasitev zmagovalcev 🏁' : 'Naslednje vprašanje ▶'}</button></div>`;
     } else {
       const [a, b, c] = igr;
-      const stopnica = (x, n, cls) => x ? `<div class="ig-stop ${cls}">${avatar(x)}<b>${esc(x.ime)}</b><span>${x.tocke} točk</span><div class="ig-pod">${n}</div></div>` : '<div class="ig-stop"></div>';
-      telo = `<div class="ig-kon"><h1>🏁 Konec igre!</h1>
+      const stopnica = (x, n, cls) => `<div class="ig-stop ${cls}" data-mesto="${n}">${x ? `<div class="ig-kdo">${avatar(x)}<b>${esc(x.ime)}</b><span>${x.tocke} točk</span></div>` : ''}<div class="ig-pod">${n}</div></div>`;
+      telo = `<div class="ig-kon"><h1 id="ig-kon-nas">🥁 In zmagovalci so …</h1>
         <div class="ig-podij">${stopnica(b, 2, 'drugi')}${stopnica(a, 1, 'prvi')}${stopnica(c, 3, 'tretji')}</div>
-        ${igr.length > 3 ? `<details class="ig-vsi"><summary>Vsi rezultati (${igr.length})</summary>${htmlLestvice(igr, 100)}</details>` : ''}</div>`;
+        <div id="ig-vsi" hidden>${igr.length > 3 ? `<details class="ig-vsi"><summary>Vsi rezultati (${igr.length})</summary>${htmlLestvice(igr, 100)}</details>` : ''}</div></div>`;
     }
     $ig.innerHTML = glava + telo;
-    if (s.stanje === 'konec' && igr.length) konfeti($ig);
+    poveziGumbe();
+    zvokiIzrisa(igr);
+    ura = odstevalnik($ig, s.cas);
+  };
+  /* Glasba in zvoki ob spremembi zaslona. */
+  const zvokiIzrisa = igr => {
+    const nov = kljucZvoka !== kljucIzrisa;
+    kljucZvoka = kljucIzrisa;
+    if (s.stanje === 'cakanje' || s.stanje === 'vprasanje') { GLASBA.igraj(s.stanje); return; }
+    if (!nov) return;
+    GLASBA.ustavi();
+    if (s.stanje === 'rezultat') { GLASBA.zvok(pogled === 'odgovor' ? 'razkrij' : 'stopnicka'); return; }
+    /* Razkrivanje stopničk */
+    const odkrij = n => $ig.querySelector(`[data-mesto="${n}"]`)?.classList.add('odkrit');
+    if (igr[2]) pozneje(() => { odkrij(3); GLASBA.zvok('stopnicka'); }, 900);
+    if (igr[1]) pozneje(() => { odkrij(2); GLASBA.zvok('stopnicka'); }, 2700);
+    pozneje(() => GLASBA.zvok('virbel', 2.2), 4300);
+    pozneje(() => {
+      odkrij(1); GLASBA.zvok('konec');
+      const h = $ig.querySelector('#ig-kon-nas'); if (h) h.textContent = '🏆 Bravo!';
+      if (igr.length) konfeti($ig);
+      $ig.querySelector('#ig-vsi')?.removeAttribute('hidden');
+    }, 6600);
+  };
+  const poveziGumbe = () => {
     $ig.querySelector('#ig-naprej')?.addEventListener('click', naprej);
+    $ig.querySelector('#ig-lestvica')?.addEventListener('click', () => { pogled = 'lestvica'; kljucIzrisa = kljuc(); izrisi(); zapomniLestvico(); });
+    $ig.querySelector('#ig-zvok').addEventListener('click', e => {
+      nastOdprt = !nastOdprt;
+      $ig.querySelector('.ig-nast').hidden = !nastOdprt; e.currentTarget.setAttribute('aria-expanded', nastOdprt);
+    });
+    $ig.querySelector('#ig-tiho').addEventListener('click', e => {
+      const t = GLASBA.preklopi();
+      e.currentTarget.textContent = t ? '🔇 Glasba je izklopljena' : '🔊 Glasba je vklopljena';
+      $ig.querySelector('#ig-zvok').textContent = (t ? '🔇' : '🔊') + ' ▾';
+    });
     $ig.querySelectorAll('[data-tema]').forEach(b => b.addEventListener('click', () => {
       GLASBA.odkleni(); GLASBA.nastaviTemo(b.dataset.tema, b.dataset.del);
       $ig.querySelectorAll(`[data-del="${b.dataset.del}"]`).forEach(x => x.classList.toggle('on', x === b));
     }));
-    $ig.querySelector('#ig-zvok').addEventListener('click', e => { e.currentTarget.textContent = GLASBA.preklopi() ? '🔇' : '🔊'; });
-    if (s.stanje === 'cakanje' || s.stanje === 'vprasanje') GLASBA.igraj(s.stanje);
-    else if (kljucZvoka !== kljucIzrisa) { GLASBA.ustavi(); GLASBA.zvok(s.stanje === 'konec' ? 'konec' : 'razkrij'); }
-    kljucZvoka = kljucIzrisa;
+    $ig.querySelector('#ig-samodejno').addEventListener('change', e => { samodejno = e.target.checked; shrani(KLJUC_SAMODEJNO, samodejno ? '1' : '0'); });
     $ig.querySelector('#ig-cel').addEventListener('click', () => document.fullscreenElement ? document.exitFullscreen() : document.documentElement.requestFullscreen?.());
     $ig.querySelector('#ig-konec').addEventListener('click', async () => {
       if (s.stanje !== 'konec') {
@@ -3470,8 +3546,9 @@ async function zaslonIgre(id) {
       if (document.fullscreenElement) document.exitFullscreen();
       history.length > 1 ? history.back() : (location.hash = '#/');
     });
-    ura = odstevalnik($ig, s.cas);
   };
+  /* Po prikazu lestvice si zapomni mesta in točke za primerjavo pri naslednjem vprašanju. */
+  const zapomniLestvico = () => { prejMesta = {}; prejTocke = {}; (s.igralci || []).forEach(x => { prejMesta[x.id] = x.mesto; prejTocke[x.id] = x.tocke; }); };
   const osvezi = async () => {
     const r = await rpc('sola_igra_stanje_ucitelj', { p_seja: ucitelj.seja, p_igra: id });
     if (gen !== igraGen) return;
@@ -3480,13 +3557,16 @@ async function zaslonIgre(id) {
       return;
     }
     if (!s) slike = await slikeIgre(r.kviz_id);
+    const prej = s;
     s = r;
-    const k = [s.stanje, s.vprasanje, s.stanje === 'cakanje' || s.stanje === 'konec' ? JSON.stringify(s.igralci.map(x => [x.id, x.tocke])) : ''].join('|');
+    if (prej && prej.stanje !== 'rezultat' && s.stanje === 'rezultat') pogled = 'odgovor';
+    if (!prej && s.stanje !== 'cakanje') zapomniLestvico();   // odprto sredi igre
+    const k = kljuc();
     if (k !== kljucIzrisa) { kljucIzrisa = k; izrisi(); }
     else { const o = $ig.querySelector('#ig-odg'); if (o) o.textContent = s.odgovorov; }
     if (s.stanje === 'vprasanje') {
       ura.nastavi(s.preostalo_ms);
-      if (s.preostalo_ms <= 0 || (s.igralci.length && s.odgovorov >= s.igralci.length)) naprej();
+      if (s.preostalo_ms <= 0 || (samodejno && s.igralci.length && s.odgovorov >= s.igralci.length)) naprej();
     }
     if (s.stanje === 'konec') { clearInterval(igraUra); igraUra = null; }
   };
@@ -3494,7 +3574,7 @@ async function zaslonIgre(id) {
   if (gen !== igraGen) return;
   igraUra = setInterval(() => { if (gen === igraGen) { osvezi(); } }, 1000);
   (function tik() {
-    if (gen !== igraGen) return;
+    if (gen !== igraGen) { casovniki.forEach(clearTimeout); return; }
     if (s && s.stanje === 'vprasanje' && ura) {
       ura.risi();
       const sek = Math.ceil(ura.ostalo() / 1000);   // zadnjih 5 sekund: tik-tak
@@ -3510,7 +3590,7 @@ async function igraUcenec(id) {
   document.body.classList.add('igra-full');
   $main.innerHTML = '<div class="ig ig-ucenec"><p class="ig-nal">Pridružujem se igri …</p></div>';
   const $ig = $main.querySelector('.ig');
-  let s = null, kljucIzrisa = '', slike = null, oddano = false, ura;
+  let s = null, kljucIzrisa = '', slike = null, oddano = false, ura, razkrito = false;
   const pridruzen = await rpc('sola_igra_pridruzi', { p_student: ucenec.id, p_igra: id });
   if (gen !== igraGen) return;
   if (pridruzen !== true) {
@@ -3552,13 +3632,17 @@ async function igraUcenec(id) {
         <h1>${s.pravilno ? 'Pravilno!' : 'Napačno'}</h1>${s.pravilno ? `<p class="ig-plus">+${s.dobil}</p>` : '<p>Naslednjič bo bolje!</p>'}
         <p class="ig-siv">Imaš ${s.tocke} točk · ${mesto(s.mesto)}</p></div>`
         : `<div class="ig-sredisce ig-slabo"><div class="ig-velik">⏰</div><h1>Čas je potekel</h1><p class="ig-siv">Imaš ${s.tocke} točk · ${mesto(s.mesto)}</p></div>`;
+    } else if (!razkrito) {
+      /* Počakaj, da tabla razkrije stopničke, da naprava ne izda zmagovalca. */
+      telo = `<div class="ig-sredisce"><div class="ig-velik">🥁</div><h1>Konec igre!</h1><p class="ig-siv">Poglej na tablo …</p></div>`;
+      setTimeout(() => { if (gen === igraGen) { razkrito = true; izrisi(); } }, 7200);
     } else {
       telo = `<div class="ig-sredisce"><div class="ig-velik">${s.mesto === 1 ? '🥇' : s.mesto === 2 ? '🥈' : s.mesto === 3 ? '🥉' : '🏁'}</div>
         <h1>Konec igre!</h1><p class="ig-plus">${mesto(s.mesto)}</p><p class="ig-siv">${s.tocke} točk · igralcev: ${s.igralcev}</p>
         <p style="margin-top:20px"><a class="btn" href="#/">Nazaj na Brihto</a></p></div>`;
     }
     $ig.innerHTML = vrh + telo;
-    if (s.stanje === 'konec' && s.mesto && s.mesto <= 3) konfeti($ig);
+    if (s.stanje === 'konec' && razkrito && s.mesto && s.mesto <= 3) konfeti($ig);
     ura = odstevalnik($ig, s.cas);
     if (s.stanje !== 'vprasanje' || s.odgovoril) return;
     if (q.t === 'izbira') $ig.querySelectorAll('.ig-plo').forEach(b => b.addEventListener('click', () => { b.classList.add('on'); poslji(b.dataset.v); }));

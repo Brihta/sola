@@ -89,7 +89,8 @@ Učitelj kviz skrije/pokaže z gumbom Skrij/Pokaži. Baza: `supabase_predmeti_uc
 Slike pri vprašanjih (od 26. 11. 2026): učitelj jih doda v predogledu kviza (🔎 Poišči sliko: Wikimedia Commons + Openverse, slovenska beseda se prevede prek Wikidate; ali lastna slika); vezane so na besedilo vprašanja
 (ostanejo po popravljenem Excelu), v shrambi `sola-gradiva/kvizi/`. Baza: `supabase_kvizi_slike.sql`.
 Igra v živo (od 26. 11. 2026): pri kvizu v predmetu učitelja gumb 🎮 Igraj v živo → velik zaslon `#/igra/<id>`
-(čakalnica, vprašanje s časom, rezultat z lestvico, stopničke). Učenci razredov predmeta dobijo pasico in odgovarjajo
+(čakalnica, vprašanje s časom, pravilni odgovor, lestvica top 10 s premiki, stopničke razkrite po vrsti 3.–2.–bobni–1. s fanfarami;
+naprave učencev mesto pokažejo šele po razkritju). Gumb 🔊 ▾ odpre nastavitve: glasba, teme, »Rezultat takoj, ko odgovorijo vsi« (privzeto vklopljeno). Učenci razredov predmeta dobijo pasico in odgovarjajo
 na napravah; brez PIN-a. Točke 500–1000 glede na hitrost, ocenjuje strežnik. Stran sprašuje za stanje vsako 1–1,5 s
 (brez Realtime). Glasba na tabli je izvirna, zgenerirana v brskalniku (Web Audio, `GLASBA`; teme Vesela, Retro, Vesolje, Mirna; v čakalnici se izbere posebej za čakalnico in za vprašanja, privzeto Retro + Mirna, kot želi Nino), gumb 🔊/🔇. Baza: `supabase_igra_v_zivo.sql`.
 
