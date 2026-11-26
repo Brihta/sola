@@ -358,7 +358,9 @@
     .ig-av { display: inline-grid; place-items: center; width: 40px; height: 40px; border-radius: 50%; background: #f3efff; font-size: 1.5rem; flex-shrink: 0; }
     @keyframes igpop { from { transform: scale(.6); opacity: 0; } to { transform: none; opacity: 1; } }
     .ig-naprej { display: block; margin: 18px auto 0; font-size: 1.25rem; }
-    .ig-teme { display: flex; justify-content: center; align-items: center; flex-wrap: wrap; gap: 8px; margin-top: 26px; font-weight: 800; }
+    .ig-teme { display: flex; justify-content: center; align-items: center; flex-wrap: wrap; gap: 8px; margin-top: 14px; font-weight: 800; }
+    .ig-cak .ig-naprej { margin-bottom: 18px; }
+    .ig-teme > span { min-width: 130px; text-align: right; }
     .ig-teme .cip { color: var(--ink); font-size: 1.05rem; padding: 7px 16px; }
     .ig-teme .cip.on { background: var(--sun); color: #2d1b69; }
     .ig-casbar { height: 10px; background: rgba(255,255,255,.2); border-radius: 99px; overflow: hidden; margin-bottom: 14px; }
@@ -3273,11 +3275,13 @@ const GLASBA = (() => {
     }],
   };
   const TEME = { vesela: ['😄 Vesela', VESELA], retro: ['👾 Retro', RETRO], vesolje: ['🚀 Vesolje', VESOLJE], mirna: ['🌙 Mirna', MIRNA] };
-  const KLJUC_TEME = 'sola_igra_tema';
-  let tema = TEME[preberi(KLJUC_TEME)] ? preberi(KLJUC_TEME) : 'vesela';
+  /* Temo se izbere posebej za čakalnico in za vprašanja (privzeto Retro in Mirna). */
+  const PRIVZETO = { cakanje: 'retro', vprasanje: 'mirna' }, tema = {};
+  Object.keys(PRIVZETO).forEach(d => { const x = preberi('sola_igra_tema_' + d); tema[d] = TEME[x] ? x : PRIVZETO[d]; });
+  let poslusam = null;
   const tic = () => {
     if (!vzorec) return;
-    const [bpm, dol, fn] = TEME[tema][1][vzorec], s = 60 / bpm / 4;
+    const [bpm, dol, fn] = TEME[tema[vzorec]][1][vzorec], s = 60 / bpm / 4;
     while (naslednji < ac.currentTime + 0.12) { fn(korak, naslednji, s); korak = (korak + 1) % dol; naslednji += s; }
   };
   const ZVOKI = {
@@ -3293,12 +3297,16 @@ const GLASBA = (() => {
   };
   return {
     get tiho() { return tiho; },
-    get tema() { return tema; },
+    tema: d => tema[d],
     teme: Object.entries(TEME).map(([id, [ime]]) => ({ id, ime })),
-    nastaviTemo(t) {
-      if (!TEME[t]) return;
-      tema = t; shrani(KLJUC_TEME, t);
-      const v = vzorec; vzorec = null; this.igraj(v);   // začni znova v novem slogu
+    /* Nastavi temo za del (cakanje | vprasanje) in jo zaigra; v čakalnici predvaja vprašanja 6 s. */
+    nastaviTemo(t, d) {
+      if (!TEME[t] || !tema[d]) return;
+      tema[d] = t; shrani('sola_igra_tema_' + d, t);
+      const prej = vzorec === 'vprasanje' && poslusam ? 'cakanje' : vzorec;
+      clearTimeout(poslusam); poslusam = null;
+      vzorec = null; this.igraj(d);
+      if (prej === 'cakanje' && d === 'vprasanje') poslusam = setTimeout(() => { poslusam = null; if (vzorec === 'vprasanje') { vzorec = null; this.igraj('cakanje'); } }, 6000);
     },
     igraj(v) {
       if (vzorec === v) return;
@@ -3308,7 +3316,7 @@ const GLASBA = (() => {
       ura = setInterval(tic, 30); tic();
     },
     zvok(ime, x) { if (zagotovi()) ZVOKI[ime](ac.currentTime + 0.02, x); },
-    ustavi() { this.igraj(null); },
+    ustavi() { clearTimeout(poslusam); poslusam = null; this.igraj(null); },
     preklopi() {
       tiho = !tiho; shrani(KLJUC_TIHO, tiho ? '1' : '0');
       if (zagotovi()) glavna.gain.setTargetAtTime(tiho ? 0 : 0.22, ac.currentTime, 0.05);
@@ -3408,7 +3416,8 @@ async function zaslonIgre(id) {
         <p class="ig-st-igr"><b>${igr.length}</b> ${igr.length === 1 ? 'igralec' : igr.length === 2 ? 'igralca' : igr.length < 5 ? 'igralci' : 'igralcev'}</p>
         <div class="ig-igr">${igr.map(x => `<span class="ig-igralec">${avatar(x)}${esc(x.ime)}</span>`).join('')}</div>
         <button class="btn btn-go btn-big ig-naprej" type="button" id="ig-naprej"${igr.length ? '' : ' disabled'}>Začni igro ▶</button>
-        <div class="ig-teme"><span>🎵 Glasba:</span>${GLASBA.teme.map(x => `<button type="button" class="cip${x.id === GLASBA.tema ? ' on' : ''}" data-tema="${x.id}">${x.ime}</button>`).join('')}</div></div>`;
+        ${[['cakanje', '🎵 Čakalnica'], ['vprasanje', '🎵 Vprašanja']].map(([d, ime]) => `<div class="ig-teme"><span>${ime}:</span>${GLASBA.teme.map(x =>
+          `<button type="button" class="cip${x.id === GLASBA.tema(d) ? ' on' : ''}" data-tema="${x.id}" data-del="${d}">${x.ime}</button>`).join('')}</div>`).join('')}</div>`;
     } else if (s.stanje === 'vprasanje') {
       telo = `<div class="ig-vpr"><div class="ig-casbar"><i data-casbar></i></div>
         <h1 class="ig-b">${esc(q.b)}</h1>
@@ -3445,8 +3454,8 @@ async function zaslonIgre(id) {
     if (s.stanje === 'konec' && igr.length) konfeti($ig);
     $ig.querySelector('#ig-naprej')?.addEventListener('click', naprej);
     $ig.querySelectorAll('[data-tema]').forEach(b => b.addEventListener('click', () => {
-      GLASBA.odkleni(); GLASBA.nastaviTemo(b.dataset.tema);
-      $ig.querySelectorAll('[data-tema]').forEach(x => x.classList.toggle('on', x === b));
+      GLASBA.odkleni(); GLASBA.nastaviTemo(b.dataset.tema, b.dataset.del);
+      $ig.querySelectorAll(`[data-del="${b.dataset.del}"]`).forEach(x => x.classList.toggle('on', x === b));
     }));
     $ig.querySelector('#ig-zvok').addEventListener('click', e => { e.currentTarget.textContent = GLASBA.preklopi() ? '🔇' : '🔊'; });
     if (s.stanje === 'cakanje' || s.stanje === 'vprasanje') GLASBA.igraj(s.stanje);
