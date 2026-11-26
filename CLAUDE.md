@@ -86,7 +86,7 @@ Id predmeta je `u-xxxxxxxx`; kvizi, moduli in razpored ga uporabljajo kot predme
 predmete svojega razreda (razred iz letnika, zato se predmet vsako leto »prenese« na novo generacijo).
 Kvizi tu so VADBA (`sola_vaja_oddaj`): rešuje, kolikokrat želi, shrani se najboljši rezultat, pravila 50 % ni.
 Učitelj kviz skrije/pokaže z gumbom Skrij/Pokaži. Baza: `supabase_predmeti_uciteljev.sql`.
-Slike pri vprašanjih (od 26. 11. 2026): učitelj jih doda v predogledu kviza; vezane so na besedilo vprašanja
+Slike pri vprašanjih (od 26. 11. 2026): učitelj jih doda v predogledu kviza (🔎 Poišči sliko: Wikimedia Commons + Openverse, slovenska beseda se prevede prek Wikidate; ali lastna slika); vezane so na besedilo vprašanja
 (ostanejo po popravljenem Excelu), v shrambi `sola-gradiva/kvizi/`. Baza: `supabase_kvizi_slike.sql`.
 Načrt naprej: igra v živo (velik zaslon, lestvica).
 

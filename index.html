@@ -449,6 +449,22 @@
     .q-num { width: 40px; height: 40px; flex-shrink: 0; border-radius: 13px; display: flex; align-items: center; justify-content: center; font-family: var(--head); font-weight: 900; font-size: 1.2rem; color: #fff; background: linear-gradient(135deg, var(--c1), var(--c2)); }
     .q-text { margin: 6px 0 0; white-space: pre-line; font-size: 1.12rem; font-weight: 700; }
     .q-img { display: block; max-width: 100%; max-height: 340px; margin: 0 auto 16px; border-radius: 14px; box-shadow: var(--shadow); background: #fff; }
+    .q-vir { margin: -10px 0 14px; text-align: center; font-size: .72rem; color: var(--muted); }
+    .q-vir a { color: inherit; }
+    dialog.iskalnik { width: min(860px, 94vw); max-height: 88vh; border: 0; border-radius: var(--r-xl); padding: 18px 20px; box-shadow: 0 20px 60px rgba(0,0,0,.25); background: var(--surface); }
+    dialog.iskalnik::backdrop { background: rgba(30, 20, 10, .45); }
+    .isk-glava { display: flex; justify-content: space-between; align-items: center; margin-bottom: 10px; }
+    .isk-glava h3 { margin: 0; }
+    .isk-vrstica { display: flex; gap: 8px; }
+    .isk-vrstica input { flex: 1; font: inherit; font-size: 1.05rem; padding: 10px 14px; border: 1.5px solid var(--line); border-radius: 12px; }
+    .isk-cipi { display: flex; gap: 6px; flex-wrap: wrap; margin: 10px 0 0; }
+    .cip { font: inherit; font-size: .85rem; font-weight: 700; padding: 4px 12px; border-radius: 99px; border: 1.5px solid var(--line); background: #fff; cursor: pointer; }
+    .cip.on { background: var(--accent, #6366f1); border-color: transparent; color: #fff; }
+    .isk-mreza { display: grid; grid-template-columns: repeat(auto-fill, minmax(140px, 1fr)); gap: 10px; max-height: 56vh; overflow-y: auto; }
+    .isk-sl { padding: 0; border: 3px solid transparent; border-radius: 12px; overflow: hidden; cursor: pointer; background: #f3efe8; aspect-ratio: 4 / 3; }
+    .isk-sl img { width: 100%; height: 100%; object-fit: cover; display: block; }
+    .isk-sl:hover:not(:disabled), .isk-sl.izbrana { border-color: var(--accent, #6366f1); }
+    .isk-sl:disabled:not(.izbrana) { opacity: .4; cursor: default; }
     .q-slika-ur { display: flex; gap: 8px; flex-wrap: wrap; align-items: center; margin: 0 0 14px; }
     .q-slika-ur .msg { font-size: .85rem; }
     .q-hint { color: var(--muted); font-size: .85rem; font-weight: 700; margin: 2px 0 0; }
@@ -1759,8 +1775,12 @@ const urlSlike = pot => `${SUPABASE.url}/storage/v1/object/public/${SHRAMBA}/${p
 async function dodajSlike(kvizId, vpr) {
   const r = await rpc('sola_kviz_slike', { p_kviz: kvizId });
   const m = {};
-  if (Array.isArray(r)) r.forEach(x => { m[x.besedilo] = x.pot; });
-  vpr.forEach(q => { q.slika = m[q.b] ? urlSlike(m[q.b]) : null; });
+  if (Array.isArray(r)) r.forEach(x => { m[x.besedilo] = x; });
+  vpr.forEach(q => {
+    const x = m[q.b];
+    q.slika = x ? urlSlike(x.pot) : null;
+    try { q.vir = x && x.vir ? JSON.parse(x.vir) : null; } catch (e) { q.vir = null; }
+  });
   return vpr;
 }
 /* Pomanjša sliko na največ 1200 px in jo shrani kot JPG (manj podatkov za učence). */
@@ -1775,7 +1795,7 @@ async function pomanjsajSliko(f) {
 }
 const izbrisiIzShrambe = pot => fetch(`${SUPABASE.url}/storage/v1/object/${SHRAMBA}/${potShrambe(pot)}`,
   { method: 'DELETE', headers: { apikey: SUPABASE.key, Authorization: `Bearer ${SUPABASE.key}` } }).catch(() => {});
-async function naloziSlikoVprasanja(kvizId, besedilo, f) {
+async function naloziSlikoVprasanja(kvizId, besedilo, f, vir) {
   if (!/^image\//.test(f.type)) return 'Izberi sliko (JPG, PNG …).';
   let blob;
   try { blob = await pomanjsajSliko(f); } catch (e) { return 'Te slike ni mogoče odpreti. Poskusi z JPG ali PNG.'; }
@@ -1787,11 +1807,100 @@ async function naloziSlikoVprasanja(kvizId, besedilo, f) {
       headers: { apikey: SUPABASE.key, Authorization: `Bearer ${SUPABASE.key}`, 'Content-Type': 'image/jpeg', 'x-upsert': 'false', 'cache-control': '31536000' } });
   } catch (e) { return 'Povezava se je prekinila. Poskusi znova.'; }
   if (!r.ok) return `Shramba je zavrnila sliko (${r.status}).`;
-  const stara = await rpc('sola_kviz_slika_shrani', { p_seja: ucitelj.seja, p_kviz: kvizId, p_besedilo: besedilo, p_pot: pot });
+  const stara = await rpc('sola_kviz_slika_shrani', { p_seja: ucitelj.seja, p_kviz: kvizId, p_besedilo: besedilo, p_pot: pot,
+    p_vir: vir ? JSON.stringify(vir) : null });
   if (typeof stara !== 'string') { izbrisiIzShrambe(pot); return 'Slike ni bilo mogoče pripeti vprašanju. Poskusi znova.'; }
   if (stara) izbrisiIzShrambe(stara);
   return '';
 }
+
+/* ─── Iskanje slik (Wikimedia Commons in Openverse: samo proste licence, brez ključa) ───
+   Slovensko besedo prevede prek Wikidate (»buča« → pumpkin), da je zadetkov več.
+   Izbrana slika se prenese v našo shrambo (učenci ne nalagajo s tujih strežnikov). */
+const LICENCA = (l, v) => l === 'cc0' ? 'CC0' : l === 'pdm' ? 'javna domena' : `CC ${String(l).toUpperCase()}${v ? ' ' + v : ''}`;
+async function prevodiIskanja(q) {
+  try {
+    const r = await fetch(`https://www.wikidata.org/w/api.php?action=wbsearchentities&search=${encodeURIComponent(q)}&language=sl&uselang=en&limit=5&format=json&origin=*`);
+    const d = await r.json();
+    return [...new Set((d.search || []).map(x => x.label).filter(x => x && x.toLowerCase() !== q.toLowerCase()))].slice(0, 4);
+  } catch (e) { return []; }
+}
+const zCasom = (url, ms) => { const c = new AbortController(); const t = setTimeout(() => c.abort(), ms);
+  return fetch(url, { signal: c.signal }).finally(() => clearTimeout(t)); };
+const brezHtml = h => (new DOMParser().parseFromString(String(h || ''), 'text/html').body.textContent || '').replace(/\s+/g, ' ').trim();
+/* Vrne [{th, polna, n, a, l, u}] iz Wikimedia Commons in Openverse (kar odgovori). */
+async function iskanjeSlik(izraz) {
+  const commons = zCasom(`https://commons.wikimedia.org/w/api.php?action=query&format=json&origin=*&generator=search&gsrnamespace=6&gsrsearch=${encodeURIComponent(izraz + ' filetype:bitmap')}&gsrlimit=20&prop=imageinfo&iiprop=url|size|extmetadata&iiurlwidth=330&iiextmetadatafilter=Artist|LicenseShortName|ObjectName`, 10000)
+    .then(r => r.json()).then(d => Object.values((d.query || {}).pages || {}).sort((a, b) => a.index - b.index).map(p => {
+      const ii = (p.imageinfo || [])[0]; if (!ii || !ii.thumburl) return null;
+      const m = ii.extmetadata || {}, l = brezHtml((m.LicenseShortName || {}).value);
+      if (!/^(cc|public domain|pd)/i.test(l)) return null;
+      return { th: ii.thumburl, polna: ii.width > 960 ? ii.thumburl.replace(/\/330px-/, '/960px-').replace(/\?.*$/, '') : ii.url,
+        n: brezHtml((m.ObjectName || {}).value) || p.title.replace(/^File:|\.[^.]+$/g, ''), a: brezHtml((m.Artist || {}).value).slice(0, 120), l, u: ii.descriptionurl };
+    }).filter(Boolean));
+  const openverse = zCasom(`https://api.openverse.org/v1/images/?q=${encodeURIComponent(izraz)}&page_size=20&mature=false`, 10000)
+    .then(r => { if (!r.ok) throw 0; return r.json(); }).then(d => (d.results || []).map(x => ({ th: x.thumbnail,
+      polna: x.thumbnail + (x.thumbnail.includes('?') ? '&' : '?') + 'full_size=true', n: x.title || '', a: x.creator || '',
+      l: LICENCA(x.license, x.license_version), u: x.foreign_landing_url || x.url || '' })));
+  const [a, b] = await Promise.allSettled([commons, openverse]);
+  const A = a.status === 'fulfilled' ? a.value : [], B = b.status === 'fulfilled' ? b.value : [];
+  if (a.status === 'rejected' && b.status === 'rejected') throw new Error('Ni povezave z iskalnikom slik. Poskusi znova.');
+  const vse = [];   // izmenično iz obeh virov
+  for (let i = 0; i < Math.max(A.length, B.length); i++) { if (A[i]) vse.push(A[i]); if (B[i]) vse.push(B[i]); }
+  return vse;
+}
+function iskalnikSlik(zacetno, izberi) {
+  const dlg = document.createElement('dialog');
+  dlg.className = 'iskalnik';
+  dlg.innerHTML = `<form method="dialog" class="isk-glava"><h3>🔎 Poišči sliko</h3><button class="btn" aria-label="Zapri">✕</button></form>
+    <form class="isk-vrstica" id="isk-f"><input type="search" id="isk-q" placeholder="npr. buča, krava, listje …" autocomplete="off" value="${esc(zacetno || '')}">
+      <button class="btn btn-go" type="submit">Išči</button></form>
+    <div class="isk-cipi" id="isk-cipi"></div><p class="msg" id="isk-msg"></p><div class="isk-mreza" id="isk-mreza"></div>
+    <p class="note" style="margin:10px 0 0;font-size:.8rem">Slike so s prostimi licencami (Wikimedia Commons in Openverse). Avtor in licenca se izpišeta pod sliko.</p>`;
+  document.body.appendChild(dlg);
+  dlg.addEventListener('close', () => dlg.remove());
+  const $q = dlg.querySelector('#isk-q'), $msg = dlg.querySelector('#isk-msg'), $m = dlg.querySelector('#isk-mreza'), $c = dlg.querySelector('#isk-cipi');
+  let zadnje = 0;
+  const isci = async (izraz, cipi) => {
+    const st = ++zadnje;
+    $msg.textContent = `Iščem »${izraz}« …`; $m.innerHTML = '';
+    if (cipi) $c.innerHTML = cipi.map(x => `<button type="button" class="cip${x === izraz ? ' on' : ''}" data-izraz="${esc(x)}">${esc(x)}</button>`).join('');
+    else $c.querySelectorAll('.cip').forEach(b => b.classList.toggle('on', b.dataset.izraz === izraz));
+    let rez;
+    try { rez = await iskanjeSlik(izraz); } catch (e) { if (st === zadnje) $msg.textContent = e.message; return; }
+    if (st !== zadnje) return;
+    $msg.textContent = rez.length ? 'Klikni sliko, ki jo želiš.' : `Za »${izraz}« ni slik. ${cipi && cipi.length > 1 ? 'Poskusi z drugo besedo zgoraj ali' : 'Poskusi z'} drugo besedo (tudi angleško).`;
+    $m.innerHTML = rez.map((x, i) => `<button type="button" class="isk-sl" data-i="${i}" title="${esc(x.n)}"><img src="${esc(x.th)}" alt="${esc(x.n || 'slika')}" loading="lazy"></button>`).join('');
+    $m.querySelectorAll('.isk-sl').forEach(b => b.addEventListener('click', async () => {
+      const x = rez[+b.dataset.i];
+      $m.querySelectorAll('.isk-sl').forEach(y => { y.disabled = true; });
+      b.classList.add('izbrana'); $msg.textContent = 'Nalagam sliko …';
+      let f;
+      try {
+        const r = await zCasom(x.polna, 20000);
+        if (!r.ok) throw 0;
+        const blob = await r.blob();
+        f = new File([blob], 'slika.jpg', { type: blob.type || 'image/jpeg' });
+      } catch (e) { $msg.textContent = 'Te slike ni mogoče prenesti. Izberi drugo.'; $m.querySelectorAll('.isk-sl').forEach(y => { y.disabled = false; }); b.classList.remove('izbrana'); return; }
+      const napaka = await izberi(f, { a: x.a.slice(0, 120), l: x.l, u: x.u, n: x.n.slice(0, 160) });
+      if (napaka) { $msg.textContent = napaka; $m.querySelectorAll('.isk-sl').forEach(y => { y.disabled = false; }); b.classList.remove('izbrana'); return; }
+      dlg.close();
+    }));
+  };
+  $c.addEventListener('click', e => { const b = e.target.closest('[data-izraz]'); if (b) isci(b.dataset.izraz); });
+  dlg.querySelector('#isk-f').addEventListener('submit', async e => {
+    e.preventDefault();
+    const q = $q.value.trim();
+    if (!q) { $q.focus(); return; }
+    $msg.textContent = 'Iščem …'; $m.innerHTML = ''; $c.innerHTML = '';
+    const pre = await prevodiIskanja(q);
+    isci(pre[0] || q, [...new Set([...pre, q])]);
+  });
+  dlg.showModal();
+  $q.focus();
+  if (zacetno) dlg.querySelector('#isk-f').requestSubmit();
+}
+const htmlVira = v => v ? `<p class="q-vir">${v.u ? `<a href="${esc(v.u)}" target="_blank" rel="noopener">` : ''}${esc(v.n || 'Slika')}${v.a ? ', ' + esc(v.a) : ''}${v.u ? '</a>' : ''} · ${esc(v.l || '')}</p>` : '';
 
 function htmlVprasanj(vpr, predogled, uredi) {
   const dis = predogled ? ' disabled' : '';
@@ -1814,8 +1923,8 @@ function htmlVprasanj(vpr, predogled, uredi) {
     }
     return `<section class="q" id="q${i}">
       <div class="q-top"><span class="q-num">${i + 1}</span><div><p class="q-text">${esc(q.b)}</p>${namig ? `<p class="q-hint">${namig}</p>` : ''}</div></div>
-      ${q.slika ? `<img class="q-img" src="${esc(q.slika)}" alt="Slika k vprašanju ${i + 1}" loading="lazy">` : ''}
-      ${uredi ? `<div class="q-slika-ur"><label class="btn"><input type="file" accept="image/*" data-slika="${i}" hidden>🖼 ${q.slika ? 'Zamenjaj sliko' : 'Dodaj sliko'}</label>
+      ${q.slika ? `<img class="q-img" src="${esc(q.slika)}" alt="Slika k vprašanju ${i + 1}" loading="lazy">${htmlVira(q.vir)}` : ''}
+      ${uredi ? `<div class="q-slika-ur"><button class="btn" type="button" data-isci-sliko="${i}">🔎 Poišči sliko</button><label class="btn"><input type="file" accept="image/*" data-slika="${i}" hidden>🖼 ${q.slika ? 'Zamenjaj z lastno' : 'Lastna slika'}</label>
         ${q.slika ? `<button class="btn" type="button" data-brez-slike="${i}">✕ Odstrani sliko</button>` : ''}<span class="msg" id="q-slika-msg${i}"></span></div>` : ''}
       ${telo}
     </section>`;
@@ -1987,6 +2096,14 @@ async function rezultatiKviza(p, g, h) {
     const napaka = await naloziSlikoVprasanja(g.id, vpr[i].b, f);
     if (napaka) { sporocilo(i, napaka); inp.closest('label').classList.remove('disabled'); inp.value = ''; return; }
     const y = window.scrollY; await rezultatiKviza(p, g, h); window.scrollTo(0, y);
+  }));
+  $main.querySelectorAll('[data-isci-sliko]').forEach(b => b.addEventListener('click', () => {
+    const i = +b.dataset.isciSliko;
+    iskalnikSlik('', async (f, vir) => {
+      const napaka = await naloziSlikoVprasanja(g.id, vpr[i].b, f, vir);
+      if (!napaka) { const y = window.scrollY; await rezultatiKviza(p, g, h); window.scrollTo(0, y); }
+      return napaka;
+    });
   }));
   $main.querySelectorAll('[data-brez-slike]').forEach(b => b.addEventListener('click', async () => {
     const i = +b.dataset.brezSlike;

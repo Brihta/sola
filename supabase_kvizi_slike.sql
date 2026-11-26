@@ -9,6 +9,9 @@
 -- nalaganjem pomanjša na največ 1200 px, JPG). Nalaganje in brisanje uporabljata
 -- iste kratkotrajne dovolilnice kot gradiva (sola_nalaganja, supabase_gradiva.sql).
 --
+-- Slika iz iskanja (Openverse, proste licence) ima v »vir« avtorja, licenco in povezavo
+-- (JSON {a, l, u}); stran jih izpiše pod sliko. Pri lastni sliki je vir prazen.
+--
 -- Kviz v predmetu učitelja (u-…) ureja samo njegov lastnik, ostale kvize vsak učitelj.
 --
 -- Zaženi v Supabase → SQL Editor (celo datoteko naenkrat), PO supabase_gradiva.sql
@@ -22,6 +25,9 @@ create table if not exists sola_kviz_slike (
   primary key (kviz_id, besedilo)
 );
 alter table sola_kviz_slike enable row level security;
+alter table sola_kviz_slike add column if not exists vir text;
+drop function if exists public.sola_kviz_slike(text);
+drop function if exists public.sola_kviz_slika_shrani(uuid, text, text, text);
 
 -- Ali sme ta seja urejati slike tega kviza.
 create or replace function public._sola_kviz_urednik(p_seja uuid, p_kviz text)
@@ -34,9 +40,9 @@ revoke execute on function public._sola_kviz_urednik(uuid, text) from public, an
 
 -- Slike kviza (javno, kot slike same).
 create or replace function public.sola_kviz_slike(p_kviz text)
-returns table(besedilo text, pot text)
+returns table(besedilo text, pot text, vir text)
 language sql stable security definer set search_path = public as $$
-  select s.besedilo, s.pot from sola_kviz_slike s where s.kviz_id = p_kviz;
+  select s.besedilo, s.pot, s.vir from sola_kviz_slike s where s.kviz_id = p_kviz;
 $$;
 
 -- Korak 1: vrne pot, na katero sme stran v 15 minutah naložiti sliko.
@@ -53,7 +59,8 @@ begin
 end; $$;
 
 -- Korak 2: sliko pripne vprašanju. Vrne pot prejšnje slike (stran jo izbriše) ali ''.
-create or replace function public.sola_kviz_slika_shrani(p_seja uuid, p_kviz text, p_besedilo text, p_pot text)
+create or replace function public.sola_kviz_slika_shrani(p_seja uuid, p_kviz text, p_besedilo text, p_pot text,
+                                                         p_vir text default null)
 returns text
 language plpgsql security definer set search_path = public as $$
 declare stara text;
@@ -61,10 +68,11 @@ begin
   if not public._sola_kviz_urednik(p_seja, p_kviz) then return null; end if;
   if coalesce(p_besedilo, '') = '' or length(p_besedilo) > 2000 then return null; end if;
   if not exists (select 1 from sola_nalaganja where pot = p_pot and dejanje = 'nalozi') then return null; end if;
+  if length(coalesce(p_vir, '')) > 1000 then return null; end if;
   delete from sola_nalaganja where pot = p_pot and dejanje = 'nalozi';
   select pot into stara from sola_kviz_slike where kviz_id = p_kviz and besedilo = p_besedilo;
-  insert into sola_kviz_slike (kviz_id, besedilo, pot) values (p_kviz, p_besedilo, p_pot)
-  on conflict (kviz_id, besedilo) do update set pot = excluded.pot, dodano = now();
+  insert into sola_kviz_slike (kviz_id, besedilo, pot, vir) values (p_kviz, p_besedilo, p_pot, nullif(p_vir, ''))
+  on conflict (kviz_id, besedilo) do update set pot = excluded.pot, vir = excluded.vir, dodano = now();
   if stara is null then return ''; end if;
   insert into sola_nalaganja (pot, dejanje) values (stara, 'izbrisi') on conflict do nothing;
   return stara;
@@ -85,5 +93,5 @@ end; $$;
 
 grant execute on function public.sola_kviz_slike(text) to anon, authenticated;
 grant execute on function public.sola_kviz_slika_zacni(uuid, text) to anon, authenticated;
-grant execute on function public.sola_kviz_slika_shrani(uuid, text, text, text) to anon, authenticated;
+grant execute on function public.sola_kviz_slika_shrani(uuid, text, text, text, text) to anon, authenticated;
 grant execute on function public.sola_kviz_slika_odstrani(uuid, text, text) to anon, authenticated;
