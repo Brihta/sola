@@ -38,9 +38,9 @@
        Safari na iPadih obdrži svoje emojije. */
     @font-face {
       font-family: 'Brihta Emoji';
-      src: url('pisave/brihta-emoji.woff2?v=65b8ada6') format('woff2') tech(color-COLRv1);
+      src: url('pisave/brihta-emoji.woff2?v=d3e54e77') format('woff2') tech(color-COLRv1);
       font-display: swap;
-      unicode-range: U+200D, U+2195, U+23F0, U+26A0-26A1, U+26BD, U+26D4, U+2705, U+270A, U+270D, U+270F, U+2728, U+2B1C, U+2B50, U+1F1E7, U+1F1EC, U+1F308, U+1F30D, U+1F31F, U+1F331, U+1F355, U+1F389, U+1F3A8, U+1F3AE-1F3AF, U+1F3B5, U+1F3C1, U+1F3C6, U+1F3EB, U+1F409-1F40A, U+1F40C, U+1F418-1F419, U+1F41D, U+1F422, U+1F427, U+1F42C, U+1F431, U+1F436, U+1F438, U+1F441, U+1F449, U+1F44B, U+1F44D, U+1F464-1F465, U+1F468, U+1F4A1, U+1F4AA, U+1F4BB, U+1F4BE, U+1F4C1, U+1F4C4, U+1F4CA, U+1F4CC, U+1F4D0, U+1F4D6, U+1F4DA, U+1F501, U+1F507, U+1F50A, U+1F50E, U+1F511-1F512, U+1F517, U+1F522, U+1F590, U+1F5B1, U+1F5BC, U+1F5D1, U+1F5FA, U+1F62C, U+1F648, U+1F64B, U+1F680, U+1F6A2, U+1F914, U+1F916, U+1F938, U+1F947-1F949, U+1F981, U+1F984, U+1F989-1F98B, U+1F992, U+1F996, U+1F9A1, U+1F9AB, U+1F9D1-1F9D2, U+1F9E0, U+1F9E9-1F9EA;
+      unicode-range: U+200D, U+2195, U+23F0, U+26A0-26A1, U+26BD, U+26D4, U+2705, U+270A, U+270D, U+270F, U+2728, U+2B1C, U+2B50, U+1F1E7, U+1F1EC, U+1F308, U+1F30D, U+1F319, U+1F31F, U+1F331, U+1F355, U+1F389, U+1F3A8, U+1F3AE-1F3AF, U+1F3B5, U+1F3C1, U+1F3C6, U+1F3EB, U+1F409-1F40A, U+1F40C, U+1F418-1F419, U+1F41D, U+1F422, U+1F427, U+1F42C, U+1F431, U+1F436, U+1F438, U+1F441, U+1F449, U+1F44B, U+1F44D, U+1F464-1F465, U+1F468, U+1F47E, U+1F4A1, U+1F4AA, U+1F4BB, U+1F4BE, U+1F4C1, U+1F4C4, U+1F4CA, U+1F4CC, U+1F4D0, U+1F4D6, U+1F4DA, U+1F501, U+1F507, U+1F50A, U+1F50E, U+1F511-1F512, U+1F517, U+1F522, U+1F590, U+1F5B1, U+1F5BC, U+1F5D1, U+1F5FA, U+1F604, U+1F62C, U+1F648, U+1F64B, U+1F680, U+1F6A2, U+1F914, U+1F916, U+1F938, U+1F947-1F949, U+1F981, U+1F984, U+1F989-1F98B, U+1F992, U+1F996, U+1F9A1, U+1F9AB, U+1F9D1-1F9D2, U+1F9E0, U+1F9E9-1F9EA;
     }
     /* emoji-pisava:konec */
     html, body { margin: 0; }
@@ -358,6 +358,9 @@
     .ig-av { display: inline-grid; place-items: center; width: 40px; height: 40px; border-radius: 50%; background: #f3efff; font-size: 1.5rem; flex-shrink: 0; }
     @keyframes igpop { from { transform: scale(.6); opacity: 0; } to { transform: none; opacity: 1; } }
     .ig-naprej { display: block; margin: 18px auto 0; font-size: 1.25rem; }
+    .ig-teme { display: flex; justify-content: center; align-items: center; flex-wrap: wrap; gap: 8px; margin-top: 26px; font-weight: 800; }
+    .ig-teme .cip { color: var(--ink); font-size: 1.05rem; padding: 7px 16px; }
+    .ig-teme .cip.on { background: var(--sun); color: #2d1b69; }
     .ig-casbar { height: 10px; background: rgba(255,255,255,.2); border-radius: 99px; overflow: hidden; margin-bottom: 14px; }
     .ig-casbar i { display: block; height: 100%; width: 100%; background: var(--sun); border-radius: 99px; transition: width .2s linear; }
     .ig-b { font-family: var(--head); text-align: center; font-size: clamp(1.5rem, 3.4vw, 2.8rem); margin: 6px auto 18px; max-width: 1100px; line-height: 1.2; }
@@ -3202,8 +3205,8 @@ const GLASBA = (() => {
     g.gain.setValueAtTime(jak, t); g.gain.exponentialRampToValueAtTime(0.0001, t + 0.2);
     o.connect(g).connect(glavna); o.start(t); o.stop(t + 0.25);
   };
-  /* Vzorci: [bpm, dolžina v šestnajstinkah, funkcija(korak, čas, šestnajstinka)] */
-  const VZORCI = {
+  /* Teme z vzorci: [bpm, dolžina v šestnajstinkah, funkcija(korak, čas, šestnajstinka)] */
+  const VESELA = {
     cakanje: [112, 64, (i, t, s) => {          // vesel C–Am–F–G
       const akordi = [[60, 64, 67], [57, 60, 64], [53, 57, 60], [55, 59, 62]], a = akordi[Math.floor(i / 16)], k = i % 16;
       if (k === 0 || k === 8) { ton(t, a[0] - 24, s * 6, 'triangle', 0.5); boben(t, 0.35); }
@@ -3220,9 +3223,61 @@ const GLASBA = (() => {
       if (k === 0 || k === 6 || k === 12) [0, 3, 7].forEach(d => ton(t, kor + 24 + d + (i < 16 ? 0 : 1), s * 1.2, 'sawtooth', 0.025));
     }],
   };
+  const RETRO = {                              // 8-bitna igralna (C–G–Am–F)
+    cakanje: [140, 64, (i, t, s) => {
+      const b = Math.floor(i / 16), k = i % 16, kor = [48, 43, 45, 41][b];
+      const mel = [[72, 76, 79, 76, 84, 79, 76, 79], [71, 74, 79, 74, 83, 79, 74, 79], [72, 76, 81, 76, 84, 81, 76, 81], [72, 77, 81, 77, 84, 81, 77, 81]][b];
+      if (k % 2 === 0) { ton(t, mel[k / 2], s * 1.7, 'square', 0.06); ton(t, kor + (k % 4 ? 12 : 0), s * 1.6, 'square', 0.07); }
+      if (k % 4 === 2) cinela(t, 0.1);
+      if (k === 0 || k === 8) boben(t, 0.3);
+    }],
+    vprasanje: [150, 32, (i, t, s) => {
+      const k = i % 16, a = i < 16 ? [69, 72, 76] : [68, 71, 76];
+      ton(t, (i < 16 ? 45 : 40) + (k % 2 ? 12 : 0), s * 0.9, 'square', 0.06);
+      ton(t, a[k % 3] + 12, s * 0.8, 'square', 0.035);
+      if (k % 4 === 0) boben(t, 0.4);
+      if (k % 2) cinela(t, 0.07);
+    }],
+  };
+  const VESOLJE = {                            // sanjave plošče in zvezdice
+    cakanje: [90, 64, (i, t, s) => {
+      const b = Math.floor(i / 16), k = i % 16, akordi = [[48, 55, 59, 64], [45, 52, 55, 60], [41, 48, 52, 57], [43, 50, 55, 59]];
+      if (k === 0) { akordi[b].forEach(m => ton(t, m + 12, s * 15, 'sine', 0.09)); ton(t, akordi[b][0] - 12, s * 15, 'triangle', 0.25); boben(t, 0.2); }
+      const zvezde = [84, 88, 91, 93, 96, 91, 88, 86];
+      if ([3, 7, 10, 13].includes(k)) ton(t, zvezde[(i * 3 + k) % 8], s * 6, 'sine', 0.07);
+    }],
+    vprasanje: [120, 32, (i, t, s) => {
+      const k = i % 16, osn = i < 16 ? 38 : 36, pent = [74, 77, 79, 81, 84];
+      if (k % 2 === 0) ton(t, osn, s * 1.8, 'sawtooth', 0.05);
+      ton(t, osn + 12, s * 0.5, 'sine', 0.12);
+      if (k % 3 === 0) ton(t, pent[(i * 2) % 5] + (i < 16 ? 0 : -2), s * 3, 'sine', 0.08);
+      if (k % 4 === 0) boben(t, 0.35);
+      if (k % 2) cinela(t, 0.05);
+    }],
+  };
+  const MIRNA = {                              // lo-fi klavir (Dm7–G7–Cmaj7–A7)
+    cakanje: [80, 64, (i, t, s) => {
+      const b = Math.floor(i / 16), k = i % 16, akordi = [[50, 57, 60, 65], [43, 53, 59, 62], [48, 55, 59, 64], [45, 55, 61, 64]];
+      if (k === 0 || k === 6) akordi[b].forEach((m, j) => { ton(t + j * 0.012, m + 12, s * 9, 'triangle', 0.07); ton(t + j * 0.012, m + 24, s * 4, 'sine', 0.025); });
+      if (k === 0) ton(t, akordi[b][0] - 12, s * 8, 'sine', 0.3);
+      if (k === 0 || k === 10) boben(t, 0.25);
+      if (k === 4 || k === 12) cinela(t, 0.06);
+      if (k === 11 || k === 14) ton(t, [74, 72, 71, 69][b] + 12, s * 3, 'sine', 0.05);
+    }],
+    vprasanje: [100, 32, (i, t, s) => {
+      const k = i % 16, lest = i < 16 ? [62, 65, 69, 72, 69, 65] : [60, 64, 67, 71, 67, 64];
+      ton(t, lest[k % 6] + 12, s * 1.5, 'sine', 0.09);
+      if (k % 4 === 0) ton(t, (i < 16 ? 38 : 36), s * 3.5, 'triangle', 0.3);
+      if (k % 8 === 0) boben(t, 0.25);
+      if (k % 4 === 2) cinela(t, 0.05);
+    }],
+  };
+  const TEME = { vesela: ['😄 Vesela', VESELA], retro: ['👾 Retro', RETRO], vesolje: ['🚀 Vesolje', VESOLJE], mirna: ['🌙 Mirna', MIRNA] };
+  const KLJUC_TEME = 'sola_igra_tema';
+  let tema = TEME[preberi(KLJUC_TEME)] ? preberi(KLJUC_TEME) : 'vesela';
   const tic = () => {
     if (!vzorec) return;
-    const [bpm, dol, fn] = VZORCI[vzorec], s = 60 / bpm / 4;
+    const [bpm, dol, fn] = TEME[tema][1][vzorec], s = 60 / bpm / 4;
     while (naslednji < ac.currentTime + 0.12) { fn(korak, naslednji, s); korak = (korak + 1) % dol; naslednji += s; }
   };
   const ZVOKI = {
@@ -3238,6 +3293,13 @@ const GLASBA = (() => {
   };
   return {
     get tiho() { return tiho; },
+    get tema() { return tema; },
+    teme: Object.entries(TEME).map(([id, [ime]]) => ({ id, ime })),
+    nastaviTemo(t) {
+      if (!TEME[t]) return;
+      tema = t; shrani(KLJUC_TEME, t);
+      const v = vzorec; vzorec = null; this.igraj(v);   // začni znova v novem slogu
+    },
     igraj(v) {
       if (vzorec === v) return;
       vzorec = v; clearInterval(ura); ura = null;
@@ -3345,7 +3407,8 @@ async function zaslonIgre(id) {
         <p class="ig-nav">Učenci: odprite <b>Brihto</b> in se prijavite. Igra se vam pokaže sama. 👉 <b>Pridruži se!</b></p>
         <p class="ig-st-igr"><b>${igr.length}</b> ${igr.length === 1 ? 'igralec' : igr.length === 2 ? 'igralca' : igr.length < 5 ? 'igralci' : 'igralcev'}</p>
         <div class="ig-igr">${igr.map(x => `<span class="ig-igralec">${avatar(x)}${esc(x.ime)}</span>`).join('')}</div>
-        <button class="btn btn-go btn-big ig-naprej" type="button" id="ig-naprej"${igr.length ? '' : ' disabled'}>Začni igro ▶</button></div>`;
+        <button class="btn btn-go btn-big ig-naprej" type="button" id="ig-naprej"${igr.length ? '' : ' disabled'}>Začni igro ▶</button>
+        <div class="ig-teme"><span>🎵 Glasba:</span>${GLASBA.teme.map(x => `<button type="button" class="cip${x.id === GLASBA.tema ? ' on' : ''}" data-tema="${x.id}">${x.ime}</button>`).join('')}</div></div>`;
     } else if (s.stanje === 'vprasanje') {
       telo = `<div class="ig-vpr"><div class="ig-casbar"><i data-casbar></i></div>
         <h1 class="ig-b">${esc(q.b)}</h1>
@@ -3381,6 +3444,10 @@ async function zaslonIgre(id) {
     $ig.innerHTML = glava + telo;
     if (s.stanje === 'konec' && igr.length) konfeti($ig);
     $ig.querySelector('#ig-naprej')?.addEventListener('click', naprej);
+    $ig.querySelectorAll('[data-tema]').forEach(b => b.addEventListener('click', () => {
+      GLASBA.odkleni(); GLASBA.nastaviTemo(b.dataset.tema);
+      $ig.querySelectorAll('[data-tema]').forEach(x => x.classList.toggle('on', x === b));
+    }));
     $ig.querySelector('#ig-zvok').addEventListener('click', e => { e.currentTarget.textContent = GLASBA.preklopi() ? '🔇' : '🔊'; });
     if (s.stanje === 'cakanje' || s.stanje === 'vprasanje') GLASBA.igraj(s.stanje);
     else if (kljucZvoka !== kljucIzrisa) { GLASBA.ustavi(); GLASBA.zvok(s.stanje === 'konec' ? 'konec' : 'razkrij'); }
