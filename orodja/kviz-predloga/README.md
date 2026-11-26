@@ -20,6 +20,7 @@ Spremembe vrst ali stolpcev morajo iti hkrati v `predloga.py`, ta opis in bralni
 | Vrsta (`B`) | Odgovori (`D`–`I`) |
 |---|---|
 | `Izbira` | D = pravilni; E–H = napačni (1 do 4); I prazen |
+| `Več pravilnih` | 2 do 6 odgovorov; pravilni imajo spredaj `*` (zvezdica se odreže); vsaj 1 pravilen in 1 napačen; učenec mora označiti vse pravilne (`vec`) |
 | `Drži / Ne drži` | D = `Drži` ali `Ne drži` |
 | `Poveži` | vsak neprazen odgovor je `levo = desno` (presledek, enačaj, presledek); 2 do 6 parov |
 | `Razvrsti` | 2 do 6 odgovorov v PRAVILNEM vrstnem redu |

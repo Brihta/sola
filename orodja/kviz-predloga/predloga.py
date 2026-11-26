@@ -6,7 +6,7 @@ from openpyxl.formatting.rule import FormulaRule
 
 OUT = sys.argv[1]
 F = "Arial"
-VRSTE = ["Izbira", "Drži / Ne drži", "Poveži", "Razvrsti", "Število"]
+VRSTE = ["Izbira", "Več pravilnih", "Drži / Ne drži", "Poveži", "Razvrsti", "Število"]
 RUMENA = PatternFill("solid", fgColor="FFF8D6")
 GLAVA = PatternFill("solid", fgColor="C0392B")   # rdeča Brihta
 SIVA = PatternFill("solid", fgColor="F2F2F2")
@@ -19,14 +19,16 @@ PRVA, ZADNJA = 6, 65   # vrstice vprašanj (60 vprašanj)
 def pomoc(r):
     b = f"$B{r}"
     return (f'=IF({b}="Izbira","Odgovor 1 = pravilni, Odgovor 2 do 5 = napačni (vsaj 1)",'
+            f'IF({b}="Več pravilnih","Pravilnim odgovorom daj zvezdico spredaj, npr. *krava (vsaj 1 pravilen in 1 napačen)",'
             f'IF({b}="Drži / Ne drži","Odgovor 1 = Drži ali Ne drži",'
             f'IF({b}="Poveži","Vsak odgovor je par: pojem = razlaga (vsaj 2 para)",'
             f'IF({b}="Razvrsti","Odgovori v PRAVILNEM vrstnem redu (vsaj 2)",'
-            f'IF({b}="Število","Odgovor 1 = pravilno število","")))))')
+            f'IF({b}="Število","Odgovor 1 = pravilno število",""))))))')
 
 def preveri(r):
     b, c, d = f"$B{r}", f"$C{r}", f"$D{r}"
     vsi = f"$D{r}:$I{r}"
+    zvezd = f'SUMPRODUCT(--(LEFT({vsi},1)="*"))'
     pari = f'SUMPRODUCT(--ISNUMBER(SEARCH(" = ",{vsi})))'
     return (f'=IF(AND({b}="",{c}="",COUNTA({vsi})=0),"",'
             f'IF({b}="","Izberi vrsto vprašanja",'
@@ -34,12 +36,14 @@ def preveri(r):
             f'IF({b}="Izbira",IF({d}="","Manjka pravilni odgovor (Odgovor 1)",'
                 f'IF(COUNTA($E{r}:$H{r})=0,"Dodaj vsaj en napačen odgovor",'
                 f'IF($I{r}<>"","Pri izbiri je največ 4 napačnih (Odgovor 6 pusti prazen)","✓ V redu"))),'
+            f'IF({b}="Več pravilnih",IF({zvezd}=0,"Označi pravilne z zvezdico spredaj (*)",'
+                f'IF({zvezd}=COUNTA({vsi}),"Dodaj vsaj en napačen odgovor (brez zvezdice)","✓ V redu")),'
             f'IF({b}="Drži / Ne drži",IF(OR({d}="Drži",{d}="Ne drži"),"✓ V redu","V Odgovor 1 napiši Drži ali Ne drži"),'
             f'IF({b}="Poveži",IF({pari}<2,"Vsaj 2 para v obliki pojem = razlaga",'
                 f'IF({pari}<COUNTA({vsi}),"Vsak par potrebuje presledek, enačaj, presledek ( = )","✓ V redu")),'
             f'IF({b}="Razvrsti",IF(COUNTA({vsi})<2,"Vsaj 2 odgovora v pravilnem vrstnem redu","✓ V redu"),'
             f'IF({b}="Število",IF(ISNUMBER({d}),"✓ V redu","Odgovor 1 mora biti število"),'
-            f'"Neznana vrsta: izberi s seznama"))))))))')
+            f'"Neznana vrsta: izberi s seznama")))))))))')
 
 def list_kviza(ws, naslov, opis, vprasanja):
     ws.sheet_view.showGridLines = False
@@ -85,7 +89,7 @@ def list_kviza(ws, naslov, opis, vprasanja):
         for j, x in enumerate(v):
             ws.cell(r, 2 + j, x)
     rng = f"B{PRVA}:B{ZADNJA}"
-    dv = DataValidation(type="list", formula1="Seznami!$A$1:$A$5", allow_blank=True,
+    dv = DataValidation(type="list", formula1=f"Seznami!$A$1:$A${len(VRSTE)}", allow_blank=True,
                         showErrorMessage=True, errorTitle="Vrsta vprašanja",
                         error="Izberi vrsto s seznama: " + ", ".join(VRSTE) + ".",
                         promptTitle="Vrsta vprašanja", prompt="Klikni puščico ▾ desno od celice in izberi vrsto.")
@@ -96,6 +100,10 @@ def list_kviza(ws, naslov, opis, vprasanja):
         formula=[f'OR($B{PRVA}="Izbira",$B{PRVA}="Drži / Ne drži",$B{PRVA}="Število")'], fill=ZELENA))
     ws.conditional_formatting.add(f"E{PRVA}:H{ZADNJA}", FormulaRule(
         formula=[f'$B{PRVA}="Izbira"'], fill=ROZA))
+    ws.conditional_formatting.add(f"D{PRVA}:I{ZADNJA}", FormulaRule(
+        formula=[f'AND($B{PRVA}="Več pravilnih",LEFT(D{PRVA},1)="*")'], fill=ZELENA))
+    ws.conditional_formatting.add(f"D{PRVA}:I{ZADNJA}", FormulaRule(
+        formula=[f'AND($B{PRVA}="Več pravilnih",D{PRVA}<>"",LEFT(D{PRVA},1)<>"*")'], fill=ROZA))
     ws.conditional_formatting.add(f"K{PRVA}:K{ZADNJA}", FormulaRule(
         formula=[f'LEFT(K{PRVA},1)="✓"'], font=Font(name=F, size=9, color="1E7B34", bold=True)))
     ws.conditional_formatting.add(f"K{PRVA}:K{ZADNJA}", FormulaRule(
@@ -113,6 +121,7 @@ list_kviza(kviz, "", "", [])
 primer = wb.create_sheet("Primer")
 list_kviza(primer, "Živali na kmetiji", "Primer: tako je videti izpolnjen kviz.", [
     ["Izbira", "Katera žival daje mleko?", "krava", "kokoš", "konj", "pes", "mačka"],
+    ["Več pravilnih", "Katere živali imajo perje?", "*kokoš", "krava", "*raca", "pes", "*gos"],
     ["Drži / Ne drži", "Kokoš ima štiri noge.", "Ne drži"],
     ["Poveži", "Poveži žival z njenim mladičem.", "krava = tele", "ovca = jagnje", "kokoš = pišče", "konj = žrebe"],
     ["Razvrsti", "Razvrsti od najmanjše do največje živali.", "piščanec", "mačka", "ovca", "konj"],
@@ -127,7 +136,7 @@ vr = [
     ("Brihta: predloga za kviz", "naslov"),
     ("1. Shrani svojo kopijo te datoteke (Datoteka › Shrani kopijo). Predloge ne spreminjaj.", "t"),
     ("2. Na listu »Kviz« vpiši naslov in vprašanja: eno vprašanje v eno vrstico.", "t"),
-    ("3. V stolpcu Vrsta klikni celico in nato puščico ▾: izberi Izbira, Drži / Ne drži, Poveži, Razvrsti ali Število. Stolpec »Kaj vpišem« ti pove, kaj gre v odgovore.", "t"),
+    ("3. V stolpcu Vrsta klikni celico in nato puščico ▾: izberi Izbira, Več pravilnih, Drži / Ne drži, Poveži, Razvrsti ali Število. Stolpec »Kaj vpišem« ti pove, kaj gre v odgovore.", "t"),
     ("4. Ko je v stolpcu Preverjanje povsod »✓ V redu«, se prijavi na Brihti, odpri modul in naloži datoteko.", "t"),
     ("Lepljenje: ko kaj kopiraš od drugod, prilepi s Ctrl+Shift+V (Mac: Cmd+Shift+V). Tako se prilepi samo besedilo, brez tuje pisave in barv. Lahko tudi desni klik › Možnosti lepljenja › Vrednosti (ikona 123).", "t"),
     ("5. Slike dodaš na Brihti, ko je kviz že narejen. Učencem se odgovori premešajo, zato ne piši »vse zgoraj navedeno«.", "t"),
@@ -146,6 +155,8 @@ r += 1
 tabela = [
     ("Izbira", "Odgovor 1 = pravilni odgovor.\nOdgovor 2 do 5 = napačni odgovori (vsaj 1, največ 4). Najboljši so pogoste napačne predstave učencev.",
      "Katera žival daje mleko?\n1: krava  2: kokoš  3: konj  4: pes"),
+    ("Več pravilnih", "Pravilnim odgovorom daj spredaj zvezdico *, napačnim ne. Vsaj 1 pravilen in 1 napačen, skupaj največ 6. Učenec mora označiti vse pravilne.",
+     "Katere živali imajo perje?\n1: *kokoš  2: krava  3: *raca  4: pes"),
     ("Drži / Ne drži", "Odgovor 1 = Drži ali Ne drži.", "Kokoš ima štiri noge.\n1: Ne drži"),
     ("Poveži", "Vsak odgovor je par: pojem = razlaga (presledek, enačaj, presledek). Vsaj 2 para, največ 6.",
      "Poveži žival z mladičem.\n1: krava = tele  2: ovca = jagnje"),

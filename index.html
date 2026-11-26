@@ -500,7 +500,11 @@
     .stat { background: var(--surface); border-radius: var(--r-lg); padding: 16px 18px; box-shadow: var(--shadow); }
     .stat strong { display: block; font-family: var(--head); font-size: 2rem; font-weight: 900; line-height: 1.1; color: var(--c1); }
     .stat span { color: var(--muted); font-weight: 700; font-size: .88rem; }
-    .cells { white-space: nowrap; }
+    .cells { white-space: normal; line-height: 1.5; min-width: 90px; }
+    .tbl-rez { overflow-x: auto; border-radius: var(--r-lg); box-shadow: var(--shadow); }
+    .tbl-rez .ftable { box-shadow: none; }
+    .tbl-rez .ftable th, .tbl-rez .ftable td { padding-left: 10px; padding-right: 10px; }
+    .tbl-rez .ftable td.m { white-space: normal; }
     .cell { display: inline-block; width: 16px; height: 16px; border-radius: 5px; margin-right: 3px; vertical-align: -3px; }
     .cell.y { background: #22c55e; } .cell.n { background: #fecaca; }
     .bars li { display: grid; grid-template-columns: 90px 1fr 44px; align-items: center; gap: 10px; }
@@ -1904,12 +1908,12 @@ async function rezultatiKviza(p, g, h) {
       <div class="stat"><strong>${n ? povp + ' %' : '–'}</strong><span>povprečje</span></div>
       ${vpr.length ? `<div class="stat"><strong>${vpr.length}</strong><span>vprašanj</span></div>` : ''}
     </div>
-    ${n ? `<table class="ftable"><thead><tr><th>Učenec</th><th class="hide-m">Razred</th><th>Točke</th><th class="hide-m">Po vprašanjih</th><th class="hide-m">Oddano</th><th></th></tr></thead><tbody>
+    ${n ? `<div class="tbl-rez"><table class="ftable"><thead><tr><th>Učenec</th><th class="hide-m">Razred</th><th>Točke</th><th class="hide-m">Po vprašanjih</th><th class="hide-m">Oddano</th><th></th></tr></thead><tbody>
       ${rez.map(r => `<tr><td><b>${esc(r.emoji || '🦉')} ${esc(r.ime)}</b><br><small class="m">${esc(r.username)}</small></td>
         <td class="m hide-m">${esc(r.razred || '–')}</td><td><b>${r.tocke}</b> / ${r.vseh}</td>
         <td class="cells hide-m">${celice(r)}</td><td class="m hide-m">${casOddaje(r.oddano)}</td>
         <td><button class="btn" type="button" data-ponastavi="${esc(r.student_id)}" data-ime="${esc(r.ime)}" title="Izbriše oddajo, da lahko učenec kviz reši znova">Ponastavi</button></td></tr>`).join('')}
-      </tbody></table>` : '<div class="empty"><img src="brihta.png" alt=""><strong>Še nobene oddaje</strong>Ko učenci oddajo kviz, se pokažejo tukaj.</div>'}
+      </tbody></table></div>` : '<div class="empty"><img src="brihta.png" alt=""><strong>Še nobene oddaje</strong>Ko učenci oddajo kviz, se pokažejo tukaj.</div>'}
     <div style="margin:18px 0 30px;display:flex;gap:8px;flex-wrap:wrap"><button class="btn" type="button" id="r-osvezi">↻ Osveži</button>
       ${jeTP(p.id) ? `<a class="btn" href="#/p/${p.id}/excel">📊 Naloži popravljen Excel</a>${gumbObjave(g)}` : `<a class="btn" href="#/p/${p.id}/uredi/${encodeURIComponent(g.id)}">✏️ Uredi kviz</a>
       <button class="btn" type="button" id="r-skrij">🙈 Skrij kviz</button>`}</div>
@@ -2171,7 +2175,7 @@ async function beriExcel(buf) {
 const brezStresic = s => String(s ?? '').normalize('NFKD').replace(/[̀-ͯ]/g, '').toLowerCase();
 const stevilka = n => String(+(+n).toPrecision(12)).replace('.', ',');
 const celica = x => x == null ? '' : typeof x === 'number' ? stevilka(x) : String(x).replace(/\s+/g, ' ').trim();
-const VRSTE_XL = { izbira: 'izbira', drzinedrzi: 'drzi', povezi: 'povezi', razvrsti: 'razvrsti', stevilo: 'stevilo' };
+const VRSTE_XL = { izbira: 'izbira', vecpravilnih: 'vec', drzinedrzi: 'drzi', povezi: 'povezi', razvrsti: 'razvrsti', stevilo: 'stevilo' };
 /* Iz celic naredi kviz v isti obliki kot razcleniKviz (javni del, ključ) in še besedilo (vir). */
 function kvizIzExcela(cel, seme) {
   const napake = [], javno = [], kljuc = [], vir = [];
@@ -2197,6 +2201,14 @@ function kvizIzExcela(cel, seme) {
       if (enaki([prav, ...napacni])) { nap('dva odgovora sta enaka.'); continue; }
       javno.push({ t: 'izbira', b, m: premesaj([prav, ...napacni], seme + n) }); kljuc.push({ t: 'izbira', p: [prav] });
       vir.push(`? ${b}`, `+ ${prav}`, ...napacni.map(x => `- ${x}`), '');
+    } else if (v === 'vec') {
+      const vsi = polni.map(x => x.replace(/^\*\s*/, '').trim()), prav = vsi.filter((x, i) => polni[i].startsWith('*'));
+      if (vsi.some(x => !x)) { nap('zvezdica brez odgovora.'); continue; }
+      if (!prav.length) { nap('označi pravilne odgovore z zvezdico spredaj, npr. *krava.'); continue; }
+      if (prav.length === vsi.length) { nap('dodaj vsaj en napačen odgovor (brez zvezdice).'); continue; }
+      if (enaki(vsi)) { nap('dva odgovora sta enaka.'); continue; }
+      javno.push({ t: 'vec', b, m: premesaj(vsi, seme + n) }); kljuc.push({ t: 'vec', p: prav });
+      vir.push(`? ${b}`, ...vsi.map(x => (prav.includes(x) ? '+ ' : '- ') + x), '');
     } else if (v === 'drzi') {
       const x = brezStresic(odg[0]).replace(/[^a-z]/g, '');
       if (x !== 'drzi' && x !== 'nedrzi') { nap('v Odgovor 1 napiši Drži ali Ne drži.'); continue; }
