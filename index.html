@@ -38,9 +38,9 @@
        Safari na iPadih obdrži svoje emojije. */
     @font-face {
       font-family: 'Brihta Emoji';
-      src: url('pisave/brihta-emoji.woff2?v=7b37b2d2') format('woff2') tech(color-COLRv1);
+      src: url('pisave/brihta-emoji.woff2?v=c88e4c59') format('woff2') tech(color-COLRv1);
       font-display: swap;
-      unicode-range: U+200D, U+26A0-26A1, U+26BD, U+26D4, U+2705, U+270A, U+270D, U+270F, U+2728, U+2B1C, U+2B50, U+1F1E7, U+1F1EC, U+1F308, U+1F30D, U+1F31F, U+1F331, U+1F355, U+1F389, U+1F3A8, U+1F3AE-1F3AF, U+1F3B5, U+1F3C6, U+1F3EB, U+1F409-1F40A, U+1F40C, U+1F418-1F419, U+1F41D, U+1F422, U+1F427, U+1F42C, U+1F431, U+1F436, U+1F438, U+1F441, U+1F44B, U+1F44D, U+1F464-1F465, U+1F468, U+1F4A1, U+1F4AA, U+1F4BB, U+1F4BE, U+1F4C1, U+1F4C4, U+1F4CA, U+1F4CC, U+1F4D0, U+1F4D6, U+1F4DA, U+1F501, U+1F511-1F512, U+1F517, U+1F522, U+1F590, U+1F5B1, U+1F5D1, U+1F5FA, U+1F648, U+1F64B, U+1F680, U+1F6A2, U+1F916, U+1F938, U+1F981, U+1F984, U+1F989-1F98B, U+1F992, U+1F996, U+1F9A1, U+1F9AB, U+1F9D1-1F9D2, U+1F9E0, U+1F9E9-1F9EA;
+      unicode-range: U+200D, U+2195, U+23F0, U+26A0-26A1, U+26BD, U+26D4, U+2705, U+270A, U+270D, U+270F, U+2728, U+2B1C, U+2B50, U+1F1E7, U+1F1EC, U+1F308, U+1F30D, U+1F31F, U+1F331, U+1F355, U+1F389, U+1F3A8, U+1F3AE-1F3AF, U+1F3B5, U+1F3C1, U+1F3C6, U+1F3EB, U+1F409-1F40A, U+1F40C, U+1F418-1F419, U+1F41D, U+1F422, U+1F427, U+1F42C, U+1F431, U+1F436, U+1F438, U+1F441, U+1F449, U+1F44B, U+1F44D, U+1F464-1F465, U+1F468, U+1F4A1, U+1F4AA, U+1F4BB, U+1F4BE, U+1F4C1, U+1F4C4, U+1F4CA, U+1F4CC, U+1F4D0, U+1F4D6, U+1F4DA, U+1F501, U+1F50E, U+1F511-1F512, U+1F517, U+1F522, U+1F590, U+1F5B1, U+1F5BC, U+1F5D1, U+1F5FA, U+1F62C, U+1F648, U+1F64B, U+1F680, U+1F6A2, U+1F914, U+1F916, U+1F938, U+1F947-1F949, U+1F981, U+1F984, U+1F989-1F98B, U+1F992, U+1F996, U+1F9A1, U+1F9AB, U+1F9D1-1F9D2, U+1F9E0, U+1F9E9-1F9EA;
     }
     /* emoji-pisava:konec */
     html, body { margin: 0; }
@@ -333,6 +333,92 @@
     .empty { background: var(--surface); border-radius: var(--r-xl); padding: 36px 24px; text-align: center; color: var(--muted); font-weight: 600; box-shadow: var(--shadow); }
     .empty img { width: 104px; height: 104px; display: block; margin: 0 auto 12px; animation: bob 4s ease-in-out infinite; }
     .empty strong { display: block; color: var(--ink); font-family: var(--head); font-size: 1.3rem; font-weight: 900; margin-bottom: 4px; }
+
+
+    /* Igra v živo */
+    body.igra-full header.top, body.igra-full #crumbs { display: none; }
+    body.igra-full { background: linear-gradient(160deg, #2d1b69, #6c5ce7 55%, #a855f7); min-height: 100vh; }
+    .ig { position: relative; min-height: 100vh; padding: 18px clamp(14px, 3vw, 40px) 30px; color: #fff; box-sizing: border-box; overflow: hidden; }
+    .ig .btn { color: var(--ink); }
+    .ig .btn-go { background: var(--sun); color: #2d1b69; box-shadow: 0 6px 0 #c98200; }
+    .ig .btn-go:disabled { opacity: .5; }
+    .ig .empty { color: var(--muted); margin-top: 10vh; }
+    .ig-nal { text-align: center; margin-top: 30vh; font-size: 1.3rem; font-weight: 800; }
+    .ig-glava { display: flex; align-items: center; gap: 12px; flex-wrap: wrap; margin-bottom: 14px; font-weight: 800; }
+    .ig-naslov { font-family: var(--head); font-size: 1.2rem; opacity: .9; }
+    .ig-st { background: rgba(255,255,255,.18); padding: 4px 14px; border-radius: 99px; }
+    .ig-gumbi { margin-left: auto; display: flex; gap: 8px; }
+    .ig-cak { text-align: center; }
+    .ig-cak h1 { font-family: var(--head); font-size: clamp(2rem, 5vw, 3.6rem); margin: 4vh 0 10px; }
+    .ig-nav { font-size: clamp(1.1rem, 2vw, 1.6rem); margin: 0 0 20px; }
+    .ig-st-igr { font-size: 1.4rem; margin: 10px 0; text-align: center; }
+    .ig-st-igr b { font-size: 2.2rem; }
+    .ig-igr { display: flex; flex-wrap: wrap; justify-content: center; gap: 10px; margin: 10px auto 26px; max-width: 1100px; }
+    .ig-igralec { display: inline-flex; align-items: center; gap: 8px; background: #fff; color: var(--ink); padding: 8px 16px 8px 8px; border-radius: 99px; font-weight: 800; font-size: 1.15rem; animation: igpop .35s ease; }
+    .ig-av { display: inline-grid; place-items: center; width: 40px; height: 40px; border-radius: 50%; background: #f3efff; font-size: 1.5rem; flex-shrink: 0; }
+    @keyframes igpop { from { transform: scale(.6); opacity: 0; } to { transform: none; opacity: 1; } }
+    .ig-naprej { display: block; margin: 18px auto 0; font-size: 1.25rem; }
+    .ig-casbar { height: 10px; background: rgba(255,255,255,.2); border-radius: 99px; overflow: hidden; margin-bottom: 14px; }
+    .ig-casbar i { display: block; height: 100%; width: 100%; background: var(--sun); border-radius: 99px; transition: width .2s linear; }
+    .ig-b { font-family: var(--head); text-align: center; font-size: clamp(1.5rem, 3.4vw, 2.8rem); margin: 6px auto 18px; max-width: 1100px; line-height: 1.2; }
+    .ig-sredina { display: flex; align-items: center; justify-content: center; gap: clamp(14px, 4vw, 60px); margin-bottom: 20px; }
+    .ig-krog { width: 110px; height: 110px; border-radius: 50%; background: rgba(255,255,255,.18); display: grid; place-content: center; text-align: center; flex-shrink: 0; }
+    .ig-krog b { font-size: 2.8rem; line-height: 1; } .ig-krog small { font-weight: 700; opacity: .85; }
+    .ig-slika { max-width: min(560px, 50vw); max-height: 34vh; border-radius: 18px; box-shadow: 0 10px 30px rgba(0,0,0,.3); background: #fff; }
+    .ig-brez { width: 220px; height: 160px; display: grid; place-items: center; font-size: 4.5rem; background: rgba(255,255,255,.12); box-shadow: none; }
+    .ig-pl { display: grid; grid-template-columns: repeat(auto-fit, minmax(min(100%, 340px), 1fr)); gap: 12px; max-width: 1200px; margin: 0 auto; }
+    .ig-plo { display: flex; align-items: center; gap: 14px; min-height: 76px; padding: 12px 18px; border: 0; border-radius: 16px; background: var(--b); color: #fff; font: inherit; font-weight: 800; font-size: clamp(1.1rem, 2vw, 1.6rem); text-align: left; box-shadow: 0 5px 0 rgba(0,0,0,.25); cursor: pointer; }
+    button.ig-plo:active { transform: translateY(3px); box-shadow: 0 2px 0 rgba(0,0,0,.25); }
+    .ig-ucenec .ig-plo.on { outline: 5px solid #fff; outline-offset: 2px; }
+    .ig-ucenec .ig-pl:has(.on) .ig-plo:not(.on) { opacity: .55; }
+    .ig-cr { display: inline-grid; place-items: center; width: 40px; height: 40px; border-radius: 10px; background: rgba(255,255,255,.25); flex-shrink: 0; font-size: 1.3rem; }
+    .ig-tip { text-align: center; font-size: 1.5rem; font-weight: 800; margin: 10px 0; }
+    .ig-stolpci { display: flex; justify-content: center; align-items: flex-end; gap: 16px; height: 30vh; margin: 0 auto 14px; }
+    .ig-stol { display: flex; flex-direction: column; align-items: center; justify-content: flex-end; height: 100%; width: 90px; gap: 6px; opacity: .55; }
+    .ig-stol.ok { opacity: 1; }
+    .ig-stol i { display: block; width: 100%; min-height: 6px; background: var(--b); border-radius: 10px 10px 0 0; }
+    .ig-stol b { font-size: 1.6rem; }
+    .ig-stol > span { font-size: 1.3rem; font-weight: 900; }
+    .ig-pravilni { display: flex; flex-wrap: wrap; justify-content: center; gap: 10px; }
+    .ig-pravilni .ig-plo { min-height: 0; }
+    .ig-pr { text-align: center; font-size: 2.4rem; font-weight: 900; background: #fff; color: var(--good); display: table; margin: 0 auto; padding: 10px 30px; border-radius: 18px; }
+    .ig-pari, .ig-vrsta { display: flex; flex-direction: column; gap: 8px; align-items: center; font-size: 1.5rem; font-weight: 700; }
+    .ig-pari span, .ig-vrsta li { background: rgba(255,255,255,.16); padding: 6px 18px; border-radius: 12px; }
+    .ig-vrsta { list-style-position: inside; padding: 0; }
+    .ig-spodaj { display: flex; flex-wrap: wrap; justify-content: center; align-items: center; gap: 30px; margin-top: 16px; }
+    .ig-spodaj h2 { margin: 0 0 8px; font-family: var(--head); }
+    .ig-lest { list-style: none; padding: 0; margin: 0; min-width: min(460px, 90vw); }
+    .ig-lest li { display: flex; align-items: center; gap: 12px; background: #fff; color: var(--ink); border-radius: 14px; padding: 6px 14px; margin-bottom: 6px; font-weight: 800; font-size: 1.15rem; }
+    .ig-m { width: 34px; color: var(--muted); } .ig-ime { flex: 1; } .ig-t { color: var(--accent-ink); }
+    .ig-kon { text-align: center; }
+    .ig-kon h1 { font-family: var(--head); font-size: clamp(2rem, 5vw, 3.4rem); margin: 2vh 0 4vh; }
+    .ig-podij { display: flex; justify-content: center; align-items: flex-end; gap: 14px; }
+    .ig-stop { width: min(220px, 28vw); display: flex; flex-direction: column; align-items: center; gap: 4px; font-size: 1.2rem; }
+    .ig-stop .ig-av { width: 64px; height: 64px; font-size: 2.4rem; }
+    .ig-pod { width: 100%; background: rgba(255,255,255,.9); color: var(--accent-ink); font-size: 3rem; font-weight: 900; border-radius: 14px 14px 0 0; display: grid; place-items: center; margin-top: 6px; }
+    .ig-stop.prvi .ig-pod { height: 190px; background: #ffd24d; } .ig-stop.drugi .ig-pod { height: 140px; } .ig-stop.tretji .ig-pod { height: 100px; background: #f0b27a; }
+    .ig-vsi { margin: 24px auto 0; display: inline-block; text-align: left; }
+    .ig-vsi summary { cursor: pointer; font-weight: 800; margin-bottom: 8px; }
+    .ig-jaz { background: rgba(255,255,255,.18); padding: 4px 12px; border-radius: 99px; }
+    .ig-tocke { margin-left: auto; }
+    .ig-sredisce { text-align: center; margin-top: 12vh; }
+    .ig-sredisce h1 { font-family: var(--head); font-size: 2.4rem; margin: 6px 0; }
+    .ig-velik { font-size: 5rem; }
+    .ig-siv { opacity: .85; font-weight: 700; }
+    .ig-plus { font-size: 2.6rem; font-weight: 900; margin: 6px 0; }
+    .ig-dobro .ig-plus { color: #b9f6ca; }
+    .ig-vpr-u .ig-b { font-size: clamp(1.3rem, 5vw, 2rem); }
+    .ig-vpr-u .ig-slika { display: block; margin: 0 auto 14px; max-width: 100%; max-height: 30vh; }
+    .ig-oddaj { display: block; margin: 16px auto 0; }
+    .ig-obr { background: #fff; color: var(--ink); border-radius: 18px; padding: 16px; max-width: 700px; margin: 0 auto; }
+    .ig-obr .q { box-shadow: none; padding: 0; margin: 0; }
+    .ig-obr .q-top { display: none; }
+    .ig-msg { text-align: center; color: #ffe08a; }
+    .ig-casi { display: flex; gap: 8px; flex-wrap: wrap; }
+    .ig-casi .btn { font-size: 1.1rem; min-width: 80px; justify-content: center; }
+    .ig-pasica { position: fixed; left: 50%; bottom: 16px; transform: translateX(-50%); z-index: 60; display: flex; align-items: center; gap: 12px; padding: 10px 12px 10px 16px; border-radius: 99px; background: linear-gradient(135deg, #6c5ce7, #a855f7); color: #fff; text-decoration: none; font-weight: 700; box-shadow: 0 12px 30px rgba(76, 50, 180, .45); animation: igpop .4s ease; max-width: calc(100vw - 24px); }
+    .ig-pas-e { font-size: 1.6rem; }
+    @media (max-width: 640px) { .ig-krog { width: 76px; height: 76px; } .ig-krog b { font-size: 1.9rem; } .ig-stolpci { gap: 8px; } .ig-stol { width: 56px; } }
 
     /* Files list */
     .ftable { width: 100%; border-collapse: separate; border-spacing: 0; background: var(--surface); border-radius: var(--r-lg); box-shadow: var(--shadow); overflow: hidden; }
@@ -2091,7 +2177,7 @@ async function rezultatiKviza(p, g, h) {
         <td><button class="btn" type="button" data-ponastavi="${esc(r.student_id)}" data-ime="${esc(r.ime)}" title="Izbriše oddajo, da lahko učenec kviz reši znova">Ponastavi</button></td></tr>`).join('')}
       </tbody></table></div>` : '<div class="empty"><img src="brihta.png" alt=""><strong>Še nobene oddaje</strong>Ko učenci oddajo kviz, se pokažejo tukaj.</div>'}
     <div style="margin:18px 0 30px;display:flex;gap:8px;flex-wrap:wrap"><button class="btn" type="button" id="r-osvezi">↻ Osveži</button>
-      ${jeTP(p.id) ? `<a class="btn" href="#/p/${p.id}/excel">📊 Naloži popravljen Excel</a>${gumbObjave(g)}` : `<a class="btn" href="#/p/${p.id}/uredi/${encodeURIComponent(g.id)}">✏️ Uredi kviz</a>
+      ${jeTP(p.id) ? `<button class="btn btn-go" type="button" id="r-igra">🎮 Igraj v živo</button><a class="btn" href="#/p/${p.id}/excel">📊 Naloži popravljen Excel</a>${gumbObjave(g)}` : `<a class="btn" href="#/p/${p.id}/uredi/${encodeURIComponent(g.id)}">✏️ Uredi kviz</a>
       <button class="btn" type="button" id="r-skrij">🙈 Skrij kviz</button>`}</div>
     ${vpr.length ? `<div class="sec-h"><h2>Predogled vprašanj</h2></div><p class="note" style="margin:-6px 0 14px">K vprašanju lahko dodaš sliko. Učenci jo vidijo nad odgovori.</p>${htmlVprasanj(vpr, true, true)}` : ''}`;
   const stranska = `<div class="box"><h3>👨‍🏫 Učiteljski pogled</h3><p class="note" style="margin:0">${jeTP(p.id)
@@ -2100,6 +2186,7 @@ async function rezultatiKviza(p, g, h) {
     ${vpr.length ? `<div class="box"><h3>Uspešnost po vprašanjih</h3><ul class="bars">${poVpr.map((x, i) => `<li><span>Vprašanje ${i + 1}</span><span class="b"><i style="width:${n ? x : 0}%"></i></span><b>${n ? x + '%' : '–'}</b></li>`).join('')}</ul></div>` : ''}`;
   okvirKviza(p, g, vsebina, stranska);
   document.getElementById('r-osvezi').addEventListener('click', () => rezultatiKviza(p, g, h));
+  document.getElementById('r-igra')?.addEventListener('click', () => zacniIgro(g));
   document.getElementById('r-skrij')?.addEventListener('click', async () => {
     if (!confirm(`Skrijem kviz »${g.ime}«? Učenci ga ne bodo več videli, oddaje ostanejo.`)) return;
     await rpc('sola_kviz_skrij', { p_seja: ucitelj.seja, p_id: g.id });
@@ -3071,9 +3158,294 @@ document.getElementById('tray-list').addEventListener('click', e => { if (e.targ
 document.addEventListener('keydown', e => { if (e.key === 'Escape') odpriPredal(null); });
 
 /* ─── Usmerjanje ─── */
+/* ─── Igra v živo (supabase_igra_v_zivo.sql) ───────────────────────────────
+   Učitelj: velik zaslon (#/igra/<id>) z vprašanjem, časom in lestvico; vodi igro z »Naprej«.
+   Učenec: vabilo na Brihti (pasica spodaj), nato odgovarja na svoji napravi.
+   Obe strani vsako sekundo ali dve vprašata strežnik za stanje (brez Realtime). */
+const BARVE_IGRE = ['#e74c3c', '#2f80ed', '#f2a516', '#1fa36b', '#9b51e0', '#e0408a'];
+const CRKE = 'ABCDEF';
+let igraGen = 0, igraUra = null;
+function ustaviIgro() { igraGen++; clearInterval(igraUra); igraUra = null; document.body.classList.remove('igra-full'); }
+const mesto = n => n ? `${n}. mesto` : '';
+const avatar = x => `<span class="ig-av">${esc(x.emoji || '🦉')}</span>`;
+function htmlLestvice(igr, koliko) {
+  return `<ol class="ig-lest">${igr.slice(0, koliko).map(x => `<li><b class="ig-m">${x.mesto}.</b>${avatar(x)}<span class="ig-ime">${esc(x.ime)}</span><b class="ig-t">${x.tocke}</b></li>`).join('')}</ol>`;
+}
+function htmlPloscic(q, oznaceno) {
+  return `<div class="ig-pl">${q.m.map((m, j) => `<button type="button" class="ig-plo${oznaceno && oznaceno.includes(m) ? ' on' : ''}" data-v="${esc(m)}" style="--b:${BARVE_IGRE[j % 6]}">
+    <span class="ig-cr">${CRKE[j]}</span><span>${esc(m)}</span></button>`).join('')}</div>`;
+}
+async function slikeIgre(kvizId) {
+  const r = await rpc('sola_kviz_slike', { p_kviz: kvizId }), m = {};
+  if (Array.isArray(r)) r.forEach(x => { m[x.besedilo] = urlSlike(x.pot); });
+  return m;
+}
+/* Odštevanje: strežnik pove, koliko ms je še ostalo; zaslon odšteva sam do naslednjega odgovora. */
+function odstevalnik(el, cas) {
+  let konecOb = 0;
+  return {
+    nastavi(ms) { konecOb = performance.now() + ms; },
+    ostalo() { return Math.max(0, konecOb - performance.now()); },
+    risi() {
+      const o = this.ostalo();
+      el.querySelectorAll('[data-cas]').forEach(x => { x.textContent = Math.ceil(o / 1000); });
+      el.querySelectorAll('[data-casbar]').forEach(x => { x.style.width = (o / (cas * 10)) + '%'; });
+    },
+  };
+}
+
+/* Učitelj začne igro: izbere čas na vprašanje. */
+function zacniIgro(g) {
+  const dlg = document.createElement('dialog');
+  dlg.className = 'iskalnik ig-zacni';
+  dlg.innerHTML = `<form method="dialog" class="isk-glava"><h3>🎮 Igraj v živo</h3><button class="btn" aria-label="Zapri">✕</button></form>
+    <p style="margin:0 0 6px">Kviz se pokaže na velikem zaslonu, učenci odgovarjajo na svojih napravah. Ko so prijavljeni na Brihti,
+      se jim igra pokaže sama (vidijo jo učenci razredov tega predmeta).</p>
+    <p style="margin:14px 0 8px"><b>Koliko časa za vsako vprašanje?</b></p>
+    <div class="ig-casi">${[10, 20, 30, 60].map(c => `<button type="button" class="btn${c === 20 ? ' btn-go' : ''}" data-c="${c}">${c} s</button>`).join('')}</div>
+    <p class="msg" id="ig-msg"></p>`;
+  document.body.appendChild(dlg);
+  dlg.addEventListener('close', () => dlg.remove());
+  dlg.querySelectorAll('[data-c]').forEach(b => b.addEventListener('click', async () => {
+    dlg.querySelectorAll('[data-c]').forEach(x => { x.disabled = true; });
+    const id = await rpc('sola_igra_zacni', { p_seja: ucitelj.seja, p_kviz: g.id, p_cas: +b.dataset.c });
+    if (typeof id !== 'string') {
+      dlg.querySelector('#ig-msg').textContent = id === NEDOSEGLJIVO ? 'Strežnik ni dosegljiv.' : 'Igre ni mogoče začeti. (Ali je v Supabase zagnan supabase_igra_v_zivo.sql?)';
+      dlg.querySelectorAll('[data-c]').forEach(x => { x.disabled = false; });
+      return;
+    }
+    dlg.close();
+    location.hash = `#/igra/${id}`;
+  }));
+  dlg.showModal();
+}
+
+function stranIgra(id) {
+  if (ucitelj) return zaslonIgre(id);
+  if (ucenec) return igraUcenec(id);
+  $main.innerHTML = `<div class="wrap"><div class="empty"><img src="brihta.png" alt=""><strong>Najprej se prijavi</strong>
+    <p style="margin:0 0 16px">Za igro v živo se prijavi s svojim računom.</p><button class="btn btn-go btn-big" type="button" id="ig-prijava">Prijava</button></div></div>`;
+  document.getElementById('ig-prijava').addEventListener('click', () => odpriPredal('racun'));
+}
+
+/* ── Veliki zaslon (učitelj) ── */
+async function zaslonIgre(id) {
+  const gen = ++igraGen;
+  document.body.classList.add('igra-full');
+  $main.innerHTML = '<div class="ig"><p class="ig-nal">Nalagam igro …</p></div>';
+  const $ig = $main.querySelector('.ig');
+  let s = null, kljucIzrisa = '', slike = {}, poslanNaprej = -2, ura;
+  const naprej = async () => {
+    if (!s || poslanNaprej === s.vprasanje + (s.stanje === 'vprasanje' ? 0.5 : 0)) return;
+    poslanNaprej = s.vprasanje + (s.stanje === 'vprasanje' ? 0.5 : 0);
+    await rpc('sola_igra_naprej', { p_seja: ucitelj.seja, p_igra: id, p_od: s.vprasanje });
+    osvezi();
+  };
+  const izrisi = () => {
+    const igr = s.igralci || [], q = s.q ? { ...s.q, slika: slike[s.q.b] } : null;
+    const glava = `<div class="ig-glava"><span class="ig-naslov">${esc(s.naslov)}</span>
+      ${s.vprasanje >= 0 && s.stanje !== 'konec' ? `<span class="ig-st">${s.vprasanje + 1} / ${s.vseh}</span>` : ''}
+      <span class="ig-gumbi"><button class="btn" type="button" id="ig-cel" title="Cel zaslon">⛶</button>
+      <button class="btn" type="button" id="ig-konec">${s.stanje === 'konec' ? 'Zapri' : 'Končaj igro'}</button></span></div>`;
+    let telo = '';
+    if (s.stanje === 'cakanje') {
+      telo = `<div class="ig-cak"><h1>🎮 ${esc(s.naslov)}</h1>
+        <p class="ig-nav">Učenci: odprite <b>Brihto</b> in se prijavite. Igra se vam pokaže sama. 👉 <b>Pridruži se!</b></p>
+        <p class="ig-st-igr"><b>${igr.length}</b> ${igr.length === 1 ? 'igralec' : igr.length === 2 ? 'igralca' : igr.length < 5 ? 'igralci' : 'igralcev'}</p>
+        <div class="ig-igr">${igr.map(x => `<span class="ig-igralec">${avatar(x)}${esc(x.ime)}</span>`).join('')}</div>
+        <button class="btn btn-go btn-big ig-naprej" type="button" id="ig-naprej"${igr.length ? '' : ' disabled'}>Začni igro ▶</button></div>`;
+    } else if (s.stanje === 'vprasanje') {
+      telo = `<div class="ig-vpr"><div class="ig-casbar"><i data-casbar></i></div>
+        <h1 class="ig-b">${esc(q.b)}</h1>
+        <div class="ig-sredina"><div class="ig-krog"><b data-cas></b><small>s</small></div>
+          ${q.slika ? `<img class="ig-slika" src="${esc(q.slika)}" alt="">` : '<div class="ig-slika ig-brez">🤔</div>'}
+          <div class="ig-krog ig-odg"><b id="ig-odg">${s.odgovorov}</b><small>od ${igr.length}</small></div></div>
+        ${q.t === 'izbira' || q.t === 'vec' ? htmlPloscic(q) : `<p class="ig-tip">${{ kratek: q.n ? '🔢 Vpiši število na svoji napravi.' : '✏️ Vpiši odgovor na svoji napravi.', povezi: '🔗 Poveži pare na svoji napravi.', vrstni: '↕️ Razvrsti na svoji napravi.' }[q.t] || ''}</p>`}
+        ${q.t === 'vec' ? '<p class="ig-tip">Več pravilnih odgovorov!</p>' : ''}
+        <button class="btn ig-naprej" type="button" id="ig-naprej">Pokaži rezultat ▶</button></div>`;
+    } else if (s.stanje === 'rezultat') {
+      const k = s.kljuc || {}, odg = s.odgovori || [];
+      let prav = '';
+      if (q.t === 'izbira' || q.t === 'vec') {
+        const st = m => odg.filter(a => [].concat(a || []).includes(m)).length, naj = Math.max(1, ...q.m.map(st));
+        prav = `<div class="ig-stolpci">${q.m.map((m, j) => { const ok = (k.p || []).includes(m);
+          return `<div class="ig-stol${ok ? ' ok' : ''}" style="--b:${BARVE_IGRE[j % 6]}"><b>${st(m)}</b><i style="height:${st(m) / naj * 100}%"></i>
+            <span><span class="ig-cr">${CRKE[j]}</span>${ok ? ' ✓' : ''}</span></div>`; }).join('')}</div>
+          <div class="ig-pravilni">${q.m.map((m, j) => (k.p || []).includes(m) ? `<span class="ig-plo on" style="--b:${BARVE_IGRE[j % 6]}"><span class="ig-cr">${CRKE[j]}</span>${esc(m)} ✓</span>` : '').join('')}</div>`;
+      } else if (q.t === 'kratek') prav = `<p class="ig-pr">✓ ${esc((k.p || [])[0] || '')}</p>`;
+      else if (q.t === 'povezi') prav = `<div class="ig-pari">${(k.p || []).map(x => `<span>${esc(x[0])} → <b>${esc(x[1])}</b></span>`).join('')}</div>`;
+      else if (q.t === 'vrstni') prav = `<ol class="ig-vrsta">${(k.p || []).map(x => `<li>${esc(x)}</li>`).join('')}</ol>`;
+      telo = `<div class="ig-rez"><h1 class="ig-b">${esc(q.b)}</h1>${prav}
+        <p class="ig-st-igr">✓ <b>${s.pravilnih}</b> pravilnih od ${igr.length}</p>
+        <div class="ig-spodaj"><div><h2>🏆 Lestvica</h2>${htmlLestvice(igr, 5)}</div>
+        <button class="btn btn-go btn-big ig-naprej" type="button" id="ig-naprej">${s.vprasanje + 1 >= s.vseh ? 'Končni rezultati 🏁' : 'Naslednje vprašanje ▶'}</button></div></div>`;
+    } else {
+      const [a, b, c] = igr;
+      const stopnica = (x, n, cls) => x ? `<div class="ig-stop ${cls}">${avatar(x)}<b>${esc(x.ime)}</b><span>${x.tocke} točk</span><div class="ig-pod">${n}</div></div>` : '<div class="ig-stop"></div>';
+      telo = `<div class="ig-kon"><h1>🏁 Konec igre!</h1>
+        <div class="ig-podij">${stopnica(b, 2, 'drugi')}${stopnica(a, 1, 'prvi')}${stopnica(c, 3, 'tretji')}</div>
+        ${igr.length > 3 ? `<details class="ig-vsi"><summary>Vsi rezultati (${igr.length})</summary>${htmlLestvice(igr, 100)}</details>` : ''}</div>`;
+    }
+    $ig.innerHTML = glava + telo;
+    if (s.stanje === 'konec' && igr.length) konfeti($ig);
+    $ig.querySelector('#ig-naprej')?.addEventListener('click', naprej);
+    $ig.querySelector('#ig-cel').addEventListener('click', () => document.fullscreenElement ? document.exitFullscreen() : document.documentElement.requestFullscreen?.());
+    $ig.querySelector('#ig-konec').addEventListener('click', async () => {
+      if (s.stanje !== 'konec') {
+        if (!confirm('Končam igro? Učenci bodo videli končne rezultate.')) return;
+        await rpc('sola_igra_koncaj', { p_seja: ucitelj.seja, p_igra: id });
+      }
+      if (document.fullscreenElement) document.exitFullscreen();
+      history.length > 1 ? history.back() : (location.hash = '#/');
+    });
+    ura = odstevalnik($ig, s.cas);
+  };
+  const osvezi = async () => {
+    const r = await rpc('sola_igra_stanje_ucitelj', { p_seja: ucitelj.seja, p_igra: id });
+    if (gen !== igraGen) return;
+    if (!r || r === NEDOSEGLJIVO) {
+      if (!s) $ig.innerHTML = `<div class="empty"><img src="brihta.png" alt=""><strong>Ups!</strong>${r === NEDOSEGLJIVO ? 'Strežnik ni dosegljiv.' : 'Te igre ni (ali ni tvoja).'}</div>`;
+      return;
+    }
+    if (!s) slike = await slikeIgre(r.kviz_id);
+    s = r;
+    const k = [s.stanje, s.vprasanje, s.stanje === 'cakanje' || s.stanje === 'konec' ? JSON.stringify(s.igralci.map(x => [x.id, x.tocke])) : ''].join('|');
+    if (k !== kljucIzrisa) { kljucIzrisa = k; izrisi(); }
+    else { const o = $ig.querySelector('#ig-odg'); if (o) o.textContent = s.odgovorov; }
+    if (s.stanje === 'vprasanje') {
+      ura.nastavi(s.preostalo_ms);
+      if (s.preostalo_ms <= 0 || (s.igralci.length && s.odgovorov >= s.igralci.length)) naprej();
+    }
+    if (s.stanje === 'konec') { clearInterval(igraUra); igraUra = null; }
+  };
+  await osvezi();
+  if (gen !== igraGen) return;
+  igraUra = setInterval(() => { if (gen === igraGen) { osvezi(); } }, 1000);
+  (function tik() { if (gen !== igraGen) return; if (s && s.stanje === 'vprasanje' && ura) ura.risi(); requestAnimationFrame(tik); })();
+}
+
+/* ── Učenčeva naprava ── */
+async function igraUcenec(id) {
+  const gen = ++igraGen;
+  document.body.classList.add('igra-full');
+  $main.innerHTML = '<div class="ig ig-ucenec"><p class="ig-nal">Pridružujem se igri …</p></div>';
+  const $ig = $main.querySelector('.ig');
+  let s = null, kljucIzrisa = '', slike = null, oddano = false, ura;
+  const pridruzen = await rpc('sola_igra_pridruzi', { p_student: ucenec.id, p_igra: id });
+  if (gen !== igraGen) return;
+  if (pridruzen !== true) {
+    $ig.innerHTML = `<div class="empty"><img src="brihta.png" alt=""><strong>Te igre ni več</strong>${pridruzen === NEDOSEGLJIVO ? 'Strežnik ni dosegljiv.' : 'Igra je končana ali ni za tvoj razred.'}
+      <p style="margin:16px 0 0"><a class="btn" href="#/">Nazaj na Brihto</a></p></div>`;
+    return;
+  }
+  const jaz = `<span class="ig-jaz">${esc(ucenec.emoji || '🦉')} ${esc(ucenec.display_name || ucenec.username)}</span>`;
+  const poslji = async odgovor => {
+    if (oddano) return;
+    oddano = true;
+    $ig.querySelectorAll('button, input, select').forEach(x => { x.disabled = true; });
+    const ok = await rpc('sola_igra_odgovori', { p_student: ucenec.id, p_igra: id, p_vprasanje: s.vprasanje, p_odgovor: odgovor });
+    if (gen !== igraGen) return;
+    if (ok !== true) { $ig.querySelector('.ig-msg').textContent = 'Odgovor ni bil sprejet (čas je potekel?).'; }
+    kljucIzrisa = ''; osvezi();
+  };
+  const izrisi = () => {
+    const q = s.q ? { ...s.q, slika: (slike || {})[s.q.b] } : null;
+    const vrh = `<div class="ig-glava">${jaz}${s.vprasanje >= 0 && s.stanje !== 'konec' ? `<span class="ig-st">${s.vprasanje + 1} / ${s.vseh}</span>` : ''}<span class="ig-tocke">⭐ ${s.tocke}</span></div>`;
+    let telo = '';
+    if (s.stanje === 'cakanje') {
+      telo = `<div class="ig-sredisce"><div class="ig-velik">🎉</div><h1>Si v igri!</h1><p>${esc(s.naslov)}</p>
+        <p class="ig-siv">Počakaj, da učitelj začne. Igralcev: <b>${s.igralcev}</b></p></div>`;
+    } else if (s.stanje === 'vprasanje' && s.odgovoril) {
+      telo = `<div class="ig-sredisce"><div class="ig-velik">✅</div><h1>Odgovor oddan</h1><p class="ig-siv">Poglej na tablo in počakaj na rezultat.</p></div>`;
+    } else if (s.stanje === 'vprasanje') {
+      oddano = false;
+      let vnos;
+      if (q.t === 'izbira') vnos = htmlPloscic(q);
+      else if (q.t === 'vec') vnos = htmlPloscic(q, []) + '<button class="btn btn-go btn-big ig-oddaj" type="button" id="ig-oddaj">Oddaj ✓</button>';
+      else vnos = `<form id="ig-f" class="ig-obr" novalidate>${htmlVprasanj([q]).replace(/<p class="q-text">[\s\S]*?<\/p>/, '').replace(/<img class="q-img"[^>]*>/, '')}
+        <button class="btn btn-go btn-big ig-oddaj" type="submit">Oddaj ✓</button></form>`;
+      telo = `<div class="ig-casbar"><i data-casbar></i></div><div class="ig-vpr-u">
+        <h1 class="ig-b">${esc(q.b)}</h1>${q.slika ? `<img class="ig-slika" src="${esc(q.slika)}" alt="">` : ''}
+        ${q.t === 'vec' ? '<p class="ig-siv">Označi VSE pravilne, nato Oddaj.</p>' : ''}${vnos}<p class="msg ig-msg"></p></div>`;
+    } else if (s.stanje === 'rezultat') {
+      telo = s.odgovoril || s.dobil ? `<div class="ig-sredisce ${s.pravilno ? 'ig-dobro' : 'ig-slabo'}"><div class="ig-velik">${s.pravilno ? '🎯' : '😬'}</div>
+        <h1>${s.pravilno ? 'Pravilno!' : 'Napačno'}</h1>${s.pravilno ? `<p class="ig-plus">+${s.dobil}</p>` : '<p>Naslednjič bo bolje!</p>'}
+        <p class="ig-siv">Imaš ${s.tocke} točk · ${mesto(s.mesto)}</p></div>`
+        : `<div class="ig-sredisce ig-slabo"><div class="ig-velik">⏰</div><h1>Čas je potekel</h1><p class="ig-siv">Imaš ${s.tocke} točk · ${mesto(s.mesto)}</p></div>`;
+    } else {
+      telo = `<div class="ig-sredisce"><div class="ig-velik">${s.mesto === 1 ? '🥇' : s.mesto === 2 ? '🥈' : s.mesto === 3 ? '🥉' : '🏁'}</div>
+        <h1>Konec igre!</h1><p class="ig-plus">${mesto(s.mesto)}</p><p class="ig-siv">${s.tocke} točk · igralcev: ${s.igralcev}</p>
+        <p style="margin-top:20px"><a class="btn" href="#/">Nazaj na Brihto</a></p></div>`;
+    }
+    $ig.innerHTML = vrh + telo;
+    if (s.stanje === 'konec' && s.mesto && s.mesto <= 3) konfeti($ig);
+    ura = odstevalnik($ig, s.cas);
+    if (s.stanje !== 'vprasanje' || s.odgovoril) return;
+    if (q.t === 'izbira') $ig.querySelectorAll('.ig-plo').forEach(b => b.addEventListener('click', () => { b.classList.add('on'); poslji(b.dataset.v); }));
+    else if (q.t === 'vec') {
+      $ig.querySelectorAll('.ig-plo').forEach(b => b.addEventListener('click', () => b.classList.toggle('on')));
+      $ig.querySelector('#ig-oddaj').addEventListener('click', () => {
+        const a = [...$ig.querySelectorAll('.ig-plo.on')].map(b => b.dataset.v);
+        if (!a.length) { $ig.querySelector('.ig-msg').textContent = 'Označi vsaj en odgovor.'; return; }
+        poslji(a);
+      });
+    } else {
+      const f = $ig.querySelector('#ig-f');
+      f.querySelectorAll('ol.order').forEach(posodobiPuscice);
+      f.addEventListener('click', e => {
+        const b = e.target.closest('[data-gor],[data-dol]');
+        if (!b) return;
+        const li = b.closest('li'), ol = li.parentElement;
+        if (b.hasAttribute('data-gor') && li.previousElementSibling) ol.insertBefore(li, li.previousElementSibling);
+        if (b.hasAttribute('data-dol') && li.nextElementSibling) ol.insertBefore(li.nextElementSibling, li);
+        posodobiPuscice(ol);
+      });
+      f.addEventListener('submit', e => {
+        e.preventDefault();
+        let a;
+        if (q.t === 'kratek') { a = f.querySelector('input[data-q="0"]').value.trim(); if (!a) { $ig.querySelector('.ig-msg').textContent = 'Vpiši odgovor.'; return; } }
+        else if (q.t === 'povezi') { a = {}; f.querySelectorAll('select[data-q="0"]').forEach(x => { if (x.value) a[q.l[+x.dataset.l]] = x.value; }); }
+        else a = [...f.querySelector('ol[data-q="0"]').children].map(li => li.dataset.v);
+        poslji(a);
+      });
+      f.querySelector('input.short')?.focus();
+    }
+  };
+  const osvezi = async () => {
+    const r = await rpc('sola_igra_stanje_ucenec', { p_student: ucenec.id, p_igra: id });
+    if (gen !== igraGen || !r || r === NEDOSEGLJIVO) return;
+    if (slike === null && r.kviz_id) slike = await slikeIgre(r.kviz_id);
+    s = r;
+    const k = [s.stanje, s.vprasanje, s.odgovoril, s.stanje === 'cakanje' ? s.igralcev : ''].join('|');
+    if (k !== kljucIzrisa) { kljucIzrisa = k; izrisi(); }
+    if (s.stanje === 'vprasanje' && ura) ura.nastavi(s.preostalo_ms);
+    if (s.stanje === 'konec') { clearInterval(igraUra); igraUra = null; }
+  };
+  await osvezi();
+  if (gen !== igraGen) return;
+  igraUra = setInterval(() => { if (gen === igraGen) osvezi(); }, 1500);
+  (function tik() { if (gen !== igraGen) return; if (s && s.stanje === 'vprasanje' && ura) ura.risi(); requestAnimationFrame(tik); })();
+}
+
+/* Pasica »Igra v živo« za prijavljenega učenca (preverja vsakih 8 s, ko je zavihek odprt). */
+let pasicaIgre = null;
+async function preveriIgro() {
+  if (!ucenec || ucitelj || document.hidden || location.hash.startsWith('#/igra/')) { pasicaIgre?.remove(); pasicaIgre = null; return; }
+  const r = await rpc('sola_igra_zame', { p_student: ucenec.id });
+  const g = Array.isArray(r) && r[0];
+  if (!g || location.hash.startsWith('#/igra/')) { pasicaIgre?.remove(); pasicaIgre = null; return; }
+  if (!pasicaIgre) { pasicaIgre = document.createElement('a'); pasicaIgre.className = 'ig-pasica'; document.body.appendChild(pasicaIgre); }
+  pasicaIgre.href = `#/igra/${g.id}`;
+  pasicaIgre.innerHTML = `<span class="ig-pas-e">🎮</span><span><b>Igra v živo:</b> ${esc(g.naslov)}</span><span class="btn btn-go">${g.pridruzen ? 'Nazaj v igro' : 'Pridruži se!'} ▶</span>`;
+}
+setInterval(preveriIgro, 8000);
+window.addEventListener('hashchange', preveriIgro);
+
 function usmeri() {
   const deli = location.hash.replace(/^#\/?/, '').split('/');
   window.scrollTo(0, 0);
+  ustaviIgro();
+  if (deli[0] === 'igra' && deli[1]) return stranIgra(deli[1]);
   if (deli[0] === 'p' && deli[1]) {
     const p = najdi(deli[1]);
     if (!p || p.otroci || !vidi(p)) return stranNadzorna();
@@ -3112,7 +3484,7 @@ const preveriUcitelja = async () => {
   const r = await rpc('sola_ucitelj_preveri', { p_seja: ucitelj.seja });
   if (r === false || r === null) { ucitelj = null; shraniRacun(); posodobiNav(); }
 };
-Promise.all([naloziGradiva(), naloziKvize(), naloziMoje(), naloziObjave(), naloziTP(), preveriUcitelja()]).then(usmeri);
+Promise.all([naloziGradiva(), naloziKvize(), naloziMoje(), naloziObjave(), naloziTP(), preveriUcitelja()]).then(usmeri).then(preveriIgro);
 if (new URLSearchParams(location.search).has('prijava')) odpriPredal('racun');
 </script>
 </body>
