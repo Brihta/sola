@@ -574,6 +574,122 @@
   const BARVE = { R: ['#ef4444', 'rdeča'], Y: ['#facc15', 'rumena'], G: ['#22c55e', 'zelena'], B: ['#3b82f6', 'modra'],
     O: ['#fb923c', 'oranžna'], P: ['#a855f7', 'vijolična'], K: ['#92400e', 'rjava'], C: ['#1f2937', 'črna'] };
   const stevilo = (n, a, b, c) => n === 1 ? a : n === 2 ? b : c;
+  /* ---- risar: pisalo kot v Scratchu (pojdi, obrni se, ponovi), riše črte; primerja črte s ciljno sliko ---- */
+  const rLab = (t) => t[0] === 'F' ? `pojdi <b>${t.slice(1)}</b> korakov` : t[0] === 'T' ? `obrni se ↻ <b>${t.slice(1)}</b>°`
+    : t[0] === 'Q' ? `obrni se ↺ <b>${t.slice(1)}</b>°` : t[0] === 'N' ? `ponovi <b>${t.slice(1)}</b>-krat` : 'konec ponovi';
+  function rPot(acts) {   // vrne seznam črt [x1,y1,x2,y2] in končni položaj; smer 90 = desno (kot v Scratchu)
+    let x = 0, y = 0, h = 90; const segs = [];
+    for (const a of acts) {
+      const v = +a.slice(1);
+      if (a[0] === 'F') { const r = h * Math.PI / 180, nx = x + Math.sin(r) * v, ny = y - Math.cos(r) * v; segs.push([x, y, nx, ny]); x = nx; y = ny; }
+      else if (a[0] === 'T') h += v; else if (a[0] === 'Q') h -= v;
+    }
+    return { segs, x, y, h };
+  }
+  const rKey = (s) => { const q = (v) => Math.round(v * 2) / 2; const a = q(s[0]) + ',' + q(s[1]), b = q(s[2]) + ',' + q(s[3]); return a < b ? a + '|' + b : b + '|' + a; };
+  const rSet = (segs) => { const m = new Map(); segs.forEach((s) => { if (Math.hypot(s[2] - s[0], s[3] - s[1]) > 0.1) m.set(rKey(s), s); }); return m; };
+  TYPES.risar = (s, c) => {
+    const tools = s.tools || ['F100', 'T90'];
+    const loops = s.loops || [];
+    const ui = $(`<div class="gridtask risar">
+      <svg class="platno" viewBox="-200 -200 400 400" xmlns="http://www.w3.org/2000/svg"><g class="cilj"></g><g class="crte"></g><g class="ozn"></g><g class="pis"><polygon points="-9,-11 9,-11 0,13" /></g></svg>
+      <div class="side">
+        <div class="legend">${s.prosto ? 'Prosto risanje: nariši, kar želiš.' : '<span class="lc"></span> to mora narisati pisalo &nbsp; <span class="lr"></span> narisalo pisalo'}</div>
+        <div class="prog sprog" aria-label="Program"></div>
+        <div class="tools"></div>
+        <div class="row"><button class="btn run">▶ Zaženi</button><button class="btn ghost del">⌫ Briši zadnjega</button><button class="btn ghost clr">Pobriši vse</button></div>
+        <div class="count"></div>
+      </div></div>`);
+    c.appendChild(ui);
+    const svg = ui.querySelector('svg'), gC = ui.querySelector('.cilj'), gL = ui.querySelector('.crte'), gO = ui.querySelector('.ozn'), pis = ui.querySelector('.pis');
+    const prog = ui.querySelector('.prog'), cnt = ui.querySelector('.count');
+    const NS = 'http://www.w3.org/2000/svg';
+    const crta = (g, sg, cls) => { const l = document.createElementNS(NS, 'line'); l.setAttribute('x1', sg[0]); l.setAttribute('y1', sg[1]); l.setAttribute('x2', sg[2]); l.setAttribute('y2', sg[3]); l.setAttribute('class', cls); g.appendChild(l); };
+    const cilj = s.prosto ? new Map() : rSet(rPot(expand(s.solution)).segs);
+    function okvir(segs) {
+      let a = 0, b = 0, cc = 0, d = 0;
+      segs.forEach((g) => { a = Math.min(a, g[0], g[2]); b = Math.min(b, g[1], g[3]); cc = Math.max(cc, g[0], g[2]); d = Math.max(d, g[1], g[3]); });
+      const w = Math.max(cc - a, d - b, 160) + 60, mx = (a + cc) / 2, my = (b + d) / 2;
+      svg.setAttribute('viewBox', `${mx - w / 2} ${my - w / 2} ${w} ${w}`);
+      svg.style.setProperty('--sw', (w / 400).toFixed(3));
+    }
+    function pisalo(x, y, h) { pis.setAttribute('transform', `translate(${x},${y}) rotate(${h + 180})`); }
+    cilj.forEach((g) => crta(gC, g, 'lc'));
+    okvir([...cilj.values()]);
+    pisalo(0, 0, 90);
+    let program = (s.start || []).slice(), running = false;
+    const fixed = !!s.locked;
+    function draw() {
+      let h = '', d = 0;
+      program.forEach((t) => {
+        if (t === ')') { d = Math.max(0, d - 1); h += `<div class="sb ctl kon" style="margin-left:${d * 26}px">${rLab(t)}</div>`; return; }
+        h += `<div class="sb ${t[0] === 'N' ? 'ctl' : 'mot'}" style="margin-left:${d * 26}px">${rLab(t)}</div>`;
+        if (t[0] === 'N') d++;
+      });
+      if (d > 0) h += `<div class="sb miss" style="margin-left:${(d - 1) * 26}px">⚠ manjka »konec ponovi«</div>`;
+      prog.innerHTML = program.length ? '<div class="sb hat">ko kliknem ▶</div>' + h : '<span class="ph">Tvoj program je prazen. Klikaj bloke spodaj.</span>';
+      cnt.innerHTML = `Blokov: <b>${program.length}</b>${s.max ? ` &nbsp;(največ ${s.max})` : ''} &nbsp;<span class="small">Šteje vsak blok, tudi »konec ponovi«.</span>`;
+    }
+    const tb = ui.querySelector('.tools');
+    if (!fixed) {
+      tools.forEach((t) => { const b = $(`<button class="btn tool sb ${t[0] === 'F' ? 'mot' : 'mot'}">${rLab(t)}</button>`); b.onclick = () => { if (!running) { program.push(t); draw(); } }; tb.appendChild(b); });
+      loops.forEach((m) => { const b = $(`<button class="btn tool sb ctl">ponovi <b>${m}</b>-krat</button>`); b.onclick = () => { if (!running) { program.push('N' + m); draw(); } }; tb.appendChild(b); });
+      if (loops.length) { const b = $(`<button class="btn tool sb ctl kon">konec ponovi</button>`); b.onclick = () => { if (!running) { program.push(')'); draw(); } }; tb.appendChild(b); }
+      tb.appendChild($('<div class="tiphelp">Bloki se dodajajo na konec programa. Vse med »ponovi« in »konec ponovi« se ponavlja.</div>'));
+    } else { ui.querySelector('.del').hidden = true; ui.querySelector('.clr').hidden = true; }
+    ui.querySelector('.del').onclick = () => { if (!running) { program.pop(); draw(); } };
+    ui.querySelector('.clr').onclick = () => { if (!running) { program = []; draw(); gL.innerHTML = ''; gO.innerHTML = ''; pisalo(0, 0, 90); } };
+    ui.querySelector('.run').onclick = () => {
+      if (running) return;
+      let acts;
+      try { acts = expand(program); } catch (e) { feedback('❌ ' + e.message.replace('»)«', '»konec ponovi«').replace('z gumbom »)«', 'z blokom »konec ponovi«'), 'bad'); return; }
+      if (!acts.length) { feedback('Program je prazen. Klikni nekaj blokov.', 'hint'); return; }
+      if (acts.length > 3000) { feedback('❌ Program je predolg (pisalo bi risalo predolgo). Zmanjšaj število ponovitev.', 'bad'); return; }
+      poskusi++;
+      gL.innerHTML = ''; gO.innerHTML = ''; running = true;
+      const vse = rPot(acts).segs;
+      okvir([...cilj.values(), ...vse]);
+      let x = 0, y = 0, h = 90, i = 0; pisalo(0, 0, 90);
+      const zam = Math.max(12, Math.min(220, 2600 / acts.length));
+      const step = () => {
+        if (i >= acts.length) return finish();
+        const a = acts[i++], v = +a.slice(1);
+        if (a[0] === 'F') { const r = h * Math.PI / 180, nx = x + Math.sin(r) * v, ny = y - Math.cos(r) * v; crta(gL, [x, y, nx, ny], 'lr'); x = nx; y = ny; }
+        else if (a[0] === 'T') h += v; else h -= v;
+        pisalo(x, y, h);
+        setTimeout(step, zam);
+      };
+      const finish = () => {
+        running = false;
+        const moje = rSet(vse);
+        if (s.prosto || s.locked) { if (moje.size >= (s.prosto ? 3 : 1)) done(s.win || '✅ Lepo! Program je narisal sliko.'); else feedback('Nariši vsaj 3 črte.', 'hint'); return; }
+        let miss = 0, wrong = 0;
+        cilj.forEach((g, k) => { if (!moje.has(k)) { miss++; crta(gO, g, 'lm'); } });
+        moje.forEach((g, k) => { if (!cilj.has(k)) { wrong++; crta(gO, g, 'lw'); } });
+        if (!miss && !wrong) {
+          if (s.max && program.length > s.max) { feedback(`Slika je prava! 👍 A program ima ${program.length} blokov, dovoljenih je ${s.max}. Skrajšaj ga z zanko »ponovi«.`, 'hint'); return; }
+          done(s.win || '✅ Bravo! Pisalo je narisalo točno pravo sliko.');
+        } else {
+          const f = (n, a, b, cc, d) => n === 1 ? a : n === 2 ? b : n < 5 ? cc : d;
+          const parts = [];
+          if (miss) parts.push(`<b>${miss}</b> ${f(miss, 'črta manjka', 'črti manjkata', 'črte manjkajo', 'črt manjka')} (oranžno)`);
+          if (wrong) parts.push(`<b>${wrong}</b> ${f(wrong, 'črta je odveč ali na napačnem mestu', 'črti sta odveč ali na napačnem mestu', 'črte so odveč ali na napačnem mestu', 'črt je odveč ali na napačnem mestu')} (rdeče)`);
+          let t = '❌ Še ne. ' + parts.join(', ') + '.';
+          if (!miss && wrong && moje.size > cilj.size) t += ' Morda zanka ponovi preveč krat.';
+          else if (miss && !wrong) t += ' Morda zanka ponovi premalo krat.';
+          else t += ' Poglej, kje pisalo prvič zavije narobe: tam je hrošč 🐞.';
+          feedback(t, 'bad');
+        }
+      };
+      setTimeout(step, 150);
+    };
+    draw();
+    return {
+      solve: s.prosto ? null : () => { program = s.solution.slice(); draw(); },
+      podatki: () => ({ program: program.join(' ') }),
+    };
+  };
+
   TYPES.zrcali = (s, c) => {
     const V = (s.os || 'v') === 'v';
     let W, H, dano = [];

@@ -80,6 +80,14 @@ info(naslov, html)                       # razlaga; razredi: big, box, warn, sma
                   # obrni = lik je desno/spodaj; demo = učenec klikne »Poglej, kako« in gleda zrcaljenje
                   # odziv loči: napačno mesto (✖), napačna barva (obroba), manjka, lik le prerisan (ne zrcaljen)
 {'type':'zrcali', 'prosto':True, 'w':12, 'h':10, 'os':'v', 'barve':'RYGBOP'}   # prosto risanje, zrcalo riše samo
+{'type':'risar',  'title', 'intro', 'tools':['F100','T90','Q90'], 'loops':[3,4,5,6], 'max':4, 'solution':[...],
+                  'start':[...], 'locked':True, 'prosto':True, 'win', 'hints'}
+                  # pisalo kot v Scratchu (razširitev Pero), bloki v barvah Scratcha, zamik v zanki kot v Scratchu
+                  # žetoni: 'F100' pojdi 100 korakov, 'T90' obrni se ↻ 90°, 'Q90' obrni se ↺ 90°, 'N4' ponovi 4-krat, ')' konec ponovi
+                  # začne na sredini, smer desno (kot mačka v Scratchu); cilj = črte, ki jih nariše 'solution' (sivo)
+                  # preverja MNOŽICO črt (vrstni red in smer risanja nista pomembna); manjkajoče oranžno, odvečne rdeče
+                  # prosto = brez cilja, ustvarjanje (daj ga z 'optional': True, ker ga preveri.py ne zna rešiti)
+                  # razreda ne poimenuj 'end' (preveri.py išče .end kot konec strani)
 ```
 
 Vsak zaslon lahko ima še `stars` in `optional`.
