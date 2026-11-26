@@ -38,7 +38,15 @@
       `<span class="cnt">${Math.min(cur + 1, screens.length - 1)} / ${screens.length - 1}</span>`;
   }
 
-  let solver = null, hintN = 0, poskusi = 0, resitev = false, podatki = null;
+  let solver = null, hintN = 0, poskusi = 0, resitev = false, podatki = null, napake = 0;
+  /* Namigi in rešitev se odklepajo s poskusi (Nino, 26. 11. 2026: učenci so klikali Namig, dokler niso dobili rešitve).
+     Po vsakem napačnem poskusu se odklene en namig; »Pokaži rešitev« šele po vseh namigih in še 2 poskusih.
+     Velja za naloge, kjer učenec rešuje sam; pri igrah (ugibanje, karte, tipkanje) so namigi strategija in so prosti.
+     preveri.py (navigator.webdriver) zaklepa ne upošteva. */
+  const ZAKLEP = { choose: 1, order: 1, match: 1, grid: 1, risar: 1, trace: 1, zrcali: 1, slogi: 1 };
+  const TEST = navigator.webdriver === true;
+  const zaklenjeno = () => !TEST && ZAKLEP[screens[cur].type];
+  const PO_NAMIGIH = 2;
 
   /* ---------- izdelki: shranjevanje dela učenca za učiteljevo poročilo (supabase_izdelki.sql) ---------- */
   const IZD = P.izdelki;   // {ura: 'racunalnistvo-3/2026-11-06-simetrija'}
@@ -89,12 +97,12 @@
     let f = card.querySelector('.fb');
     if (!f) { f = $('<div class="fb"></div>'); card.appendChild(f); }
     f.className = 'fb ' + (kind || ''); f.innerHTML = msg;
-    if (kind === 'bad') { f.classList.remove('shake'); void f.offsetWidth; f.classList.add('shake'); }
+    if (kind === 'bad') { napake++; f.classList.remove('shake'); void f.offsetWidth; f.classList.add('shake'); }
   }
 
   function show(i) {
     cur = i; const s = screens[i];
-    card.innerHTML = ''; solver = null; hintN = 0; poskusi = 0; resitev = false; podatki = null;
+    card.innerHTML = ''; solver = null; hintN = 0; poskusi = 0; resitev = false; podatki = null; napake = 0;
     bNext.classList.remove('pulse');
     bBack.disabled = i === 0;
     const hints = s.hints || [];
@@ -120,10 +128,20 @@
   bSkip.onclick = () => { if (cur + 1 > best) { best = cur + 1; save(best); } show(cur + 1); };
   bHint.onclick = () => {
     const h = screens[cur].hints || [];
+    if (zaklenjeno() && hintN >= napake) {
+      feedback(hintN === 0 ? '✋ Najprej poskusi sam/a. Ko enkrat poskusiš, dobiš prvi namig.' : '✋ Uporabi namig in poskusi znova. Naslednji namig dobiš po novem poskusu.', 'hint');
+      return;
+    }
     if (hintN < h.length) { feedback('💡 ' + h[hintN], 'hint'); hintN++; }
     if (hintN >= h.length && solver) { bHint.hidden = true; bSolve.hidden = false; }
   };
-  bSolve.onclick = () => { if (solver) { resitev = true; solver(); feedback('Tukaj je rešitev. Dobro si jo oglej, nato klikni Naprej.', 'hint'); done(); } };
+  bSolve.onclick = () => {
+    if (zaklenjeno() && napake < hintN + PO_NAMIGIH) {
+      const ost = hintN + PO_NAMIGIH - napake;
+      feedback(`✋ Rešitev se odklene po še <b>${ost}</b> ${ost === 1 ? 'poskusu' : 'poskusih'}. Preberi namige in poskusi znova.`, 'hint');
+      return;
+    }
+    if (solver) { resitev = true; solver(); feedback('Tukaj je rešitev. Dobro si jo oglej, nato klikni Naprej.', 'hint'); done(); } };
 
   /* ---------- vrste zaslonov ---------- */
   const TYPES = {};
@@ -225,7 +243,7 @@
     const g = ui.querySelector('.g'), prog = ui.querySelector('.prog'), cnt = ui.querySelector('.count');
     const cells = [];
     for (let r = 0; r < n; r++) for (let k = 0; k < n; k++) { const d = $(`<div class="cell${target.has(r + ',' + k) ? ' t' : ''}"></div>`); if (r === 0 && k === 0) d.dataset.s = 'S'; g.appendChild(d); cells.push(d); }
-    let program = (s.start || []).slice(), running = false;
+    let program = (s.start || []).slice(), running = false, zadnji = null;
     const fixed = !!s.locked;
     const count = () => program.length; // šteje vsak gumb v programu, tudi »)«
     function draw() {
@@ -248,6 +266,8 @@
       let acts;
       try { acts = expand(program); } catch (e) { feedback('❌ ' + e.message, 'bad'); return; }
       if (!acts.length) { feedback('Program je prazen. Klikni nekaj ukazov.', 'hint'); return; }
+      if (zadnji !== null && zadnji === program.join(' ') && !fixed) { feedback('✋ Ta program si že preizkusil/a. Spremeni nekaj, preden ga zaženeš znova.', 'hint'); return; }
+      zadnji = program.join(' ');
       reset(); running = true;
       let r = 0, k = 0, i = 0; const painted = new Set();
       cells[0].classList.add('bot');
@@ -268,7 +288,7 @@
         painted.forEach((x) => { if (!target.has(x)) { wrong++; const [a, b] = x.split(','); put(+a, +b, 'wrong'); } });
         target.forEach((x) => { if (!painted.has(x)) { miss++; const [a, b] = x.split(','); put(+a, +b, 'miss'); } });
         if (!wrong && !miss) {
-          if (s.max && count() > s.max) { feedback(`Slika je prava! 👍 A program ima ${count()} ukazov, dovoljenih je ${s.max}. Skrajšaj ga z zanko »ponovi«.`, 'hint'); return; }
+          if (s.max && count() > s.max) { napake++; feedback(`Slika je prava! 👍 A program ima ${count()} ukazov, dovoljenih je ${s.max}. Skrajšaj ga z zanko »ponovi«.`, 'hint'); return; }
           done(s.win || '✅ Bravo! Robot je narisal točno pravo sliko.');
         } else {
           const parts = [];
@@ -669,7 +689,7 @@
     cilj.forEach((g) => crta(gC, g, 'lc', barvna ? RBARVA[g[4]] : null));
     okvir([...cilj.values()]);
     pisalo(0, 0, 90);
-    let program = (s.start || []).slice(), running = false;
+    let program = (s.start || []).slice(), running = false, zadnji = null;
     const fixed = !!s.locked;
     function draw() {
       let h = '', d = 0; const sklad = [];
@@ -697,6 +717,8 @@
     ui.querySelector('.run').onclick = () => {
       if (running) return;
       if (!program.length) { feedback('Program je prazen. Klikni nekaj blokov.', 'hint'); return; }
+      if (zadnji !== null && zadnji === program.join(' ') && !s.prosto && !s.locked) { feedback('✋ Ta program si že preizkusil/a. Spremeni nekaj, preden ga zaženeš znova.', 'hint'); return; }
+      zadnji = program.join(' ');
       let r;
       try { r = rTeci(program); } catch (e) { feedback('❌ ' + e.message, 'bad'); return; }
       poskusi++;
@@ -720,7 +742,7 @@
         cilj.forEach((g, k) => { if (!moje.has(k)) { miss++; crta(gO, g, 'lm'); } else if (moje.get(k)[4] !== g[4]) { barva++; crta(gO, g, 'lb'); } });
         moje.forEach((g, k) => { if (!cilj.has(k)) { wrong++; crta(gO, g, 'lw'); } });
         if (!miss && !wrong && !barva) {
-          if (s.max && program.length > s.max) { feedback(`Slika je prava! 👍 A program ima ${program.length} blokov, dovoljenih je ${s.max}. Skrajšaj ga.`, 'hint'); return; }
+          if (s.max && program.length > s.max) { napake++; feedback(`Slika je prava! 👍 A program ima ${program.length} blokov, dovoljenih je ${s.max}. Skrajšaj ga.`, 'hint'); return; }
           done(s.win || '✅ Bravo! Pisalo je narisalo točno pravo sliko.');
         } else {
           const f = (n, a, b, cc, d) => n === 1 ? a : n === 2 ? b : n < 5 ? cc : d;

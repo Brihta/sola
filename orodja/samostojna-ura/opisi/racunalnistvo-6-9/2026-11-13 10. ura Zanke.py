@@ -18,7 +18,7 @@ stran('2 Pisalo in zanka.html', 'Pisalo in zanka', [
      'win': '✅ Pisalo je šlo naprej, se obrnilo za 90° (pravi kot) in šlo spet naprej.'},
     {'type': 'risar', 'title': 'Kvadrat', 'intro': 'Sestavi program, ki nariše <b>kvadrat</b> s stranico 100. Klikaj bloke spodaj, nato ▶ Zaženi.',
      'tools': ['F100', 'T90'], 'solution': ['F100', 'T90', 'F100', 'T90', 'F100', 'T90', 'F100', 'T90'],
-     'hints': ['Kvadrat ima 4 stranice. Po vsaki se pisalo obrne.', 'pojdi 100, obrni se 90, in to še trikrat.']},
+     'hints': ['Kvadrat ima 4 stranice. Kaj naredi pisalo po vsaki stranici?', 'Za eno stranico potrebuješ 2 bloka. Koliko blokov za 4 stranice?']},
     info('Zanka: ponovi', '''
 <p class="big">Pri kvadratu si 4-krat sestavil/a isti par blokov. To je <b>vzorec</b>!</p>
 <div class="box"><span class="sb ctl">ponovi <b>4</b>-krat</span><br>
@@ -28,7 +28,7 @@ stran('2 Pisalo in zanka.html', 'Pisalo in zanka', [
 <p>Vse med »ponovi« in »konec ponovi« se ponovi. Temu rečemo <b>zanka</b>. 8 blokov je postalo 4.</p>'''),
     {'type': 'risar', 'title': 'Kvadrat z zanko', 'intro': 'Nariši isti kvadrat, a uporabi <b>največ 4 bloke</b>.',
      'tools': ['F100', 'T90'], 'loops': L, 'max': 4, 'solution': ['N4', 'F100', 'T90', ')'],
-     'hints': ['Najprej klikni »ponovi 4-krat«.', 'Nato pojdi 100, obrni se 90 in na koncu »konec ponovi«.']},
+     'hints': ['Kateri par blokov si pri kvadratu ponavljal/a?', 'Ta par daj med »ponovi« in »konec ponovi«. Kolikokrat?']},
     {'type': 'choose', 'title': 'Kaj bo narisal?', 'intro': '''<div class="box"><span class="sb ctl">ponovi <b>3</b>-krat</span><br>
 <span style="margin-left:26px" class="sb mot">pojdi <b>100</b> korakov</span><br>
 <span style="margin-left:26px" class="sb mot">obrni se ↻ <b>120</b>°</span><br>
@@ -39,14 +39,14 @@ stran('2 Pisalo in zanka.html', 'Pisalo in zanka', [
      'hints': ['Koliko črt nariše? Toliko, kolikorkrat se zanka ponovi.']},
     {'type': 'risar', 'title': 'Trikotnik', 'intro': 'Preveri: nariši enakostranični trikotnik z <b>največ 4 bloki</b>.',
      'tools': ['F100', 'T60', 'T90', 'T120'], 'loops': L, 'max': 4, 'solution': ['N3', 'F100', 'T120', ')'],
-     'hints': ['Program je zelo podoben kvadratu.', 'ponovi 3-krat ( pojdi 100, obrni se 120 ).']},
+     'hints': ['Program je zelo podoben kvadratu. Kaj je drugače pri trikotniku?', 'Poglej prejšnjo nalogo: za koliko stopinj se obrne pisalo pri trikotniku?']},
 ], 'Znaš napisati zanko »ponovi« in z njo narisati lik.')
 
 # ---------------- 3 Skrivnost 360 ----------------
 stran('3 Skrivnost 360.html', 'Skrivnost števila 360', [
     {'type': 'risar', 'title': 'Šestkotnik', 'intro': 'Nariši pravilni <b>šestkotnik</b> (6 enakih stranic). Največ <b>4 bloki</b>. Kateri obrat je pravi? Preizkusi!',
      'tools': ['F70', 'T45', 'T60', 'T72', 'T90', 'T120'], 'loops': L, 'max': 4, 'solution': ['N6', 'F70', 'T60', ')'],
-     'hints': ['Zanka se ponovi 6-krat, ker ima lik 6 stranic.', 'Pisalo se mora v 6 obratih obrniti za cel krog, 360°.', '360 : 6 = 60. ponovi 6-krat ( pojdi 70, obrni se 60 ).']},
+     'hints': ['Kolikokrat se zanka ponovi? Preštej stranice.', 'Pisalo se mora v vseh obratih skupaj obrniti za cel krog, 360°.', 'Razdeli cel krog na toliko delov, kolikor je stranic.']},
     {'type': 'match', 'title': 'Poišči vzorec', 'intro': 'Poveži lik z obratom, ki ga nariše.',
      'pairs': [['trikotnik (3 stranice)', 'obrni se 120°'], ['kvadrat (4 stranice)', 'obrni se 90°'],
                ['petkotnik (5 stranic)', 'obrni se 72°'], ['šestkotnik (6 stranic)', 'obrni se 60°']],
@@ -61,10 +61,10 @@ Zato: <b>obrat = 360 : število stranic</b></div>
      'hints': ['obrat = 360 : število stranic']},
     {'type': 'risar', 'title': 'Petkotnik', 'intro': 'Nariši pravilni <b>petkotnik</b>. Največ <b>4 bloki</b>. Pazi na past med obrati!',
      'tools': ['F80', 'T60', 'T72', 'T90', 'T108'], 'loops': L, 'max': 4, 'solution': ['N5', 'F80', 'T72', ')'],
-     'hints': ['Uporabi pravilo 360 : število stranic.', '360 : 5 = 72. Obrat 108° je notranji kot, ta ni pravi.']},
+     'hints': ['Uporabi pravilo 360 : število stranic.', 'Pozor: 108° je kot v notranjosti petkotnika. Pisalo pa se obrne za zunanji kot.']},
     {'type': 'risar', 'title': '🐞 Najdi hrošča', 'intro': 'Ta program bi moral narisati kvadrat, a nariše le ravno črto. Zaženi ga, poišči hrošča in ga popravi.',
      'tools': ['F100', 'T90'], 'loops': L, 'max': 4, 'start': ['N4', 'F100', ')', 'T90'], 'solution': ['N4', 'F100', 'T90', ')'],
-     'hints': ['Kateri bloki so znotraj zanke in kateri zunaj?', 'Obrat je ZUNAJ zanke, zato se pisalo obrne šele na koncu. Briši zadnja dva bloka in dodaj obrni se 90, nato konec ponovi.']},
+     'hints': ['Kateri bloki so znotraj zanke in kateri zunaj?', 'Kdaj se pisalo obrne: po vsaki stranici ali samo enkrat na koncu? Kje mora biti obrat?']},
 ], 'Poznaš pravilo 360 in znaš najti hrošča v zanki.')
 
 # ---------------- 4 Zanka v zanki ----------------
@@ -83,11 +83,10 @@ stran('4 Zanka v zanki.html', 'Zanka v zanki', [
      'win': '✅ Notranja zanka nariše kvadrat. Zunanja to naredi 4-krat in med kvadrati obrne pisalo.'},
     {'type': 'risar', 'title': 'Satovje', 'intro': 'Nariši vzorec iz <b>6 šestkotnikov</b>, med vsakim se pisalo obrne za 60°. Največ <b>7 blokov</b>.',
      'tools': ['F50', 'T60', 'T90'], 'loops': L, 'max': 7, 'solution': ['N6', 'N6', 'F50', 'T60', ')', 'T60', ')'],
-     'hints': ['Notranja zanka: šestkotnik (ponovi 6-krat, pojdi 50, obrni se 60).', 'Zunanja zanka ponovi šestkotnik 6-krat, po vsakem še obrni se 60.',
-               'ponovi 6 ( ponovi 6 ( pojdi 50, obrni se 60 ) obrni se 60 )']},
+     'hints': ['Najprej sestavi samo en šestkotnik. Kateri program to naredi?', 'Ta šestkotnik daj v drugo zanko. Kolikokrat ga ponoviš in kaj naredi pisalo med dvema šestkotnikoma?']},
     {'type': 'risar', 'stars': '★★', 'optional': True, 'title': 'Zvezda', 'intro': 'Nariši zvezdo s 5 kraki (5 črt, vsaka dolga 150). Največ <b>4 bloki</b>. Namig: pisalo obkroži sredino <b>dvakrat</b>.',
      'tools': ['F150', 'T72', 'T108', 'T144'], 'loops': L, 'max': 4, 'solution': ['N5', 'F150', 'T144', ')'],
-     'hints': ['Pri zvezdi se pisalo obrne za 2 cela kroga: 2 × 360 = 720.', '720 : 5 = 144.']},
+     'hints': ['Pri zvezdi se pisalo obrne za 2 cela kroga. Koliko stopinj je to?', 'Te stopinje razdeli na 5 krakov.']},
 ], 'Znaš zanko v zanki. Tako nastanejo zapleteni vzorci iz kratkih programov.')
 
 # ---------------- 5 Zapis v zvezek ----------------

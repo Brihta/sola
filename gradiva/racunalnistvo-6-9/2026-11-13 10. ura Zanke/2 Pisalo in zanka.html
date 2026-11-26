@@ -124,7 +124,7 @@ footer{display:flex;gap:10px;align-items:center;flex-wrap:wrap;border-top:3px so
 .opill{display:inline-block;background:#59C059;border:1px solid #389438;border-radius:12px;padding:0 6px;margin:0 2px}.cpill{display:inline-block;width:14px;height:14px;border-radius:50%;border:2px solid #fff;vertical-align:-2px}
 .risar .lw{stroke-dasharray:4 4}.risar .lb{stroke:#000;stroke-width:12;stroke-opacity:.18}
 .risar .oder{position:sticky;top:8px;align-self:flex-start}
-</style></head><body><div id="app"></div><script>window.PAGE={"title": "Pisalo in zanka", "screens": [{"type": "info", "title": "Programiraš pisalo ✏️", "html": "\n<p class=\"big\">Modra puščica je <b>pisalo</b>. Kamor gre, tam nariše zeleno črto.</p>\n<div class=\"box\"><span class=\"sb mot\">pojdi <b>100</b> korakov</span> &nbsp;gre naprej in riše<br><br>\n<span class=\"sb mot\">obrni se ↻ <b>90</b>°</span> &nbsp;se obrne v smeri urinega kazalca, ne riše</div>\n<p>Taki so bloki tudi v <b>Scratchu</b>. Siva črta pokaže, kaj mora pisalo narisati.</p>"}, {"type": "risar", "title": "Poskusi: samo zaženi", "intro": "Program je že sestavljen. Klikni <b>▶ Zaženi</b> in opazuj pisalo.", "start": ["F100", "T90", "F100"], "solution": ["F100", "T90", "F100"], "locked": true, "win": "✅ Pisalo je šlo naprej, se obrnilo za 90° (pravi kot) in šlo spet naprej."}, {"type": "risar", "title": "Kvadrat", "intro": "Sestavi program, ki nariše <b>kvadrat</b> s stranico 100. Klikaj bloke spodaj, nato ▶ Zaženi.", "tools": ["F100", "T90"], "solution": ["F100", "T90", "F100", "T90", "F100", "T90", "F100", "T90"], "hints": ["Kvadrat ima 4 stranice. Po vsaki se pisalo obrne.", "pojdi 100, obrni se 90, in to še trikrat."]}, {"type": "info", "title": "Zanka: ponovi", "html": "\n<p class=\"big\">Pri kvadratu si 4-krat sestavil/a isti par blokov. To je <b>vzorec</b>!</p>\n<div class=\"box\"><span class=\"sb ctl\">ponovi <b>4</b>-krat</span><br>\n<span style=\"margin-left:26px\" class=\"sb mot\">pojdi <b>100</b> korakov</span><br>\n<span style=\"margin-left:26px\" class=\"sb mot\">obrni se ↻ <b>90</b>°</span><br>\n<span class=\"sb ctl kon\">konec ponovi</span></div>\n<p>Vse med »ponovi« in »konec ponovi« se ponovi. Temu rečemo <b>zanka</b>. 8 blokov je postalo 4.</p>"}, {"type": "risar", "title": "Kvadrat z zanko", "intro": "Nariši isti kvadrat, a uporabi <b>največ 4 bloke</b>.", "tools": ["F100", "T90"], "loops": [3, 4, 5, 6, 8], "max": 4, "solution": ["N4", "F100", "T90", ")"], "hints": ["Najprej klikni »ponovi 4-krat«.", "Nato pojdi 100, obrni se 90 in na koncu »konec ponovi«."]}, {"type": "choose", "title": "Kaj bo narisal?", "intro": "<div class=\"box\"><span class=\"sb ctl\">ponovi <b>3</b>-krat</span><br>\n<span style=\"margin-left:26px\" class=\"sb mot\">pojdi <b>100</b> korakov</span><br>\n<span style=\"margin-left:26px\" class=\"sb mot\">obrni se ↻ <b>120</b>°</span><br>\n<span class=\"sb ctl kon\">konec ponovi</span></div><p>Klikni odgovor. Če je narobe, ti stran pove zakaj. Če ne veš, kako začeti, klikni <b>Namig</b>.</p>", "options": [{"t": "trikotnik", "ok": true, "why": "Tako je: 3 stranice, po vsaki obrat za 120°. Skupaj 3 × 120° = 360°, cel krog."}, {"t": "kvadrat", "ok": false, "why": "Kvadrat ima 4 stranice. Zanka se tu ponovi samo 3-krat."}, {"t": "3 črte v ravni vrsti", "ok": false, "why": "Po vsaki črti se pisalo obrne za 120°, zato črte niso v isti vrsti."}], "hints": ["Koliko črt nariše? Toliko, kolikorkrat se zanka ponovi."]}, {"type": "risar", "title": "Trikotnik", "intro": "Preveri: nariši enakostranični trikotnik z <b>največ 4 bloki</b>.", "tools": ["F100", "T60", "T90", "T120"], "loops": [3, 4, 5, 6, 8], "max": 4, "solution": ["N3", "F100", "T120", ")"], "hints": ["Program je zelo podoben kvadratu.", "ponovi 3-krat ( pojdi 100, obrni se 120 )."]}], "endText": "Znaš napisati zanko »ponovi« in z njo narisati lik."};</script><script>/* Brihta samostojna ura: zasloni z nalogami, ki se preverijo sami. */
+</style></head><body><div id="app"></div><script>window.PAGE={"title": "Pisalo in zanka", "screens": [{"type": "info", "title": "Programiraš pisalo ✏️", "html": "\n<p class=\"big\">Modra puščica je <b>pisalo</b>. Kamor gre, tam nariše zeleno črto.</p>\n<div class=\"box\"><span class=\"sb mot\">pojdi <b>100</b> korakov</span> &nbsp;gre naprej in riše<br><br>\n<span class=\"sb mot\">obrni se ↻ <b>90</b>°</span> &nbsp;se obrne v smeri urinega kazalca, ne riše</div>\n<p>Taki so bloki tudi v <b>Scratchu</b>. Siva črta pokaže, kaj mora pisalo narisati.</p>"}, {"type": "risar", "title": "Poskusi: samo zaženi", "intro": "Program je že sestavljen. Klikni <b>▶ Zaženi</b> in opazuj pisalo.", "start": ["F100", "T90", "F100"], "solution": ["F100", "T90", "F100"], "locked": true, "win": "✅ Pisalo je šlo naprej, se obrnilo za 90° (pravi kot) in šlo spet naprej."}, {"type": "risar", "title": "Kvadrat", "intro": "Sestavi program, ki nariše <b>kvadrat</b> s stranico 100. Klikaj bloke spodaj, nato ▶ Zaženi.", "tools": ["F100", "T90"], "solution": ["F100", "T90", "F100", "T90", "F100", "T90", "F100", "T90"], "hints": ["Kvadrat ima 4 stranice. Kaj naredi pisalo po vsaki stranici?", "Za eno stranico potrebuješ 2 bloka. Koliko blokov za 4 stranice?"]}, {"type": "info", "title": "Zanka: ponovi", "html": "\n<p class=\"big\">Pri kvadratu si 4-krat sestavil/a isti par blokov. To je <b>vzorec</b>!</p>\n<div class=\"box\"><span class=\"sb ctl\">ponovi <b>4</b>-krat</span><br>\n<span style=\"margin-left:26px\" class=\"sb mot\">pojdi <b>100</b> korakov</span><br>\n<span style=\"margin-left:26px\" class=\"sb mot\">obrni se ↻ <b>90</b>°</span><br>\n<span class=\"sb ctl kon\">konec ponovi</span></div>\n<p>Vse med »ponovi« in »konec ponovi« se ponovi. Temu rečemo <b>zanka</b>. 8 blokov je postalo 4.</p>"}, {"type": "risar", "title": "Kvadrat z zanko", "intro": "Nariši isti kvadrat, a uporabi <b>največ 4 bloke</b>.", "tools": ["F100", "T90"], "loops": [3, 4, 5, 6, 8], "max": 4, "solution": ["N4", "F100", "T90", ")"], "hints": ["Kateri par blokov si pri kvadratu ponavljal/a?", "Ta par daj med »ponovi« in »konec ponovi«. Kolikokrat?"]}, {"type": "choose", "title": "Kaj bo narisal?", "intro": "<div class=\"box\"><span class=\"sb ctl\">ponovi <b>3</b>-krat</span><br>\n<span style=\"margin-left:26px\" class=\"sb mot\">pojdi <b>100</b> korakov</span><br>\n<span style=\"margin-left:26px\" class=\"sb mot\">obrni se ↻ <b>120</b>°</span><br>\n<span class=\"sb ctl kon\">konec ponovi</span></div><p>Klikni odgovor. Če je narobe, ti stran pove zakaj. Če ne veš, kako začeti, klikni <b>Namig</b>.</p>", "options": [{"t": "trikotnik", "ok": true, "why": "Tako je: 3 stranice, po vsaki obrat za 120°. Skupaj 3 × 120° = 360°, cel krog."}, {"t": "kvadrat", "ok": false, "why": "Kvadrat ima 4 stranice. Zanka se tu ponovi samo 3-krat."}, {"t": "3 črte v ravni vrsti", "ok": false, "why": "Po vsaki črti se pisalo obrne za 120°, zato črte niso v isti vrsti."}], "hints": ["Koliko črt nariše? Toliko, kolikorkrat se zanka ponovi."]}, {"type": "risar", "title": "Trikotnik", "intro": "Preveri: nariši enakostranični trikotnik z <b>največ 4 bloki</b>.", "tools": ["F100", "T60", "T90", "T120"], "loops": [3, 4, 5, 6, 8], "max": 4, "solution": ["N3", "F100", "T120", ")"], "hints": ["Program je zelo podoben kvadratu. Kaj je drugače pri trikotniku?", "Poglej prejšnjo nalogo: za koliko stopinj se obrne pisalo pri trikotniku?"]}], "endText": "Znaš napisati zanko »ponovi« in z njo narisati lik."};</script><script>/* Brihta samostojna ura: zasloni z nalogami, ki se preverijo sami. */
 (function () {
   const $ = (h) => { const d = document.createElement('div'); d.innerHTML = h.trim(); return d.firstElementChild; };
   const esc = (s) => String(s).replace(/[&<>"]/g, (c) => ({ '&': '&amp;', '<': '&lt;', '>': '&gt;', '"': '&quot;' }[c]));
@@ -164,7 +164,15 @@ footer{display:flex;gap:10px;align-items:center;flex-wrap:wrap;border-top:3px so
       `<span class="cnt">${Math.min(cur + 1, screens.length - 1)} / ${screens.length - 1}</span>`;
   }
 
-  let solver = null, hintN = 0, poskusi = 0, resitev = false, podatki = null;
+  let solver = null, hintN = 0, poskusi = 0, resitev = false, podatki = null, napake = 0;
+  /* Namigi in rešitev se odklepajo s poskusi (Nino, 26. 11. 2026: učenci so klikali Namig, dokler niso dobili rešitve).
+     Po vsakem napačnem poskusu se odklene en namig; »Pokaži rešitev« šele po vseh namigih in še 2 poskusih.
+     Velja za naloge, kjer učenec rešuje sam; pri igrah (ugibanje, karte, tipkanje) so namigi strategija in so prosti.
+     preveri.py (navigator.webdriver) zaklepa ne upošteva. */
+  const ZAKLEP = { choose: 1, order: 1, match: 1, grid: 1, risar: 1, trace: 1, zrcali: 1, slogi: 1 };
+  const TEST = navigator.webdriver === true;
+  const zaklenjeno = () => !TEST && ZAKLEP[screens[cur].type];
+  const PO_NAMIGIH = 2;
 
   /* ---------- izdelki: shranjevanje dela učenca za učiteljevo poročilo (supabase_izdelki.sql) ---------- */
   const IZD = P.izdelki;   // {ura: 'racunalnistvo-3/2026-11-06-simetrija'}
@@ -215,12 +223,12 @@ footer{display:flex;gap:10px;align-items:center;flex-wrap:wrap;border-top:3px so
     let f = card.querySelector('.fb');
     if (!f) { f = $('<div class="fb"></div>'); card.appendChild(f); }
     f.className = 'fb ' + (kind || ''); f.innerHTML = msg;
-    if (kind === 'bad') { f.classList.remove('shake'); void f.offsetWidth; f.classList.add('shake'); }
+    if (kind === 'bad') { napake++; f.classList.remove('shake'); void f.offsetWidth; f.classList.add('shake'); }
   }
 
   function show(i) {
     cur = i; const s = screens[i];
-    card.innerHTML = ''; solver = null; hintN = 0; poskusi = 0; resitev = false; podatki = null;
+    card.innerHTML = ''; solver = null; hintN = 0; poskusi = 0; resitev = false; podatki = null; napake = 0;
     bNext.classList.remove('pulse');
     bBack.disabled = i === 0;
     const hints = s.hints || [];
@@ -246,10 +254,20 @@ footer{display:flex;gap:10px;align-items:center;flex-wrap:wrap;border-top:3px so
   bSkip.onclick = () => { if (cur + 1 > best) { best = cur + 1; save(best); } show(cur + 1); };
   bHint.onclick = () => {
     const h = screens[cur].hints || [];
+    if (zaklenjeno() && hintN >= napake) {
+      feedback(hintN === 0 ? '✋ Najprej poskusi sam/a. Ko enkrat poskusiš, dobiš prvi namig.' : '✋ Uporabi namig in poskusi znova. Naslednji namig dobiš po novem poskusu.', 'hint');
+      return;
+    }
     if (hintN < h.length) { feedback('💡 ' + h[hintN], 'hint'); hintN++; }
     if (hintN >= h.length && solver) { bHint.hidden = true; bSolve.hidden = false; }
   };
-  bSolve.onclick = () => { if (solver) { resitev = true; solver(); feedback('Tukaj je rešitev. Dobro si jo oglej, nato klikni Naprej.', 'hint'); done(); } };
+  bSolve.onclick = () => {
+    if (zaklenjeno() && napake < hintN + PO_NAMIGIH) {
+      const ost = hintN + PO_NAMIGIH - napake;
+      feedback(`✋ Rešitev se odklene po še <b>${ost}</b> ${ost === 1 ? 'poskusu' : 'poskusih'}. Preberi namige in poskusi znova.`, 'hint');
+      return;
+    }
+    if (solver) { resitev = true; solver(); feedback('Tukaj je rešitev. Dobro si jo oglej, nato klikni Naprej.', 'hint'); done(); } };
 
   /* ---------- vrste zaslonov ---------- */
   const TYPES = {};
@@ -351,7 +369,7 @@ footer{display:flex;gap:10px;align-items:center;flex-wrap:wrap;border-top:3px so
     const g = ui.querySelector('.g'), prog = ui.querySelector('.prog'), cnt = ui.querySelector('.count');
     const cells = [];
     for (let r = 0; r < n; r++) for (let k = 0; k < n; k++) { const d = $(`<div class="cell${target.has(r + ',' + k) ? ' t' : ''}"></div>`); if (r === 0 && k === 0) d.dataset.s = 'S'; g.appendChild(d); cells.push(d); }
-    let program = (s.start || []).slice(), running = false;
+    let program = (s.start || []).slice(), running = false, zadnji = null;
     const fixed = !!s.locked;
     const count = () => program.length; // šteje vsak gumb v programu, tudi »)«
     function draw() {
@@ -374,6 +392,8 @@ footer{display:flex;gap:10px;align-items:center;flex-wrap:wrap;border-top:3px so
       let acts;
       try { acts = expand(program); } catch (e) { feedback('❌ ' + e.message, 'bad'); return; }
       if (!acts.length) { feedback('Program je prazen. Klikni nekaj ukazov.', 'hint'); return; }
+      if (zadnji !== null && zadnji === program.join(' ') && !fixed) { feedback('✋ Ta program si že preizkusil/a. Spremeni nekaj, preden ga zaženeš znova.', 'hint'); return; }
+      zadnji = program.join(' ');
       reset(); running = true;
       let r = 0, k = 0, i = 0; const painted = new Set();
       cells[0].classList.add('bot');
@@ -394,7 +414,7 @@ footer{display:flex;gap:10px;align-items:center;flex-wrap:wrap;border-top:3px so
         painted.forEach((x) => { if (!target.has(x)) { wrong++; const [a, b] = x.split(','); put(+a, +b, 'wrong'); } });
         target.forEach((x) => { if (!painted.has(x)) { miss++; const [a, b] = x.split(','); put(+a, +b, 'miss'); } });
         if (!wrong && !miss) {
-          if (s.max && count() > s.max) { feedback(`Slika je prava! 👍 A program ima ${count()} ukazov, dovoljenih je ${s.max}. Skrajšaj ga z zanko »ponovi«.`, 'hint'); return; }
+          if (s.max && count() > s.max) { napake++; feedback(`Slika je prava! 👍 A program ima ${count()} ukazov, dovoljenih je ${s.max}. Skrajšaj ga z zanko »ponovi«.`, 'hint'); return; }
           done(s.win || '✅ Bravo! Robot je narisal točno pravo sliko.');
         } else {
           const parts = [];
@@ -795,7 +815,7 @@ footer{display:flex;gap:10px;align-items:center;flex-wrap:wrap;border-top:3px so
     cilj.forEach((g) => crta(gC, g, 'lc', barvna ? RBARVA[g[4]] : null));
     okvir([...cilj.values()]);
     pisalo(0, 0, 90);
-    let program = (s.start || []).slice(), running = false;
+    let program = (s.start || []).slice(), running = false, zadnji = null;
     const fixed = !!s.locked;
     function draw() {
       let h = '', d = 0; const sklad = [];
@@ -823,6 +843,8 @@ footer{display:flex;gap:10px;align-items:center;flex-wrap:wrap;border-top:3px so
     ui.querySelector('.run').onclick = () => {
       if (running) return;
       if (!program.length) { feedback('Program je prazen. Klikni nekaj blokov.', 'hint'); return; }
+      if (zadnji !== null && zadnji === program.join(' ') && !s.prosto && !s.locked) { feedback('✋ Ta program si že preizkusil/a. Spremeni nekaj, preden ga zaženeš znova.', 'hint'); return; }
+      zadnji = program.join(' ');
       let r;
       try { r = rTeci(program); } catch (e) { feedback('❌ ' + e.message, 'bad'); return; }
       poskusi++;
@@ -846,7 +868,7 @@ footer{display:flex;gap:10px;align-items:center;flex-wrap:wrap;border-top:3px so
         cilj.forEach((g, k) => { if (!moje.has(k)) { miss++; crta(gO, g, 'lm'); } else if (moje.get(k)[4] !== g[4]) { barva++; crta(gO, g, 'lb'); } });
         moje.forEach((g, k) => { if (!cilj.has(k)) { wrong++; crta(gO, g, 'lw'); } });
         if (!miss && !wrong && !barva) {
-          if (s.max && program.length > s.max) { feedback(`Slika je prava! 👍 A program ima ${program.length} blokov, dovoljenih je ${s.max}. Skrajšaj ga.`, 'hint'); return; }
+          if (s.max && program.length > s.max) { napake++; feedback(`Slika je prava! 👍 A program ima ${program.length} blokov, dovoljenih je ${s.max}. Skrajšaj ga.`, 'hint'); return; }
           done(s.win || '✅ Bravo! Pisalo je narisalo točno pravo sliko.');
         } else {
           const f = (n, a, b, cc, d) => n === 1 ? a : n === 2 ? b : n < 5 ? cc : d;

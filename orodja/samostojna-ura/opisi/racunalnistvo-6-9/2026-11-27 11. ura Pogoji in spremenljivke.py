@@ -16,7 +16,7 @@ stran('2 Spremenljivka.html', 'Spremenljivka', [
 <p>Siva črta pokaže, kaj mora pisalo narisati.</p>'''),
     {'type': 'risar', 'title': 'Ogrevanje: kvadrat', 'intro': 'Z zanko nariši kvadrat. Največ <b>4 bloki</b>. To že znaš iz Scratcha.',
      'tools': ['F100', 'T90'], 'loops': L, 'max': 4, 'solution': ['N4', 'F100', 'T90', K],
-     'hints': ['ponovi 4-krat, v zanki pojdi in obrni se.', 'ponovi 4-krat ( pojdi 100, obrni se 90 ), konec ponovi.']},
+     'hints': ['Kvadrat ima 4 enake stranice. Kaj pisalo naredi pri vsaki stranici?', 'Pri vsaki stranici gre naprej in se obrne. Kateri blok to ponovi 4-krat?', 'Ne pozabi zapreti zanke. Vse, kar se ponavlja, mora biti med ponovi in konec.']},
     info('Spremenljivka = škatla 📦', '''
 <p class="big"><b>Spremenljivka</b> je škatla z imenom. V njej je ena vrednost, ki se lahko spreminja.</p>
 <div class="box"><span class="sb var">nastavi <span class="vpill">dolžina</span> na <b>100</b></span> &nbsp;v škatlo »dolžina« da 100<br><br>
@@ -33,7 +33,7 @@ stran('2 Spremenljivka.html', 'Spremenljivka', [
      'hints': ['Kje v programu piše 100?']},
     {'type': 'risar', 'title': 'Kvadrat s stranico 50', 'intro': 'Nariši kvadrat s stranico 50. Uporabi spremenljivko <b>dolžina</b>. Največ <b>5 blokov</b>.',
      'tools': ['S50', 'S100', 'FV', 'T90'], 'loops': L, 'max': 5, 'solution': ['S50', 'N4', 'FV', 'T90', K],
-     'hints': ['Najprej nastavi dolžina na 50, šele nato riši.', 'nastavi dolžina na 50, ponovi 4-krat ( pojdi dolžina, obrni se 90 ), konec ponovi.']},
+     'hints': ['Pisalo mora vedeti, koliko je v škatli, PREDEN začne risati. Kateri blok je zato prvi?', 'Nato je program tak kot pri ogrevanju, le namesto števila pri pojdi uporabi škatlo.']},
     info('Spremenljivka se lahko spreminja 🌀', '''
 <div class="box"><span class="sb var">spremeni <span class="vpill">dolžina</span> za <b>10</b></span> &nbsp;vrednosti v škatli prišteje 10</div>
 <p class="big">Če je ta blok v zanki, je vsaka naslednja črta za 10 daljša. Tako nastane <b>spirala</b>.</p>'''),
@@ -48,7 +48,7 @@ stran('2 Spremenljivka.html', 'Spremenljivka', [
      'hints': ['Zapiši si: 1. črta 10, nato prištej 10 …']},
     {'type': 'risar', 'title': 'Spirala', 'intro': 'Nariši spiralo: 12 črt, prva dolga 10, vsaka naslednja za 10 daljša. Največ <b>6 blokov</b>.',
      'tools': ['S10', 'FV', 'T90', 'A10'], 'loops': L, 'max': 6, 'solution': ['S10', 'N12', 'FV', 'T90', 'A10', K],
-     'hints': ['Začni z nastavi dolžina na 10.', 'V zanko (12-krat) daj tri bloke: pojdi dolžina, obrni se 90, spremeni dolžina za 10.']},
+     'hints': ['Kakšna je prva črta? Kaj mora biti v škatli na začetku?', 'Po vsaki črti se pisalo obrne. Kaj se mora še zgoditi, da je naslednja črta daljša?', 'Koliko črt ima spirala? Toliko-krat se zanka ponovi. Preštej bloke: največ 6.']},
 ], 'Znaš uporabiti spremenljivko in jo spreminjati v zanki.')
 
 # ---------------- 3 Pogoj ----------------
@@ -71,17 +71,15 @@ stran('3 Pogoj.html', 'Pogoj: če … potem', [
     {'type': 'risar', 'title': 'Barvna spirala', 'intro': 'Nariši spiralo kot prej, a črte, ki so <b>daljše od 60</b>, naj bodo <b>rdeče</b>. Pogoj daj na začetek zanke. Največ <b>9 blokov</b>.',
      'tools': ['S10', 'FV', 'T90', 'A10', 'I>60', 'I<60', 'Cr', K], 'loops': L, 'max': 9,
      'solution': ['S10', 'N12', 'I>60', 'Cr', K, 'FV', 'T90', 'A10', K],
-     'hints': ['Program spirale imaš od prej. Na začetek zanke vstavi »če«.', 'če dolžina > 60 potem ( nastavi barvo na rdeča ) konec, nato pojdi, obrni se, spremeni.',
-               'nastavi dolžina na 10, ponovi 12 ( če dolžina > 60 ( rdeča ) konec, pojdi dolžina, obrni se 90, spremeni dolžina za 10 ) konec']},
+     'hints': ['Začni s programom spirale z prejšnjega koraka. Kaj mu manjka?', 'Pisalo mora pred vsako črto vprašati: ali je dolžina večja od 60? Kateri znak pomeni večje?', 'Pogoj ima svoj konec. V »če« je samo menjava barve, risanje je za »konec če«.']},
     {'type': 'risar', 'title': '🐞 Najdi hrošča', 'intro': 'Ta program bi moral narisati isto barvno spiralo, a je vsa rdeča. Zaženi ga, poišči hrošča in ga popravi.',
      'tools': ['S10', 'FV', 'T90', 'A10', 'I>60', 'I<60', 'Cr', K], 'loops': L, 'max': 9,
      'start': ['S10', 'N12', 'I<60', 'Cr', K, 'FV', 'T90', 'A10', K], 'solution': ['S10', 'N12', 'I>60', 'Cr', K, 'FV', 'T90', 'A10', K],
-     'hints': ['Preberi pogoj na glas. Ali je 10 manjše od 60?', 'Znak je obrnjen: &lt; pomeni manjše. Rdeče naj bodo DALJŠE črte, zato potrebuješ &gt;.',
-               'Ko je barva enkrat rdeča, ostane rdeča. Zamenjaj »če dolžina &lt; 60« z »če dolžina &gt; 60«.']},
+     'hints': ['Preberi pogoj na glas. Ali je prva črta (10) že rdeča? Zakaj?', 'Poglej znak v pogoju. &lt; pomeni manjše, &gt; pomeni večje. Katere črte naj bodo rdeče?', 'Ko je barva enkrat rdeča, ostane rdeča. Zato je hrošč samo v enem bloku.']},
     {'type': 'risar', 'stars': '★★', 'optional': True, 'title': 'Če … sicer', 'intro': 'Kratke črte (60 ali manj) naj bodo <b>vijolične</b>, daljše <b>rdeče</b>. Uporabi blok <b>sicer</b>: kar je za njim, se zgodi, ko je odgovor <b>ne</b>. Največ <b>11 blokov</b>.',
      'tools': ['S10', 'FV', 'T90', 'A10', 'I>60', 'Cr', 'Cv', 'E', K], 'loops': L, 'max': 11,
      'solution': ['S10', 'N12', 'I>60', 'Cr', 'E', 'Cv', K, 'FV', 'T90', 'A10', K],
-     'hints': ['Zgradba: če … potem ( rdeča ) sicer ( vijolična ) konec.', 'Blok »sicer« daj med rdečo in vijolično.']},
+     'hints': ['Pogoj vpraša: ali je dolžina večja od 60? Kaj naredi pisalo pri da in kaj pri ne?', 'Kar je pred »sicer«, se zgodi pri da. Kar je za njim, pri ne.']},
 ], 'Znaš uporabiti pogoj »če« in najti hrošča v pogoju.')
 
 # ---------------- 4 Zapis v zvezek ----------------

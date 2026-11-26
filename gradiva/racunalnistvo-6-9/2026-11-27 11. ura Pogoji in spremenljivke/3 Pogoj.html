@@ -124,7 +124,7 @@ footer{display:flex;gap:10px;align-items:center;flex-wrap:wrap;border-top:3px so
 .opill{display:inline-block;background:#59C059;border:1px solid #389438;border-radius:12px;padding:0 6px;margin:0 2px}.cpill{display:inline-block;width:14px;height:14px;border-radius:50%;border:2px solid #fff;vertical-align:-2px}
 .risar .lw{stroke-dasharray:4 4}.risar .lb{stroke:#000;stroke-width:12;stroke-opacity:.18}
 .risar .oder{position:sticky;top:8px;align-self:flex-start}
-</style></head><body><div id="app"></div><script>window.PAGE={"title": "Pogoj: če … potem", "screens": [{"type": "info", "title": "Pogoj = vprašanje da ali ne", "html": "\n<div class=\"box\"><span class=\"sb ctl\">če <span class=\"opill\"><span class=\"vpill\">dolžina</span> &gt; <b>60</b></span> potem</span><br>\n<span style=\"margin-left:26px\" class=\"sb pen\">nastavi barvo pisala na <span class=\"cpill\" style=\"background:#E6443C\"></span> rdeča</span><br>\n<span class=\"sb ctl kon\">konec če</span></div>\n<p class=\"big\">Računalnik vpraša: »Ali je dolžina večja od 60?« Če je odgovor <b>da</b>, izvede bloke v »če«. Če je <b>ne</b>, jih preskoči.</p>\n<p>To je romb iz diagrama poteka. <b>&gt;</b> pomeni večje, <b>&lt;</b> pomeni manjše.</p>"}, {"type": "choose", "title": "Kakšna bo črta?", "intro": "<div class=\"box\"><span class=\"sb var\">nastavi <span class=\"vpill\">dolžina</span> na <b>30</b></span><br>\n<span class=\"sb ctl\">če <span class=\"opill\"><span class=\"vpill\">dolžina</span> &gt; <b>60</b></span> potem</span><br>\n<span style=\"margin-left:26px\" class=\"sb pen\">nastavi barvo pisala na <span class=\"cpill\" style=\"background:#E6443C\"></span> rdeča</span><br>\n<span class=\"sb ctl kon\">konec če</span><br>\n<span class=\"sb mot\">pojdi <span class=\"vpill\">dolžina</span> korakov</span></div><p>Pisalo na začetku riše zeleno. Kakšno črto nariše?</p>", "options": [{"t": "zeleno, dolgo 30", "ok": true, "why": "Tako je. 30 ni večje od 60, zato »če« preskoči in barva ostane zelena."}, {"t": "rdečo, dolgo 30", "ok": false, "why": "Ali je 30 večje od 60? Ne. Zato se barva ne spremeni."}, {"t": "rdečo, dolgo 60", "ok": false, "why": "60 je le meja v pogoju. Pisalo gre toliko, kolikor je v škatli: 30."}], "hints": ["Ali je 30 > 60?"]}, {"type": "risar", "title": "Barvna spirala", "intro": "Nariši spiralo kot prej, a črte, ki so <b>daljše od 60</b>, naj bodo <b>rdeče</b>. Pogoj daj na začetek zanke. Največ <b>9 blokov</b>.", "tools": ["S10", "FV", "T90", "A10", "I>60", "I<60", "Cr", ")"], "loops": [4, 12], "max": 9, "solution": ["S10", "N12", "I>60", "Cr", ")", "FV", "T90", "A10", ")"], "hints": ["Program spirale imaš od prej. Na začetek zanke vstavi »če«.", "če dolžina > 60 potem ( nastavi barvo na rdeča ) konec, nato pojdi, obrni se, spremeni.", "nastavi dolžina na 10, ponovi 12 ( če dolžina > 60 ( rdeča ) konec, pojdi dolžina, obrni se 90, spremeni dolžina za 10 ) konec"]}, {"type": "risar", "title": "🐞 Najdi hrošča", "intro": "Ta program bi moral narisati isto barvno spiralo, a je vsa rdeča. Zaženi ga, poišči hrošča in ga popravi.", "tools": ["S10", "FV", "T90", "A10", "I>60", "I<60", "Cr", ")"], "loops": [4, 12], "max": 9, "start": ["S10", "N12", "I<60", "Cr", ")", "FV", "T90", "A10", ")"], "solution": ["S10", "N12", "I>60", "Cr", ")", "FV", "T90", "A10", ")"], "hints": ["Preberi pogoj na glas. Ali je 10 manjše od 60?", "Znak je obrnjen: &lt; pomeni manjše. Rdeče naj bodo DALJŠE črte, zato potrebuješ &gt;.", "Ko je barva enkrat rdeča, ostane rdeča. Zamenjaj »če dolžina &lt; 60« z »če dolžina &gt; 60«."]}, {"type": "risar", "stars": "★★", "optional": true, "title": "Če … sicer", "intro": "Kratke črte (60 ali manj) naj bodo <b>vijolične</b>, daljše <b>rdeče</b>. Uporabi blok <b>sicer</b>: kar je za njim, se zgodi, ko je odgovor <b>ne</b>. Največ <b>11 blokov</b>.", "tools": ["S10", "FV", "T90", "A10", "I>60", "Cr", "Cv", "E", ")"], "loops": [4, 12], "max": 11, "solution": ["S10", "N12", "I>60", "Cr", "E", "Cv", ")", "FV", "T90", "A10", ")"], "hints": ["Zgradba: če … potem ( rdeča ) sicer ( vijolična ) konec.", "Blok »sicer« daj med rdečo in vijolično."]}], "endText": "Znaš uporabiti pogoj »če« in najti hrošča v pogoju."};</script><script>/* Brihta samostojna ura: zasloni z nalogami, ki se preverijo sami. */
+</style></head><body><div id="app"></div><script>window.PAGE={"title": "Pogoj: če … potem", "screens": [{"type": "info", "title": "Pogoj = vprašanje da ali ne", "html": "\n<div class=\"box\"><span class=\"sb ctl\">če <span class=\"opill\"><span class=\"vpill\">dolžina</span> &gt; <b>60</b></span> potem</span><br>\n<span style=\"margin-left:26px\" class=\"sb pen\">nastavi barvo pisala na <span class=\"cpill\" style=\"background:#E6443C\"></span> rdeča</span><br>\n<span class=\"sb ctl kon\">konec če</span></div>\n<p class=\"big\">Računalnik vpraša: »Ali je dolžina večja od 60?« Če je odgovor <b>da</b>, izvede bloke v »če«. Če je <b>ne</b>, jih preskoči.</p>\n<p>To je romb iz diagrama poteka. <b>&gt;</b> pomeni večje, <b>&lt;</b> pomeni manjše.</p>"}, {"type": "choose", "title": "Kakšna bo črta?", "intro": "<div class=\"box\"><span class=\"sb var\">nastavi <span class=\"vpill\">dolžina</span> na <b>30</b></span><br>\n<span class=\"sb ctl\">če <span class=\"opill\"><span class=\"vpill\">dolžina</span> &gt; <b>60</b></span> potem</span><br>\n<span style=\"margin-left:26px\" class=\"sb pen\">nastavi barvo pisala na <span class=\"cpill\" style=\"background:#E6443C\"></span> rdeča</span><br>\n<span class=\"sb ctl kon\">konec če</span><br>\n<span class=\"sb mot\">pojdi <span class=\"vpill\">dolžina</span> korakov</span></div><p>Pisalo na začetku riše zeleno. Kakšno črto nariše?</p>", "options": [{"t": "zeleno, dolgo 30", "ok": true, "why": "Tako je. 30 ni večje od 60, zato »če« preskoči in barva ostane zelena."}, {"t": "rdečo, dolgo 30", "ok": false, "why": "Ali je 30 večje od 60? Ne. Zato se barva ne spremeni."}, {"t": "rdečo, dolgo 60", "ok": false, "why": "60 je le meja v pogoju. Pisalo gre toliko, kolikor je v škatli: 30."}], "hints": ["Ali je 30 > 60?"]}, {"type": "risar", "title": "Barvna spirala", "intro": "Nariši spiralo kot prej, a črte, ki so <b>daljše od 60</b>, naj bodo <b>rdeče</b>. Pogoj daj na začetek zanke. Največ <b>9 blokov</b>.", "tools": ["S10", "FV", "T90", "A10", "I>60", "I<60", "Cr", ")"], "loops": [4, 12], "max": 9, "solution": ["S10", "N12", "I>60", "Cr", ")", "FV", "T90", "A10", ")"], "hints": ["Začni s programom spirale z prejšnjega koraka. Kaj mu manjka?", "Pisalo mora pred vsako črto vprašati: ali je dolžina večja od 60? Kateri znak pomeni večje?", "Pogoj ima svoj konec. V »če« je samo menjava barve, risanje je za »konec če«."]}, {"type": "risar", "title": "🐞 Najdi hrošča", "intro": "Ta program bi moral narisati isto barvno spiralo, a je vsa rdeča. Zaženi ga, poišči hrošča in ga popravi.", "tools": ["S10", "FV", "T90", "A10", "I>60", "I<60", "Cr", ")"], "loops": [4, 12], "max": 9, "start": ["S10", "N12", "I<60", "Cr", ")", "FV", "T90", "A10", ")"], "solution": ["S10", "N12", "I>60", "Cr", ")", "FV", "T90", "A10", ")"], "hints": ["Preberi pogoj na glas. Ali je prva črta (10) že rdeča? Zakaj?", "Poglej znak v pogoju. &lt; pomeni manjše, &gt; pomeni večje. Katere črte naj bodo rdeče?", "Ko je barva enkrat rdeča, ostane rdeča. Zato je hrošč samo v enem bloku."]}, {"type": "risar", "stars": "★★", "optional": true, "title": "Če … sicer", "intro": "Kratke črte (60 ali manj) naj bodo <b>vijolične</b>, daljše <b>rdeče</b>. Uporabi blok <b>sicer</b>: kar je za njim, se zgodi, ko je odgovor <b>ne</b>. Največ <b>11 blokov</b>.", "tools": ["S10", "FV", "T90", "A10", "I>60", "Cr", "Cv", "E", ")"], "loops": [4, 12], "max": 11, "solution": ["S10", "N12", "I>60", "Cr", "E", "Cv", ")", "FV", "T90", "A10", ")"], "hints": ["Pogoj vpraša: ali je dolžina večja od 60? Kaj naredi pisalo pri da in kaj pri ne?", "Kar je pred »sicer«, se zgodi pri da. Kar je za njim, pri ne."]}], "endText": "Znaš uporabiti pogoj »če« in najti hrošča v pogoju."};</script><script>/* Brihta samostojna ura: zasloni z nalogami, ki se preverijo sami. */
 (function () {
   const $ = (h) => { const d = document.createElement('div'); d.innerHTML = h.trim(); return d.firstElementChild; };
   const esc = (s) => String(s).replace(/[&<>"]/g, (c) => ({ '&': '&amp;', '<': '&lt;', '>': '&gt;', '"': '&quot;' }[c]));
@@ -164,7 +164,15 @@ footer{display:flex;gap:10px;align-items:center;flex-wrap:wrap;border-top:3px so
       `<span class="cnt">${Math.min(cur + 1, screens.length - 1)} / ${screens.length - 1}</span>`;
   }
 
-  let solver = null, hintN = 0, poskusi = 0, resitev = false, podatki = null;
+  let solver = null, hintN = 0, poskusi = 0, resitev = false, podatki = null, napake = 0;
+  /* Namigi in rešitev se odklepajo s poskusi (Nino, 26. 11. 2026: učenci so klikali Namig, dokler niso dobili rešitve).
+     Po vsakem napačnem poskusu se odklene en namig; »Pokaži rešitev« šele po vseh namigih in še 2 poskusih.
+     Velja za naloge, kjer učenec rešuje sam; pri igrah (ugibanje, karte, tipkanje) so namigi strategija in so prosti.
+     preveri.py (navigator.webdriver) zaklepa ne upošteva. */
+  const ZAKLEP = { choose: 1, order: 1, match: 1, grid: 1, risar: 1, trace: 1, zrcali: 1, slogi: 1 };
+  const TEST = navigator.webdriver === true;
+  const zaklenjeno = () => !TEST && ZAKLEP[screens[cur].type];
+  const PO_NAMIGIH = 2;
 
   /* ---------- izdelki: shranjevanje dela učenca za učiteljevo poročilo (supabase_izdelki.sql) ---------- */
   const IZD = P.izdelki;   // {ura: 'racunalnistvo-3/2026-11-06-simetrija'}
@@ -215,12 +223,12 @@ footer{display:flex;gap:10px;align-items:center;flex-wrap:wrap;border-top:3px so
     let f = card.querySelector('.fb');
     if (!f) { f = $('<div class="fb"></div>'); card.appendChild(f); }
     f.className = 'fb ' + (kind || ''); f.innerHTML = msg;
-    if (kind === 'bad') { f.classList.remove('shake'); void f.offsetWidth; f.classList.add('shake'); }
+    if (kind === 'bad') { napake++; f.classList.remove('shake'); void f.offsetWidth; f.classList.add('shake'); }
   }
 
   function show(i) {
     cur = i; const s = screens[i];
-    card.innerHTML = ''; solver = null; hintN = 0; poskusi = 0; resitev = false; podatki = null;
+    card.innerHTML = ''; solver = null; hintN = 0; poskusi = 0; resitev = false; podatki = null; napake = 0;
     bNext.classList.remove('pulse');
     bBack.disabled = i === 0;
     const hints = s.hints || [];
@@ -246,10 +254,20 @@ footer{display:flex;gap:10px;align-items:center;flex-wrap:wrap;border-top:3px so
   bSkip.onclick = () => { if (cur + 1 > best) { best = cur + 1; save(best); } show(cur + 1); };
   bHint.onclick = () => {
     const h = screens[cur].hints || [];
+    if (zaklenjeno() && hintN >= napake) {
+      feedback(hintN === 0 ? '✋ Najprej poskusi sam/a. Ko enkrat poskusiš, dobiš prvi namig.' : '✋ Uporabi namig in poskusi znova. Naslednji namig dobiš po novem poskusu.', 'hint');
+      return;
+    }
     if (hintN < h.length) { feedback('💡 ' + h[hintN], 'hint'); hintN++; }
     if (hintN >= h.length && solver) { bHint.hidden = true; bSolve.hidden = false; }
   };
-  bSolve.onclick = () => { if (solver) { resitev = true; solver(); feedback('Tukaj je rešitev. Dobro si jo oglej, nato klikni Naprej.', 'hint'); done(); } };
+  bSolve.onclick = () => {
+    if (zaklenjeno() && napake < hintN + PO_NAMIGIH) {
+      const ost = hintN + PO_NAMIGIH - napake;
+      feedback(`✋ Rešitev se odklene po še <b>${ost}</b> ${ost === 1 ? 'poskusu' : 'poskusih'}. Preberi namige in poskusi znova.`, 'hint');
+      return;
+    }
+    if (solver) { resitev = true; solver(); feedback('Tukaj je rešitev. Dobro si jo oglej, nato klikni Naprej.', 'hint'); done(); } };
 
   /* ---------- vrste zaslonov ---------- */
   const TYPES = {};
@@ -351,7 +369,7 @@ footer{display:flex;gap:10px;align-items:center;flex-wrap:wrap;border-top:3px so
     const g = ui.querySelector('.g'), prog = ui.querySelector('.prog'), cnt = ui.querySelector('.count');
     const cells = [];
     for (let r = 0; r < n; r++) for (let k = 0; k < n; k++) { const d = $(`<div class="cell${target.has(r + ',' + k) ? ' t' : ''}"></div>`); if (r === 0 && k === 0) d.dataset.s = 'S'; g.appendChild(d); cells.push(d); }
-    let program = (s.start || []).slice(), running = false;
+    let program = (s.start || []).slice(), running = false, zadnji = null;
     const fixed = !!s.locked;
     const count = () => program.length; // šteje vsak gumb v programu, tudi »)«
     function draw() {
@@ -374,6 +392,8 @@ footer{display:flex;gap:10px;align-items:center;flex-wrap:wrap;border-top:3px so
       let acts;
       try { acts = expand(program); } catch (e) { feedback('❌ ' + e.message, 'bad'); return; }
       if (!acts.length) { feedback('Program je prazen. Klikni nekaj ukazov.', 'hint'); return; }
+      if (zadnji !== null && zadnji === program.join(' ') && !fixed) { feedback('✋ Ta program si že preizkusil/a. Spremeni nekaj, preden ga zaženeš znova.', 'hint'); return; }
+      zadnji = program.join(' ');
       reset(); running = true;
       let r = 0, k = 0, i = 0; const painted = new Set();
       cells[0].classList.add('bot');
@@ -394,7 +414,7 @@ footer{display:flex;gap:10px;align-items:center;flex-wrap:wrap;border-top:3px so
         painted.forEach((x) => { if (!target.has(x)) { wrong++; const [a, b] = x.split(','); put(+a, +b, 'wrong'); } });
         target.forEach((x) => { if (!painted.has(x)) { miss++; const [a, b] = x.split(','); put(+a, +b, 'miss'); } });
         if (!wrong && !miss) {
-          if (s.max && count() > s.max) { feedback(`Slika je prava! 👍 A program ima ${count()} ukazov, dovoljenih je ${s.max}. Skrajšaj ga z zanko »ponovi«.`, 'hint'); return; }
+          if (s.max && count() > s.max) { napake++; feedback(`Slika je prava! 👍 A program ima ${count()} ukazov, dovoljenih je ${s.max}. Skrajšaj ga z zanko »ponovi«.`, 'hint'); return; }
           done(s.win || '✅ Bravo! Robot je narisal točno pravo sliko.');
         } else {
           const parts = [];
@@ -795,7 +815,7 @@ footer{display:flex;gap:10px;align-items:center;flex-wrap:wrap;border-top:3px so
     cilj.forEach((g) => crta(gC, g, 'lc', barvna ? RBARVA[g[4]] : null));
     okvir([...cilj.values()]);
     pisalo(0, 0, 90);
-    let program = (s.start || []).slice(), running = false;
+    let program = (s.start || []).slice(), running = false, zadnji = null;
     const fixed = !!s.locked;
     function draw() {
       let h = '', d = 0; const sklad = [];
@@ -823,6 +843,8 @@ footer{display:flex;gap:10px;align-items:center;flex-wrap:wrap;border-top:3px so
     ui.querySelector('.run').onclick = () => {
       if (running) return;
       if (!program.length) { feedback('Program je prazen. Klikni nekaj blokov.', 'hint'); return; }
+      if (zadnji !== null && zadnji === program.join(' ') && !s.prosto && !s.locked) { feedback('✋ Ta program si že preizkusil/a. Spremeni nekaj, preden ga zaženeš znova.', 'hint'); return; }
+      zadnji = program.join(' ');
       let r;
       try { r = rTeci(program); } catch (e) { feedback('❌ ' + e.message, 'bad'); return; }
       poskusi++;
@@ -846,7 +868,7 @@ footer{display:flex;gap:10px;align-items:center;flex-wrap:wrap;border-top:3px so
         cilj.forEach((g, k) => { if (!moje.has(k)) { miss++; crta(gO, g, 'lm'); } else if (moje.get(k)[4] !== g[4]) { barva++; crta(gO, g, 'lb'); } });
         moje.forEach((g, k) => { if (!cilj.has(k)) { wrong++; crta(gO, g, 'lw'); } });
         if (!miss && !wrong && !barva) {
-          if (s.max && program.length > s.max) { feedback(`Slika je prava! 👍 A program ima ${program.length} blokov, dovoljenih je ${s.max}. Skrajšaj ga.`, 'hint'); return; }
+          if (s.max && program.length > s.max) { napake++; feedback(`Slika je prava! 👍 A program ima ${program.length} blokov, dovoljenih je ${s.max}. Skrajšaj ga.`, 'hint'); return; }
           done(s.win || '✅ Bravo! Pisalo je narisalo točno pravo sliko.');
         } else {
           const f = (n, a, b, cc, d) => n === 1 ? a : n === 2 ? b : n < 5 ? cc : d;

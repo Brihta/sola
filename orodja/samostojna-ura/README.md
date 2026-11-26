@@ -28,8 +28,11 @@ da jih lahko kasneje popraviš in znova zgradiš.
    nalogi, ki jo učenec samo zažene (npr. `grid` z `locked`).
 3. **Vsaka naloga se preveri sama** in pove, *zakaj* je narobe (polje `why` pri
    vsaki napačni možnosti).
-4. **Vsaka naloga ima 1 do 3 namige** (`hints`), od splošnega do skoraj rešitve.
-   Po zadnjem se pokaže »Pokaži rešitev«, da nihče ne obtiči.
+4. **Vsaka naloga ima 1 do 3 namige** (`hints`), ki USMERIJO (vprašanje, na kaj paziti),
+   NIKOLI pa ne izdajo celega programa ali odgovora. Po zadnjem se pokaže »Pokaži rešitev«.
+   Zaklep (od 26. 11. 2026, `ZAKLEP` v engine.js): namig se odklene šele po napačnem poskusu
+   (vsak naslednji po novem poskusu), rešitev šele po vseh namigih in še 2 poskusih. Pri risar
+   in grid poskus šteje samo, če je program drugačen kot pri prejšnjem zagonu.
 5. **Brez dela v paru in brez učiteljeve razlage** kot pogoja za napredek.
 6. **Jezik za starost:** kratke povedi, »ti«, oblike »/a« (naredil/a). V 4. razredu
    (9 do 10 let) še krajše: ena misel na poved, veliko emojijev in slik, brez zank
@@ -130,6 +133,10 @@ pomeni, da je korak REŠEN (🎉 Končano!), ne le odprt, zato se kljukice in
 zaklep vedno ujemajo. Pri spremembah `index.html` tega ne pokvari.
 
 ## Naučeno iz prakse
+
+**6. do 9. r, 26. 11. 2026:** učenci so dvakrat kliknili Namig, dobili celo rešitev, jo
+prepisali in nič znali. Zato zaklep namigov (pravilo 4) in namigi brez rešitev. Ko spremeniš
+pogon, prezidaj VSE ure iz `opisi/` (vsebina ostane enaka, zamenja se le vgrajeni pogon).
 
 **4. razred, 4. ura Algoritem po prostoru (3. 11. 2026), ura je uspela:** učenci so
 uživali in delali vsak s svojo hitrostjo. Kar je šlo narobe in je popravljeno:
