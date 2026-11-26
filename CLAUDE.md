@@ -91,7 +91,7 @@ Slike pri vprašanjih (od 26. 11. 2026): učitelj jih doda v predogledu kviza (�
 Igra v živo (od 26. 11. 2026): pri kvizu v predmetu učitelja gumb 🎮 Igraj v živo → velik zaslon `#/igra/<id>`
 (čakalnica, vprašanje s časom, rezultat z lestvico, stopničke). Učenci razredov predmeta dobijo pasico in odgovarjajo
 na napravah; brez PIN-a. Točke 500–1000 glede na hitrost, ocenjuje strežnik. Stran sprašuje za stanje vsako 1–1,5 s
-(brez Realtime). Baza: `supabase_igra_v_zivo.sql`.
+(brez Realtime). Glasba na tabli je izvirna, zgenerirana v brskalniku (Web Audio, `GLASBA`), gumb 🔊/🔇. Baza: `supabase_igra_v_zivo.sql`.
 
 ## Ure računalništva: samostojne interaktivne strani (obvezno od 23. 10. 2026)
 

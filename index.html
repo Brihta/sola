@@ -38,9 +38,9 @@
        Safari na iPadih obdrži svoje emojije. */
     @font-face {
       font-family: 'Brihta Emoji';
-      src: url('pisave/brihta-emoji.woff2?v=c88e4c59') format('woff2') tech(color-COLRv1);
+      src: url('pisave/brihta-emoji.woff2?v=65b8ada6') format('woff2') tech(color-COLRv1);
       font-display: swap;
-      unicode-range: U+200D, U+2195, U+23F0, U+26A0-26A1, U+26BD, U+26D4, U+2705, U+270A, U+270D, U+270F, U+2728, U+2B1C, U+2B50, U+1F1E7, U+1F1EC, U+1F308, U+1F30D, U+1F31F, U+1F331, U+1F355, U+1F389, U+1F3A8, U+1F3AE-1F3AF, U+1F3B5, U+1F3C1, U+1F3C6, U+1F3EB, U+1F409-1F40A, U+1F40C, U+1F418-1F419, U+1F41D, U+1F422, U+1F427, U+1F42C, U+1F431, U+1F436, U+1F438, U+1F441, U+1F449, U+1F44B, U+1F44D, U+1F464-1F465, U+1F468, U+1F4A1, U+1F4AA, U+1F4BB, U+1F4BE, U+1F4C1, U+1F4C4, U+1F4CA, U+1F4CC, U+1F4D0, U+1F4D6, U+1F4DA, U+1F501, U+1F50E, U+1F511-1F512, U+1F517, U+1F522, U+1F590, U+1F5B1, U+1F5BC, U+1F5D1, U+1F5FA, U+1F62C, U+1F648, U+1F64B, U+1F680, U+1F6A2, U+1F914, U+1F916, U+1F938, U+1F947-1F949, U+1F981, U+1F984, U+1F989-1F98B, U+1F992, U+1F996, U+1F9A1, U+1F9AB, U+1F9D1-1F9D2, U+1F9E0, U+1F9E9-1F9EA;
+      unicode-range: U+200D, U+2195, U+23F0, U+26A0-26A1, U+26BD, U+26D4, U+2705, U+270A, U+270D, U+270F, U+2728, U+2B1C, U+2B50, U+1F1E7, U+1F1EC, U+1F308, U+1F30D, U+1F31F, U+1F331, U+1F355, U+1F389, U+1F3A8, U+1F3AE-1F3AF, U+1F3B5, U+1F3C1, U+1F3C6, U+1F3EB, U+1F409-1F40A, U+1F40C, U+1F418-1F419, U+1F41D, U+1F422, U+1F427, U+1F42C, U+1F431, U+1F436, U+1F438, U+1F441, U+1F449, U+1F44B, U+1F44D, U+1F464-1F465, U+1F468, U+1F4A1, U+1F4AA, U+1F4BB, U+1F4BE, U+1F4C1, U+1F4C4, U+1F4CA, U+1F4CC, U+1F4D0, U+1F4D6, U+1F4DA, U+1F501, U+1F507, U+1F50A, U+1F50E, U+1F511-1F512, U+1F517, U+1F522, U+1F590, U+1F5B1, U+1F5BC, U+1F5D1, U+1F5FA, U+1F62C, U+1F648, U+1F64B, U+1F680, U+1F6A2, U+1F914, U+1F916, U+1F938, U+1F947-1F949, U+1F981, U+1F984, U+1F989-1F98B, U+1F992, U+1F996, U+1F9A1, U+1F9AB, U+1F9D1-1F9D2, U+1F9E0, U+1F9E9-1F9EA;
     }
     /* emoji-pisava:konec */
     html, body { margin: 0; }
@@ -3165,7 +3165,97 @@ document.addEventListener('keydown', e => { if (e.key === 'Escape') odpriPredal(
 const BARVE_IGRE = ['#e74c3c', '#2f80ed', '#f2a516', '#1fa36b', '#9b51e0', '#e0408a'];
 const CRKE = 'ABCDEF';
 let igraGen = 0, igraUra = null;
-function ustaviIgro() { igraGen++; clearInterval(igraUra); igraUra = null; document.body.classList.remove('igra-full'); }
+/* Glasba za igro v živo: izvirni kratki napevi, zgenerirani v brskalniku (Web Audio), brez datotek
+   in tujih strežnikov. Igra samo na velikem zaslonu (učitelj); vklop/izklop si stran zapomni. */
+const GLASBA = (() => {
+  let ac = null, glavna = null, ura = null, vzorec = null, korak = 0, naslednji = 0;
+  const KLJUC_TIHO = 'sola_igra_tiho';
+  let tiho = preberi(KLJUC_TIHO) === '1';
+  const hz = m => 440 * Math.pow(2, (m - 69) / 12);
+  const zagotovi = () => {
+    if (!ac) {
+      const AC = window.AudioContext || window.webkitAudioContext;
+      if (!AC) return false;
+      ac = new AC(); glavna = ac.createGain(); glavna.gain.value = tiho ? 0 : 0.22; glavna.connect(ac.destination);
+    }
+    if (ac.state === 'suspended') ac.resume();
+    return true;
+  };
+  const ton = (t, m, dol, oblika, jak) => {
+    const o = ac.createOscillator(), g = ac.createGain();
+    o.type = oblika; o.frequency.value = hz(m);
+    g.gain.setValueAtTime(0.0001, t); g.gain.exponentialRampToValueAtTime(jak, t + 0.008);
+    g.gain.exponentialRampToValueAtTime(0.0001, t + dol);
+    o.connect(g).connect(glavna); o.start(t); o.stop(t + dol + 0.05);
+  };
+  let sum = null;
+  const cinela = (t, jak) => {
+    if (!sum) { sum = ac.createBuffer(1, ac.sampleRate * 0.2, ac.sampleRate); const d = sum.getChannelData(0); for (let i = 0; i < d.length; i++) d[i] = Math.random() * 2 - 1; }
+    const s = ac.createBufferSource(), f = ac.createBiquadFilter(), g = ac.createGain();
+    s.buffer = sum; f.type = 'highpass'; f.frequency.value = 7000;
+    g.gain.setValueAtTime(jak, t); g.gain.exponentialRampToValueAtTime(0.0001, t + 0.06);
+    s.connect(f).connect(g).connect(glavna); s.start(t); s.stop(t + 0.1);
+  };
+  const boben = (t, jak) => {
+    const o = ac.createOscillator(), g = ac.createGain();
+    o.frequency.setValueAtTime(140, t); o.frequency.exponentialRampToValueAtTime(42, t + 0.12);
+    g.gain.setValueAtTime(jak, t); g.gain.exponentialRampToValueAtTime(0.0001, t + 0.2);
+    o.connect(g).connect(glavna); o.start(t); o.stop(t + 0.25);
+  };
+  /* Vzorci: [bpm, dolžina v šestnajstinkah, funkcija(korak, čas, šestnajstinka)] */
+  const VZORCI = {
+    cakanje: [112, 64, (i, t, s) => {          // vesel C–Am–F–G
+      const akordi = [[60, 64, 67], [57, 60, 64], [53, 57, 60], [55, 59, 62]], a = akordi[Math.floor(i / 16)], k = i % 16;
+      if (k === 0 || k === 8) { ton(t, a[0] - 24, s * 6, 'triangle', 0.5); boben(t, 0.35); }
+      if (k === 6 || k === 14) ton(t, a[0] - 12, s * 2, 'triangle', 0.3);
+      if (k % 2 === 0) ton(t, a[(k / 2) % 3] + 12 + (k >= 8 ? 12 : 0) * ((k / 2) % 2), s * 1.6, 'square', 0.06);
+      if (k % 4 === 2) cinela(t, 0.12);
+      if (i % 32 === 12) ton(t, 79, s * 3, 'sine', 0.12);
+    }],
+    vprasanje: [132, 32, (i, t, s) => {        // napet Am–F z ostinatom
+      const kor = i < 16 ? 45 : 41, k = i % 16;
+      ton(t, kor + (k % 2 ? 12 : 0), s * 0.9, 'triangle', 0.4);
+      if (k % 4 === 0) boben(t, 0.5);
+      cinela(t, k % 2 ? 0.05 : 0.1);
+      if (k === 0 || k === 6 || k === 12) [0, 3, 7].forEach(d => ton(t, kor + 24 + d + (i < 16 ? 0 : 1), s * 1.2, 'sawtooth', 0.025));
+    }],
+  };
+  const tic = () => {
+    if (!vzorec) return;
+    const [bpm, dol, fn] = VZORCI[vzorec], s = 60 / bpm / 4;
+    while (naslednji < ac.currentTime + 0.12) { fn(korak, naslednji, s); korak = (korak + 1) % dol; naslednji += s; }
+  };
+  const ZVOKI = {
+    razkrij: t => [72, 76, 79, 84].forEach((m, j) => ton(t + j * 0.07, m, 0.5, 'triangle', 0.35)),
+    tik: (t, zadnji) => ton(t, zadnji ? 96 : 89, 0.08, 'sine', 0.4),
+    gong: t => { [48, 55, 60, 64].forEach(m => ton(t, m, 1.6, 'triangle', 0.25)); boben(t, 0.7); },
+    konec: t => {
+      [[67, 0], [72, .15], [76, .3], [79, .45], [76, .75], [79, .9]].forEach(([m, d]) => ton(t + d, m, d >= .9 ? 1.4 : .3, 'square', 0.1));
+      [[48, 55, 60, 64], [53, 57, 60, 65], [48, 55, 60, 67]].forEach((a, j) => a.forEach(m => ton(t + j * 0.45, m, j === 2 ? 1.8 : 0.5, 'triangle', 0.18)));
+      for (let j = 0; j < 12; j++) cinela(t + j * 0.04, 0.08);
+      boben(t + 0.9, 0.7);
+    },
+  };
+  return {
+    get tiho() { return tiho; },
+    igraj(v) {
+      if (vzorec === v) return;
+      vzorec = v; clearInterval(ura); ura = null;
+      if (!v || !zagotovi()) return;
+      korak = 0; naslednji = ac.currentTime + 0.05;
+      ura = setInterval(tic, 30); tic();
+    },
+    zvok(ime, x) { if (zagotovi()) ZVOKI[ime](ac.currentTime + 0.02, x); },
+    ustavi() { this.igraj(null); },
+    preklopi() {
+      tiho = !tiho; shrani(KLJUC_TIHO, tiho ? '1' : '0');
+      if (zagotovi()) glavna.gain.setTargetAtTime(tiho ? 0 : 0.22, ac.currentTime, 0.05);
+      return tiho;
+    },
+    odkleni() { zagotovi(); },
+  };
+})();
+function ustaviIgro() { GLASBA.ustavi(); igraGen++; clearInterval(igraUra); igraUra = null; document.body.classList.remove('igra-full'); }
 const mesto = n => n ? `${n}. mesto` : '';
 const avatar = x => `<span class="ig-av">${esc(x.emoji || '🦉')}</span>`;
 function htmlLestvice(igr, koliko) {
@@ -3207,6 +3297,7 @@ function zacniIgro(g) {
   document.body.appendChild(dlg);
   dlg.addEventListener('close', () => dlg.remove());
   dlg.querySelectorAll('[data-c]').forEach(b => b.addEventListener('click', async () => {
+    GLASBA.odkleni();   // brskalnik dovoli zvok šele po kliku
     dlg.querySelectorAll('[data-c]').forEach(x => { x.disabled = true; });
     const id = await rpc('sola_igra_zacni', { p_seja: ucitelj.seja, p_kviz: g.id, p_cas: +b.dataset.c });
     if (typeof id !== 'string') {
@@ -3234,7 +3325,8 @@ async function zaslonIgre(id) {
   document.body.classList.add('igra-full');
   $main.innerHTML = '<div class="ig"><p class="ig-nal">Nalagam igro …</p></div>';
   const $ig = $main.querySelector('.ig');
-  let s = null, kljucIzrisa = '', slike = {}, poslanNaprej = -2, ura;
+  let s = null, kljucIzrisa = '', kljucZvoka = '', slike = {}, poslanNaprej = -2, ura, zadnjaSek = 0;
+  $ig.addEventListener('click', () => GLASBA.odkleni());
   const naprej = async () => {
     if (!s || poslanNaprej === s.vprasanje + (s.stanje === 'vprasanje' ? 0.5 : 0)) return;
     poslanNaprej = s.vprasanje + (s.stanje === 'vprasanje' ? 0.5 : 0);
@@ -3245,7 +3337,7 @@ async function zaslonIgre(id) {
     const igr = s.igralci || [], q = s.q ? { ...s.q, slika: slike[s.q.b] } : null;
     const glava = `<div class="ig-glava"><span class="ig-naslov">${esc(s.naslov)}</span>
       ${s.vprasanje >= 0 && s.stanje !== 'konec' ? `<span class="ig-st">${s.vprasanje + 1} / ${s.vseh}</span>` : ''}
-      <span class="ig-gumbi"><button class="btn" type="button" id="ig-cel" title="Cel zaslon">⛶</button>
+      <span class="ig-gumbi"><button class="btn" type="button" id="ig-zvok" title="Glasba">${GLASBA.tiho ? '🔇' : '🔊'}</button><button class="btn" type="button" id="ig-cel" title="Cel zaslon">⛶</button>
       <button class="btn" type="button" id="ig-konec">${s.stanje === 'konec' ? 'Zapri' : 'Končaj igro'}</button></span></div>`;
     let telo = '';
     if (s.stanje === 'cakanje') {
@@ -3289,6 +3381,10 @@ async function zaslonIgre(id) {
     $ig.innerHTML = glava + telo;
     if (s.stanje === 'konec' && igr.length) konfeti($ig);
     $ig.querySelector('#ig-naprej')?.addEventListener('click', naprej);
+    $ig.querySelector('#ig-zvok').addEventListener('click', e => { e.currentTarget.textContent = GLASBA.preklopi() ? '🔇' : '🔊'; });
+    if (s.stanje === 'cakanje' || s.stanje === 'vprasanje') GLASBA.igraj(s.stanje);
+    else if (kljucZvoka !== kljucIzrisa) { GLASBA.ustavi(); GLASBA.zvok(s.stanje === 'konec' ? 'konec' : 'razkrij'); }
+    kljucZvoka = kljucIzrisa;
     $ig.querySelector('#ig-cel').addEventListener('click', () => document.fullscreenElement ? document.exitFullscreen() : document.documentElement.requestFullscreen?.());
     $ig.querySelector('#ig-konec').addEventListener('click', async () => {
       if (s.stanje !== 'konec') {
@@ -3321,7 +3417,15 @@ async function zaslonIgre(id) {
   await osvezi();
   if (gen !== igraGen) return;
   igraUra = setInterval(() => { if (gen === igraGen) { osvezi(); } }, 1000);
-  (function tik() { if (gen !== igraGen) return; if (s && s.stanje === 'vprasanje' && ura) ura.risi(); requestAnimationFrame(tik); })();
+  (function tik() {
+    if (gen !== igraGen) return;
+    if (s && s.stanje === 'vprasanje' && ura) {
+      ura.risi();
+      const sek = Math.ceil(ura.ostalo() / 1000);   // zadnjih 5 sekund: tik-tak
+      if (sek !== zadnjaSek) { zadnjaSek = sek; if (sek >= 1 && sek <= 5) GLASBA.zvok('tik', sek === 1); }
+    }
+    requestAnimationFrame(tik);
+  })();
 }
 
 /* ── Učenčeva naprava ── */
