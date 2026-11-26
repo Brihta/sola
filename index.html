@@ -102,6 +102,7 @@
     .btn:hover { transform: translateY(-1px); box-shadow: var(--shadow); }
     .btn:active { transform: translateY(1px); }
     .btn:disabled { opacity: .55; cursor: default; transform: none; box-shadow: none; }
+    .btn.disabled { opacity: .55; pointer-events: none; }
     .btn svg { width: 18px; height: 18px; flex-shrink: 0; }
     .btn-go {
       border: 0; color: #fff; background: linear-gradient(135deg, var(--c1, var(--accent)), var(--c2, var(--accent-2)));
@@ -447,6 +448,9 @@
     .q-top { display: flex; align-items: flex-start; gap: 14px; margin-bottom: 16px; }
     .q-num { width: 40px; height: 40px; flex-shrink: 0; border-radius: 13px; display: flex; align-items: center; justify-content: center; font-family: var(--head); font-weight: 900; font-size: 1.2rem; color: #fff; background: linear-gradient(135deg, var(--c1), var(--c2)); }
     .q-text { margin: 6px 0 0; white-space: pre-line; font-size: 1.12rem; font-weight: 700; }
+    .q-img { display: block; max-width: 100%; max-height: 340px; margin: 0 auto 16px; border-radius: 14px; box-shadow: var(--shadow); background: #fff; }
+    .q-slika-ur { display: flex; gap: 8px; flex-wrap: wrap; align-items: center; margin: 0 0 14px; }
+    .q-slika-ur .msg { font-size: .85rem; }
     .q-hint { color: var(--muted); font-size: .85rem; font-weight: 700; margin: 2px 0 0; }
     .opts { display: grid; grid-template-columns: repeat(auto-fit, minmax(200px, 1fr)); gap: 10px; }
     .opt {
@@ -1679,6 +1683,7 @@ async function stranKviz(p, g) {
   if (MOJE[g.id] && !jeTP(p.id)) return izidKviza(p, g, MOJE[g.id]);   // vadba: vedno znova
   okvirKviza(p, g, '<p class="note">Nalagam kviz …</p>');
   const r = await rpc('sola_kviz', { p_id: g.id });
+  if (Array.isArray(r) && r.length) await dodajSlike(g.id, r[0].vprasanja);
   if (!enakaStran(h)) return;
   if (!Array.isArray(r) || !r.length) {
     okvirKviza(p, g, `<div class="empty"><img src="brihta.png" alt=""><strong>Ups!</strong>${r === NEDOSEGLJIVO ? 'Strežnik ni dosegljiv. Preveri povezavo in osveži stran.' : 'Tega kviza ni več.'}</div>`);
@@ -1748,7 +1753,47 @@ function izidVaje(p, g, o, vpr) {
 }
 
 /* Izriše vprašanja. predogled = samo za ogled (učitelj), brez oddaje. */
-function htmlVprasanj(vpr, predogled) {
+/* ─── Slike pri vprašanjih (supabase_kvizi_slike.sql) ───
+   Slika je vezana na besedilo vprašanja, zato ostane po nalaganju popravljenega Excela. */
+const urlSlike = pot => `${SUPABASE.url}/storage/v1/object/public/${SHRAMBA}/${potShrambe(pot)}`;
+async function dodajSlike(kvizId, vpr) {
+  const r = await rpc('sola_kviz_slike', { p_kviz: kvizId });
+  const m = {};
+  if (Array.isArray(r)) r.forEach(x => { m[x.besedilo] = x.pot; });
+  vpr.forEach(q => { q.slika = m[q.b] ? urlSlike(m[q.b]) : null; });
+  return vpr;
+}
+/* Pomanjša sliko na največ 1200 px in jo shrani kot JPG (manj podatkov za učence). */
+async function pomanjsajSliko(f) {
+  const bm = await createImageBitmap(f);
+  const k = Math.min(1, 1200 / Math.max(bm.width, bm.height));
+  const c = document.createElement('canvas');
+  c.width = Math.round(bm.width * k); c.height = Math.round(bm.height * k);
+  const x = c.getContext('2d'); x.fillStyle = '#fff'; x.fillRect(0, 0, c.width, c.height);
+  x.drawImage(bm, 0, 0, c.width, c.height);
+  return new Promise(res => c.toBlob(res, 'image/jpeg', 0.82));
+}
+const izbrisiIzShrambe = pot => fetch(`${SUPABASE.url}/storage/v1/object/${SHRAMBA}/${potShrambe(pot)}`,
+  { method: 'DELETE', headers: { apikey: SUPABASE.key, Authorization: `Bearer ${SUPABASE.key}` } }).catch(() => {});
+async function naloziSlikoVprasanja(kvizId, besedilo, f) {
+  if (!/^image\//.test(f.type)) return 'Izberi sliko (JPG, PNG …).';
+  let blob;
+  try { blob = await pomanjsajSliko(f); } catch (e) { return 'Te slike ni mogoče odpreti. Poskusi z JPG ali PNG.'; }
+  const pot = await rpc('sola_kviz_slika_zacni', { p_seja: ucitelj.seja, p_kviz: kvizId });
+  if (typeof pot !== 'string') return pot === NEDOSEGLJIVO ? 'Strežnik ni dosegljiv.' : 'Nalaganje ni dovoljeno. Se moraš znova prijaviti? (Ali pa v Supabase še ni zagnan supabase_kvizi_slike.sql.)';
+  let r;
+  try {
+    r = await fetch(`${SUPABASE.url}/storage/v1/object/${SHRAMBA}/${potShrambe(pot)}`, { method: 'POST', body: blob,
+      headers: { apikey: SUPABASE.key, Authorization: `Bearer ${SUPABASE.key}`, 'Content-Type': 'image/jpeg', 'x-upsert': 'false', 'cache-control': '31536000' } });
+  } catch (e) { return 'Povezava se je prekinila. Poskusi znova.'; }
+  if (!r.ok) return `Shramba je zavrnila sliko (${r.status}).`;
+  const stara = await rpc('sola_kviz_slika_shrani', { p_seja: ucitelj.seja, p_kviz: kvizId, p_besedilo: besedilo, p_pot: pot });
+  if (typeof stara !== 'string') { izbrisiIzShrambe(pot); return 'Slike ni bilo mogoče pripeti vprašanju. Poskusi znova.'; }
+  if (stara) izbrisiIzShrambe(stara);
+  return '';
+}
+
+function htmlVprasanj(vpr, predogled, uredi) {
   const dis = predogled ? ' disabled' : '';
   return vpr.map((q, i) => {
     let telo = '', namig = '';
@@ -1769,6 +1814,9 @@ function htmlVprasanj(vpr, predogled) {
     }
     return `<section class="q" id="q${i}">
       <div class="q-top"><span class="q-num">${i + 1}</span><div><p class="q-text">${esc(q.b)}</p>${namig ? `<p class="q-hint">${namig}</p>` : ''}</div></div>
+      ${q.slika ? `<img class="q-img" src="${esc(q.slika)}" alt="Slika k vprašanju ${i + 1}" loading="lazy">` : ''}
+      ${uredi ? `<div class="q-slika-ur"><label class="btn"><input type="file" accept="image/*" data-slika="${i}" hidden>🖼 ${q.slika ? 'Zamenjaj sliko' : 'Dodaj sliko'}</label>
+        ${q.slika ? `<button class="btn" type="button" data-brez-slike="${i}">✕ Odstrani sliko</button>` : ''}<span class="msg" id="q-slika-msg${i}"></span></div>` : ''}
       ${telo}
     </section>`;
   }).join('');
@@ -1899,6 +1947,7 @@ async function rezultatiKviza(p, g, h) {
     return;
   }
   const vpr = Array.isArray(kv) && kv.length ? kv[0].vprasanja : [];
+  if (vpr.length) { await dodajSlike(g.id, vpr); if (!enakaStran(h)) return; }
   const n = rez.length;
   const povp = n ? Math.round(rez.reduce((s, r) => s + (r.vseh ? r.tocke / r.vseh : 0), 0) / n * 100) : 0;
   const poVpr = vpr.map((_, i) => n ? Math.round(rez.filter(r => r.pravilni && r.pravilni[i] === true).length / n * 100) : 0);
@@ -1917,7 +1966,7 @@ async function rezultatiKviza(p, g, h) {
     <div style="margin:18px 0 30px;display:flex;gap:8px;flex-wrap:wrap"><button class="btn" type="button" id="r-osvezi">↻ Osveži</button>
       ${jeTP(p.id) ? `<a class="btn" href="#/p/${p.id}/excel">📊 Naloži popravljen Excel</a>${gumbObjave(g)}` : `<a class="btn" href="#/p/${p.id}/uredi/${encodeURIComponent(g.id)}">✏️ Uredi kviz</a>
       <button class="btn" type="button" id="r-skrij">🙈 Skrij kviz</button>`}</div>
-    ${vpr.length ? `<div class="sec-h"><h2>Predogled vprašanj</h2></div>${htmlVprasanj(vpr, true)}` : ''}`;
+    ${vpr.length ? `<div class="sec-h"><h2>Predogled vprašanj</h2></div><p class="note" style="margin:-6px 0 14px">K vprašanju lahko dodaš sliko. Učenci jo vidijo nad odgovori.</p>${htmlVprasanj(vpr, true, true)}` : ''}`;
   const stranska = `<div class="box"><h3>👨‍🏫 Učiteljski pogled</h3><p class="note" style="margin:0">${jeTP(p.id)
       ? `Vadba: učenci kviz rešujejo, kolikokrat želijo. V tabeli je najboljši rezultat vsakega učenca.${g.skrit ? ' <b>Kviz je skrit</b>: učenci ga ne vidijo.' : ''}`
       : 'Učenci tukaj rešujejo kviz. Po oddaji vidijo samo svoje točke. Kdor ima manj kot 50 %, reši znova (ta poskus se ne shrani).'}</p></div>
@@ -1930,6 +1979,24 @@ async function rezultatiKviza(p, g, h) {
     await naloziKvize();
     location.hash = `#/p/${p.id}`;
   });
+  const sporocilo = (i, t) => { const m = document.getElementById('q-slika-msg' + i); if (m) m.textContent = t; };
+  $main.querySelectorAll('[data-slika]').forEach(inp => inp.addEventListener('change', async () => {
+    const i = +inp.dataset.slika, f = inp.files[0];
+    if (!f) return;
+    inp.closest('label').classList.add('disabled'); sporocilo(i, 'Nalagam sliko …');
+    const napaka = await naloziSlikoVprasanja(g.id, vpr[i].b, f);
+    if (napaka) { sporocilo(i, napaka); inp.closest('label').classList.remove('disabled'); inp.value = ''; return; }
+    const y = window.scrollY; await rezultatiKviza(p, g, h); window.scrollTo(0, y);
+  }));
+  $main.querySelectorAll('[data-brez-slike]').forEach(b => b.addEventListener('click', async () => {
+    const i = +b.dataset.brezSlike;
+    if (!confirm(`Odstranim sliko pri vprašanju ${i + 1}?`)) return;
+    b.disabled = true;
+    const pot = await rpc('sola_kviz_slika_odstrani', { p_seja: ucitelj.seja, p_kviz: g.id, p_besedilo: vpr[i].b });
+    if (typeof pot !== 'string') { b.disabled = false; sporocilo(i, 'Odstranjevanje ni uspelo. Se moraš znova prijaviti?'); return; }
+    await izbrisiIzShrambe(pot);
+    const y = window.scrollY; await rezultatiKviza(p, g, h); window.scrollTo(0, y);
+  }));
   $main.querySelectorAll('[data-ponastavi]').forEach(b => b.addEventListener('click', async () => {
     if (!confirm(`Izbrišem oddajo učenca ${b.dataset.ime}? Kviz bo lahko rešil znova.`)) return;
     b.disabled = true;
