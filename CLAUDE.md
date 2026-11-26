@@ -78,6 +78,16 @@ pojem B = razlaga B
 - Učenec ima en poskus in po oddaji vidi samo svoje točke. Pod 50 % se oddaja
   ne shrani: dobi »Poskusi znova« in reši ponovno.
 
+## Predmeti učiteljev in kvizi iz Excela (od 26. 11. 2026)
+
+Vsak učitelj si na strani (prijavljen) naredi predmete (kvadratki »Moji predmeti s kvizi«), jih dodeli
+razredom in vanje doda module in kvize iz Excelove predloge `orodja/kviz-predloga/` (oblika v README tam).
+Id predmeta je `u-xxxxxxxx`; kvizi, moduli in razpored ga uporabljajo kot predmet. Učenec vidi samo
+predmete svojega razreda (razred iz letnika, zato se predmet vsako leto »prenese« na novo generacijo).
+Kvizi tu so VADBA (`sola_vaja_oddaj`): rešuje, kolikokrat želi, shrani se najboljši rezultat, pravila 50 % ni.
+Učitelj kviz skrije/pokaže z gumbom Skrij/Pokaži. Baza: `supabase_predmeti_uciteljev.sql`.
+Načrt naprej: 2. slike pri vprašanjih (doda jih učitelj na strani), 3. igra v živo (velik zaslon, lestvica).
+
 ## Ure računalništva: samostojne interaktivne strani (obvezno od 23. 10. 2026)
 
 Pri VSEH urah računalništva (racunalnistvo-3, -4, -5, -6, -6-9) so koraki ure

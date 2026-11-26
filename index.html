@@ -38,9 +38,9 @@
        Safari na iPadih obdrži svoje emojije. */
     @font-face {
       font-family: 'Brihta Emoji';
-      src: url('pisave/brihta-emoji.woff2?v=c320dbd9') format('woff2') tech(color-COLRv1);
+      src: url('pisave/brihta-emoji.woff2?v=7b37b2d2') format('woff2') tech(color-COLRv1);
       font-display: swap;
-      unicode-range: U+200D, U+26A0-26A1, U+26BD, U+26D4, U+2705, U+270A, U+270D, U+270F, U+2728, U+2B1C, U+1F1E7, U+1F1EC, U+1F308, U+1F31F, U+1F355, U+1F389, U+1F3A8, U+1F3AE-1F3AF, U+1F3C6, U+1F3EB, U+1F409-1F40A, U+1F40C, U+1F418-1F419, U+1F41D, U+1F422, U+1F427, U+1F42C, U+1F431, U+1F436, U+1F438, U+1F441, U+1F44B, U+1F44D, U+1F464-1F465, U+1F468, U+1F4A1, U+1F4AA, U+1F4BB, U+1F4BE, U+1F4C1, U+1F4C4, U+1F4CA, U+1F4CC, U+1F4D0, U+1F4D6, U+1F501, U+1F511-1F512, U+1F517, U+1F522, U+1F590, U+1F5B1, U+1F5D1, U+1F5FA, U+1F648, U+1F64B, U+1F680, U+1F6A2, U+1F916, U+1F938, U+1F981, U+1F984, U+1F989-1F98B, U+1F992, U+1F996, U+1F9A1, U+1F9AB, U+1F9D1-1F9D2, U+1F9E9;
+      unicode-range: U+200D, U+26A0-26A1, U+26BD, U+26D4, U+2705, U+270A, U+270D, U+270F, U+2728, U+2B1C, U+2B50, U+1F1E7, U+1F1EC, U+1F308, U+1F30D, U+1F31F, U+1F331, U+1F355, U+1F389, U+1F3A8, U+1F3AE-1F3AF, U+1F3B5, U+1F3C6, U+1F3EB, U+1F409-1F40A, U+1F40C, U+1F418-1F419, U+1F41D, U+1F422, U+1F427, U+1F42C, U+1F431, U+1F436, U+1F438, U+1F441, U+1F44B, U+1F44D, U+1F464-1F465, U+1F468, U+1F4A1, U+1F4AA, U+1F4BB, U+1F4BE, U+1F4C1, U+1F4C4, U+1F4CA, U+1F4CC, U+1F4D0, U+1F4D6, U+1F4DA, U+1F501, U+1F511-1F512, U+1F517, U+1F522, U+1F590, U+1F5B1, U+1F5D1, U+1F5FA, U+1F648, U+1F64B, U+1F680, U+1F6A2, U+1F916, U+1F938, U+1F981, U+1F984, U+1F989-1F98B, U+1F992, U+1F996, U+1F9A1, U+1F9AB, U+1F9D1-1F9D2, U+1F9E0, U+1F9E9-1F9EA;
     }
     /* emoji-pisava:konec */
     html, body { margin: 0; }
@@ -265,6 +265,25 @@
     .upl .drop input { display: none; }
     .upl .chk { display: flex; gap: 10px; align-items: center; font-weight: 700; margin-bottom: 18px; }
     .upl .chk input { width: 20px; height: 20px; }
+    /* Predmeti učiteljev: izbira ikone, barve in razredov */
+    .tp-izbira { display: flex; flex-wrap: wrap; gap: 8px; }
+    .upl .tp-moz { display: inline-block; margin: 0; cursor: pointer; position: relative; }
+    .tp-moz input { position: absolute; opacity: 0; pointer-events: none; }
+    .tp-moz span { display: grid; place-items: center; min-width: 44px; height: 44px; border-radius: 12px; border: 2px solid var(--line-2); background: var(--surface); font-weight: 800; }
+    .tp-em { font-size: 1.4rem; }
+    .tp-raz { padding: 0 12px; }
+    .tp-bar { width: 44px; border-color: transparent !important; }
+    .tp-moz input:checked + span { border-color: var(--ink); box-shadow: 0 0 0 3px color-mix(in srgb, var(--accent) 30%, transparent); }
+    .tp-moz input:checked + .tp-raz { background: var(--ink); color: var(--surface); }
+    .tp-moz input:focus-visible + span { outline: 3px solid var(--accent); outline-offset: 2px; }
+    /* Vadba: pregled po vprašanjih */
+    .vaja-pregled { list-style: none; padding: 0; margin: 18px auto 0; max-width: 520px; text-align: left; display: grid; gap: 6px; }
+    .vaja-pregled li { display: flex; gap: 10px; align-items: flex-start; padding: 8px 12px; border-radius: 12px; font-weight: 700; }
+    .vaja-pregled li.y { background: #e5f7ea; }
+    .vaja-pregled li.n { background: #fde8e6; }
+    .vaja-pregled li > span:first-child { font-weight: 900; }
+    .vaja-pregled li.y > span:first-child { color: #1e7b34; }
+    .vaja-pregled li.n > span:first-child { color: #c0392b; }
     @media (max-width: 560px) { .vis .lbl { display: none; } }
     /* Naslovi in vrstni red (supabase_razpored.sql) */
     .items .naslov-v { display: flex; align-items: center; gap: 8px; padding: 16px 2px 2px; min-width: 0; }
@@ -789,10 +808,40 @@ async function rpc(fn, params) {
 }
 let KVIZI = [];
 let MOJE = {};            // kviz_id → {tocke, vseh, oddano}
+const vKviz = (k, skrit) => ({ vrsta: 'kviz', ime: k.naslov, opis: k.opis, id: k.id, predmet: k.predmet, datum: k.objavljeno, vprasanj: k.vprasanj, skrit });
 async function naloziKvize() {
-  const r = await rpc('sola_kvizi_seznam');
-  if (Array.isArray(r)) KVIZI = r.map(k => ({ vrsta: 'kviz', ime: k.naslov, opis: k.opis, id: k.id, predmet: k.predmet, datum: k.objavljeno, vprasanj: k.vprasanj }));
+  const [r, s] = await Promise.all([rpc('sola_kvizi_seznam'), ucitelj ? rpc('sola_tp_skriti_kvizi', { p_seja: ucitelj.seja }) : []]);
+  if (!Array.isArray(r)) return;
+  /* Skrite kvize v svojih predmetih (predmeti učiteljev) vidi učitelj, da jih lahko znova pokaže. */
+  KVIZI = [...r.map(k => vKviz(k, false)), ...(Array.isArray(s) ? s.map(k => vKviz(k, true)) : [])];
 }
+
+/* ─── Predmeti učiteljev (supabase_predmeti_uciteljev.sql) ───────────────────
+   Učitelj si sam naredi predmet (kvadratek), ga dodeli razredom in vanj nalaga kvize iz
+   Excelove predloge (orodja/kviz-predloga/). Id je 'u-xxxxxxxx'; kvizi, moduli in razpored ga
+   uporabljajo kot predmet. Kvizi tu so VADBA: učenec jih rešuje, kolikokrat želi. */
+const BARVE_TP = [['#6366f1', '#a855f7'], ['#0ea5e9', '#22c55e'], ['#f43f5e', '#f97316'], ['#10b981', '#0ea5e9'],
+  ['#eab308', '#f97316'], ['#ec4899', '#8b5cf6'], ['#14b8a6', '#6366f1'], ['#ef4444', '#e11d48']];
+const EMOJI_TP = ['📚', '🔢', '📐', '🧪', '🌍', '📖', '✏️', '🇬🇧', '🎵', '🎨', '⚽', '🌱', '🧠', '💻', '🦉', '⭐'];
+const PREDLOGA_KVIZA = 'orodja/kviz-predloga/Brihta%20predloga%20za%20kviz.xlsx';
+let TP = [];
+const jeTP = id => /^u-[a-z0-9]{8}$/.test(String(id || ''));
+function vPredmetTP(t) {
+  const [c1, c2] = BARVE_TP[t.barva] || BARVE_TP[0];
+  const razredi = (t.razredi || []).slice().sort();
+  return { id: t.id, ime: t.ime, kratko: t.ime, polno: t.ime, emoji: t.emoji || '📚', c1, c2, barva: t.barva || 0, razredi, tp: true,
+    koda: razredi.join(', ') || 'brez razreda', naslovSeznama: 'Kvizi',
+    opis: razredi.length ? 'Razredi: ' + razredi.join(', ') : 'Še ni dodeljen nobenemu razredu' };
+}
+async function naloziTP() {
+  const r = ucitelj ? await rpc('sola_tp_moji', { p_seja: ucitelj.seja })
+    : ucenec ? await rpc('sola_tp_ucenec', { p_student: ucenec.id }) : [];
+  if (!Array.isArray(r)) return;   // strežnik ni dosegljiv ali SQL še ni zagnan: obdrži, kar je
+  TP = r.map(vPredmetTP);
+  for (let i = VSI.length - 1; i >= 0; i--) if (VSI[i].tp) VSI.splice(i, 1);
+  VSI.push(...TP);
+}
+const kvizov = n => n + ' ' + (n % 100 === 1 ? 'kviz' : n % 100 === 2 ? 'kviza' : (n % 100 === 3 || n % 100 === 4) ? 'kvizi' : 'kvizov');
 async function naloziMoje() {
   MOJE = {};
   if (!ucenec) return;
@@ -830,6 +879,7 @@ async function naloziObjave() {
 }
 const kljucObjave = g => g.vrsta === 'kviz' ? null : g.dodano ? 'dodano:' + g.dodano : (g.pot || g.url);
 function skrito(g) {
+  if (g.vrsta === 'kviz') return !!g.skrit;
   const k = kljucObjave(g);
   if (!k) return false;
   if (k in STANJE) return !STANJE[k];
@@ -839,11 +889,35 @@ const gradivaZa = id => [...(GRADIVA[id] || []), ...DODANA.filter(g => g.predmet
   .filter(g => ucitelj || !skrito(g))
   .sort((a, b) => new Date(b.datum) - new Date(a.datum));
 function gumbObjave(g) {
+  if (ucitelj && g.vrsta === 'kviz' && jeTP(g.predmet)) {
+    const s = !!g.skrit;
+    return `<button class="vis${s ? '' : ' on'}" type="button" data-kviz-skrit="${esc(g.id)}" data-skrito="${s ? 1 : 0}"
+      title="${s ? 'Učenci kviza ne vidijo. Klikni, da ga pokažeš.' : 'Učenci kviz vidijo. Klikni, da ga skriješ.'}">${s ? '👁 <span class="lbl">Pokaži</span>' : '🙈 <span class="lbl">Skrij</span>'}</button>`;
+  }
   if (!ucitelj || !kljucObjave(g)) return '';
   const s = skrito(g);
   return `<button class="vis${s ? '' : ' on'}" type="button" data-objava="${esc(kljucObjave(g))}" data-skrito="${s ? 1 : 0}"
     title="${s ? 'Učenci tega ne vidijo. Klikni, da objaviš.' : 'Učenci to vidijo. Klikni, da skriješ.'}">${s ? '🙈 <span class="lbl">Skrito</span>' : '👁 <span class="lbl">Objavljeno</span>'}</button>`;
 }
+/* Skrij / Pokaži kviz v predmetu učitelja (oddaje ostanejo). */
+document.addEventListener('click', async e => {
+  const b = e.target.closest('[data-kviz-skrit]');
+  if (!b || !ucitelj) return;
+  e.preventDefault();
+  const id = b.dataset.kvizSkrit, skrij = b.dataset.skrito !== '1';
+  b.disabled = true;
+  const r = await rpc('sola_tp_kviz_skrit', { p_seja: ucitelj.seja, p_id: id, p_skrit: skrij });
+  if (r === true) {
+    const k = KVIZI.find(x => x.id === id);
+    if (k) k.skrit = skrij;
+    const y = window.scrollY;
+    usmeri();
+    window.scrollTo(0, y);
+    return;
+  }
+  b.disabled = false;
+  alert(r === NEDOSEGLJIVO ? 'Strežnik ni dosegljiv.' : 'Ni uspelo. Se moraš znova prijaviti?');
+});
 /* Kljukica »Done in class« v Teaching: Max (tedenski agent) iz nje ve, kaj je bilo pri uri narejeno. */
 document.addEventListener('click', async e => {
   const b = e.target.closest('[data-kljukica]');
@@ -918,8 +992,9 @@ function kartica(p) {
     </div>`;
   }
   const vseh = vsaZa(p).length;
+  const pod = p.tp ? (vseh ? kvizov(vseh) : 'Še ni kvizov') + (ucitelj ? ' · ' + p.koda : '') : vseh ? gradiv(vseh) : p.opis || p.koda;
   return `<a class="card" style="${barve(p)}" href="${hrefPredmeta(p)}">${art}
-    <div class="card-body"><div><h3>${esc(p.ime)}</h3><p>${vseh ? gradiv(vseh) : esc(p.opis || p.koda)}</p></div>${PUSCICA}</div></a>`;
+    <div class="card-body"><div><h3>${esc(p.ime)}</h3><p>${esc(pod)}</p></div>${PUSCICA}</div></a>`;
 }
 
 function pozdrav() {
@@ -946,6 +1021,10 @@ function stranNadzorna() {
       </div>
       <div class="owl" aria-hidden="true"><div class="bubble">${esc(sporocilo)}</div><img src="brihta.png" alt=""></div>
     </section>
+    ${TP.length || ucitelj ? `<div class="sec-h"><h2>${ucitelj ? 'Moji predmeti s kvizi' : 'Kvizi za tvoj razred'}</h2></div>
+    <div class="cards" style="margin-bottom:34px">${TP.map(kartica).join('')}${ucitelj ? `<a class="card" style="--c1:#94a3b8;--c2:#cbd5e1" href="#/nov-predmet">
+      <div class="art"><span class="emoji" aria-hidden="true">＋</span></div>
+      <div class="card-body"><div><h3>Nov predmet</h3><p>Kvizi iz Excela za tvoje razrede</p></div>${PUSCICA}</div></a>` : ''}</div>` : ''}
     <div class="sec-h"><h2>Tvoji predmeti</h2></div>
     <div class="cards">${PREDMETI.map(kartica).join('')}${ORODJA.filter(vidi).map(orodjeKartica).join('')}</div>`;
 }
@@ -984,7 +1063,7 @@ function oznaka(g) {
   return o ? `<span class="tag done">✓ ${o.tocke}/${o.vseh}</span>` : '';
 }
 function vrsticaGradiva(p, g, kontrole) {
-  const ucit = ucitelj && kljucObjave(g);
+  const ucit = ucitelj && (kljucObjave(g) || (g.vrsta === 'kviz' && jeTP(g.predmet)));
   return `<li class="item${ucit || kontrole ? ' ucit' : ''}${ucit && skrito(g) ? ' skrito' : ''}"${kontrole ? ` data-k="${esc(kljuc(g))}"` : ''}>${kontrole || ''}<a href="${hrefGradiva(p, g)}" draggable="false">
     ${tile(g.vrsta, 'sm')}
     <span class="nm"><b>${esc(g.ime)}</b><small>${IMENA_VRST[g.vrsta] || 'Datoteka'}${g.vrsta === 'ura' ? ' · ' + g.koraki.map(k => k.ime).join(' → ') : g.velikost ? ' · ' + velikost(g.velikost) : ''}</small></span>
@@ -1000,7 +1079,7 @@ function okvirPredmeta(p, zavihek, vsebina, stranska, zadnjaDrobtina) {
   const pas = ['gradivo', 'kviz', 'urejevalnik'].includes(zavihek) ? '' : `<section class="banner" style="${barve(p)}">
       <div class="banner-top"><span class="emoji" aria-hidden="true">${p.emoji}</span>
         <div><h1>${esc(p.ime)}</h1><p>${esc(p.opis || p.koda)}</p></div>
-        ${ucitelj ? `<div class="banner-akcije"><a class="btn banner-btn" href="#/p/${p.id}/nalozi">⬆ Naloži</a><a class="btn banner-btn" href="#/p/${p.id}/nov-kviz">＋ Nov kviz</a>${zavihek === 'domov' ? `<button class="btn banner-btn" type="button" id="dodaj-naslov">＋ Naslov</button><button class="btn banner-btn" type="button" id="dodaj-modul">＋ Modul</button>` : ''}</div>` : ''}</div>
+        ${ucitelj ? `<div class="banner-akcije">${p.tp ? `<a class="btn banner-btn" href="#/p/${p.id}/excel">📊 Kviz iz Excela</a>` : `<a class="btn banner-btn" href="#/p/${p.id}/nalozi">⬆ Naloži</a><a class="btn banner-btn" href="#/p/${p.id}/nov-kviz">＋ Nov kviz</a>`}${zavihek === 'domov' ? `<button class="btn banner-btn" type="button" id="dodaj-naslov">＋ Naslov</button><button class="btn banner-btn" type="button" id="dodaj-modul">＋ Modul</button>` : ''}${p.tp ? `<a class="btn banner-btn" href="#/p/${p.id}/predmet">⚙ Predmet</a>` : ''}</div>` : ''}</div>
       ${s ? `<div class="banner-sw">${s.otroci.filter(o => o !== p).map(o => `<a href="${hrefPredmeta(o)}">${o.emoji} ${esc(o.kratko || o.ime)}</a>`).join('')}</div>` : ''}
       <nav class="tabs" aria-label="Zavihki">
         <a href="#/p/${p.id}" class="${zavihek === 'domov' ? 'active' : ''}">Domov</a>
@@ -1249,7 +1328,9 @@ function stranPredmet(p) {
   if (napaka) {
     vsebina = `<div class="empty"><img src="brihta.png" alt=""><strong>Ups!</strong>Gradiv trenutno ni mogoče naložiti. Osveži stran.</div>`;
   } else if (!seznam.length && !(ucitelj && NASLOVI.some(n => n.predmet === p.id))) {
-    vsebina = `<div class="empty"><img src="brihta.png" alt=""><strong>Tukaj je še prazno</strong>Ko učitelj objavi gradivo, se pokaže tukaj.</div>`;
+    vsebina = ucitelj && p.tp
+      ? `<div class="empty"><img src="brihta.png" alt=""><strong>Tukaj je še prazno</strong>Najprej dodaj modul (＋ Modul), npr. »Ulomki«, nato naloži prvi kviz (📊 Kviz iz Excela).</div>`
+      : `<div class="empty"><img src="brihta.png" alt=""><strong>Tukaj je še prazno</strong>Ko učitelj objavi gradivo, se pokaže tukaj.</div>`;
   } else {
     vsebina = htmlRazporeda(p, seznam);
   }
@@ -1591,7 +1672,7 @@ async function stranKviz(p, g) {
     document.getElementById('k-prijava').addEventListener('click', () => odpriPredal('racun'));
     return;
   }
-  if (MOJE[g.id]) return izidKviza(p, g, MOJE[g.id]);
+  if (MOJE[g.id] && !jeTP(p.id)) return izidKviza(p, g, MOJE[g.id]);   // vadba: vedno znova
   okvirKviza(p, g, '<p class="note">Nalagam kviz …</p>');
   const r = await rpc('sola_kviz', { p_id: g.id });
   if (!enakaStran(h)) return;
@@ -1644,6 +1725,24 @@ function poskusiZnova(p, g, o) {
   document.getElementById('k-znova').addEventListener('click', () => { window.scrollTo(0, 0); stranKviz(p, g); });
 }
 
+/* Vadba (predmeti učiteljev): po oddaji vidi točke, katera vprašanja so bila pravilna,
+   najboljši rezultat in gumb »Reši znova«. Pravilnih odgovorov ne vidi. */
+function izidVaje(p, g, o, vpr) {
+  const odst = o.vseh ? Math.round(o.tocke / o.vseh * 100) : 0;
+  const [naslovIzida, emoji] = odst === 100 ? ['Popolno!', '🏆'] : odst >= 80 ? ['Odlično!', '🌟'] : odst >= 50 ? ['Dobro ti gre!', '👍'] : ['Vadi naprej!', '💪'];
+  const pr = Array.isArray(o.pravilni) ? o.pravilni : [];
+  okvirKviza(p, g, `<section class="result" id="izid">
+      <div class="ring" style="--p:${odst}"><div>${o.tocke}/${o.vseh}<small>${tock(o.vseh)}</small></div></div>
+      <h2>${emoji} ${naslovIzida}</h2>
+      <p>${o.poskusov}. poskus · najboljši rezultat <b>${o.najboljse}/${o.vseh}</b></p>
+      <ul class="vaja-pregled">${vpr.map((q, i) => `<li class="${pr[i] === true ? 'y' : 'n'}"><span aria-hidden="true">${pr[i] === true ? '✓' : '✗'}</span><span>${esc(q.b)}</span></li>`).join('')}</ul>
+      <button class="btn btn-go btn-big" type="button" id="k-znova" style="margin-top:16px">🔁 Reši znova</button>
+    </section>
+    <a class="btn" href="#/p/${p.id}">${SVG.prev} Nazaj na ${esc(p.ime)}</a>`);
+  if (odst >= 50) konfeti(document.getElementById('izid'));
+  document.getElementById('k-znova').addEventListener('click', () => { window.scrollTo(0, 0); stranKviz(p, g); });
+}
+
 /* Izriše vprašanja. predogled = samo za ogled (učitelj), brez oddaje. */
 function htmlVprasanj(vpr, predogled) {
   const dis = predogled ? ' disabled' : '';
@@ -1654,7 +1753,7 @@ function htmlVprasanj(vpr, predogled) {
       if (q.t === 'vec') namig = 'Označi vse pravilne odgovore.';
       telo = `<div class="opts">${q.m.map(m => `<label class="opt"><input type="${tip}" name="q${i}" value="${esc(m)}"${dis}><span>${esc(m)}</span></label>`).join('')}</div>`;
     } else if (q.t === 'kratek') {
-      telo = `<input class="short" type="text" data-q="${i}" autocomplete="off" spellcheck="false" placeholder="Napiši odgovor …"${dis}>`;
+      telo = `<input class="short" type="text" data-q="${i}" autocomplete="off" spellcheck="false"${q.n ? ' inputmode="decimal" placeholder="Vpiši število …"' : ' placeholder="Napiši odgovor …"'}${dis}>`;
     } else if (q.t === 'povezi') {
       namig = 'Vsakemu na levi izberi pravi par.';
       telo = `<div class="match">${q.l.map((l, j) => `<div class="l">${esc(l)}</div><span class="eq">→</span>
@@ -1677,7 +1776,8 @@ function posodobiPuscice(ol) {
 }
 
 function resujKviz(p, g, vpr, h) {
-  okvirKviza(p, g, `<div class="progress" aria-live="polite"><span id="k-st">0 / ${vpr.length}</span><span class="bar"><i id="k-bar"></i></span><span aria-hidden="true">🎯</span></div>
+  const vaja = jeTP(p.id), prej = MOJE[g.id];
+  okvirKviza(p, g, `${vaja ? `<p class="note" style="margin:-8px 0 14px">🔁 Vadba: rešuješ lahko, kolikokrat želiš.${prej ? ` Tvoj najboljši rezultat: <b>${prej.tocke}/${prej.vseh}</b>.` : ''}</p>` : ''}<div class="progress" aria-live="polite"><span id="k-st">0 / ${vpr.length}</span><span class="bar"><i id="k-bar"></i></span><span aria-hidden="true">🎯</span></div>
     <form id="kviz" novalidate>${htmlVprasanj(vpr)}
     <div class="quiz-foot"><span class="saved" id="k-shranjeno"></span><span class="msg" id="k-msg"></span>
       <button class="btn btn-go btn-big" type="submit" id="k-oddaj">Oddaj kviz 🚀</button></div></form>`);
@@ -1748,10 +1848,22 @@ function resujKviz(p, g, vpr, h) {
     const manjka = vpr.filter((q, i) => q.t !== 'vrstni' && !odgovorjeno(q, a[i], i)).length;
     const vprasaj = manjka
       ? `Na ${manjka} ${manjka === 1 ? 'vprašanje' : manjka === 2 ? 'vprašanji' : manjka < 5 ? 'vprašanja' : 'vprašanj'} nisi odgovoril/-a. Vseeno oddam?`
-      : 'Oddam kviz? Potem odgovorov ne moreš več spreminjati.';
-    if (!confirm(vprasaj)) return;
+      : vaja ? '' : 'Oddam kviz? Potem odgovorov ne moreš več spreminjati.';
+    if (vprasaj && !confirm(vprasaj)) return;
     const btn = document.getElementById('k-oddaj'), msg = document.getElementById('k-msg');
     btn.disabled = true; btn.textContent = 'Oddajam …'; msg.textContent = '';
+    if (vaja) {
+      const v = await rpc('sola_vaja_oddaj', { p_student: ucenec.id, p_kviz: g.id, p_odgovori: a });
+      if (!Array.isArray(v) || !v.length) {
+        btn.disabled = false; btn.textContent = 'Oddaj kviz 🚀';
+        msg.textContent = v === NEDOSEGLJIVO ? 'Strežnik ni dosegljiv. Odgovori so shranjeni — poskusi znova.' : 'Oddaja ni uspela. Povej učitelju.';
+        return;
+      }
+      MOJE[g.id] = { kviz_id: g.id, tocke: v[0].najboljse, vseh: v[0].vseh, oddano: new Date().toISOString() };
+      try { localStorage.removeItem(osnutekKljuc(g.id)); } catch (e2) {}
+      if (enakaStran(h)) { window.scrollTo(0, 0); izidVaje(p, g, v[0], vpr); }
+      return;
+    }
     const r = await rpc('sola_kviz_oddaj', { p_student: ucenec.id, p_kviz: g.id, p_odgovori: a });
     if (!Array.isArray(r) || !r.length) {
       btn.disabled = false; btn.textContent = 'Oddaj kviz 🚀';
@@ -1775,7 +1887,7 @@ async function rezultatiKviza(p, g, h) {
   okvirKviza(p, g, '<p class="note">Nalagam rezultate …</p>');
   const [rez, kv] = await Promise.all([
     rpc('sola_kviz_rezultati', { p_seja: ucitelj.seja, p_kviz: g.id }),
-    rpc('sola_kviz', { p_id: g.id }),
+    jeTP(p.id) ? rpc('sola_tp_kviz', { p_seja: ucitelj.seja, p_id: g.id }) : rpc('sola_kviz', { p_id: g.id }),
   ]);
   if (!enakaStran(h)) return;
   if (!Array.isArray(rez)) {
@@ -1799,14 +1911,16 @@ async function rezultatiKviza(p, g, h) {
         <td><button class="btn" type="button" data-ponastavi="${esc(r.student_id)}" data-ime="${esc(r.ime)}" title="Izbriše oddajo, da lahko učenec kviz reši znova">Ponastavi</button></td></tr>`).join('')}
       </tbody></table>` : '<div class="empty"><img src="brihta.png" alt=""><strong>Še nobene oddaje</strong>Ko učenci oddajo kviz, se pokažejo tukaj.</div>'}
     <div style="margin:18px 0 30px;display:flex;gap:8px;flex-wrap:wrap"><button class="btn" type="button" id="r-osvezi">↻ Osveži</button>
-      <a class="btn" href="#/p/${p.id}/uredi/${encodeURIComponent(g.id)}">✏️ Uredi kviz</a>
-      <button class="btn" type="button" id="r-skrij">🙈 Skrij kviz</button></div>
+      ${jeTP(p.id) ? `<a class="btn" href="#/p/${p.id}/excel">📊 Naloži popravljen Excel</a>${gumbObjave(g)}` : `<a class="btn" href="#/p/${p.id}/uredi/${encodeURIComponent(g.id)}">✏️ Uredi kviz</a>
+      <button class="btn" type="button" id="r-skrij">🙈 Skrij kviz</button>`}</div>
     ${vpr.length ? `<div class="sec-h"><h2>Predogled vprašanj</h2></div>${htmlVprasanj(vpr, true)}` : ''}`;
-  const stranska = `<div class="box"><h3>👨‍🏫 Učiteljski pogled</h3><p class="note" style="margin:0">Učenci tukaj rešujejo kviz. Po oddaji vidijo samo svoje točke. Kdor ima manj kot 50 %, reši znova (ta poskus se ne shrani).</p></div>
+  const stranska = `<div class="box"><h3>👨‍🏫 Učiteljski pogled</h3><p class="note" style="margin:0">${jeTP(p.id)
+      ? `Vadba: učenci kviz rešujejo, kolikokrat želijo. V tabeli je najboljši rezultat vsakega učenca.${g.skrit ? ' <b>Kviz je skrit</b>: učenci ga ne vidijo.' : ''}`
+      : 'Učenci tukaj rešujejo kviz. Po oddaji vidijo samo svoje točke. Kdor ima manj kot 50 %, reši znova (ta poskus se ne shrani).'}</p></div>
     ${vpr.length ? `<div class="box"><h3>Uspešnost po vprašanjih</h3><ul class="bars">${poVpr.map((x, i) => `<li><span>Vprašanje ${i + 1}</span><span class="b"><i style="width:${n ? x : 0}%"></i></span><b>${n ? x + '%' : '–'}</b></li>`).join('')}</ul></div>` : ''}`;
   okvirKviza(p, g, vsebina, stranska);
   document.getElementById('r-osvezi').addEventListener('click', () => rezultatiKviza(p, g, h));
-  document.getElementById('r-skrij').addEventListener('click', async () => {
+  document.getElementById('r-skrij')?.addEventListener('click', async () => {
     if (!confirm(`Skrijem kviz »${g.ime}«? Učenci ga ne bodo več videli, oddaje ostanejo.`)) return;
     await rpc('sola_kviz_skrij', { p_seja: ucitelj.seja, p_id: g.id });
     await naloziKvize();
@@ -1999,6 +2113,268 @@ async function stranNovKviz(p, urejamId) {
     }
     await naloziKvize();
     location.hash = `#/p/${k.predmet}/${encodeURIComponent('kviz:' + k.id)}`;
+  });
+}
+
+/* ─── Kviz iz Excela (oblika: orodja/kviz-predloga/README.md) ────────────────
+   Brez knjižnic: .xlsx je zip z XML-ji, razširi ga brskalnik (DecompressionStream).
+   Bere se samo list »Kviz«: C1 naslov, C2 opis, od vrstice 6: B vrsta, C vprašanje, D–I odgovori. */
+async function razsiriZip(buf) {
+  const dv = new DataView(buf), u8 = new Uint8Array(buf), dec = new TextDecoder();
+  let e = -1;
+  for (let i = buf.byteLength - 22; i >= Math.max(0, buf.byteLength - 65557); i--) if (dv.getUint32(i, true) === 0x06054b50) { e = i; break; }
+  if (e < 0) throw new Error('ni zip');
+  const datoteke = {};
+  for (let k = 0, n = dv.getUint16(e + 10, true), o = dv.getUint32(e + 16, true); k < n; k++) {
+    if (dv.getUint32(o, true) !== 0x02014b50) throw new Error('pokvarjen zip');
+    const ln = dv.getUint16(o + 28, true);
+    datoteke[dec.decode(u8.subarray(o + 46, o + 46 + ln))] = { metoda: dv.getUint16(o + 10, true), vel: dv.getUint32(o + 20, true), lo: dv.getUint32(o + 42, true) };
+    o += 46 + ln + dv.getUint16(o + 30, true) + dv.getUint16(o + 32, true);
+  }
+  return async ime => {
+    const d = datoteke[ime];
+    if (!d) return null;
+    const zac = d.lo + 30 + dv.getUint16(d.lo + 26, true) + dv.getUint16(d.lo + 28, true), surovo = u8.subarray(zac, zac + d.vel);
+    if (d.metoda === 0) return dec.decode(surovo);
+    return new Response(new Blob([surovo]).stream().pipeThrough(new DecompressionStream('deflate-raw'))).text();
+  };
+}
+/* Vrne { 'C1': 'Naslov', 'B6': 'Izbira', 'D10': 4, … } ali { brezLista: true }. */
+async function beriExcel(buf) {
+  const beri = await razsiriZip(buf);
+  const xml = async ime => { const t = await beri(ime); return t == null ? null : new DOMParser().parseFromString(t, 'application/xml'); };
+  const vsi = (d, tag) => d ? [...d.getElementsByTagNameNS('*', tag)] : [];
+  const wb = await xml('xl/workbook.xml');
+  if (!wb) throw new Error('ni Excel');
+  const list = vsi(wb, 'sheet').find(s => (s.getAttribute('name') || '').trim().toLowerCase() === 'kviz');
+  if (!list) return { brezLista: true };
+  const rid = list.getAttributeNS('http://schemas.openxmlformats.org/officeDocument/2006/relationships', 'id') || list.getAttribute('r:id');
+  const rel = vsi(await xml('xl/_rels/workbook.xml.rels'), 'Relationship').find(r => r.getAttribute('Id') === rid);
+  if (!rel) throw new Error('ni lista');
+  const cilj = rel.getAttribute('Target');
+  const pot = cilj.startsWith('/') ? cilj.slice(1) : 'xl/' + cilj.replace(/^\.\//, '');
+  const nizi = vsi(await xml('xl/sharedStrings.xml'), 'si').map(si => vsi(si, 't').map(t => t.textContent).join(''));
+  const celice = {};
+  vsi(await xml(pot), 'c').forEach(c => {
+    const r = c.getAttribute('r'), t = c.getAttribute('t'), v = vsi(c, 'v')[0];
+    if (!r || !/^[A-I]\d+$/.test(r)) return;   // J in K sta formuli za pomoč
+    let x = null;
+    if (t === 's') x = v ? nizi[+v.textContent] : null;
+    else if (t === 'inlineStr') x = vsi(c, 't').map(e => e.textContent).join('');
+    else if (t === 'str' || t === 'e') x = v ? v.textContent : null;
+    else if (t === 'b') x = v && v.textContent === '1' ? 'TRUE' : 'FALSE';
+    else if (v) x = +v.textContent;
+    if (x != null && x !== '') celice[r] = x;
+  });
+  return celice;
+}
+const brezStresic = s => String(s ?? '').normalize('NFKD').replace(/[̀-ͯ]/g, '').toLowerCase();
+const stevilka = n => String(+(+n).toPrecision(12)).replace('.', ',');
+const celica = x => x == null ? '' : typeof x === 'number' ? stevilka(x) : String(x).replace(/\s+/g, ' ').trim();
+const VRSTE_XL = { izbira: 'izbira', drzinedrzi: 'drzi', povezi: 'povezi', razvrsti: 'razvrsti', stevilo: 'stevilo' };
+/* Iz celic naredi kviz v isti obliki kot razcleniKviz (javni del, ključ) in še besedilo (vir). */
+function kvizIzExcela(cel, seme) {
+  const napake = [], javno = [], kljuc = [], vir = [];
+  const naslov = celica(cel.C1).slice(0, 200), opis = celica(cel.C2).slice(0, 500);
+  if (!naslov) napake.push('Manjka naslov kviza (list Kviz, celica C1).');
+  const zadnja = Math.max(0, ...Object.keys(cel).map(k => +k.replace(/^[A-Z]+/, '')));
+  const enaki = a => new Set(a.map(x => x.toLowerCase())).size !== a.length;
+  for (let r = 6; r <= zadnja; r++) {
+    const vrsta = celica(cel['B' + r]), b = celica(cel['C' + r]);
+    const surovi = ['D', 'E', 'F', 'G', 'H', 'I'].map(s => cel[s + r]), odg = surovi.map(celica), polni = odg.filter(Boolean);
+    if (!vrsta && !b && !polni.length) continue;
+    const nap = t => napake.push(`Vprašanje ${r - 5}: ${t}`);
+    const v = VRSTE_XL[brezStresic(vrsta).replace(/[^a-z]/g, '')];
+    if (!vrsta) { nap('izberi vrsto vprašanja (stolpec Vrsta).'); continue; }
+    if (!v) { nap(`neznana vrsta »${vrsta}«. Izberi jo s spustnega seznama.`); continue; }
+    if (!b) { nap('manjka besedilo vprašanja.'); continue; }
+    const n = javno.length;
+    if (v === 'izbira') {
+      const prav = odg[0], napacni = odg.slice(1, 5).filter(Boolean);
+      if (!prav) { nap('manjka pravilni odgovor (Odgovor 1).'); continue; }
+      if (!napacni.length) { nap('dodaj vsaj en napačen odgovor (Odgovor 2 do 5).'); continue; }
+      if (odg[5]) { nap('pri izbiri so največ 4 napačni odgovori (Odgovor 6 pusti prazen).'); continue; }
+      if (enaki([prav, ...napacni])) { nap('dva odgovora sta enaka.'); continue; }
+      javno.push({ t: 'izbira', b, m: premesaj([prav, ...napacni], seme + n) }); kljuc.push({ t: 'izbira', p: [prav] });
+      vir.push(`? ${b}`, `+ ${prav}`, ...napacni.map(x => `- ${x}`), '');
+    } else if (v === 'drzi') {
+      const x = brezStresic(odg[0]).replace(/[^a-z]/g, '');
+      if (x !== 'drzi' && x !== 'nedrzi') { nap('v Odgovor 1 napiši Drži ali Ne drži.'); continue; }
+      const prav = x === 'drzi' ? 'Drži' : 'Ne drži';
+      javno.push({ t: 'izbira', b, m: ['Drži', 'Ne drži'] }); kljuc.push({ t: 'izbira', p: [prav] });
+      vir.push(`? ${b}`, ...['Drži', 'Ne drži'].map(o => (o === prav ? '+ ' : '- ') + o), '');
+    } else if (v === 'povezi') {
+      const pari = polni.map(x => {
+        const i = x.indexOf(' = ') >= 0 ? x.indexOf(' = ') : x.indexOf('='), d = x.indexOf(' = ') >= 0 ? 3 : 1;
+        return i < 0 ? null : [x.slice(0, i).trim(), x.slice(i + d).trim()];
+      });
+      const slab = polni.find((x, i) => !pari[i] || !pari[i][0] || !pari[i][1]);
+      if (slab) { nap(`»${slab}« ni par v obliki pojem = razlaga.`); continue; }
+      if (pari.length < 2) { nap('povezovanje potrebuje vsaj 2 para.'); continue; }
+      if (enaki(pari.map(x => x[0]))) { nap('leva stran (pojem) se ponovi.'); continue; }
+      javno.push({ t: 'povezi', b, l: pari.map(x => x[0]), d: premesaj([...new Set(pari.map(x => x[1]))].sort(), seme + n) });
+      kljuc.push({ t: 'povezi', p: pari });
+      vir.push(`? ${b}`, ...pari.map(x => `${x[0]} = ${x[1]}`), '');
+    } else if (v === 'razvrsti') {
+      if (polni.length < 2) { nap('razvrščanje potrebuje vsaj 2 odgovora.'); continue; }
+      if (enaki(polni)) { nap('dva odgovora sta enaka.'); continue; }
+      let m = polni;
+      for (let k = 0; k < 10 && m.join('\u0000') === polni.join('\u0000'); k++) m = premesaj(polni, seme + n + 'x' + k);
+      javno.push({ t: 'vrstni', b, m }); kljuc.push({ t: 'vrstni', p: polni });
+      vir.push(`? ${b}`, ...polni.map((x, i) => `${i + 1}. ${x}`), '');
+    } else {
+      const s = odg[0].replace(/\s/g, '');
+      const num = typeof surovi[0] === 'number' ? surovi[0] : /^-?\d+([.,]\d+)?$/.test(s) ? +s.replace(',', '.') : NaN;
+      if (!isFinite(num)) { nap('Odgovor 1 mora biti število.'); continue; }
+      const z = stevilka(num);
+      javno.push({ t: 'kratek', b, n: 1 }); kljuc.push({ t: 'kratek', p: [...new Set([z, z.replace(',', '.')])] });
+      vir.push(`? ${b}`, `= ${z}`, '');
+    }
+  }
+  if (!javno.length && !napake.length) napake.push('Na listu Kviz ni nobenega vprašanja (vprašanja so od vrstice 6 naprej).');
+  if (javno.length > 100) napake.push('Kviz ima lahko največ 100 vprašanj.');
+  return { naslov, opis, vprasanja: javno, kljuc, napake, vir: `Naslov: ${naslov}\n${opis ? `Opis: ${opis}\n` : ''}\n${vir.join('\n')}` };
+}
+
+async function stranExcel(p) {
+  if (!ucitelj) { location.replace(`#/p/${p.id}`); odpriPredal('racun'); return; }
+  const moduli = () => NASLOVI.filter(n => n.predmet === p.id && n.vrsta === 'modul');
+  const izbran = preberi('sola_xl_modul:' + p.id) || '';
+  okvirPredmeta(p, 'urejevalnik', `
+    <div class="vhead"><a class="btn" href="#/p/${p.id}" aria-label="Nazaj">${SVG.prev}</a>${tile('excel', 'sm')}<h1>Kviz iz Excela</h1></div>
+    <div class="editor">
+      <div class="ed-left">
+        <div class="help">1. <a href="${PREDLOGA_KVIZA}" download="Brihta predloga za kviz.xlsx"><b>⬇ Prenesi predlogo</b></a> ali odpri svojo kopijo.<br>
+          2. Na listu <b>Kviz</b> vpiši naslov in vprašanja.<br>3. Shrani datoteko in jo izberi spodaj.</div>
+        <form class="upl" id="xl-form" novalidate>
+          <div class="field"><label class="drop" id="xl-drop">
+            <input type="file" id="xl-file" accept=".xlsx,application/vnd.openxmlformats-officedocument.spreadsheetml.sheet">
+            <span id="xl-ime">📊 Izberi ali sem povleci Excelovo datoteko<br><small class="note">.xlsx (iz Google Preglednic: Datoteka › Prenesi › Microsoft Excel)</small></span>
+          </label></div>
+          <div class="field"><label for="xl-modul">Modul</label><select id="xl-modul" class="sel"></select></div>
+          <div id="xl-napake"></div>
+          <div class="ed-actions"><span class="msg" id="xl-msg"></span>
+            <button class="btn btn-go btn-big" type="submit" id="xl-ok" disabled>Ustvari kviz 🚀</button></div>
+        </form>
+      </div>
+      <div class="ed-right">
+        <div class="sec-h"><h2>Predogled</h2><small class="note" id="xl-povzetek"></small></div>
+        <div id="xl-predogled" style="${barve(p)}"><div class="empty">Ko izbereš datoteko, se tukaj pokaže kviz, kot ga vidijo učenci, s pravilnimi odgovori.</div></div>
+      </div>
+    </div>`, null, 'Kviz iz Excela');
+  const $f = document.getElementById('xl-file'), $drop = document.getElementById('xl-drop'), $m = document.getElementById('xl-modul'),
+        $msg = document.getElementById('xl-msg'), $ok = document.getElementById('xl-ok'), $nap = document.getElementById('xl-napake');
+  const napolniModule = izb => {
+    $m.innerHTML = `<option value="">— brez modula —</option>${moduli().map(n => `<option value="${esc(n.id)}"${n.id === izb ? ' selected' : ''}>📁 ${esc(n.besedilo)}</option>`).join('')}<option value="+">＋ Nov modul …</option>`;
+  };
+  napolniModule(izbran);
+  let prejsnji = $m.value;
+  $m.addEventListener('change', async () => {
+    if ($m.value !== '+') { prejsnji = $m.value; return; }
+    const t = (prompt('Ime modula (npr. »Ulomki« ali »Unit 1: Animals«):') || '').trim().slice(0, 120);
+    if (!t) { $m.value = prejsnji; return; }
+    const id = await rpc('sola_razdelek_dodaj', { p_seja: ucitelj.seja, p_predmet: p.id, p_besedilo: t, p_vrsta: 'modul' });
+    if (typeof id !== 'string') { alert('Modula ni bilo mogoče dodati. Se moraš znova prijaviti?'); $m.value = prejsnji; return; }
+    NASLOVI.push({ id, predmet: p.id, besedilo: t, vrsta: 'modul' });
+    const red = [{ m: id, v: [] }, ...redIzDrevesa(drevoPredmeta(p, gradivaZa(p.id))).filter(x => !(x && x.m === id))];
+    RAZPORED[p.id] = red;
+    await rpc('sola_razpored_shrani', { p_seja: ucitelj.seja, p_predmet: p.id, p_red: red });
+    napolniModule(id); prejsnji = id;
+  });
+  let kviz = null;
+  const izberi = async f => {
+    if (!f) return;
+    kviz = null; $ok.disabled = true; $nap.innerHTML = ''; $msg.textContent = '';
+    if (!/\.xlsx$/i.test(f.name)) { $msg.textContent = 'Izberi Excelovo datoteko (.xlsx).'; return; }
+    if (f.size > 5 * 1048576) { $msg.textContent = 'Datoteka je prevelika (največ 5 MB).'; return; }
+    $drop.classList.add('ima');
+    document.getElementById('xl-ime').innerHTML = `✅ <b>${esc(f.name)}</b>`;
+    let cel;
+    try { cel = await beriExcel(await f.arrayBuffer()); }
+    catch (err) { $msg.textContent = 'Datoteke ni mogoče prebrati. Je to Excelova datoteka (.xlsx), narejena iz Brihtine predloge?'; return; }
+    const k = cel.brezLista ? { napake: ['V datoteki ni lista »Kviz«. Uporabi Brihtino predlogo.'], vprasanja: [] }
+      : kvizIzExcela(cel, `${p.id}/${slugKviza(celica(cel.C1))}`);
+    $nap.innerHTML = k.napake.length ? `<div class="help"><b>Popravi v Excelu in datoteko izberi znova:</b><ul style="margin:6px 0 0;padding-left:20px">${k.napake.map(n => `<li>${esc(n)}</li>`).join('')}</ul></div>` : '';
+    document.getElementById('xl-povzetek').textContent = k.vprasanja.length ? `${k.naslov || 'brez naslova'} · ${k.vprasanja.length} vpr.` : '';
+    const $p = document.getElementById('xl-predogled');
+    if (k.vprasanja.length) predogledKviza($p, k); else $p.innerHTML = '';
+    if (k.napake.length) return;
+    kviz = { ...k, id: `${p.id}/${slugKviza(k.naslov)}` };
+    $ok.disabled = false;
+  };
+  $f.addEventListener('change', () => { izberi($f.files[0]); $f.value = ''; });
+  $drop.addEventListener('dragover', e => { e.preventDefault(); $drop.classList.add('ima'); });
+  $drop.addEventListener('dragleave', () => { if (!kviz) $drop.classList.remove('ima'); });
+  $drop.addEventListener('drop', e => { e.preventDefault(); izberi(e.dataTransfer.files[0]); });
+  document.getElementById('xl-form').addEventListener('submit', async e => {
+    e.preventDefault();
+    if (!kviz) return;
+    if (KVIZI.some(x => x.id === kviz.id) && !confirm(`Kviz »${kviz.naslov}« v tem predmetu že obstaja. Ga zamenjam z novo različico? Rezultati učencev ostanejo.`)) return;
+    $ok.disabled = true; $ok.textContent = 'Ustvarjam …'; $msg.textContent = '';
+    const r = await rpc('sola_kviz_shrani', { p_seja: ucitelj.seja, p_vir: kviz.vir,
+      p_kviz: { id: kviz.id, predmet: p.id, naslov: kviz.naslov, opis: kviz.opis || '', vprasanja: kviz.vprasanja, kljuc: kviz.kljuc } });
+    if (r !== 'NOV' && r !== 'POSODOBLJEN') {
+      $ok.disabled = false; $ok.textContent = 'Ustvari kviz 🚀';
+      $msg.textContent = r === NEDOSEGLJIVO ? 'Strežnik ni dosegljiv.' : r === 'NAPACEN_KVIZ' ? 'Kviz ni pravilen.' : 'Kviza ni bilo mogoče shraniti. Se moraš znova prijaviti?';
+      return;
+    }
+    await naloziKvize();
+    const modul = $m.value === '+' ? '' : $m.value;
+    shrani('sola_xl_modul:' + p.id, modul);
+    if (modul) {
+      const kk = 'kviz:' + kviz.id;
+      const red = redIzDrevesa(drevoPredmeta(p, gradivaZa(p.id))).filter(x => x !== kk)
+        .map(x => x && x.m ? { m: x.m, v: x.v.filter(y => y !== kk).concat(x.m === modul ? [kk] : []) } : x);
+      RAZPORED[p.id] = red;
+      shrani('sola_modul_odprt:' + modul, '1');
+      await rpc('sola_razpored_shrani', { p_seja: ucitelj.seja, p_predmet: p.id, p_red: red });
+    }
+    location.hash = `#/p/${p.id}`;
+  });
+}
+
+/* Nov predmet / uredi predmet (ime, ikona, barva, razredi). */
+function stranPredmetTP(p) {
+  if (!ucitelj) { location.replace('#/'); odpriPredal('racun'); return; }
+  const t = p || { ime: '', emoji: EMOJI_TP[0], barva: 0, razredi: [] };
+  const html = `
+    <div class="vhead"><a class="btn" href="${p ? `#/p/${p.id}` : '#/'}" aria-label="Nazaj">${SVG.prev}</a><h1>${p ? 'Uredi predmet' : 'Nov predmet'}</h1></div>
+    <form class="upl" id="tp-form" novalidate>
+      <div class="field"><label for="tp-ime">Ime predmeta</label><input type="text" id="tp-ime" maxlength="60" value="${esc(t.ime)}" placeholder="npr. Matematika 4" autocomplete="off"></div>
+      <div class="field"><label>Ikona</label><div class="tp-izbira">${[...new Set([t.emoji, ...EMOJI_TP])].map(e => `<label class="tp-moz"><input type="radio" name="tp-emoji" value="${e}"${e === t.emoji ? ' checked' : ''}><span class="tp-em">${e}</span></label>`).join('')}</div></div>
+      <div class="field"><label>Barva</label><div class="tp-izbira">${BARVE_TP.map(([a, b], i) => `<label class="tp-moz"><input type="radio" name="tp-barva" value="${i}"${i === t.barva ? ' checked' : ''}><span class="tp-bar" style="background:linear-gradient(135deg,${a},${b})"></span></label>`).join('')}</div></div>
+      <div class="field"><label>Razredi <small class="note">— predmet vidijo samo učenci teh razredov</small></label><div class="tp-izbira">${RAZREDI.map(r => `<label class="tp-moz"><input type="checkbox" name="tp-razred" value="${r}"${t.razredi.includes(r) ? ' checked' : ''}><span class="tp-raz">${r}</span></label>`).join('')}</div></div>
+      <div class="ed-actions">${p ? '<button class="btn" type="button" id="tp-izbrisi">🗑 Izbriši predmet</button>' : ''}<span class="msg" id="tp-msg"></span>
+        <button class="btn btn-go btn-big" type="submit" id="tp-ok">${p ? 'Shrani' : 'Ustvari predmet'}</button></div>
+    </form>`;
+  if (p) okvirPredmeta(p, 'urejevalnik', html, null, 'Uredi predmet');
+  else { drobtine([['Domov', '#/'], ['Nov predmet']]); $main.innerHTML = `<div class="layout solo"><div>${html}</div></div>`; }
+  const $ime = document.getElementById('tp-ime'), $msg = document.getElementById('tp-msg'), $ok = document.getElementById('tp-ok');
+  if (!p) $ime.focus();
+  document.getElementById('tp-form').addEventListener('submit', async e => {
+    e.preventDefault();
+    const ime = $ime.value.trim();
+    if (!ime) { $msg.textContent = 'Vpiši ime predmeta.'; $ime.focus(); return; }
+    const izbrano = n => [...document.querySelectorAll(`input[name=${n}]:checked`)].map(x => x.value);
+    $ok.disabled = true; $msg.textContent = '';
+    const id = await rpc('sola_tp_shrani', { p_seja: ucitelj.seja, p_id: p ? p.id : null, p_ime: ime,
+      p_emoji: izbrano('tp-emoji')[0] || '📚', p_barva: +(izbrano('tp-barva')[0] || 0), p_razredi: izbrano('tp-razred') });
+    $ok.disabled = false;
+    if (typeof id !== 'string') {
+      $msg.textContent = id === NEDOSEGLJIVO ? 'Strežnik ni dosegljiv.' : 'Ni shranjeno. Se moraš znova prijaviti? (Ali pa v Supabase še ni zagnan supabase_predmeti_uciteljev.sql.)';
+      return;
+    }
+    await naloziTP();
+    location.hash = `#/p/${id}`;
+  });
+  document.getElementById('tp-izbrisi')?.addEventListener('click', async () => {
+    const t2 = prompt(`Izbrišem predmet »${p.ime}« z vsemi kvizi, moduli in rezultati učencev? Tega ni mogoče razveljaviti.\n\nZa potrditev vpiši ime predmeta:`);
+    if (t2 == null) return;
+    if (t2.trim() !== p.ime) { alert('Ime se ne ujema. Predmet ni izbrisan.'); return; }
+    const r = await rpc('sola_tp_izbrisi', { p_seja: ucitelj.seja, p_id: p.id });
+    if (r !== true) { alert('Brisanje ni uspelo. Se moraš znova prijaviti?'); return; }
+    await Promise.all([naloziTP(), naloziKvize(), naloziObjave()]);
+    location.hash = '#/';
   });
 }
 
@@ -2327,7 +2703,7 @@ async function poPrijavi() {
   if (NAZAJ && (ucenec || ucitelj)) { location.href = NAZAJ; return; }
   posodobiNav();
   odpriPredal(null);
-  await naloziMoje();
+  await Promise.all([naloziMoje(), naloziTP(), naloziKvize()]);
   usmeri();
 }
 
@@ -2490,11 +2866,14 @@ function usmeri() {
     if (deli[2] === 'datoteke') return stranDatoteke(p);
     if (deli[2] === 'nov-kviz') return stranNovKviz(p);
     if (deli[2] === 'nalozi') return stranNalozi(p);
+    if (deli[2] === 'excel' && p.tp) return stranExcel(p);
+    if (deli[2] === 'predmet' && p.tp) return stranPredmetTP(p);
     if (deli[2] === 'uredi' && deli[3]) return stranNovKviz(p, decodeURIComponent(deli.slice(3).join('/')));
     if (deli[2]) return stranGradivo(p, decodeURIComponent(deli[2]), deli[3]);
     return stranPredmet(p);
   }
   if (deli[0] === 'racuni') return stranRacuni();
+  if (deli[0] === 'nov-predmet') return stranPredmetTP(null);
   const p = deli[0] && najdi(deli[0]);
   if (p && p.otroci) return stranSkupina(p);
   if (p) { location.replace(`#/p/${p.id}`); return; }
@@ -2505,9 +2884,9 @@ window.addEventListener('hashchange', usmeri);
 /* Ko se zavihek spet pokaže, preveri nova gradiva (ne med ogledom gradiva). */
 document.addEventListener('visibilitychange', async () => {
   if (document.hidden) return;
-  const stanje = () => JSON.stringify([GRADIVA, KVIZI, MOJE, STANJE, DODANA, RAZPORED, NASLOVI]);
+  const stanje = () => JSON.stringify([GRADIVA, KVIZI, MOJE, STANJE, DODANA, RAZPORED, NASLOVI, TP]);
   const prej = stanje();
-  await Promise.all([naloziGradiva(), naloziKvize(), naloziMoje(), naloziObjave()]);
+  await Promise.all([naloziGradiva(), naloziKvize(), naloziMoje(), naloziObjave(), naloziTP()]);
   const ogled = /^#\/p\/[^/]+\/(?!datoteke$)./.test(location.hash);
   if (!ogled && stanje() !== prej) usmeri();
 });
@@ -2519,7 +2898,7 @@ const preveriUcitelja = async () => {
   const r = await rpc('sola_ucitelj_preveri', { p_seja: ucitelj.seja });
   if (r === false || r === null) { ucitelj = null; shraniRacun(); posodobiNav(); }
 };
-Promise.all([naloziGradiva(), naloziKvize(), naloziMoje(), naloziObjave(), preveriUcitelja()]).then(usmeri);
+Promise.all([naloziGradiva(), naloziKvize(), naloziMoje(), naloziObjave(), naloziTP(), preveriUcitelja()]).then(usmeri);
 if (new URLSearchParams(location.search).has('prijava')) odpriPredal('racun');
 </script>
 </body>
