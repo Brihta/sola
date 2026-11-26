@@ -1,4 +1,4 @@
-# Računalništvo 6. do 9. razred, 10. ura »Risanje z zankami« (27. 11. 2026, predura).
+# REZERVA (ni objavljena): ponovitev zank z risarjem. 27. 11. 2026 je bila namesto nje objavljena 11. ura Pogoji in spremenljivke, ker so bile zanke že 13. 11.
 # LDN/PRIPRAVE: sklop 4 Blokovno programiranje, 10. ura »Izzivi naraščajoče zahtevnosti: zanke«.
 # Bloki so videti kot v Scratchu (pojdi, obrni se, ponovi), pisalo riše kot razširitev Pero.
 # Nova vrsta naloge 'risar' (engine.js): primerja narisane črte s ciljno sliko.

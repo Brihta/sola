@@ -83,7 +83,11 @@ info(naslov, html)                       # razlaga; razredi: big, box, warn, sma
 {'type':'risar',  'title', 'intro', 'tools':['F100','T90','Q90'], 'loops':[3,4,5,6], 'max':4, 'solution':[...],
                   'start':[...], 'locked':True, 'prosto':True, 'win', 'hints'}
                   # pisalo kot v Scratchu (razširitev Pero), bloki v barvah Scratcha, zamik v zanki kot v Scratchu
-                  # žetoni: 'F100' pojdi 100 korakov, 'T90' obrni se ↻ 90°, 'Q90' obrni se ↺ 90°, 'N4' ponovi 4-krat, ')' konec ponovi
+                  # žetoni: 'F100' pojdi 100 korakov, 'T90' obrni se ↻ 90°, 'Q90' obrni se ↺ 90°, 'N4' ponovi 4-krat, ')' konec
+                  # spremenljivka dolžina: 'S10' nastavi na 10, 'A10' spremeni za 10, 'FV' pojdi dolžina korakov (okence z vrednostjo se pokaže samo)
+                  # pogoj: 'I>60' / 'I<60' če dolžina > 60 potem, 'E' sicer, ')' konec če; barva pisala: 'Cg' zelena, 'Cr' rdeča, 'Cv' vijolična
+                  # če je ')' v 'tools', je en sam gumb »konec« (za ponovi in če); v programu piše »konec ponovi« ali »konec če«
+                  # pri barvnih nalogah se preverja tudi barva vsake črte (napačna barva je obkrožena)
                   # začne na sredini, smer desno (kot mačka v Scratchu); cilj = črte, ki jih nariše 'solution' (sivo)
                   # preverja MNOŽICO črt (vrstni red in smer risanja nista pomembna); manjkajoče oranžno, odvečne rdeče
                   # prosto = brez cilja, ustvarjanje (daj ga z 'optional': True, ker ga preveri.py ne zna rešiti)

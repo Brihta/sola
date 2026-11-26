@@ -1,13 +1,13 @@
 ## 🎯 Cilj ure
 
-Programiraš **pisalo**, ki riše kot v Scratchu. Z **zanko** narišeš like s kratkim programom in odkriješ **skrivnost števila 360**.
+Programiraš **pisalo**, ki riše kot v Scratchu. Spoznaš **spremenljivko** (škatlo z vrednostjo) in **pogoj** (če … potem) in z njima narišeš barvno spiralo.
 
 ## ✅ Uspešen sem, če …
 
-- z zanko »ponovi« narišem kvadrat in trikotnik z največ 4 bloki,
-- znam izračunati obrat za pravilni lik (360 : število stranic),
-- najdem hrošča v zanki in ga popravim,
-- razumem zanko v zanki.
+- znam nastaviti in spremeniti spremenljivko,
+- z zanko in spremenljivko narišem spiralo,
+- znam uporabiti pogoj »če … potem«,
+- najdem hrošča v pogoju in ga popravim.
 
 ## 🗺️ Kako delaš
 
