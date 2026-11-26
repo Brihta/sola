@@ -58,10 +58,11 @@ def list_kviza(ws, naslov, opis, vprasanja):
     ws["A4"] = ("Piši samo v rumena polja: naslov, vrsta, vprašanje in odgovori. "
                 "Vrsto izberi s spustnega seznama: klikni celico v stolpcu Vrsta in nato puščico ▾ desno od nje. "
                 "Stolpca Kaj vpišem in Preverjanje se izpolnita sama: ko so vsa vprašanja »✓ V redu«, kviz naloži na Brihto. "
-                "Slike dodaš na Brihti, ko je kviz že narejen.")
+                "Slike dodaš na Brihti, ko je kviz že narejen. "
+                "Besedilo lepi BREZ oblikovanja: Ctrl+Shift+V (Mac: Cmd+Shift+V) ali desni klik › Možnosti lepljenja › Vrednosti (123).")
     ws["A4"].font = Font(name=F, italic=True, size=9, color="555555")
     ws["A4"].alignment = Alignment(wrap_text=True, vertical="top")
-    ws.merge_cells("A4:K4"); ws.row_dimensions[4].height = 30
+    ws.merge_cells("A4:K4"); ws.row_dimensions[4].height = 40
     glave = ["Št.", "Vrsta ▾", "Vprašanje", "Odgovor 1", "Odgovor 2", "Odgovor 3",
              "Odgovor 4", "Odgovor 5", "Odgovor 6", "Kaj vpišem (samo)", "Preverjanje (samo)"]
     for i, g in enumerate(glave, 1):
@@ -128,6 +129,7 @@ vr = [
     ("2. Na listu »Kviz« vpiši naslov in vprašanja: eno vprašanje v eno vrstico.", "t"),
     ("3. V stolpcu Vrsta klikni celico in nato puščico ▾: izberi Izbira, Drži / Ne drži, Poveži, Razvrsti ali Število. Stolpec »Kaj vpišem« ti pove, kaj gre v odgovore.", "t"),
     ("4. Ko je v stolpcu Preverjanje povsod »✓ V redu«, se prijavi na Brihti, odpri modul in naloži datoteko.", "t"),
+    ("Lepljenje: ko kaj kopiraš od drugod, prilepi s Ctrl+Shift+V (Mac: Cmd+Shift+V). Tako se prilepi samo besedilo, brez tuje pisave in barv. Lahko tudi desni klik › Možnosti lepljenja › Vrednosti (ikona 123).", "t"),
     ("5. Slike dodaš na Brihti, ko je kviz že narejen. Učencem se odgovori premešajo, zato ne piši »vse zgoraj navedeno«.", "t"),
     ("", "t"),
 ]
@@ -136,7 +138,7 @@ for txt, k in vr:
     c = nav.cell(r, 1, txt); nav.merge_cells(start_row=r, start_column=1, end_row=r, end_column=3)
     c.font = Font(name=F, bold=True, size=16, color="C0392B") if k == "naslov" else Font(name=F, size=11)
     c.alignment = Alignment(wrap_text=True, vertical="top")
-    nav.row_dimensions[r].height = 28 if k == "naslov" else 18
+    nav.row_dimensions[r].height = 28 if k == "naslov" else (18 if len(txt) < 110 else 32)
     r += 1
 for i, g in enumerate(["Vrsta", "Kaj vpišeš v odgovore", "Primer"], 1):
     c = nav.cell(r, i, g); c.font = Font(name=F, bold=True, color="FFFFFF"); c.fill = GLAVA; c.border = rob
