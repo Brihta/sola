@@ -90,6 +90,10 @@ Razredi pri kvizu in modulu (od 27. 11. 2026): pri vsakem kvizu in modulu predme
 Kdo vidi kviz: razredi kviza → sicer razredi modula, v katerem je → sicer razredi predmeta. Učenec vidi predmet, če je
 njegov razred pri predmetu ALI pri kakem kvizu/modulu v njem (Nino ima en predmet »Kvizko« za vse razrede).
 Igra v živo dobi iste razrede. Baza: `supabase_kvizi_razredi.sql`.
+Urejanje in podvajanje (od 27. 11. 2026): na strani kviza v predmetu učitelja sta gumba ✏️ Uredi kviz (isti urejevalnik kot »＋ Nov kviz«,
+besedilo iz `vir`; skrit kviz ostane skrit) in 📋 Podvoji v … (izbira predmeta in modula; kopija je samostojen kviz z novim id-jem,
+slike se naložijo znova, razredi kviza se ne kopirajo, velja modul oz. predmet). Za igro z vsemi razredi Nino naredi modul z vsemi razredi
+in vanj podvoji kviz. Brez sprememb v bazi.
 Slike pri vprašanjih (od 26. 11. 2026): učitelj jih doda v predogledu kviza (🔎 Poišči sliko: Wikimedia Commons + Openverse, slovenska beseda se prevede prek Wikidate; ali lastna slika); vezane so na besedilo vprašanja
 (ostanejo po popravljenem Excelu), v shrambi `sola-gradiva/kvizi/`. Baza: `supabase_kvizi_slike.sql`.
 Igra v živo (od 26. 11. 2026): pri kvizu v predmetu učitelja gumb 🎮 Igraj v živo → velik zaslon `#/igra/<id>`

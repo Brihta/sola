@@ -2293,7 +2293,7 @@ async function rezultatiKviza(p, g, h) {
         <td><button class="btn" type="button" data-ponastavi="${esc(r.student_id)}" data-ime="${esc(r.ime)}" title="Izbriše oddajo, da lahko učenec kviz reši znova">Ponastavi</button></td></tr>`).join('')}
       </tbody></table></div>` : '<div class="empty"><img src="brihta.png" alt=""><strong>Še nobene oddaje</strong>Ko učenci oddajo kviz, se pokažejo tukaj.</div>'}
     <div style="margin:18px 0 30px;display:flex;gap:8px;flex-wrap:wrap"><button class="btn" type="button" id="r-osvezi">↻ Osveži</button>
-      ${jeTP(p.id) ? `<button class="btn btn-go" type="button" id="r-igra">🎮 Igraj v živo</button><a class="btn" href="#/p/${p.id}/excel">📊 Naloži popravljen Excel</a>${gumbObjave(g)}` : `<a class="btn" href="#/p/${p.id}/uredi/${encodeURIComponent(g.id)}">✏️ Uredi kviz</a>
+      ${jeTP(p.id) ? `<button class="btn btn-go" type="button" id="r-igra">🎮 Igraj v živo</button><a class="btn" href="#/p/${p.id}/uredi/${encodeURIComponent(g.id)}">✏️ Uredi kviz</a><button class="btn" type="button" id="r-podvoji">📋 Podvoji v …</button><a class="btn" href="#/p/${p.id}/excel">📊 Naloži popravljen Excel</a>${gumbObjave(g)}` : `<a class="btn" href="#/p/${p.id}/uredi/${encodeURIComponent(g.id)}">✏️ Uredi kviz</a>
       <button class="btn" type="button" id="r-skrij">🙈 Skrij kviz</button>`}</div>
     ${vpr.length ? `<div class="sec-h"><h2>Predogled vprašanj</h2></div><p class="note" style="margin:-6px 0 14px">K vprašanju lahko dodaš sliko. Učenci jo vidijo nad odgovori.</p>${htmlVprasanj(vpr, true, true)}` : ''}`;
   const stranska = `<div class="box"><h3>👨‍🏫 Učiteljski pogled</h3><p class="note" style="margin:0">${jeTP(p.id)
@@ -2303,6 +2303,7 @@ async function rezultatiKviza(p, g, h) {
   okvirKviza(p, g, vsebina, stranska);
   document.getElementById('r-osvezi').addEventListener('click', () => rezultatiKviza(p, g, h));
   document.getElementById('r-igra')?.addEventListener('click', () => zacniIgro(g));
+  document.getElementById('r-podvoji')?.addEventListener('click', () => podvojiKviz(g));
   document.getElementById('r-skrij')?.addEventListener('click', async () => {
     if (!confirm(`Skrijem kviz »${g.ime}«? Učenci ga ne bodo več videli, oddaje ostanejo.`)) return;
     await rpc('sola_kviz_skrij', { p_seja: ucitelj.seja, p_id: g.id });
@@ -2418,9 +2419,13 @@ function razcleniKviz(besedilo, seme) {
       if (vsi.length < 2) return napake.push(`${s}: izbira potrebuje vsaj dva odgovora`);
       if (enaki(vsi)) return napake.push(`${s}: dva enaka odgovora`);
       const t = prav.length === 1 ? 'izbira' : 'vec';
-      javno.push({ t, b: q.b, m: premesaj(vsi, seme + n) }); kljuc.push({ t, p: prav });
+      /* Drži / Ne drži ostane v tem vrstnem redu (kot pri kvizu iz Excela). */
+      const dn = vsi.length === 2 && vsi.includes('Drži') && vsi.includes('Ne drži');
+      javno.push({ t, b: q.b, m: dn ? ['Drži', 'Ne drži'] : premesaj(vsi, seme + n) }); kljuc.push({ t, p: prav });
     } else if (vrste.size === 1 && vrste.has('=')) {
-      javno.push({ t: 'kratek', b: q.b }); kljuc.push({ t: 'kratek', p: q.odg.map(o => o.a) });
+      /* Sami številski odgovori: učenec dobi številsko tipkovnico (kot pri kvizu iz Excela). */
+      const st = q.odg.every(o => /^-?\d+([.,]\d+)?$/.test(o.a.replace(/\s/g, '')));
+      javno.push({ t: 'kratek', b: q.b, ...(st ? { n: 1 } : {}) }); kljuc.push({ t: 'kratek', p: q.odg.map(o => o.a) });
     } else if (vrste.size === 1 && vrste.has('<>')) {
       const l = q.odg.map(o => o.a), d = q.odg.map(o => o.d);
       if (l.length < 2) return napake.push(`${s}: povezovanje potrebuje vsaj dva para`);
@@ -2466,6 +2471,7 @@ async function stranNovKviz(p, urejamId) {
   okvirPredmeta(p, 'urejevalnik', `
     <div class="vhead"><a class="btn" href="#/p/${p.id}" aria-label="Nazaj">${SVG.prev}</a>${tile('kviz', 'sm')}<h1>${urejamId ? 'Uredi kviz' : 'Nov kviz'}</h1></div>
     ${izvorDatoteka ? '<div class="help">Ta kviz je bil objavljen iz datoteke na računalniku, zato njegovega besedila tukaj ni. Prilepi ga znova.</div>' : ''}
+    ${urejamId && jeTP(p.id) ? '<div class="help">Slika ostane pri vprašanju, dokler ne spremeniš njegovega besedila. Rezultati učencev ostanejo. Če kasneje naložiš popravljen Excel, ta zamenja te spremembe.</div>' : ''}
     <div class="editor">
       <div class="ed-left">
         <div class="field"><label for="nk-predmet">Predmet</label><select id="nk-predmet" class="sel"${urejamId ? ' disabled' : ''}>${moznosti}</select></div>
@@ -2513,6 +2519,8 @@ async function stranNovKviz(p, urejamId) {
     if (!k || k.napake.length) return;
     if (!urejamId && KVIZI.some(x => x.id === k.id) && !confirm(`Kviz »${k.naslov}« pri tem predmetu že obstaja. Ga zamenjam z novim besedilom?`)) return;
     const btn = document.getElementById('nk-objavi'); btn.disabled = true; btn.textContent = 'Objavljam …'; msg.textContent = '';
+    /* Strežnik ob shranjevanju kviz pokaže; skrit kviz v predmetu učitelja naj ostane skrit. */
+    const bilSkrit = !!(urejamId && jeTP(k.predmet) && KVIZI.find(x => x.id === urejamId)?.skrit);
     const r = await rpc('sola_kviz_shrani', { p_seja: ucitelj.seja, p_vir: $vir.value,
       p_kviz: { id: k.id, predmet: k.predmet, naslov: k.naslov, opis: k.opis || '', vprasanja: k.vprasanja, kljuc: k.kljuc } });
     btn.disabled = false; btn.textContent = 'Objavi 🚀';
@@ -2520,6 +2528,7 @@ async function stranNovKviz(p, urejamId) {
       msg.textContent = r === NEDOSEGLJIVO ? 'Strežnik ni dosegljiv.' : r === 'NAPACEN_KVIZ' ? 'Kviz ni pravilen.' : 'Objava ni uspela. Se moraš znova prijaviti?';
       return;
     }
+    if (bilSkrit) await rpc('sola_tp_kviz_skrit', { p_seja: ucitelj.seja, p_id: k.id, p_skrit: true });
     await naloziKvize();
     location.hash = `#/p/${k.predmet}/${encodeURIComponent('kviz:' + k.id)}`;
   });
@@ -2748,6 +2757,91 @@ async function stranExcel(p) {
     }
     location.hash = `#/p/${p.id}`;
   });
+}
+
+/* Podvoji kviz v predmet / modul učitelja (npr. v modul, ki ga vidijo vsi razredi).
+   Kopija je samostojen kviz: vprašanja in odgovori iz besedila (vir), slike se prenesejo,
+   razredi kviza ne (velja modul oz. predmet). Rezultati ostanejo pri izvirniku. */
+async function podvojiKviz(g) {
+  if (!ucitelj) return;
+  const o = document.createElement('div');
+  o.className = 'raz-okno';
+  const moduli = t => NASLOVI.filter(n => n.predmet === t.id && n.vrsta === 'modul');
+  const raz = a => (a || []).length ? ` (${a.slice().sort().join(', ')})` : '';
+  const zadnji = preberi('sola_podvoji_cilj') || '';
+  const moznosti = TP.map(t => `<optgroup label="${esc(t.emoji + ' ' + t.ime + raz(t.razredi))}">
+      <option value="${t.id}|">${esc(t.ime)}: brez modula</option>
+      ${moduli(t).map(n => `<option value="${t.id}|${esc(n.id)}">📁 ${esc(n.besedilo + raz(n.razredi))}</option>`).join('')}</optgroup>`).join('');
+  o.innerHTML = `<div class="upl" role="dialog" aria-modal="true" aria-label="Podvoji kviz">
+    <h2>📋 Podvoji kviz</h2>
+    <p class="note" style="margin:0 0 14px">Naredi kopijo kviza »${esc(g.ime)}« z vprašanji in slikami. Kopija je samostojen kviz:
+      popravek v enem se v drugem ne pozna, rezultati učencev ostanejo pri izvirniku.</p>
+    <div class="field"><label for="pk-cilj">Kam</label><select id="pk-cilj" class="sel">${moznosti}</select></div>
+    <div class="field"><label for="pk-naslov">Naslov kopije</label><input type="text" id="pk-naslov" maxlength="200" value="${esc(g.ime)}" autocomplete="off"></div>
+    <p class="msg" id="pk-msg"></p>
+    <div class="raz-gumbi"><button class="btn" type="button" data-x="preklici">Prekliči</button><button class="btn btn-go" type="button" data-x="ok">Podvoji</button></div></div>`;
+  const $c = o.querySelector('#pk-cilj'), $n = o.querySelector('#pk-naslov'), $msg = o.querySelector('#pk-msg');
+  if ([...$c.options].some(x => x.value === zadnji)) $c.value = zadnji;
+  const zapri = () => { o.remove(); document.removeEventListener('keydown', naEsc); };
+  const naEsc = e => { if (e.key === 'Escape' && !dela) zapri(); };
+  document.addEventListener('keydown', naEsc);
+  let dela = false;
+  o.addEventListener('click', async e => {
+    if (dela) return;
+    if (e.target === o) return zapri();
+    const x = e.target.closest('[data-x]')?.dataset.x;
+    if (x === 'preklici') return zapri();
+    if (x !== 'ok') return;
+    const [cilj, modul] = $c.value.split('|'), naslov = $n.value.trim().replace(/\s+/g, ' ');
+    if (!naslov) { $msg.textContent = 'Vpiši naslov.'; $n.focus(); return; }
+    dela = true; o.querySelectorAll('button, select, input').forEach(b => { b.disabled = true; });
+    const napaka = t => { $msg.textContent = t; dela = false; o.querySelectorAll('button, select, input').forEach(b => { b.disabled = false; }); };
+    $msg.textContent = 'Podvajam …';
+    const r = await rpc('sola_kviz_vir', { p_seja: ucitelj.seja, p_id: g.id });
+    const src = Array.isArray(r) && r[0];
+    if (!src) return napaka(r === NEDOSEGLJIVO ? 'Strežnik ni dosegljiv.' : 'Kviza ni mogoče prebrati. Se moraš znova prijaviti?');
+    if (!src.vir) return napaka('Ta kviz nima shranjenega besedila, zato ga ni mogoče podvojiti.');
+    /* Novo ime: isti slug v ciljnem predmetu dobi -2, -3 … (obstoječega kviza ne prepiše). */
+    const osnova = `${cilj}/${slugKviza(naslov)}`;
+    let id = osnova;
+    for (let i = 2; KVIZI.some(k => k.id === id); i++) id = `${osnova}-${i}`;
+    const vrstaNaslova = /^[ \t]*naslov[ \t]*:.*$/im;
+    const vir = vrstaNaslova.test(src.vir) ? src.vir.replace(vrstaNaslova, `Naslov: ${naslov}`) : `Naslov: ${naslov}\n${src.vir}`;
+    const k = razcleniKviz(vir, id);
+    if (k.napake.length) return napaka('Besedila kviza ni mogoče prebrati: ' + k.napake[0]);
+    const s = await rpc('sola_kviz_shrani', { p_seja: ucitelj.seja, p_vir: vir,
+      p_kviz: { id, predmet: cilj, naslov: k.naslov, opis: k.opis || '', vprasanja: k.vprasanja, kljuc: k.kljuc } });
+    if (s !== 'NOV' && s !== 'POSODOBLJEN') return napaka(s === NEDOSEGLJIVO ? 'Strežnik ni dosegljiv.' : 'Kopije ni bilo mogoče shraniti. Se moraš znova prijaviti?');
+    shrani('sola_podvoji_cilj', $c.value);
+    /* Slike: vsako naloži v shrambo še enkrat, ker vsaka pripada enemu kvizu (brisanje v kopiji ne sme poškodovati izvirnika). */
+    const sl = await rpc('sola_kviz_slike', { p_kviz: g.id }), besedila = new Set(k.vprasanja.map(q => q.b));
+    let neuspelih = 0;
+    for (const x of Array.isArray(sl) ? sl : []) {
+      if (!besedila.has(x.besedilo)) continue;
+      $msg.textContent = 'Prenašam slike …';
+      let v = null;
+      try { v = x.vir ? JSON.parse(x.vir) : null; } catch (e2) {}
+      try {
+        const f = await (await fetch(urlSlike(x.pot))).blob();
+        if (await naloziSlikoVprasanja(id, x.besedilo, f, v)) neuspelih++;
+      } catch (e2) { neuspelih++; }
+    }
+    await naloziKvize();
+    const pc = TP.find(t => t.id === cilj);
+    if (modul && pc) {
+      const kk = 'kviz:' + id;
+      const red = redIzDrevesa(drevoPredmeta(pc, gradivaZa(cilj))).filter(y => y !== kk)
+        .map(y => y && y.m ? { m: y.m, v: y.v.filter(z => z !== kk).concat(y.m === modul ? [kk] : []) } : y);
+      RAZPORED[cilj] = red;
+      shrani('sola_modul_odprt:' + modul, '1');
+      await rpc('sola_razpored_shrani', { p_seja: ucitelj.seja, p_predmet: cilj, p_red: red });
+    }
+    if (neuspelih) alert(`Kviz je podvojen, ${neuspelih === 1 ? 'ene slike' : neuspelih + ' slik'} pa ni bilo mogoče prenesti. Dodaj ${neuspelih === 1 ? 'jo' : 'jih'} v predogledu kopije.`);
+    zapri();
+    location.hash = `#/p/${cilj}/${encodeURIComponent('kviz:' + id)}`;
+  });
+  document.body.appendChild(o);
+  $c.focus();
 }
 
 /* Nov predmet / uredi predmet (ime, ikona, barva, razredi). */
