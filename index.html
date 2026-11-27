@@ -430,6 +430,10 @@
     .ig-sredisce { text-align: center; margin-top: 12vh; }
     .ig-sredisce h1 { font-family: var(--head); font-size: 2.4rem; margin: 6px 0; }
     .ig-velik { font-size: 5rem; }
+    .ig-sovica { max-width: 640px; margin: 22px auto 0; }
+    .ig-sovica canvas { display: block; width: 100%; aspect-ratio: 3 / 1; background: rgba(255,255,255,.1); border-radius: 18px; touch-action: manipulation; cursor: pointer; user-select: none; -webkit-user-select: none; }
+    .ig-sovica small { display: block; margin-top: 8px; opacity: .8; font-weight: 700; }
+    .ig-ucenec .ig-sredisce:has(.ig-sovica) { margin-top: 4vh; }
     .ig-siv { opacity: .85; font-weight: 700; }
     .ig-plus { font-size: 2.6rem; font-weight: 900; margin: 6px 0; }
     .ig-dobro .ig-plus { color: #b9f6ca; }
@@ -3585,6 +3589,119 @@ async function zaslonIgre(id) {
 }
 
 /* ── Učenčeva naprava ── */
+/* Mini igra v čakalnici: sovica skače čez knjige in svinčnike (tap ali preslednica).
+   Teče, dokler je platno na strani; najboljši rezultat si zapomni naprava. */
+function sovicaTece($platno) {
+  const ozko = $platno.clientWidth < 500, W = ozko ? 400 : 600, H = 200, TLA = 172, KLJUC = 'sola_sovica_rekord';
+  $platno.style.aspectRatio = `${W} / ${H}`;
+  const c = $platno.getContext('2d');
+  const dpr = Math.min(window.devicePixelRatio || 1, 2);
+  $platno.width = W * dpr; $platno.height = H * dpr; c.scale(dpr, dpr);
+  let rekord = +preberi(KLJUC) || 0;
+  let stanje = 'zacetek', y = 0, vy = 0, hitrost, pot, ovire, oblaki, prej = 0, noga = 0, cakaj = 0;
+  const nova = () => {
+    hitrost = 300; pot = 0; y = 0; vy = 0; ovire = [{ x: W + 40, ...ovira() }];
+    oblaki = [0, 1, 2].map(i => ({ x: 80 + i * 220, y: 30 + (i % 2) * 30 }));
+  };
+  const ovira = () => {
+    const v = Math.random();
+    if (v < 0.45) { const n = 1 + Math.floor(Math.random() * 3); return { vrsta: 'knjige', s: 34, v: n * 13, n, barve: [0, 1, 2].map(() => Math.floor(Math.random() * 5)) }; }
+    if (v < 0.8) return { vrsta: 'svincnik', s: 14, v: 38 + Math.floor(Math.random() * 16) };
+    return { vrsta: 'svincnik2', s: 34, v: 40 };
+  };
+  const skoci = () => {
+    if (stanje === 'konec') { if (performance.now() < cakaj) return; nova(); stanje = 'tece'; return; }
+    if (stanje === 'zacetek') { nova(); stanje = 'tece'; }
+    if (y === 0) vy = 690;
+  };
+  const tipka = e => {
+    if (!$platno.isConnected) { document.removeEventListener('keydown', tipka); return; }
+    if (e.code === 'Space' || e.code === 'ArrowUp') { e.preventDefault(); skoci(); }
+  };
+  document.addEventListener('keydown', tipka);
+  $platno.addEventListener('pointerdown', e => { e.preventDefault(); skoci(); });
+
+  const KNJIGE = ['#e17055', '#00b894', '#0984e3', '#fdcb6e', '#a29bfe'];
+  const zaobljen = (x, yy, w, h, r) => { c.beginPath(); c.roundRect ? c.roundRect(x, yy, w, h, r) : c.rect(x, yy, w, h); c.fill(); };
+  const risiSovo = (x, dno, tla) => {
+    const t = dno - 46;
+    c.fillStyle = '#f39c12';                                   // nogi
+    if (tla) { c.fillRect(x + 10 + (noga ? 4 : 0), dno - 6, 6, 6); c.fillRect(x + 24 - (noga ? 4 : 0), dno - 6, 6, 6); }
+    else { c.fillRect(x + 12, dno - 6, 6, 5); c.fillRect(x + 22, dno - 6, 6, 5); }
+    c.fillStyle = '#d63031';                                   // telo in ušesa
+    c.beginPath(); c.ellipse(x + 20, t + 24, 19, 21, 0, 0, Math.PI * 2); c.fill();
+    c.beginPath(); c.moveTo(x + 4, t + 10); c.lineTo(x + 6, t - 4); c.lineTo(x + 14, t + 6); c.fill();
+    c.beginPath(); c.moveTo(x + 36, t + 10); c.lineTo(x + 34, t - 4); c.lineTo(x + 26, t + 6); c.fill();
+    c.fillStyle = '#ffb3a7';                                   // trebušček
+    c.beginPath(); c.ellipse(x + 20, t + 31, 11, 11, 0, 0, Math.PI * 2); c.fill();
+    c.fillStyle = '#b71c1c';                                   // krilo
+    c.beginPath(); c.ellipse(x + 6, t + 26 + (tla ? 0 : -4), 5, 11, tla ? 0.2 : -0.6, 0, Math.PI * 2); c.fill();
+    c.fillStyle = '#fff';                                      // oči
+    c.beginPath(); c.arc(x + 13, t + 15, 7, 0, Math.PI * 2); c.arc(x + 28, t + 15, 7, 0, Math.PI * 2); c.fill();
+    c.fillStyle = '#2d3436';
+    const zm = stanje === 'konec';
+    if (zm) { c.font = 'bold 11px sans-serif'; c.textAlign = 'center'; c.fillText('×', x + 13, t + 19); c.fillText('×', x + 28, t + 19); }
+    else { c.beginPath(); c.arc(x + 15, t + 15, 3.2, 0, Math.PI * 2); c.arc(x + 30, t + 15, 3.2, 0, Math.PI * 2); c.fill(); }
+    c.fillStyle = '#f39c12';                                   // kljun
+    c.beginPath(); c.moveTo(x + 18, t + 20); c.lineTo(x + 23, t + 20); c.lineTo(x + 20.5, t + 26); c.fill();
+  };
+  const risiOviro = o => {
+    const dno = TLA;
+    if (o.vrsta === 'knjige') {
+      for (let i = 0; i < o.n; i++) {
+        c.fillStyle = KNJIGE[o.barve[i]]; zaobljen(o.x + (i % 2 ? 3 : 0), dno - (i + 1) * 13, o.s - 3, 12, 2);
+        c.fillStyle = 'rgba(255,255,255,.8)'; c.fillRect(o.x + (i % 2 ? 3 : 0) + o.s - 9, dno - (i + 1) * 13 + 2, 3, 8);
+      }
+    } else {
+      const svincnik = (x, v) => {
+        c.fillStyle = '#fdcb6e'; c.fillRect(x, dno - v + 8, 14, v - 14);
+        c.fillStyle = '#e84393'; zaobljen(x, dno - 6, 14, 6, 2);           // radirka spodaj
+        c.fillStyle = '#b2bec3'; c.fillRect(x, dno - 9, 14, 3);
+        c.fillStyle = '#ffeaa7'; c.beginPath(); c.moveTo(x, dno - v + 8); c.lineTo(x + 14, dno - v + 8); c.lineTo(x + 7, dno - v); c.fill();
+        c.fillStyle = '#2d3436'; c.beginPath(); c.moveTo(x + 4.5, dno - v + 3); c.lineTo(x + 9.5, dno - v + 3); c.lineTo(x + 7, dno - v); c.fill();
+      };
+      if (o.vrsta === 'svincnik') svincnik(o.x, o.v); else { svincnik(o.x, o.v); svincnik(o.x + 20, o.v - 10); }
+    }
+  };
+  const besedilo = (t, yy, vel) => { c.font = `800 ${vel}px Nunito, sans-serif`; c.textAlign = 'center'; c.fillStyle = '#fff'; c.fillText(t, W / 2, yy); };
+  nova();
+  const zanka = cas => {
+    if (!$platno.isConnected) { document.removeEventListener('keydown', tipka); return; }
+    const dt = Math.min(0.05, prej ? (cas - prej) / 1000 : 0); prej = cas;
+    if (stanje === 'tece') {
+      hitrost = Math.min(720, hitrost + dt * 9);
+      pot += hitrost * dt;
+      if (y > 0 || vy > 0) { y += vy * dt; vy -= 2100 * dt; if (y <= 0) { y = 0; vy = 0; } }
+      ovire.forEach(o => { o.x -= hitrost * dt; });
+      oblaki.forEach(o => { o.x -= hitrost * dt * 0.2; if (o.x < -60) o.x = W + Math.random() * 80; });
+      if (ovire[0].x < -60) ovire.shift();
+      const zadnja = ovire[ovire.length - 1];
+      if (zadnja.x < W - (hitrost * 0.75 + 60 + Math.random() * 260)) ovire.push({ x: W + 20, ...ovira() });
+      if (Math.floor(cas / 110) % 2 !== noga) noga = 1 - noga;
+      const sx = 64, sd = TLA - y;                                   // trk (z nekaj prizanesljivosti)
+      if (ovire.some(o => o.x < sx + 32 && o.x + o.s > sx + 8 && sd > TLA - o.v + 6)) {
+        stanje = 'konec'; cakaj = performance.now() + 600;
+        const tocke = Math.floor(pot / 10);
+        if (tocke > rekord) { rekord = tocke; shrani(KLJUC, String(rekord)); }
+      }
+    }
+    c.clearRect(0, 0, W, H);
+    c.fillStyle = 'rgba(255,255,255,.18)';
+    oblaki.forEach(o => { c.beginPath(); c.arc(o.x, o.y, 14, 0, Math.PI * 2); c.arc(o.x + 16, o.y - 6, 17, 0, Math.PI * 2); c.arc(o.x + 34, o.y, 13, 0, Math.PI * 2); c.fill(); });
+    c.fillStyle = 'rgba(255,255,255,.7)'; c.fillRect(0, TLA, W, 2);
+    c.fillStyle = 'rgba(255,255,255,.35)';
+    for (let i = 0; i < 14; i++) { const x = ((i * 53 - pot * 1) % W + W) % W; c.fillRect(x, TLA + 8 + (i % 3) * 6, 10 + (i % 4) * 4, 2); }
+    ovire.forEach(risiOviro);
+    risiSovo(64, TLA - y, y === 0 && stanje === 'tece');
+    c.font = '800 16px Nunito, sans-serif'; c.textAlign = 'right'; c.fillStyle = '#fff';
+    c.fillText(`${Math.floor(pot / 10)}   🏆 ${rekord}`, W - 12, 24);
+    if (stanje === 'zacetek') besedilo(ozko ? 'Tapni za skok!' : 'Tapni (ali preslednica) za skok!', 90, 22);
+    if (stanje === 'konec') { besedilo('Ups! 🙈', 76, 30); besedilo('Tapni za nov poskus', 108, 18); }
+    requestAnimationFrame(zanka);
+  };
+  requestAnimationFrame(zanka);
+}
+
 async function igraUcenec(id) {
   const gen = ++igraGen;
   document.body.classList.add('igra-full');
@@ -3614,7 +3731,8 @@ async function igraUcenec(id) {
     let telo = '';
     if (s.stanje === 'cakanje') {
       telo = `<div class="ig-sredisce"><div class="ig-velik">🎉</div><h1>Si v igri!</h1><p>${esc(s.naslov)}</p>
-        <p class="ig-siv">Počakaj, da učitelj začne. Igralcev: <b>${s.igralcev}</b></p></div>`;
+        <p class="ig-siv">Počakaj, da učitelj začne. Igralcev: <b data-igralcev>${s.igralcev}</b></p>
+        <div class="ig-sovica"><canvas aria-label="Mini igra: sovica skače čez ovire"></canvas><small>Medtem ko čakaš: pomagaj sovici preskočiti knjige in svinčnike.</small></div></div>`;
     } else if (s.stanje === 'vprasanje' && s.odgovoril) {
       telo = `<div class="ig-sredisce"><div class="ig-velik">✅</div><h1>Odgovor oddan</h1><p class="ig-siv">Poglej na tablo in počakaj na rezultat.</p></div>`;
     } else if (s.stanje === 'vprasanje') {
@@ -3642,6 +3760,7 @@ async function igraUcenec(id) {
         <p style="margin-top:20px"><a class="btn" href="#/">Nazaj na Brihto</a></p></div>`;
     }
     $ig.innerHTML = vrh + telo;
+    const $pl = $ig.querySelector('.ig-sovica canvas'); if ($pl) sovicaTece($pl);
     if (s.stanje === 'konec' && razkrito && s.mesto && s.mesto <= 3) konfeti($ig);
     ura = odstevalnik($ig, s.cas);
     if (s.stanje !== 'vprasanje' || s.odgovoril) return;
@@ -3680,7 +3799,8 @@ async function igraUcenec(id) {
     if (gen !== igraGen || !r || r === NEDOSEGLJIVO) return;
     if (slike === null && r.kviz_id) slike = await slikeIgre(r.kviz_id);
     s = r;
-    const k = [s.stanje, s.vprasanje, s.odgovoril, s.stanje === 'cakanje' ? s.igralcev : ''].join('|');
+    const k = [s.stanje, s.vprasanje, s.odgovoril].join('|');
+    const $st = $ig.querySelector('[data-igralcev]'); if ($st) $st.textContent = s.igralcev;
     if (k !== kljucIzrisa) { kljucIzrisa = k; izrisi(); }
     if (s.stanje === 'vprasanje' && ura) ura.nastavi(s.preostalo_ms);
     if (s.stanje === 'konec') { clearInterval(igraUra); igraUra = null; }
