@@ -3674,9 +3674,10 @@ function sovicaTece($platno) {
       if (y > 0 || vy > 0) { y += vy * dt; vy -= 2100 * dt; if (y <= 0) { y = 0; vy = 0; } }
       ovire.forEach(o => { o.x -= hitrost * dt; });
       oblaki.forEach(o => { o.x -= hitrost * dt * 0.2; if (o.x < -60) o.x = W + Math.random() * 80; });
-      if (ovire[0].x < -60) ovire.shift();
-      const zadnja = ovire[ovire.length - 1];
-      if (zadnja.x < W - (hitrost * 0.75 + 60 + Math.random() * 260)) ovire.push({ x: W + 20, ...ovira() });
+      while (ovire.length > 1 && ovire[0].x < -60) ovire.shift();
+      /* Naslednja ovira je vedno že v vrsti (desno zunaj zaslona), da seznam nikoli ni prazen. */
+      for (let z = ovire[ovire.length - 1]; z.x < W + 40; z = ovire[ovire.length - 1])
+        ovire.push({ x: Math.max(z.x, 0) + hitrost * 0.75 + 70 + Math.random() * Math.min(260, W * 0.5), ...ovira() });
       if (Math.floor(cas / 110) % 2 !== noga) noga = 1 - noga;
       const sx = 64, sd = TLA - y;                                   // trk (z nekaj prizanesljivosti)
       if (ovire.some(o => o.x < sx + 32 && o.x + o.s > sx + 8 && sd > TLA - o.v + 6)) {
