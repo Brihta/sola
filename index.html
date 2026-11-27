@@ -358,6 +358,10 @@
     .ig-av { display: inline-grid; place-items: center; width: 40px; height: 40px; border-radius: 50%; background: #f3efff; font-size: 1.5rem; flex-shrink: 0; }
     @keyframes igpop { from { transform: scale(.6); opacity: 0; } to { transform: none; opacity: 1; } }
     .ig-naprej { display: block; margin: 18px auto 0; font-size: 1.25rem; }
+    .ig-naprej.avto { position: relative; overflow: hidden; }
+    .ig-naprej.avto::after { content: ''; position: absolute; left: 0; bottom: 0; height: 6px; width: 100%; background: #2d1b69; opacity: .45; transform-origin: left; animation: igavto var(--avto, 5s) linear forwards; }
+    @keyframes igavto { to { transform: scaleX(0); } }
+    .ig .btn.ig-avto.on { background: var(--sun); color: #2d1b69; }
     .ig-glava { position: relative; }
     .ig-nast { position: absolute; right: 0; top: calc(100% + 8px); z-index: 20; background: #fff; color: var(--ink); border-radius: 18px; padding: 14px; box-shadow: 0 18px 40px rgba(0,0,0,.3); width: min(560px, 92vw); display: grid; gap: 10px; font-weight: 700; }
     .ig-nast[hidden] { display: none; }
@@ -3427,6 +3431,9 @@ async function zaslonIgre(id) {
   const $ig = $main.querySelector('.ig');
   let s = null, kljucIzrisa = '', kljucZvoka = '', slike = {}, poslanNaprej = -2, ura, zadnjaSek = 0;
   let pogled = 'odgovor', nastOdprt = false, samodejno = preberi(KLJUC_SAMODEJNO) !== '0';
+  /* Samodejno naprej: pravilni odgovor in lestvica sta na zaslonu po AVTO_MS, nato gre igra sama naprej. */
+  let avto = preberi('sola_igra_avto') !== '0', avtoUra = null;
+  const AVTO_MS = 5000;
   let prejMesta = {}, prejTocke = {};   // lestvica po prejšnjem vprašanju (za puščice in +točke)
   const casovniki = [];
   const pozneje = (fn, ms) => casovniki.push(setTimeout(() => { if (gen === igraGen) fn(); }, ms));
@@ -3448,7 +3455,7 @@ async function zaslonIgre(id) {
     const igr = s.igralci || [], q = s.q ? { ...s.q, slika: slike[s.q.b] } : null;
     const glava = `<div class="ig-glava"><span class="ig-naslov">${esc(s.naslov)}</span>
       ${s.vprasanje >= 0 && s.stanje !== 'konec' ? `<span class="ig-st">${s.vprasanje + 1} / ${s.vseh}</span>` : ''}
-      <span class="ig-gumbi"><button class="btn" type="button" id="ig-zvok" title="Glasba in nastavitve" aria-expanded="${nastOdprt}">${GLASBA.tiho ? '🔇' : '🔊'} ▾</button><button class="btn" type="button" id="ig-cel" title="Cel zaslon">⛶</button>
+      <span class="ig-gumbi">${s.stanje !== 'konec' ? `<button class="btn ig-avto${avto ? ' on' : ''}" type="button" id="ig-avto" title="Po vsakem vprašanju pokaži rezultat in lestvico za ${AVTO_MS / 1000} s in pojdi sam naprej">${avto ? '⏩ Samodejno' : '⏸ Čakam tebe'}</button>` : ''}<button class="btn" type="button" id="ig-zvok" title="Glasba in nastavitve" aria-expanded="${nastOdprt}">${GLASBA.tiho ? '🔇' : '🔊'} ▾</button><button class="btn" type="button" id="ig-cel" title="Cel zaslon">⛶</button>
       <button class="btn" type="button" id="ig-konec">${s.stanje === 'konec' ? 'Zapri' : 'Končaj igro'}</button></span>${htmlNastavitev()}</div>`;
     let telo = '';
     if (s.stanje === 'cakanje') {
@@ -3502,6 +3509,7 @@ async function zaslonIgre(id) {
     $ig.innerHTML = glava + telo;
     poveziGumbe();
     zvokiIzrisa(igr);
+    nastaviAvto();
     ura = odstevalnik($ig, s.cas);
   };
   /* Glasba in zvoki ob spremembi zaslona. */
@@ -3524,9 +3532,28 @@ async function zaslonIgre(id) {
       $ig.querySelector('#ig-vsi')?.removeAttribute('hidden');
     }, 6600);
   };
+  const pokaziLestvico = () => { pogled = 'lestvica'; kljucIzrisa = kljuc(); izrisi(); zapomniLestvico(); };
+  /* Ob vsakem izrisu (ali preklopu) znova nastavi samodejni korak; gumb pokaže, koliko časa še ostane. */
+  const nastaviAvto = () => {
+    clearTimeout(avtoUra); avtoUra = null;
+    const $g = $ig.querySelector('#ig-lestvica, .ig-rez #ig-naprej');
+    $g?.classList.remove('avto');
+    if (!avto || !s || s.stanje !== 'rezultat' || !$g) return;
+    void $g.offsetWidth; $g.style.setProperty('--avto', AVTO_MS + 'ms'); $g.classList.add('avto');
+    const v = s.vprasanje, pg = pogled;
+    avtoUra = setTimeout(() => {
+      if (gen !== igraGen || !avto || s.stanje !== 'rezultat' || s.vprasanje !== v || pogled !== pg) return;
+      pg === 'odgovor' ? pokaziLestvico() : naprej();
+    }, AVTO_MS);
+  };
   const poveziGumbe = () => {
     $ig.querySelector('#ig-naprej')?.addEventListener('click', naprej);
-    $ig.querySelector('#ig-lestvica')?.addEventListener('click', () => { pogled = 'lestvica'; kljucIzrisa = kljuc(); izrisi(); zapomniLestvico(); });
+    $ig.querySelector('#ig-lestvica')?.addEventListener('click', pokaziLestvico);
+    $ig.querySelector('#ig-avto')?.addEventListener('click', e => {
+      avto = !avto; shrani('sola_igra_avto', avto ? '1' : '0');
+      e.currentTarget.classList.toggle('on', avto); e.currentTarget.textContent = avto ? '⏩ Samodejno' : '⏸ Čakam tebe';
+      nastaviAvto();
+    });
     $ig.querySelector('#ig-zvok').addEventListener('click', e => {
       nastOdprt = !nastOdprt;
       $ig.querySelector('.ig-nast').hidden = !nastOdprt; e.currentTarget.setAttribute('aria-expanded', nastOdprt);
@@ -3578,7 +3605,7 @@ async function zaslonIgre(id) {
   if (gen !== igraGen) return;
   igraUra = setInterval(() => { if (gen === igraGen) { osvezi(); } }, 1000);
   (function tik() {
-    if (gen !== igraGen) { casovniki.forEach(clearTimeout); return; }
+    if (gen !== igraGen) { casovniki.forEach(clearTimeout); clearTimeout(avtoUra); return; }
     if (s && s.stanje === 'vprasanje' && ura) {
       ura.risi();
       const sek = Math.ceil(ura.ostalo() / 1000);   // zadnjih 5 sekund: tik-tak
