@@ -257,6 +257,13 @@
            padding: 8px 12px; font: inherit; font-size: .82rem; font-weight: 800; cursor: pointer; white-space: nowrap; }
     .vis.on { background: #dcfce7; border-color: #86efac; color: #166534; }
     .vis:disabled { opacity: .5; cursor: wait; }
+    .vis.raz { background: #eef2ff; border-color: #c7d2fe; color: #3730a3; max-width: 160px; overflow: hidden; text-overflow: ellipsis; }
+    .vis.raz.podedovano { background: var(--surface); border-style: dashed; color: var(--muted); }
+    .raz-okno { position: fixed; inset: 0; z-index: 1000; background: rgba(15, 23, 42, .45); display: grid; place-items: center; padding: 16px; }
+    .raz-okno .upl { width: 100%; max-width: 520px; max-height: 90vh; overflow: auto; }
+    .raz-okno h2 { margin: 0 0 6px; font-size: 1.25rem; }
+    .raz-okno .tp-moz { display: inline-block; margin: 0; cursor: pointer; position: relative; }
+    .raz-gumbi { display: flex; gap: 8px; justify-content: flex-end; flex-wrap: wrap; margin-top: 18px; }
     .upl { background: var(--surface); border-radius: var(--r-xl); padding: 24px; box-shadow: var(--shadow); max-width: 640px; }
     .upl .field { margin-bottom: 16px; }
     .upl label { display: block; font-weight: 800; margin-bottom: 6px; }
@@ -954,10 +961,14 @@ let KVIZI = [];
 let MOJE = {};            // kviz_id → {tocke, vseh, oddano}
 const vKviz = (k, skrit) => ({ vrsta: 'kviz', ime: k.naslov, opis: k.opis, id: k.id, predmet: k.predmet, datum: k.objavljeno, vprasanj: k.vprasanj, skrit });
 async function naloziKvize() {
-  const [r, s] = await Promise.all([rpc('sola_kvizi_seznam'), ucitelj ? rpc('sola_tp_skriti_kvizi', { p_seja: ucitelj.seja }) : []]);
+  const [r, s, raz] = await Promise.all([rpc('sola_kvizi_seznam'), ucitelj ? rpc('sola_tp_skriti_kvizi', { p_seja: ucitelj.seja }) : [],
+    rpc('sola_tp_kvizi_razredi')]);
   if (!Array.isArray(r)) return;
   /* Skrite kvize v svojih predmetih (predmeti učiteljev) vidi učitelj, da jih lahko znova pokaže. */
   KVIZI = [...r.map(k => vKviz(k, false)), ...(Array.isArray(s) ? s.map(k => vKviz(k, true)) : [])];
+  /* Razredi posameznega kviza (supabase_kvizi_razredi.sql); prazno = kot modul oz. predmet. */
+  const pr = new Map(Array.isArray(raz) ? raz.map(x => [x.id, x.razredi || []]) : []);
+  KVIZI.forEach(k => { k.razredi = pr.get(k.id) || []; });
 }
 
 /* ─── Predmeti učiteljev (supabase_predmeti_uciteljev.sql) ───────────────────
@@ -969,6 +980,20 @@ const BARVE_TP = [['#6366f1', '#a855f7'], ['#0ea5e9', '#22c55e'], ['#f43f5e', '#
 const EMOJI_TP = ['📚', '🔢', '📐', '🧪', '🌍', '📖', '✏️', '🇬🇧', '🎵', '🎨', '⚽', '🌱', '🧠', '💻', '🦉', '⭐'];
 const PREDLOGA_KVIZA = 'orodja/kviz-predloga/Brihta%20predloga%20za%20kviz.xlsx';
 let TP = [];
+let MOJ_RAZRED = null;    // razred prijavljenega učenca danes (npr. '6A'); null = ne vemo (pokaži vse)
+/* Kdo vidi kviz v predmetu učitelja: razredi kviza → razredi modula, v katerem je → razredi predmeta. */
+function modulKviza(k) {
+  const e = (RAZPORED[k.predmet] || []).find(x => x && x.m && (x.v || []).includes('kviz:' + k.id));
+  return e ? NASLOVI.find(n => n.id === e.m) : null;
+}
+function razrediKviza(k) {
+  if ((k.razredi || []).length) return k.razredi;
+  const m = modulKviza(k);
+  if (m && (m.razredi || []).length) return m.razredi;
+  const p = TP.find(t => t.id === k.predmet);
+  return p ? p.razredi : [];
+}
+const zaMojRazred = g => ucitelj || g.vrsta !== 'kviz' || !jeTP(g.predmet) || !MOJ_RAZRED || razrediKviza(g).includes(MOJ_RAZRED);
 const jeTP = id => /^u-[a-z0-9]{8}$/.test(String(id || ''));
 function vPredmetTP(t) {
   const [c1, c2] = BARVE_TP[t.barva] || BARVE_TP[0];
@@ -978,8 +1003,9 @@ function vPredmetTP(t) {
     opis: razredi.length ? 'Razredi: ' + razredi.join(', ') : 'Še ni dodeljen nobenemu razredu' };
 }
 async function naloziTP() {
-  const r = ucitelj ? await rpc('sola_tp_moji', { p_seja: ucitelj.seja })
-    : ucenec ? await rpc('sola_tp_ucenec', { p_student: ucenec.id }) : [];
+  const [r, raz] = ucitelj ? [await rpc('sola_tp_moji', { p_seja: ucitelj.seja }), null]
+    : ucenec ? await Promise.all([rpc('sola_tp_ucenec', { p_student: ucenec.id }), rpc('sola_ucenec_moj_razred', { p_student: ucenec.id })]) : [[], null];
+  MOJ_RAZRED = typeof raz === 'string' ? raz : null;
   if (!Array.isArray(r)) return;   // strežnik ni dosegljiv ali SQL še ni zagnan: obdrži, kar je
   TP = r.map(vPredmetTP);
   for (let i = VSI.length - 1; i >= 0; i--) if (VSI[i].tp) VSI.splice(i, 1);
@@ -1031,11 +1057,12 @@ function skrito(g) {
 }
 const gradivaZa = id => [...(GRADIVA[id] || []), ...DODANA.filter(g => g.predmet === id), ...KVIZI.filter(k => k.predmet === id && !uraKviza(id, k))]
   .filter(g => ucitelj || !skrito(g))
+  .filter(zaMojRazred)
   .sort((a, b) => new Date(b.datum) - new Date(a.datum));
 function gumbObjave(g) {
   if (ucitelj && g.vrsta === 'kviz' && jeTP(g.predmet)) {
     const s = !!g.skrit;
-    return `<button class="vis${s ? '' : ' on'}" type="button" data-kviz-skrit="${esc(g.id)}" data-skrito="${s ? 1 : 0}"
+    return gumbRazredov('kviz', g.id, g.razredi, razrediKviza(g)) + `<button class="vis${s ? '' : ' on'}" type="button" data-kviz-skrit="${esc(g.id)}" data-skrito="${s ? 1 : 0}"
       title="${s ? 'Učenci kviza ne vidijo. Klikni, da ga pokažeš.' : 'Učenci kviz vidijo. Klikni, da ga skriješ.'}">${s ? '👁 <span class="lbl">Pokaži</span>' : '🙈 <span class="lbl">Skrij</span>'}</button>`;
   }
   if (!ucitelj || !kljucObjave(g)) return '';
@@ -1043,6 +1070,61 @@ function gumbObjave(g) {
   return `<button class="vis${s ? '' : ' on'}" type="button" data-objava="${esc(kljucObjave(g))}" data-skrito="${s ? 1 : 0}"
     title="${s ? 'Učenci tega ne vidijo. Klikni, da objaviš.' : 'Učenci to vidijo. Klikni, da skriješ.'}">${s ? '🙈 <span class="lbl">Skrito</span>' : '👁 <span class="lbl">Objavljeno</span>'}</button>`;
 }
+/* Razredi pri kvizu ali modulu v predmetu učitelja (supabase_kvizi_razredi.sql).
+   Gumb kaže, kdo vidi; brez lastnih razredov velja modul oz. predmet. */
+function gumbRazredov(vrsta, id, lastni, ucinkoviti) {
+  const svoji = (lastni || []).length > 0, raz = (ucinkoviti || []).slice().sort();
+  const nap = raz.length ? raz.join(', ') : 'nihče';
+  return `<button class="vis raz${svoji ? '' : ' podedovano'}" type="button" data-razredi-${vrsta}="${esc(id)}"
+    title="${svoji ? 'Vidijo samo: ' + esc(nap) : 'Vidijo razredi ' + (vrsta === 'kviz' ? 'modula oz. predmeta' : 'predmeta') + ': ' + esc(nap)}. Klikni, da izbereš razrede.">👥 <span class="lbl">${esc(nap)}</span></button>`;
+}
+function oknoRazredov({ naslov, opis, izbrani, shrani }) {
+  const o = document.createElement('div');
+  o.className = 'raz-okno';
+  o.innerHTML = `<div class="upl" role="dialog" aria-modal="true" aria-label="${esc(naslov)}">
+    <h2>${esc(naslov)}</h2><p class="note" style="margin:0 0 14px">${esc(opis)}</p>
+    <div class="tp-izbira">${RAZREDI.map(r => `<label class="tp-moz"><input type="checkbox" value="${r}"${izbrani.includes(r) ? ' checked' : ''}><span class="tp-raz">${r}</span></label>`).join('')}</div>
+    <div class="raz-gumbi"><button class="btn" type="button" data-x="ponastavi">Kot ${opis.includes('modul') ? 'modul / predmet' : 'predmet'}</button><button class="btn" type="button" data-x="preklici">Prekliči</button><button class="btn btn-go" type="button" data-x="shrani">Shrani</button></div></div>`;
+  const zapri = () => o.remove();
+  o.addEventListener('click', async e => {
+    if (e.target === o) return zapri();
+    const x = e.target.closest('[data-x]')?.dataset.x;
+    if (x === 'preklici') return zapri();
+    if (x === 'ponastavi') o.querySelectorAll('input').forEach(i => { i.checked = false; });
+    if (x !== 'shrani' && x !== 'ponastavi') return;
+    const izbor = [...o.querySelectorAll('input:checked')].map(i => i.value);
+    o.querySelectorAll('button').forEach(b => { b.disabled = true; });
+    if (await shrani(izbor)) { zapri(); const y = window.scrollY; usmeri(); window.scrollTo(0, y); }
+    else o.querySelectorAll('button').forEach(b => { b.disabled = false; });
+  });
+  document.addEventListener('keydown', function esc_(e) { if (e.key === 'Escape') { zapri(); document.removeEventListener('keydown', esc_); } });
+  document.body.appendChild(o);
+  o.querySelector('input')?.focus();
+}
+document.addEventListener('click', e => {
+  const b = e.target.closest('[data-razredi-kviz], [data-razredi-modul]');
+  if (!b || !ucitelj) return;
+  e.preventDefault(); e.stopPropagation();
+  const napaka = r => { alert(r === NEDOSEGLJIVO ? 'Strežnik ni dosegljiv.' : 'Ni uspelo. Se moraš znova prijaviti? (Ali pa v Supabase še ni zagnan supabase_kvizi_razredi.sql.)'); return false; };
+  if (b.dataset.razrediKviz) {
+    const k = KVIZI.find(x => x.id === b.dataset.razrediKviz);
+    if (!k) return;
+    const m = modulKviza(k), p = TP.find(t => t.id === k.predmet);
+    const privzeto = m && (m.razredi || []).length ? `modul »${m.besedilo}« (${m.razredi.join(', ')})` : `predmet (${(p?.razredi || []).join(', ') || 'brez razreda'})`;
+    oknoRazredov({ naslov: `Kdo vidi kviz »${k.ime}«?`, izbrani: k.razredi || [],
+      opis: `Izberi razrede, ki vidijo ta kviz. Če ne izbereš nobenega, velja ${privzeto}. Izbrani razredi vidijo tvoj predmet, v njem pa samo kvize zanje.`,
+      shrani: async izbor => { const r = await rpc('sola_tp_kviz_razredi', { p_seja: ucitelj.seja, p_id: k.id, p_razredi: izbor });
+        if (r !== true) return napaka(r); k.razredi = izbor; return true; } });
+  } else {
+    const n = NASLOVI.find(x => x.id === b.dataset.razrediModul);
+    if (!n) return;
+    const p = TP.find(t => t.id === n.predmet);
+    oknoRazredov({ naslov: `Kdo vidi modul »${n.besedilo}«?`, izbrani: n.razredi || [],
+      opis: `Izberi razrede, ki vidijo kvize v tem modulu (kviz z lastnimi razredi ima prednost). Če ne izbereš nobenega, velja predmet (${(p?.razredi || []).join(', ') || 'brez razreda'}).`,
+      shrani: async izbor => { const r = await rpc('sola_tp_modul_razredi', { p_seja: ucitelj.seja, p_id: n.id, p_razredi: izbor });
+        if (r !== true) return napaka(r); n.razredi = izbor; return true; } });
+  }
+}, true);
 /* Skrij / Pokaži kviz v predmetu učitelja (oddaje ostanejo). */
 document.addEventListener('click', async e => {
   const b = e.target.closest('[data-kviz-skrit]');
@@ -1289,7 +1371,7 @@ function htmlRazporeda(p, seznam) {
   const vModul = (g, v) => moduli.length ? `<select class="v-modul" title="Premakni v modul" aria-label="Modul">
       <option value="">📁 brez modula</option>${moduli.map(m => `<option value="${esc(m.n.id)}"${m === v ? ' selected' : ''}>📁 ${esc(m.n.besedilo)}</option>`).join('')}</select>` : '';
   const kontrole = (g, v) => ucitelj ? `<span class="premik"><span class="rocaj" title="Primi in povleci">⋮⋮</span></span>${g ? vModul(g, v) : ''}` : '';
-  const akcije = n => ucitelj ? `<span class="nasl-akc"><button class="vis" type="button" data-razd-uredi="${esc(n.id)}" title="Preimenuj">✎</button><button class="vis" type="button" data-razd-izbrisi="${esc(n.id)}" title="Izbriši">🗑</button></span>` : '';
+  const akcije = n => ucitelj ? `<span class="nasl-akc">${p.tp && vrstaRazd(n) === 'modul' ? gumbRazredov('modul', n.id, n.razredi, (n.razredi || []).length ? n.razredi : p.razredi) : ''}<button class="vis" type="button" data-razd-uredi="${esc(n.id)}" title="Preimenuj">✎</button><button class="vis" type="button" data-razd-izbrisi="${esc(n.id)}" title="Izbriši">🗑</button></span>` : '';
   const vrstice = drevo.map((e, i) => {
     if (e.tip === 'g') return vrsticaGradiva(p, e.g, kontrole(e.g, null));
     if (e.tip === 'naslov') return `<li class="naslov-v"${ucitelj ? ` data-k="naslov:${esc(e.n.id)}"` : ''}>${kontrole()}<h3>${esc(e.n.besedilo)}</h3>${akcije(e.n)}</li>`;
