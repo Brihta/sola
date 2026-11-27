@@ -1,12 +1,13 @@
 ## 🎯 Cilj ure
 
-Naučim se, kaj so **naslov**, **odstavek** in **slog**, in besedilo v Wordu uredim s **slogi**.
+Naučim se, kaj so **naslov**, **odstavek** in **slog**. V Wordu uredim besedilo s **slogi** in mu dodam **svoje poglavje**.
 
 ## ✅ Uspešen sem, če …
 
 - naslovom izberem pravi slog (Naslov, Naslov 1, Naslov 2),
-- odstavkom pustim slog Navadno in Enter pritisnem samo na koncu odstavka,
-- v podoknu za krmarjenje vidim vse naslove svojega dokumenta,
+- napišem svoje poglavje: kratek naslov brez pike in odstavek iz celih povedi,
+- Enter pritisnem samo na koncu odstavka (to vidim z znakom ¶),
+- v podoknu za krmarjenje vidim vse naslove, tudi svoje,
 - znam povedati, zakaj je slog boljši kot samo krepko besedilo.
 
 ## 🗺️ Kako delaš

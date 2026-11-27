@@ -77,6 +77,13 @@ info(naslov, html)                       # razlaga; razredi: big, box, warn, sma
 {'type':'slogi',  'title', 'intro', 'paras':[['besedilo','Naslov 1'], ['besedilo','Navadno','zakaj?'], ...], 'win', 'hints'}
                   # mali urejevalnik: klikni odstavek, nato slog (Naslov, Naslov 1, Naslov 2, Navadno);
                   # desno se sproti riše podokno za krmarjenje; Preveri obarva napačne in pove zakaj
+{'type':'pisi',   'id', 'title', 'intro', 'shrani':'ime', 'pred':[['Narava','Naslov 1'], ...],
+                  'polja':[{'slog':'Naslov 1','oznaka':'...','zgled':'...'}, {'slog':'Navadno','oznaka','zgled','povedi':2,'besed':10}], 'win', 'hints'}
+                  # učenec SAM napiše naslove in odstavek; sproti vidi slog in podokno za krmarjenje (pred = že obstoječi naslovi, njegovi so rumeni)
+                  # preveri: naslov 1 do 6 besed, velika začetnica, brez pike, naslova različna, ne prepisan zgled;
+                  # odstavek brez Enter (pokaže ¶), konča se s piko, vsaj 'povedi' povedi in 'besed' besed. Namigi so prosti, rešitve ni.
+                  # shrani = besedilo ostane v brskalniku; <div data-pisi="ime" data-slogi="Naslov 1,Naslov 2,Navadno"></div>
+                  # v html katerega koli zaslona (tudi na drugi strani) ga pokaže znova, npr. ko ga učenec tipka v Word
 {'type':'zrcali', 'id':'n1', 'title', 'intro', 'os':'v'|'h', 'pol':['..RR', ...], 'obrni':False, 'demo':False, 'hints'}
                   # simetrija na mreži: pol = dana polovica (pri 'v' levi stolpci, pri 'h' zgornje vrstice), '.' prazno
                   # barve: R rdeča, Y rumena, G zelena, B modra, O oranžna, P vijolična, K rjava, C črna
@@ -170,3 +177,9 @@ uživali in delali vsak s svojo hitrostjo. Kar je šlo narobe in je popravljeno:
 - Vrstni red nalog in odgovorov se za vsak poskus premeša, zato list za odgovore s črkami ne deluje.
 - Rezultat učenec vpiše v kviz `Samoocena …` (vsaka naloga: Pravilen, Napačen, Nisem odgovoril/a).
   Kvizi z id `…/samoocena-…` nimajo pravila 50 % (`supabase_kvizi_samoocena.sql`).
+
+**6. r, 6. ura Naslovi, odstavki, slogi (6. B, 5. 11. 2026), predelano 27. 11. 2026:** ura je bila dolgočasna,
+ker so učenci le klikali sloge na tujem besedilu (dvakrat v brskalniku, nato isto še v Wordu). Predelano po Rosenshineu:
+ponovitev bližnjic, primer (prve vrstice so že urejene, naprej nadaljuje učenec), detektivski nalogi z znakom ¶,
+učenec SAM napiše svoje poglavje (vrsta `pisi`) in ga natipka v Word, zapis v zvezek z vrzelmi (priklic iz glave,
+gumb »Preveri svoje besede«). Isto besedilo naj se v brskalniku in v Wordu ne ponavlja.

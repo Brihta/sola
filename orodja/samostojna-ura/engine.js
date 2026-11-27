@@ -114,6 +114,7 @@
     if (s.intro) card.appendChild($(`<div class="intro">${s.intro}</div>`));
     const R = TYPES[s.type];
     const r = R(s, card);
+    pisiPokazi(card);
     solver = r && r.solve; podatki = r && r.podatki;
     const already = i < best;
     bNext.disabled = !(s.type === 'info' || already);
@@ -585,6 +586,81 @@
     draw();
     return { solve: () => { s.paras.forEach((p, i) => (cur[i] = p[1])); P.forEach((d) => d.classList.remove('wrong')); fin = true; draw(); } };
   };
+
+  /* ---------- pisi: učenec sam napiše naslove in odstavek, stran preveri obliko in sproti riše slog ----------
+     {type:'pisi', id, title, intro, shrani:'ime', pred:[['Narava','Naslov 1'], ...],
+      polja:[{slog:'Naslov 1', oznaka, zgled}, {slog:'Navadno', oznaka, zgled, povedi:2, besed:10}], hints}
+     Naslov: 1 do 6 besed, z veliko začetnico, brez pike. Odstavek: brez Enter, vsaj »povedi« povedi in »besed« besed.
+     Besedilo se shrani v brskalnik (pisiKey), da ga zaslon z <div data-pisi="ime"></div> na drugi strani pokaže znova. */
+  const pisiKey = (ime) => 'brihta_pisi:' + UID + ':' + ime;
+  const pisiBeri = (ime) => { try { return JSON.parse(localStorage.getItem(pisiKey(ime)) || 'null'); } catch (e) { return null; } };
+  TYPES.pisi = (s, c) => {
+    const prej = (s.shrani && pisiBeri(s.shrani)) || [];
+    const w = $(`<div class="slogi pisi"><div class="sdoc"><div class="pform"></div>
+      <div class="nav"><div class="navh">Podokno za krmarjenje</div><div class="navl"></div></div></div>
+      <div class="pprev"><div class="navh">Tako bo videti v Wordu</div><div class="page"></div></div>
+      <div class="row"><button class="btn go2">Preveri</button></div></div>`);
+    c.appendChild(w);
+    const form = w.querySelector('.pform'), navl = w.querySelector('.navl'), page = w.querySelector('.page');
+    const E = s.polja.map((f, i) => {
+      const odst = f.slog === 'Navadno';
+      const r = $(`<label class="pf"><span class="pl"><span class="ptag ${scls(f.slog)}">${f.slog}</span> ${f.oznaka}</span>
+        ${odst ? '<textarea rows="3"></textarea>' : '<input type="text" maxlength="60">'}</label>`);
+      const x = r.querySelector('input,textarea'); x.placeholder = f.zgled ? 'npr. ' + f.zgled : ''; x.value = prej[i] || '';
+      x.oninput = () => { x.classList.remove('wrong'); draw(); };
+      form.appendChild(r); return x;
+    });
+    const val = () => E.map((x) => x.value.trim());
+    function draw() {
+      const v = val();
+      page.innerHTML = s.polja.map((f, i) => `<p class="para ${scls(f.slog)}">${v[i] ? esc(v[i]).replace(/\n/g, ' <b class="pil">¶</b><br>') : '<span class="small">…</span>'}</p>`).join('');
+      const h = (s.pred || []).concat(s.polja.map((f, i) => [v[i], f.slog]).filter((x) => x[1] !== 'Navadno' && x[0]));
+      navl.innerHTML = h.length ? h.map((x) => `<div class="nv ${scls(x[1])}${(s.pred || []).includes(x) ? '' : ' moj'}">${esc(x[0])}</div>`).join('') : '<div class="small">Tu se pokažejo naslovi.</div>';
+    }
+    const besede = (t) => t.split(/\s+/).filter(Boolean).length;
+    const bes = (n) => n + ' ' + (n % 100 === 1 ? 'beseda' : n % 100 === 2 ? 'besedi' : n % 100 === 3 || n % 100 === 4 ? 'besede' : 'besed');
+    function napaka(f, t, vse) {
+      const ime = f.slog === 'Navadno' ? 'Odstavek' : `Naslov (${f.slog})`;
+      if (!t) return `${ime} je še prazen. Napiši ga.`;
+      if (f.zgled && t.toLowerCase() === f.zgled.toLowerCase()) return `${ime}: to je primer. Napiši <b>svoje</b> besede.`;
+      if (/^[a-zčšžćđ]/.test(t)) return `${ime} se začne z <b>veliko začetnico</b>.`;
+      if (f.slog !== 'Navadno') {
+        if (/\n/.test(t)) return `${ime} je ena sama vrstica.`;
+        if (/[.!?]$/.test(t)) return `${ime} nima pike na koncu. Naslov ni poved, je kažipot.`;
+        if (besede(t) > 6) return `${ime} je predolg (${bes(besede(t))}). Naslov je kratek: največ 6 besed. Razlago daj v odstavek.`;
+        if (vse.filter((x) => x.toLowerCase() === t.toLowerCase()).length > 1) return 'Dva naslova sta enaka. Vsak del besedila ima svoj naslov.';
+        return '';
+      }
+      if (/\n/.test(t)) return 'V odstavku si pritisnil/a <b>Enter</b> (glej ¶ v predogledu). Odstavek je ena celota: vrstico prelomi Word sam. Enter pobriši.';
+      if (!/[.!?]$/.test(t)) return 'Odstavek je iz povedi, zato se konča s <b>piko</b>.';
+      const p = (t.match(/[.!?](\s|$)/g) || []).length;
+      if (p < (f.povedi || 1)) return `Odstavek ima ${p} ${p === 1 ? 'poved' : 'povedi'}. Napiši vsaj <b>${f.povedi}</b> povedi o svojem naslovu.`;
+      if (besede(t) < (f.besed || 1)) return `Odstavek je prekratek (${bes(besede(t))}). Napiši vsaj <b>${f.besed}</b> besed: povej, kaj, kje ali zakaj.`;
+      return '';
+    }
+    w.querySelector('.go2').onclick = () => {
+      const v = val(); poskusi++;
+      E.forEach((x) => x.classList.remove('wrong'));
+      for (let i = 0; i < v.length; i++) {
+        const m = napaka(s.polja[i], v[i], v.filter((_, k) => s.polja[k].slog !== 'Navadno'));
+        if (m) { E[i].classList.add('wrong'); E[i].focus(); feedback('❌ ' + m, 'bad'); return; }
+      }
+      if (s.shrani) { try { localStorage.setItem(pisiKey(s.shrani), JSON.stringify(v)); } catch (e) {} }
+      E.forEach((x) => (x.readOnly = true));
+      done('✅ ' + (s.win || 'Tvoje besedilo je pripravljeno. Naslovi so kratki, odstavek je cel.'));
+    };
+    draw();
+    return { podatki: () => ({ besedilo: val() }),
+      solve: TEST ? () => { E.forEach((x, i) => { x.value = s.polja[i].zgled || 'Primer.'; }); draw(); } : null };
+  };
+  /* <div data-pisi="ime"></div> v html zaslona pokaže besedilo, ki ga je učenec napisal na zaslonu pisi s shrani:'ime'. */
+  function pisiPokazi(c) {
+    c.querySelectorAll('[data-pisi]').forEach((el) => {
+      const v = pisiBeri(el.dataset.pisi), sl = (el.dataset.slogi || '').split(',');
+      el.innerHTML = v && v.length ? '<div class="page pisiout">' + v.map((t, i) => `<p class="para ${scls(sl[i] || 'Navadno')}">${esc(t)}</p>`).join('') + '</div>'
+        : '<div class="warn">Svojega besedila tukaj ne vidim (morda delaš na drugem računalniku). Vrni se na prejšnji korak ali ga napiši na novo.</div>';
+    });
+  }
 
   /* ---------- zrcali: simetrija na mreži z barvami ----------
      {type:'zrcali', title, intro, os:'v'|'h', pol:['..R', ...], obrni:False, demo:False, hints}

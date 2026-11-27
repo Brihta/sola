@@ -124,6 +124,15 @@ footer{display:flex;gap:10px;align-items:center;flex-wrap:wrap;border-top:3px so
 .opill{display:inline-block;background:#59C059;border:1px solid #389438;border-radius:12px;padding:0 6px;margin:0 2px}.cpill{display:inline-block;width:14px;height:14px;border-radius:50%;border:2px solid #fff;vertical-align:-2px}
 .risar .lw{stroke-dasharray:4 4}.risar .lb{stroke:#000;stroke-width:12;stroke-opacity:.18}
 .risar .oder{position:sticky;top:8px;align-self:flex-start}
+
+/* pisi: učenec piše svoje besedilo */
+.pform{flex:1 1 380px;display:flex;flex-direction:column;gap:10px}.pf{display:flex;flex-direction:column;gap:4px}.pl{font-size:16px;color:var(--mut)}
+.ptag{display:inline-block;font-size:14px!important;font-weight:700;background:var(--sky);border-radius:6px;padding:1px 8px;margin-right:4px}
+.pf input,.pf textarea{font:17px/1.4 Calibri,Arial,sans-serif;padding:8px 10px;border:2px solid #b9c6d3;border-radius:10px;width:100%;box-sizing:border-box;resize:vertical}
+.pf input:focus,.pf textarea:focus{border-color:var(--blue);outline:none}.pf .wrong{border-color:var(--bad);background:var(--badbg)}
+.pprev{margin-top:12px}.pprev .page{min-height:0}.pisi .para{cursor:default}.pil{color:var(--bad)}.nv.moj{background:var(--sun);border-radius:4px}
+.pisiout{margin:8px 0;min-height:0}.pisiout .para{cursor:default}
+.luk{display:inline-block;min-width:90px;border-bottom:2px solid var(--blue);color:transparent;text-align:center}.luk.vidi{color:var(--bad)}
 </style></head><body><div id="app"></div><script>window.PAGE={"title": "Pogoj: če … potem", "screens": [{"type": "info", "title": "Pogoj = vprašanje da ali ne", "html": "\n<div class=\"box\"><span class=\"sb ctl\">če <span class=\"opill\"><span class=\"vpill\">dolžina</span> &gt; <b>60</b></span> potem</span><br>\n<span style=\"margin-left:26px\" class=\"sb pen\">nastavi barvo pisala na <span class=\"cpill\" style=\"background:#E6443C\"></span> rdeča</span><br>\n<span class=\"sb ctl kon\">konec če</span></div>\n<p class=\"big\">Računalnik vpraša: »Ali je dolžina večja od 60?« Če je odgovor <b>da</b>, izvede bloke v »če«. Če je <b>ne</b>, jih preskoči.</p>\n<p>To je romb iz diagrama poteka. <b>&gt;</b> pomeni večje, <b>&lt;</b> pomeni manjše.</p>"}, {"type": "choose", "title": "Kakšna bo črta?", "intro": "<div class=\"box\"><span class=\"sb var\">nastavi <span class=\"vpill\">dolžina</span> na <b>30</b></span><br>\n<span class=\"sb ctl\">če <span class=\"opill\"><span class=\"vpill\">dolžina</span> &gt; <b>60</b></span> potem</span><br>\n<span style=\"margin-left:26px\" class=\"sb pen\">nastavi barvo pisala na <span class=\"cpill\" style=\"background:#E6443C\"></span> rdeča</span><br>\n<span class=\"sb ctl kon\">konec če</span><br>\n<span class=\"sb mot\">pojdi <span class=\"vpill\">dolžina</span> korakov</span></div><p>Pisalo na začetku riše zeleno. Kakšno črto nariše?</p>", "options": [{"t": "zeleno, dolgo 30", "ok": true, "why": "Tako je. 30 ni večje od 60, zato »če« preskoči in barva ostane zelena."}, {"t": "rdečo, dolgo 30", "ok": false, "why": "Ali je 30 večje od 60? Ne. Zato se barva ne spremeni."}, {"t": "rdečo, dolgo 60", "ok": false, "why": "60 je le meja v pogoju. Pisalo gre toliko, kolikor je v škatli: 30."}], "hints": ["Ali je 30 > 60?"]}, {"type": "risar", "title": "Barvna spirala", "intro": "Nariši spiralo kot prej, a črte, ki so <b>daljše od 60</b>, naj bodo <b>rdeče</b>. Pogoj daj na začetek zanke. Največ <b>9 blokov</b>.", "tools": ["S10", "FV", "T90", "A10", "I>60", "I<60", "Cr", ")"], "loops": [4, 12], "max": 9, "solution": ["S10", "N12", "I>60", "Cr", ")", "FV", "T90", "A10", ")"], "hints": ["Začni s programom spirale z prejšnjega koraka. Kaj mu manjka?", "Pisalo mora pred vsako črto vprašati: ali je dolžina večja od 60? Kateri znak pomeni večje?", "Pogoj ima svoj konec. V »če« je samo menjava barve, risanje je za »konec če«."]}, {"type": "risar", "title": "🐞 Najdi hrošča", "intro": "Ta program bi moral narisati isto barvno spiralo, a je vsa rdeča. Zaženi ga, poišči hrošča in ga popravi.", "tools": ["S10", "FV", "T90", "A10", "I>60", "I<60", "Cr", ")"], "loops": [4, 12], "max": 9, "start": ["S10", "N12", "I<60", "Cr", ")", "FV", "T90", "A10", ")"], "solution": ["S10", "N12", "I>60", "Cr", ")", "FV", "T90", "A10", ")"], "hints": ["Preberi pogoj na glas. Ali je prva črta (10) že rdeča? Zakaj?", "Poglej znak v pogoju. &lt; pomeni manjše, &gt; pomeni večje. Katere črte naj bodo rdeče?", "Ko je barva enkrat rdeča, ostane rdeča. Zato je hrošč samo v enem bloku."]}, {"type": "risar", "stars": "★★", "optional": true, "title": "Če … sicer", "intro": "Kratke črte (60 ali manj) naj bodo <b>vijolične</b>, daljše <b>rdeče</b>. Uporabi blok <b>sicer</b>: kar je za njim, se zgodi, ko je odgovor <b>ne</b>. Največ <b>11 blokov</b>.", "tools": ["S10", "FV", "T90", "A10", "I>60", "Cr", "Cv", "E", ")"], "loops": [4, 12], "max": 11, "solution": ["S10", "N12", "I>60", "Cr", "E", "Cv", ")", "FV", "T90", "A10", ")"], "hints": ["Pogoj vpraša: ali je dolžina večja od 60? Kaj naredi pisalo pri da in kaj pri ne?", "Kar je pred »sicer«, se zgodi pri da. Kar je za njim, pri ne."]}], "endText": "Znaš uporabiti pogoj »če« in najti hrošča v pogoju."};</script><script>/* Brihta samostojna ura: zasloni z nalogami, ki se preverijo sami. */
 (function () {
   const $ = (h) => { const d = document.createElement('div'); d.innerHTML = h.trim(); return d.firstElementChild; };
@@ -240,6 +249,7 @@ footer{display:flex;gap:10px;align-items:center;flex-wrap:wrap;border-top:3px so
     if (s.intro) card.appendChild($(`<div class="intro">${s.intro}</div>`));
     const R = TYPES[s.type];
     const r = R(s, card);
+    pisiPokazi(card);
     solver = r && r.solve; podatki = r && r.podatki;
     const already = i < best;
     bNext.disabled = !(s.type === 'info' || already);
@@ -711,6 +721,81 @@ footer{display:flex;gap:10px;align-items:center;flex-wrap:wrap;border-top:3px so
     draw();
     return { solve: () => { s.paras.forEach((p, i) => (cur[i] = p[1])); P.forEach((d) => d.classList.remove('wrong')); fin = true; draw(); } };
   };
+
+  /* ---------- pisi: učenec sam napiše naslove in odstavek, stran preveri obliko in sproti riše slog ----------
+     {type:'pisi', id, title, intro, shrani:'ime', pred:[['Narava','Naslov 1'], ...],
+      polja:[{slog:'Naslov 1', oznaka, zgled}, {slog:'Navadno', oznaka, zgled, povedi:2, besed:10}], hints}
+     Naslov: 1 do 6 besed, z veliko začetnico, brez pike. Odstavek: brez Enter, vsaj »povedi« povedi in »besed« besed.
+     Besedilo se shrani v brskalnik (pisiKey), da ga zaslon z <div data-pisi="ime"></div> na drugi strani pokaže znova. */
+  const pisiKey = (ime) => 'brihta_pisi:' + UID + ':' + ime;
+  const pisiBeri = (ime) => { try { return JSON.parse(localStorage.getItem(pisiKey(ime)) || 'null'); } catch (e) { return null; } };
+  TYPES.pisi = (s, c) => {
+    const prej = (s.shrani && pisiBeri(s.shrani)) || [];
+    const w = $(`<div class="slogi pisi"><div class="sdoc"><div class="pform"></div>
+      <div class="nav"><div class="navh">Podokno za krmarjenje</div><div class="navl"></div></div></div>
+      <div class="pprev"><div class="navh">Tako bo videti v Wordu</div><div class="page"></div></div>
+      <div class="row"><button class="btn go2">Preveri</button></div></div>`);
+    c.appendChild(w);
+    const form = w.querySelector('.pform'), navl = w.querySelector('.navl'), page = w.querySelector('.page');
+    const E = s.polja.map((f, i) => {
+      const odst = f.slog === 'Navadno';
+      const r = $(`<label class="pf"><span class="pl"><span class="ptag ${scls(f.slog)}">${f.slog}</span> ${f.oznaka}</span>
+        ${odst ? '<textarea rows="3"></textarea>' : '<input type="text" maxlength="60">'}</label>`);
+      const x = r.querySelector('input,textarea'); x.placeholder = f.zgled ? 'npr. ' + f.zgled : ''; x.value = prej[i] || '';
+      x.oninput = () => { x.classList.remove('wrong'); draw(); };
+      form.appendChild(r); return x;
+    });
+    const val = () => E.map((x) => x.value.trim());
+    function draw() {
+      const v = val();
+      page.innerHTML = s.polja.map((f, i) => `<p class="para ${scls(f.slog)}">${v[i] ? esc(v[i]).replace(/\n/g, ' <b class="pil">¶</b><br>') : '<span class="small">…</span>'}</p>`).join('');
+      const h = (s.pred || []).concat(s.polja.map((f, i) => [v[i], f.slog]).filter((x) => x[1] !== 'Navadno' && x[0]));
+      navl.innerHTML = h.length ? h.map((x) => `<div class="nv ${scls(x[1])}${(s.pred || []).includes(x) ? '' : ' moj'}">${esc(x[0])}</div>`).join('') : '<div class="small">Tu se pokažejo naslovi.</div>';
+    }
+    const besede = (t) => t.split(/\s+/).filter(Boolean).length;
+    const bes = (n) => n + ' ' + (n % 100 === 1 ? 'beseda' : n % 100 === 2 ? 'besedi' : n % 100 === 3 || n % 100 === 4 ? 'besede' : 'besed');
+    function napaka(f, t, vse) {
+      const ime = f.slog === 'Navadno' ? 'Odstavek' : `Naslov (${f.slog})`;
+      if (!t) return `${ime} je še prazen. Napiši ga.`;
+      if (f.zgled && t.toLowerCase() === f.zgled.toLowerCase()) return `${ime}: to je primer. Napiši <b>svoje</b> besede.`;
+      if (/^[a-zčšžćđ]/.test(t)) return `${ime} se začne z <b>veliko začetnico</b>.`;
+      if (f.slog !== 'Navadno') {
+        if (/\n/.test(t)) return `${ime} je ena sama vrstica.`;
+        if (/[.!?]$/.test(t)) return `${ime} nima pike na koncu. Naslov ni poved, je kažipot.`;
+        if (besede(t) > 6) return `${ime} je predolg (${bes(besede(t))}). Naslov je kratek: največ 6 besed. Razlago daj v odstavek.`;
+        if (vse.filter((x) => x.toLowerCase() === t.toLowerCase()).length > 1) return 'Dva naslova sta enaka. Vsak del besedila ima svoj naslov.';
+        return '';
+      }
+      if (/\n/.test(t)) return 'V odstavku si pritisnil/a <b>Enter</b> (glej ¶ v predogledu). Odstavek je ena celota: vrstico prelomi Word sam. Enter pobriši.';
+      if (!/[.!?]$/.test(t)) return 'Odstavek je iz povedi, zato se konča s <b>piko</b>.';
+      const p = (t.match(/[.!?](\s|$)/g) || []).length;
+      if (p < (f.povedi || 1)) return `Odstavek ima ${p} ${p === 1 ? 'poved' : 'povedi'}. Napiši vsaj <b>${f.povedi}</b> povedi o svojem naslovu.`;
+      if (besede(t) < (f.besed || 1)) return `Odstavek je prekratek (${bes(besede(t))}). Napiši vsaj <b>${f.besed}</b> besed: povej, kaj, kje ali zakaj.`;
+      return '';
+    }
+    w.querySelector('.go2').onclick = () => {
+      const v = val(); poskusi++;
+      E.forEach((x) => x.classList.remove('wrong'));
+      for (let i = 0; i < v.length; i++) {
+        const m = napaka(s.polja[i], v[i], v.filter((_, k) => s.polja[k].slog !== 'Navadno'));
+        if (m) { E[i].classList.add('wrong'); E[i].focus(); feedback('❌ ' + m, 'bad'); return; }
+      }
+      if (s.shrani) { try { localStorage.setItem(pisiKey(s.shrani), JSON.stringify(v)); } catch (e) {} }
+      E.forEach((x) => (x.readOnly = true));
+      done('✅ ' + (s.win || 'Tvoje besedilo je pripravljeno. Naslovi so kratki, odstavek je cel.'));
+    };
+    draw();
+    return { podatki: () => ({ besedilo: val() }),
+      solve: TEST ? () => { E.forEach((x, i) => { x.value = s.polja[i].zgled || 'Primer.'; }); draw(); } : null };
+  };
+  /* <div data-pisi="ime"></div> v html zaslona pokaže besedilo, ki ga je učenec napisal na zaslonu pisi s shrani:'ime'. */
+  function pisiPokazi(c) {
+    c.querySelectorAll('[data-pisi]').forEach((el) => {
+      const v = pisiBeri(el.dataset.pisi), sl = (el.dataset.slogi || '').split(',');
+      el.innerHTML = v && v.length ? '<div class="page pisiout">' + v.map((t, i) => `<p class="para ${scls(sl[i] || 'Navadno')}">${esc(t)}</p>`).join('') + '</div>'
+        : '<div class="warn">Svojega besedila tukaj ne vidim (morda delaš na drugem računalniku). Vrni se na prejšnji korak ali ga napiši na novo.</div>';
+    });
+  }
 
   /* ---------- zrcali: simetrija na mreži z barvami ----------
      {type:'zrcali', title, intro, os:'v'|'h', pol:['..R', ...], obrni:False, demo:False, hints}

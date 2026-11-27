@@ -124,7 +124,16 @@ footer{display:flex;gap:10px;align-items:center;flex-wrap:wrap;border-top:3px so
 .opill{display:inline-block;background:#59C059;border:1px solid #389438;border-radius:12px;padding:0 6px;margin:0 2px}.cpill{display:inline-block;width:14px;height:14px;border-radius:50%;border:2px solid #fff;vertical-align:-2px}
 .risar .lw{stroke-dasharray:4 4}.risar .lb{stroke:#000;stroke-width:12;stroke-opacity:.18}
 .risar .oder{position:sticky;top:8px;align-self:flex-start}
-</style></head><body><div id="app"></div><script>window.PAGE={"title": "Kaj je slog?", "screens": [{"type": "choose", "title": "Kje hitreje najdeš?", "intro": "<div>Isto besedilo je zapisano na dva načina. V katerem hitreje najdeš, <b>koliko ur na dan spi mačka</b>?</div>\n<div style=\"display:flex;gap:14px;flex-wrap:wrap;margin-top:10px\">\n<div style=\"flex:1 1 260px;border:1px solid #ccc;padding:10px 14px;font-size:15px\"><b>A</b><br>Mačka. Mačka je domača žival. Ljudje jo imajo radi že tisoče let. Kaj jedo mačke. Mačke jedo meso in ribe. Rade imajo tudi briketke. Spanje. Mačka prespi tudi do 16 ur na dan. Največ spi podnevi.</div>\n<div style=\"flex:1 1 260px;border:1px solid #ccc;padding:10px 14px;font-size:15px\"><b>B</b><div class=\"st0\" style=\"font-size:24px\">Mačka</div><div>Mačka je domača žival. Ljudje jo imajo radi že tisoče let.</div><div class=\"st1\" style=\"font-size:19px\">Kaj jedo mačke</div><div>Mačke jedo meso in ribe. Rade imajo tudi briketke.</div><div class=\"st1\" style=\"font-size:19px\">Spanje</div><div>Mačka prespi tudi do 16 ur na dan. Največ spi podnevi.</div></div>\n</div>\n<p class=\"small\">Klikni odgovor. Če je narobe, ti stran pove zakaj. Če ne veš, kako začeti, klikni Namig.</p>", "options": [{"t": "V besedilu B", "ok": true, "why": "Naslov »Spanje« te takoj pripelje do odgovora. Naslovi so kot kažipoti."}, {"t": "V besedilu A", "ok": false, "why": "V A so vse besede enake velikosti. Prebrati moraš skoraj vse, da najdeš spanje."}, {"t": "Enako hitro", "ok": false, "why": "Besedilo je enako, a v B naslov »Spanje« izstopa in ga opaziš takoj."}], "hints": ["Poišči besedo »spanje«. Kje jo opaziš brez branja vsega?"]}, {"type": "info", "title": "Slog je oblika z imenom", "html": "\n<p class=\"big\">V Wordu naslov ne oblikuješ na roko. Izbereš mu <b>slog</b>.</p>\n<div class=\"box\">\n<div class=\"st0\" style=\"font-size:26px\">Naslov</div><div class=\"small\">ime celega besedila, samo enkrat na vrhu</div>\n<div class=\"st1\" style=\"font-size:21px\">Naslov 1</div><div class=\"small\">naslov poglavja</div>\n<div class=\"st2\" style=\"font-size:18px\">Naslov 2</div><div class=\"small\">manjši del znotraj poglavja</div>\n<div class=\"st3\">Navadno</div><div class=\"small\">odstavek: povedi z razlago</div></div>"}, {"type": "match", "title": "Kateri slog?", "pairs": [["Naslov", "ime celega besedila na vrhu"], ["Naslov 1", "naslov poglavja, npr. »Spanje«"], ["Naslov 2", "manjši del znotraj poglavja"], ["Navadno", "povedi z razlago (odstavek)"]], "hints": ["Večja številka pomeni manjši, bolj podrejen naslov.", "Navadno ni naslov: to je besedilo, ki nekaj razloži."]}, {"type": "choose", "title": "Kdaj pritisneš Enter?", "intro": "<div>Tipkaš daljše besedilo. Kdaj pritisneš <b>Enter</b>?</div>", "options": [{"t": "Ko se začne nov odstavek ali nov naslov.", "ok": true, "why": "Enter konča odstavek. Vrstico prelomi Word sam."}, {"t": "Na koncu vsake vrstice.", "ok": false, "why": "Ne. Word sam prelomi vrstico, ko je polna. Če pritisneš Enter, nastane nov odstavek sredi povedi."}, {"t": "Za vsako piko.", "ok": false, "why": "Ne. En odstavek ima lahko več povedi. Enter pritisneš šele, ko se začne nova misel."}], "hints": ["Odstavek je skupina povedi o eni stvari."]}, {"type": "choose", "title": "Zakaj slog, ne kar krepko?", "intro": "<div>Ana je naslov naredila krepak in večji. Miha mu je izbral slog <b>Naslov 1</b>. Kaj ima Miha več?</div>", "options": [{"t": "Word ve, da je to naslov: pokaže ga v podoknu za krmarjenje in iz njega naredi kazalo.", "ok": true, "why": "Slog pove, KAJ je besedilo. Zato Word naslove najde sam."}, {"t": "Nič, oba naslova sta videti enako.", "ok": false, "why": "Videti sta lahko enaka, a Anin naslov je za Word le navadno besedilo. V podoknu za krmarjenje ga ne bo."}, {"t": "Mihov naslov je lepše pobarvan.", "ok": false, "why": "Barva ni bistvo. Bistvo je, da Word iz sloga ve, da je to naslov."}], "hints": ["Pomisli: kako Word ve, kaj je naslov?"]}], "endText": "Veš, kaj so naslov, odstavek in slog."};</script><script>/* Brihta samostojna ura: zasloni z nalogami, ki se preverijo sami. */
+
+/* pisi: učenec piše svoje besedilo */
+.pform{flex:1 1 380px;display:flex;flex-direction:column;gap:10px}.pf{display:flex;flex-direction:column;gap:4px}.pl{font-size:16px;color:var(--mut)}
+.ptag{display:inline-block;font-size:14px!important;font-weight:700;background:var(--sky);border-radius:6px;padding:1px 8px;margin-right:4px}
+.pf input,.pf textarea{font:17px/1.4 Calibri,Arial,sans-serif;padding:8px 10px;border:2px solid #b9c6d3;border-radius:10px;width:100%;box-sizing:border-box;resize:vertical}
+.pf input:focus,.pf textarea:focus{border-color:var(--blue);outline:none}.pf .wrong{border-color:var(--bad);background:var(--badbg)}
+.pprev{margin-top:12px}.pprev .page{min-height:0}.pisi .para{cursor:default}.pil{color:var(--bad)}.nv.moj{background:var(--sun);border-radius:4px}
+.pisiout{margin:8px 0;min-height:0}.pisiout .para{cursor:default}
+.luk{display:inline-block;min-width:90px;border-bottom:2px solid var(--blue);color:transparent;text-align:center}.luk.vidi{color:var(--bad)}
+</style></head><body><div id="app"></div><script>window.PAGE={"title": "Kaj je slog?", "screens": [{"type": "choose", "title": "Kje hitreje najdeš?", "intro": "<div>Isto besedilo je zapisano na dva načina. V katerem hitreje najdeš, <b>koliko ur na dan spi mačka</b>?</div>\n<div style=\"display:flex;gap:14px;flex-wrap:wrap;margin-top:10px\">\n<div style=\"flex:1 1 260px;border:1px solid #ccc;padding:10px 14px;font-size:15px\"><b>A</b><br>Mačka. Mačka je domača žival. Ljudje jo imajo radi že tisoče let. Kaj jedo mačke. Mačke jedo meso in ribe. Rade imajo tudi briketke. Spanje. Mačka prespi tudi do 16 ur na dan. Največ spi podnevi.</div>\n<div style=\"flex:1 1 260px;border:1px solid #ccc;padding:10px 14px;font-size:15px\"><b>B</b><div class=\"st0\" style=\"font-size:24px\">Mačka</div><div>Mačka je domača žival. Ljudje jo imajo radi že tisoče let.</div><div class=\"st1\" style=\"font-size:19px\">Kaj jedo mačke</div><div>Mačke jedo meso in ribe. Rade imajo tudi briketke.</div><div class=\"st1\" style=\"font-size:19px\">Spanje</div><div>Mačka prespi tudi do 16 ur na dan. Največ spi podnevi.</div></div>\n</div>\n<p class=\"small\">Klikni odgovor. Če je narobe, ti stran pove zakaj. Če ne veš, kako začeti, klikni Namig.</p>", "options": [{"t": "V besedilu B", "ok": true, "why": "Naslov »Spanje« te takoj pripelje do odgovora. Naslovi so kot kažipoti."}, {"t": "V besedilu A", "ok": false, "why": "V A so vse besede enake velikosti. Prebrati moraš skoraj vse, da najdeš spanje."}, {"t": "Enako hitro", "ok": false, "why": "Besedilo je enako, a v B naslov »Spanje« izstopa in ga opaziš takoj."}], "hints": ["Poišči besedo »spanje«. Kje jo opaziš brez branja vsega?"]}, {"type": "info", "title": "Slog je oblika z imenom", "html": "\n<p class=\"big\">V Wordu naslova ne oblikuješ na roko. Izbereš mu <b>slog</b>.</p>\n<div class=\"box\">\n<div class=\"st0\" style=\"font-size:26px\">Naslov</div><div class=\"small\">ime celega besedila, samo enkrat na vrhu</div>\n<div class=\"st1\" style=\"font-size:21px\">Naslov 1</div><div class=\"small\">naslov poglavja</div>\n<div class=\"st2\" style=\"font-size:18px\">Naslov 2</div><div class=\"small\">manjši del znotraj poglavja</div>\n<div class=\"st3\">Navadno</div><div class=\"small\">odstavek: povedi z razlago</div></div>"}, {"type": "match", "title": "Kateri slog?", "pairs": [["Naslov", "ime celega besedila na vrhu"], ["Naslov 1", "naslov poglavja, npr. »Spanje«"], ["Naslov 2", "manjši del znotraj poglavja"], ["Navadno", "povedi z razlago (odstavek)"]], "hints": ["Večja številka pomeni manjši, bolj podrejen naslov.", "Navadno ni naslov: to je besedilo, ki nekaj razloži."]}, {"type": "choose", "title": "🔍 Detektiv: znak ¶", "intro": "<div>Word zna pokazati, kje si pritisnil/a <b>Enter</b>: tam nariše znak <b style=\"color:#c0392b\">¶</b>. Žan je natipkal tole. Kaj je naredil narobe?</div>\n<div class=\"sdoc\" style=\"margin-top:10px\"><div class=\"page\" style=\"min-height:0\"><div class=\"st3\" style=\"font-family:Calibri,Arial,sans-serif;margin:0 0 4px\">Mačka prespi tudi do 16 ur <b style=\"color:#c0392b\">¶</b></div><div class=\"st3\" style=\"font-family:Calibri,Arial,sans-serif;margin:0 0 4px\">na dan. Največ spi <b style=\"color:#c0392b\">¶</b></div><div class=\"st3\" style=\"font-family:Calibri,Arial,sans-serif;margin:0 0 4px\">podnevi, ponoči pa lovi. <b style=\"color:#c0392b\">¶</b></div></div></div>", "options": [{"t": "Enter je pritisnil sredi odstavka, na koncu vrstic.", "ok": true, "why": "Prav. To je en odstavek, zato je ¶ lahko samo na koncu. Vrstico prelomi Word sam."}, {"t": "Nič, tako mora biti.", "ok": false, "why": "Poglej, kje so ¶: sredi povedi. Word zdaj misli, da so to trije odstavki."}, {"t": "Za vsako piko bi moral pritisniti Enter.", "ok": false, "why": "Ne. En odstavek ima lahko več povedi. Enter pride šele, ko se začne nova misel."}], "hints": ["Koliko misli je v tem besedilu? Ena ali tri?", "Poglej, kje stojijo znaki ¶. Ali stojijo na koncu povedi?"]}, {"type": "choose", "title": "🔍 Detektiv: kje je naslov?", "intro": "<div>Ana je naslov »Spanje« naredila <b>krepak in večji</b>. Odprla je podokno za krmarjenje. Zakaj je prazno?</div>\n<div class=\"sdoc\" style=\"margin-top:10px\"><div class=\"page\" style=\"min-height:0\"><div class=\"\" style=\"font-family:Calibri,Arial,sans-serif;margin:0 0 4px\"><b style=\"font-size:20px\">Spanje</b></div><div class=\"st3\" style=\"font-family:Calibri,Arial,sans-serif;margin:0 0 4px\">Mačka prespi tudi do 16 ur na dan.</div></div><div class=\"nav\"><div class=\"navh\">Podokno za krmarjenje</div><div class=\"small\">(prazno)</div></div></div>", "options": [{"t": "Ker »Spanje« nima sloga Naslov 1. Za Word je to le krepko navadno besedilo.", "ok": true, "why": "Tako je. Slog pove Wordu, KAJ je besedilo. Krepko pove le, kako je videti."}, {"t": "Ker je naslov premajhen.", "ok": false, "why": "Velikost ni bistvo. Tudi velik krepak naslov je za Word navadno besedilo, dokler nima sloga."}, {"t": "Ker podokno pokaže samo slike.", "ok": false, "why": "Ne. Podokno pokaže naslove, a samo tiste, ki imajo slog Naslov 1, Naslov 2 …"}], "hints": ["Kako Word ve, da je nekaj naslov?"]}], "endText": "Veš, kaj so naslov, odstavek in slog, in znaš najti napako."};</script><script>/* Brihta samostojna ura: zasloni z nalogami, ki se preverijo sami. */
 (function () {
   const $ = (h) => { const d = document.createElement('div'); d.innerHTML = h.trim(); return d.firstElementChild; };
   const esc = (s) => String(s).replace(/[&<>"]/g, (c) => ({ '&': '&amp;', '<': '&lt;', '>': '&gt;', '"': '&quot;' }[c]));
@@ -240,6 +249,7 @@ footer{display:flex;gap:10px;align-items:center;flex-wrap:wrap;border-top:3px so
     if (s.intro) card.appendChild($(`<div class="intro">${s.intro}</div>`));
     const R = TYPES[s.type];
     const r = R(s, card);
+    pisiPokazi(card);
     solver = r && r.solve; podatki = r && r.podatki;
     const already = i < best;
     bNext.disabled = !(s.type === 'info' || already);
@@ -711,6 +721,81 @@ footer{display:flex;gap:10px;align-items:center;flex-wrap:wrap;border-top:3px so
     draw();
     return { solve: () => { s.paras.forEach((p, i) => (cur[i] = p[1])); P.forEach((d) => d.classList.remove('wrong')); fin = true; draw(); } };
   };
+
+  /* ---------- pisi: učenec sam napiše naslove in odstavek, stran preveri obliko in sproti riše slog ----------
+     {type:'pisi', id, title, intro, shrani:'ime', pred:[['Narava','Naslov 1'], ...],
+      polja:[{slog:'Naslov 1', oznaka, zgled}, {slog:'Navadno', oznaka, zgled, povedi:2, besed:10}], hints}
+     Naslov: 1 do 6 besed, z veliko začetnico, brez pike. Odstavek: brez Enter, vsaj »povedi« povedi in »besed« besed.
+     Besedilo se shrani v brskalnik (pisiKey), da ga zaslon z <div data-pisi="ime"></div> na drugi strani pokaže znova. */
+  const pisiKey = (ime) => 'brihta_pisi:' + UID + ':' + ime;
+  const pisiBeri = (ime) => { try { return JSON.parse(localStorage.getItem(pisiKey(ime)) || 'null'); } catch (e) { return null; } };
+  TYPES.pisi = (s, c) => {
+    const prej = (s.shrani && pisiBeri(s.shrani)) || [];
+    const w = $(`<div class="slogi pisi"><div class="sdoc"><div class="pform"></div>
+      <div class="nav"><div class="navh">Podokno za krmarjenje</div><div class="navl"></div></div></div>
+      <div class="pprev"><div class="navh">Tako bo videti v Wordu</div><div class="page"></div></div>
+      <div class="row"><button class="btn go2">Preveri</button></div></div>`);
+    c.appendChild(w);
+    const form = w.querySelector('.pform'), navl = w.querySelector('.navl'), page = w.querySelector('.page');
+    const E = s.polja.map((f, i) => {
+      const odst = f.slog === 'Navadno';
+      const r = $(`<label class="pf"><span class="pl"><span class="ptag ${scls(f.slog)}">${f.slog}</span> ${f.oznaka}</span>
+        ${odst ? '<textarea rows="3"></textarea>' : '<input type="text" maxlength="60">'}</label>`);
+      const x = r.querySelector('input,textarea'); x.placeholder = f.zgled ? 'npr. ' + f.zgled : ''; x.value = prej[i] || '';
+      x.oninput = () => { x.classList.remove('wrong'); draw(); };
+      form.appendChild(r); return x;
+    });
+    const val = () => E.map((x) => x.value.trim());
+    function draw() {
+      const v = val();
+      page.innerHTML = s.polja.map((f, i) => `<p class="para ${scls(f.slog)}">${v[i] ? esc(v[i]).replace(/\n/g, ' <b class="pil">¶</b><br>') : '<span class="small">…</span>'}</p>`).join('');
+      const h = (s.pred || []).concat(s.polja.map((f, i) => [v[i], f.slog]).filter((x) => x[1] !== 'Navadno' && x[0]));
+      navl.innerHTML = h.length ? h.map((x) => `<div class="nv ${scls(x[1])}${(s.pred || []).includes(x) ? '' : ' moj'}">${esc(x[0])}</div>`).join('') : '<div class="small">Tu se pokažejo naslovi.</div>';
+    }
+    const besede = (t) => t.split(/\s+/).filter(Boolean).length;
+    const bes = (n) => n + ' ' + (n % 100 === 1 ? 'beseda' : n % 100 === 2 ? 'besedi' : n % 100 === 3 || n % 100 === 4 ? 'besede' : 'besed');
+    function napaka(f, t, vse) {
+      const ime = f.slog === 'Navadno' ? 'Odstavek' : `Naslov (${f.slog})`;
+      if (!t) return `${ime} je še prazen. Napiši ga.`;
+      if (f.zgled && t.toLowerCase() === f.zgled.toLowerCase()) return `${ime}: to je primer. Napiši <b>svoje</b> besede.`;
+      if (/^[a-zčšžćđ]/.test(t)) return `${ime} se začne z <b>veliko začetnico</b>.`;
+      if (f.slog !== 'Navadno') {
+        if (/\n/.test(t)) return `${ime} je ena sama vrstica.`;
+        if (/[.!?]$/.test(t)) return `${ime} nima pike na koncu. Naslov ni poved, je kažipot.`;
+        if (besede(t) > 6) return `${ime} je predolg (${bes(besede(t))}). Naslov je kratek: največ 6 besed. Razlago daj v odstavek.`;
+        if (vse.filter((x) => x.toLowerCase() === t.toLowerCase()).length > 1) return 'Dva naslova sta enaka. Vsak del besedila ima svoj naslov.';
+        return '';
+      }
+      if (/\n/.test(t)) return 'V odstavku si pritisnil/a <b>Enter</b> (glej ¶ v predogledu). Odstavek je ena celota: vrstico prelomi Word sam. Enter pobriši.';
+      if (!/[.!?]$/.test(t)) return 'Odstavek je iz povedi, zato se konča s <b>piko</b>.';
+      const p = (t.match(/[.!?](\s|$)/g) || []).length;
+      if (p < (f.povedi || 1)) return `Odstavek ima ${p} ${p === 1 ? 'poved' : 'povedi'}. Napiši vsaj <b>${f.povedi}</b> povedi o svojem naslovu.`;
+      if (besede(t) < (f.besed || 1)) return `Odstavek je prekratek (${bes(besede(t))}). Napiši vsaj <b>${f.besed}</b> besed: povej, kaj, kje ali zakaj.`;
+      return '';
+    }
+    w.querySelector('.go2').onclick = () => {
+      const v = val(); poskusi++;
+      E.forEach((x) => x.classList.remove('wrong'));
+      for (let i = 0; i < v.length; i++) {
+        const m = napaka(s.polja[i], v[i], v.filter((_, k) => s.polja[k].slog !== 'Navadno'));
+        if (m) { E[i].classList.add('wrong'); E[i].focus(); feedback('❌ ' + m, 'bad'); return; }
+      }
+      if (s.shrani) { try { localStorage.setItem(pisiKey(s.shrani), JSON.stringify(v)); } catch (e) {} }
+      E.forEach((x) => (x.readOnly = true));
+      done('✅ ' + (s.win || 'Tvoje besedilo je pripravljeno. Naslovi so kratki, odstavek je cel.'));
+    };
+    draw();
+    return { podatki: () => ({ besedilo: val() }),
+      solve: TEST ? () => { E.forEach((x, i) => { x.value = s.polja[i].zgled || 'Primer.'; }); draw(); } : null };
+  };
+  /* <div data-pisi="ime"></div> v html zaslona pokaže besedilo, ki ga je učenec napisal na zaslonu pisi s shrani:'ime'. */
+  function pisiPokazi(c) {
+    c.querySelectorAll('[data-pisi]').forEach((el) => {
+      const v = pisiBeri(el.dataset.pisi), sl = (el.dataset.slogi || '').split(',');
+      el.innerHTML = v && v.length ? '<div class="page pisiout">' + v.map((t, i) => `<p class="para ${scls(sl[i] || 'Navadno')}">${esc(t)}</p>`).join('') + '</div>'
+        : '<div class="warn">Svojega besedila tukaj ne vidim (morda delaš na drugem računalniku). Vrni se na prejšnji korak ali ga napiši na novo.</div>';
+    });
+  }
 
   /* ---------- zrcali: simetrija na mreži z barvami ----------
      {type:'zrcali', title, intro, os:'v'|'h', pol:['..R', ...], obrni:False, demo:False, hints}

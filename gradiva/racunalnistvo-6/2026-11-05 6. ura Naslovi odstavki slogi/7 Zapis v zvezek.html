@@ -1,4 +1,4 @@
-<!doctype html><html lang="sl"><head><meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1"><title>★★ Izziv: kazalo z enim klikom</title><style>:root{--ink:#1d2b3a;--mut:#5b6b7c;--blue:#2E5C8A;--sky:#EAF1F8;--sky2:#D6E4F0;--sun:#FFF4D6;--sunb:#C08A00;--ok:#1f8a4c;--okbg:#e5f6ec;--bad:#c0392b;--badbg:#fdecea;--cs:46px}
+<!doctype html><html lang="sl"><head><meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1"><title>Zapis v zvezek</title><style>:root{--ink:#1d2b3a;--mut:#5b6b7c;--blue:#2E5C8A;--sky:#EAF1F8;--sky2:#D6E4F0;--sun:#FFF4D6;--sunb:#C08A00;--ok:#1f8a4c;--okbg:#e5f6ec;--bad:#c0392b;--badbg:#fdecea;--cs:46px}
 *{box-sizing:border-box}
 html,body{margin:0;background:#fff;color:var(--ink);font:18px/1.45 system-ui,"Segoe UI",Arial,sans-serif}
 #app{max-width:1000px;margin:0 auto;padding:12px 18px 18px;display:flex;flex-direction:column}
@@ -124,7 +124,16 @@ footer{display:flex;gap:10px;align-items:center;flex-wrap:wrap;border-top:3px so
 .opill{display:inline-block;background:#59C059;border:1px solid #389438;border-radius:12px;padding:0 6px;margin:0 2px}.cpill{display:inline-block;width:14px;height:14px;border-radius:50%;border:2px solid #fff;vertical-align:-2px}
 .risar .lw{stroke-dasharray:4 4}.risar .lb{stroke:#000;stroke-width:12;stroke-opacity:.18}
 .risar .oder{position:sticky;top:8px;align-self:flex-start}
-</style></head><body><div id="app"></div><script>window.PAGE={"title": "★★ Izziv: kazalo z enim klikom", "screens": [{"type": "choose", "stars": "★★", "title": "Od kod Word ve?", "intro": "<div>Word zna sam narediti <b>kazalo</b> (seznam poglavij na začetku). Od kod ve, kaj spada v kazalo?</div>", "options": [{"t": "Iz naslovov, ki imajo slog Naslov 1 ali Naslov 2.", "ok": true, "why": "Zato so slogi tako pomembni: brez njih Word naslovov ne najde."}, {"t": "Iz besed, ki so krepke.", "ok": false, "why": "Krepka beseda je lahko kjerkoli v odstavku. Word v kazalo vzame samo naslove s slogi."}, {"t": "Iz prvih besed vsake vrstice.", "ok": false, "why": "Potem bi bili v kazalu tudi odstavki. Word vzame samo naslove s slogi."}], "hints": ["Kaj je pokazalo podokno za krmarjenje?"]}, {"type": "check", "stars": "★★", "title": "Vstavi kazalo v Wordu", "label": "V dokumentu imam kazalo z vsemi poglavji.", "html": "\n<div class=\"box\">1. Klikni na konec prvega odstavka (za »Logarsko dolino.«) in pritisni <b>Enter</b>.<br>2. Odpri zavihek <b>Sklici</b>.<br>3. Klikni <b>Kazalo vsebine</b> in izberi prvo možnost.<br>4. Ali so v kazalu Narava, Kmetijstvo in Zgodovina?</div>\n<p class=\"small\">Če kakšnega naslova ni v kazalu, nima pravega sloga. Popravi slog in kazalo posodobi.</p>"}, {"type": "slogi", "stars": "★★★", "title": "Računalnik", "intro": "<div>Daljše besedilo brez namigov v naslovih. Dobro preberi vsako vrstico.</div>", "paras": [["Računalnik", "Naslov"], ["Strojna oprema", "Naslov 1"], ["Strojna oprema so deli računalnika, ki se jih lahko dotakneš.", "Navadno"], ["Vhodne naprave", "Naslov 2"], ["Tipkovnica in miška pošiljata podatke v računalnik.", "Navadno"], ["Izhodne naprave", "Naslov 2"], ["Zaslon in tiskalnik nam pokažeta rezultat.", "Navadno"], ["Programska oprema", "Naslov 1"], ["Programi so navodila, ki povedo računalniku, kaj naj dela.", "Navadno"]], "hints": ["Strojna oprema in Programska oprema sta veliki poglavji.", "Vhodne in izhodne naprave so del strojne opreme."]}], "endText": "Spoznal/a si, zakaj so slogi močno orodje."};</script><script>/* Brihta samostojna ura: zasloni z nalogami, ki se preverijo sami. */
+
+/* pisi: učenec piše svoje besedilo */
+.pform{flex:1 1 380px;display:flex;flex-direction:column;gap:10px}.pf{display:flex;flex-direction:column;gap:4px}.pl{font-size:16px;color:var(--mut)}
+.ptag{display:inline-block;font-size:14px!important;font-weight:700;background:var(--sky);border-radius:6px;padding:1px 8px;margin-right:4px}
+.pf input,.pf textarea{font:17px/1.4 Calibri,Arial,sans-serif;padding:8px 10px;border:2px solid #b9c6d3;border-radius:10px;width:100%;box-sizing:border-box;resize:vertical}
+.pf input:focus,.pf textarea:focus{border-color:var(--blue);outline:none}.pf .wrong{border-color:var(--bad);background:var(--badbg)}
+.pprev{margin-top:12px}.pprev .page{min-height:0}.pisi .para{cursor:default}.pil{color:var(--bad)}.nv.moj{background:var(--sun);border-radius:4px}
+.pisiout{margin:8px 0;min-height:0}.pisiout .para{cursor:default}
+.luk{display:inline-block;min-width:90px;border-bottom:2px solid var(--blue);color:transparent;text-align:center}.luk.vidi{color:var(--bad)}
+</style></head><body><div id="app"></div><script>window.PAGE={"title": "Zapis v zvezek", "screens": [{"type": "check", "title": "Prepiši in dopolni", "label": "Zapis sem prepisal/a, dopolnil/a in preveril/a.", "html": "\n<p>Prepiši v zvezek. <b>Prazna mesta dopolni sam/a</b>, iz glave. Nato klikni Preveri in popravi z rdečo.</p>\n<div class=\"zapis\"><h3>NASLOVI, ODSTAVKI, SLOGI</h3>\n<p><b>Slog</b> je shranjena oblika z <span class=\"luk\" data-r=\"imenom\">imenom</span>. Word iz sloga ve, kaj je naslov.</p>\n<p>Naslov: ime besedila &nbsp; <span class=\"luk\" data-r=\"Naslov 1\">Naslov 1</span>: poglavje &nbsp; Naslov 2: del poglavja &nbsp; <span class=\"luk\" data-r=\"Navadno\">Navadno</span>: odstavek</p>\n<p><b>Enter</b> pritisnem samo, ko se začne nov <span class=\"luk\" data-r=\"odstavek\">odstavek</span>. Znak <span class=\"luk\" data-r=\"¶\">¶</span> pokaže, kje sem pritisnil/a Enter.</p>\n<p>Naslove vidim v <span class=\"luk\" data-r=\"podoknu za krmarjenje\">podoknu za krmarjenje</span> (zavihek Pogled).</p></div>\n<p><button class=\"btn go2\" onclick=\"document.querySelectorAll('.luk').forEach(function(e){e.classList.add('vidi')});this.textContent='✅ Popravi, kar je drugače.'\">👀 Preveri svoje besede</button></p>"}], "endText": "Zapis je v zvezku."};</script><script>/* Brihta samostojna ura: zasloni z nalogami, ki se preverijo sami. */
 (function () {
   const $ = (h) => { const d = document.createElement('div'); d.innerHTML = h.trim(); return d.firstElementChild; };
   const esc = (s) => String(s).replace(/[&<>"]/g, (c) => ({ '&': '&amp;', '<': '&lt;', '>': '&gt;', '"': '&quot;' }[c]));
@@ -240,6 +249,7 @@ footer{display:flex;gap:10px;align-items:center;flex-wrap:wrap;border-top:3px so
     if (s.intro) card.appendChild($(`<div class="intro">${s.intro}</div>`));
     const R = TYPES[s.type];
     const r = R(s, card);
+    pisiPokazi(card);
     solver = r && r.solve; podatki = r && r.podatki;
     const already = i < best;
     bNext.disabled = !(s.type === 'info' || already);
@@ -711,6 +721,81 @@ footer{display:flex;gap:10px;align-items:center;flex-wrap:wrap;border-top:3px so
     draw();
     return { solve: () => { s.paras.forEach((p, i) => (cur[i] = p[1])); P.forEach((d) => d.classList.remove('wrong')); fin = true; draw(); } };
   };
+
+  /* ---------- pisi: učenec sam napiše naslove in odstavek, stran preveri obliko in sproti riše slog ----------
+     {type:'pisi', id, title, intro, shrani:'ime', pred:[['Narava','Naslov 1'], ...],
+      polja:[{slog:'Naslov 1', oznaka, zgled}, {slog:'Navadno', oznaka, zgled, povedi:2, besed:10}], hints}
+     Naslov: 1 do 6 besed, z veliko začetnico, brez pike. Odstavek: brez Enter, vsaj »povedi« povedi in »besed« besed.
+     Besedilo se shrani v brskalnik (pisiKey), da ga zaslon z <div data-pisi="ime"></div> na drugi strani pokaže znova. */
+  const pisiKey = (ime) => 'brihta_pisi:' + UID + ':' + ime;
+  const pisiBeri = (ime) => { try { return JSON.parse(localStorage.getItem(pisiKey(ime)) || 'null'); } catch (e) { return null; } };
+  TYPES.pisi = (s, c) => {
+    const prej = (s.shrani && pisiBeri(s.shrani)) || [];
+    const w = $(`<div class="slogi pisi"><div class="sdoc"><div class="pform"></div>
+      <div class="nav"><div class="navh">Podokno za krmarjenje</div><div class="navl"></div></div></div>
+      <div class="pprev"><div class="navh">Tako bo videti v Wordu</div><div class="page"></div></div>
+      <div class="row"><button class="btn go2">Preveri</button></div></div>`);
+    c.appendChild(w);
+    const form = w.querySelector('.pform'), navl = w.querySelector('.navl'), page = w.querySelector('.page');
+    const E = s.polja.map((f, i) => {
+      const odst = f.slog === 'Navadno';
+      const r = $(`<label class="pf"><span class="pl"><span class="ptag ${scls(f.slog)}">${f.slog}</span> ${f.oznaka}</span>
+        ${odst ? '<textarea rows="3"></textarea>' : '<input type="text" maxlength="60">'}</label>`);
+      const x = r.querySelector('input,textarea'); x.placeholder = f.zgled ? 'npr. ' + f.zgled : ''; x.value = prej[i] || '';
+      x.oninput = () => { x.classList.remove('wrong'); draw(); };
+      form.appendChild(r); return x;
+    });
+    const val = () => E.map((x) => x.value.trim());
+    function draw() {
+      const v = val();
+      page.innerHTML = s.polja.map((f, i) => `<p class="para ${scls(f.slog)}">${v[i] ? esc(v[i]).replace(/\n/g, ' <b class="pil">¶</b><br>') : '<span class="small">…</span>'}</p>`).join('');
+      const h = (s.pred || []).concat(s.polja.map((f, i) => [v[i], f.slog]).filter((x) => x[1] !== 'Navadno' && x[0]));
+      navl.innerHTML = h.length ? h.map((x) => `<div class="nv ${scls(x[1])}${(s.pred || []).includes(x) ? '' : ' moj'}">${esc(x[0])}</div>`).join('') : '<div class="small">Tu se pokažejo naslovi.</div>';
+    }
+    const besede = (t) => t.split(/\s+/).filter(Boolean).length;
+    const bes = (n) => n + ' ' + (n % 100 === 1 ? 'beseda' : n % 100 === 2 ? 'besedi' : n % 100 === 3 || n % 100 === 4 ? 'besede' : 'besed');
+    function napaka(f, t, vse) {
+      const ime = f.slog === 'Navadno' ? 'Odstavek' : `Naslov (${f.slog})`;
+      if (!t) return `${ime} je še prazen. Napiši ga.`;
+      if (f.zgled && t.toLowerCase() === f.zgled.toLowerCase()) return `${ime}: to je primer. Napiši <b>svoje</b> besede.`;
+      if (/^[a-zčšžćđ]/.test(t)) return `${ime} se začne z <b>veliko začetnico</b>.`;
+      if (f.slog !== 'Navadno') {
+        if (/\n/.test(t)) return `${ime} je ena sama vrstica.`;
+        if (/[.!?]$/.test(t)) return `${ime} nima pike na koncu. Naslov ni poved, je kažipot.`;
+        if (besede(t) > 6) return `${ime} je predolg (${bes(besede(t))}). Naslov je kratek: največ 6 besed. Razlago daj v odstavek.`;
+        if (vse.filter((x) => x.toLowerCase() === t.toLowerCase()).length > 1) return 'Dva naslova sta enaka. Vsak del besedila ima svoj naslov.';
+        return '';
+      }
+      if (/\n/.test(t)) return 'V odstavku si pritisnil/a <b>Enter</b> (glej ¶ v predogledu). Odstavek je ena celota: vrstico prelomi Word sam. Enter pobriši.';
+      if (!/[.!?]$/.test(t)) return 'Odstavek je iz povedi, zato se konča s <b>piko</b>.';
+      const p = (t.match(/[.!?](\s|$)/g) || []).length;
+      if (p < (f.povedi || 1)) return `Odstavek ima ${p} ${p === 1 ? 'poved' : 'povedi'}. Napiši vsaj <b>${f.povedi}</b> povedi o svojem naslovu.`;
+      if (besede(t) < (f.besed || 1)) return `Odstavek je prekratek (${bes(besede(t))}). Napiši vsaj <b>${f.besed}</b> besed: povej, kaj, kje ali zakaj.`;
+      return '';
+    }
+    w.querySelector('.go2').onclick = () => {
+      const v = val(); poskusi++;
+      E.forEach((x) => x.classList.remove('wrong'));
+      for (let i = 0; i < v.length; i++) {
+        const m = napaka(s.polja[i], v[i], v.filter((_, k) => s.polja[k].slog !== 'Navadno'));
+        if (m) { E[i].classList.add('wrong'); E[i].focus(); feedback('❌ ' + m, 'bad'); return; }
+      }
+      if (s.shrani) { try { localStorage.setItem(pisiKey(s.shrani), JSON.stringify(v)); } catch (e) {} }
+      E.forEach((x) => (x.readOnly = true));
+      done('✅ ' + (s.win || 'Tvoje besedilo je pripravljeno. Naslovi so kratki, odstavek je cel.'));
+    };
+    draw();
+    return { podatki: () => ({ besedilo: val() }),
+      solve: TEST ? () => { E.forEach((x, i) => { x.value = s.polja[i].zgled || 'Primer.'; }); draw(); } : null };
+  };
+  /* <div data-pisi="ime"></div> v html zaslona pokaže besedilo, ki ga je učenec napisal na zaslonu pisi s shrani:'ime'. */
+  function pisiPokazi(c) {
+    c.querySelectorAll('[data-pisi]').forEach((el) => {
+      const v = pisiBeri(el.dataset.pisi), sl = (el.dataset.slogi || '').split(',');
+      el.innerHTML = v && v.length ? '<div class="page pisiout">' + v.map((t, i) => `<p class="para ${scls(sl[i] || 'Navadno')}">${esc(t)}</p>`).join('') + '</div>'
+        : '<div class="warn">Svojega besedila tukaj ne vidim (morda delaš na drugem računalniku). Vrni se na prejšnji korak ali ga napiši na novo.</div>';
+    });
+  }
 
   /* ---------- zrcali: simetrija na mreži z barvami ----------
      {type:'zrcali', title, intro, os:'v'|'h', pol:['..R', ...], obrni:False, demo:False, hints}

@@ -124,6 +124,15 @@ footer{display:flex;gap:10px;align-items:center;flex-wrap:wrap;border-top:3px so
 .opill{display:inline-block;background:#59C059;border:1px solid #389438;border-radius:12px;padding:0 6px;margin:0 2px}.cpill{display:inline-block;width:14px;height:14px;border-radius:50%;border:2px solid #fff;vertical-align:-2px}
 .risar .lw{stroke-dasharray:4 4}.risar .lb{stroke:#000;stroke-width:12;stroke-opacity:.18}
 .risar .oder{position:sticky;top:8px;align-self:flex-start}
+
+/* pisi: učenec piše svoje besedilo */
+.pform{flex:1 1 380px;display:flex;flex-direction:column;gap:10px}.pf{display:flex;flex-direction:column;gap:4px}.pl{font-size:16px;color:var(--mut)}
+.ptag{display:inline-block;font-size:14px!important;font-weight:700;background:var(--sky);border-radius:6px;padding:1px 8px;margin-right:4px}
+.pf input,.pf textarea{font:17px/1.4 Calibri,Arial,sans-serif;padding:8px 10px;border:2px solid #b9c6d3;border-radius:10px;width:100%;box-sizing:border-box;resize:vertical}
+.pf input:focus,.pf textarea:focus{border-color:var(--blue);outline:none}.pf .wrong{border-color:var(--bad);background:var(--badbg)}
+.pprev{margin-top:12px}.pprev .page{min-height:0}.pisi .para{cursor:default}.pil{color:var(--bad)}.nv.moj{background:var(--sun);border-radius:4px}
+.pisiout{margin:8px 0;min-height:0}.pisiout .para{cursor:default}
+.luk{display:inline-block;min-width:90px;border-bottom:2px solid var(--blue);color:transparent;text-align:center}.luk.vidi{color:var(--bad)}
 </style></head><body><div id="app"></div><script>window.PAGE={"title": "Vaje za Bober: A, B, C ali D?", "screens": [{"type": "info", "title": "Vadimo za Bober 🦫", "html": "\n<p class=\"big\">To so <b>nove</b> naloge v slogu Bobra. Rešuješ jih lahko tudi doma.</p>\n<div class=\"box\">Klikni odgovor. Če je narobe, ti stran pove zakaj. Če ne veš, kako začeti, klikni Namig.</div>\n<p class=\"small\">Pomagaš si lahko s papirjem in svinčnikom.</p>"}, {"type": "choose", "abcd": true, "title": "1. Bobrova pisava", "intro": "Bober vsako črko zamenja z <b>naslednjo</b> v abecedi (A postane B, B postane C …). Tako iz BOBER nastane CPCFS.<p class=\"big\">Kaj pomeni <b>SFLB</b>?</p><p class=\"small\">Abeceda brez šumnikov: A B C D E F G H I J K L M N O P R S T U V Z</p>", "options": [{"t": "REKA", "ok": true, "why": "S → R, F → E, L → K, B → A."}, {"t": "TGMC", "ok": false, "why": "Tu si vsako črko še enkrat premaknil/a naprej. Pri odkodiranju greš nazaj."}, {"t": "RAKE", "ok": false, "why": "Črke so prave, a v napačnem vrstnem redu."}, {"t": "SEKA", "ok": false, "why": "Prva črka S ni odkodirana. Črka pred S je R."}], "hints": ["Za odkodiranje vzemi črko, ki je v abecedi <b>pred</b> dano.", "Pred S je R, pred F je E."]}, {"type": "choose", "abcd": true, "title": "2. Kup krožnikov", "intro": "Bober zloži krožnike enega na drugega: najprej A, nato B, C in D (D je na vrhu). Nato:<br>1. z vrha vzame <b>2</b> krožnika,<br>2. na vrh položi krožnik <b>E</b>,<br>3. z vrha vzame <b>1</b> krožnik.<br>Kateri krožnik je zdaj na vrhu?", "options": [{"t": "B", "ok": true, "why": "A B C D → vzame D in C → A B → doda E → A B E → vzame E → A B. Na vrhu je B."}, {"t": "E", "ok": false, "why": "E je na vrh položil, a ga je v 3. koraku spet vzel."}, {"t": "C", "ok": false, "why": "C je vzel že v 1. koraku."}, {"t": "A", "ok": false, "why": "A je na dnu, nad njim je še B."}], "hints": ["Jemlje se vedno z vrha. Napiši kup: A B C D in prečrtuj."]}, {"type": "choose", "abcd": true, "title": "3. Lučke", "intro": "Bober ima 4 lučke. Vsaka prižgana lučka šteje svojo vrednost:<p class=\"big\">8 &nbsp; 4 &nbsp; 2 &nbsp; 1<br>💡 ⚫ 💡 💡</p>(💡 prižgana, ⚫ ugasnjena) Katero število kažejo lučke?", "options": [{"t": "11", "ok": true, "why": "8 + 2 + 1 = 11. Lučka s 4 je ugasnjena."}, {"t": "13", "ok": false, "why": "13 = 8 + 4 + 1. Lučka s 4 pa je ugasnjena."}, {"t": "1011", "ok": false, "why": "Tako se lučke zapišejo (1 prižgana, 0 ugasnjena), vprašanje pa je, katero število pomenijo."}, {"t": "3", "ok": false, "why": "Sešteti moraš vrednosti prižganih lučk, ne prešteti lučk."}], "hints": ["Seštej vrednosti nad prižganimi lučkami."]}, {"type": "choose", "abcd": true, "title": "4. Najkrajša pot", "intro": "Med jezovi so poti. Številka pove, koliko minut traja pot:<div class=\"box\">A do B: 2 &nbsp;|&nbsp; A do C: 4 &nbsp;|&nbsp; B do C: 1<br>B do D: 5 &nbsp;|&nbsp; C do D: 1</div>Najmanj koliko minut potrebuje bober od A do D?", "options": [{"t": "4", "ok": true, "why": "A → B → C → D: 2 + 1 + 1 = 4."}, {"t": "5", "ok": false, "why": "A → C → D traja 5. Obstaja hitrejša pot čez B."}, {"t": "7", "ok": false, "why": "A → B → D traja 7. Poskusi še čez C."}, {"t": "3", "ok": false, "why": "Ni poti, ki bi trajala 3. Preveri vse poti od A do D."}], "hints": ["Napiši vse poti od A do D in vsaki seštej minute.", "Poskusi tudi pot A → B → C → D."]}, {"type": "choose", "abcd": true, "title": "5. Stroj za števila", "intro": "Stroj vsako število spremeni po pravilu:<div class=\"box\">Če je število <b>sodo</b>, ga deli z 2.<br>Če je <b>liho</b>, mu prištej 1.</div>Vanj vstavimo <b>7</b> in ga poženemo <b>3-krat</b>. Kaj dobimo?", "options": [{"t": "2", "ok": true, "why": "7 je liho → 8. 8 je sodo → 4. 4 je sodo → 2."}, {"t": "4", "ok": false, "why": "To je po 2 korakih. Je še en korak."}, {"t": "1", "ok": false, "why": "To bi bilo po 4 korakih."}, {"t": "3", "ok": false, "why": "7 je liho, zato mu prišteješ 1 (dobiš 8), ne deliš ga."}], "hints": ["Pojdi korak za korakom in vsakič preveri, ali je število sodo ali liho."]}, {"type": "choose", "abcd": true, "title": "6. Menjave", "intro": "Trije bobri stojijo v vrsti po številkah:<p class=\"big\">3 &nbsp; 1 &nbsp; 2</p>V enem koraku se lahko zamenjata samo <b>soseda</b>. Najmanj koliko korakov je potrebnih, da stojijo <b>1 2 3</b>?", "options": [{"t": "1", "ok": false, "why": "Z eno menjavo dobiš 1 3 2 ali 3 2 1. Nobeno ni urejeno."}, {"t": "2", "ok": true, "why": "3 1 2 → 1 3 2 → 1 2 3."}, {"t": "3", "ok": false, "why": "Gre tudi z dvema: najprej zamenjaj 3 in 1, nato 3 in 2."}, {"t": "0", "ok": false, "why": "Vrsta ni urejena, 3 stoji spredaj."}], "hints": ["Trojka mora priti na konec. Vsak korak jo premakne za eno mesto."]}], "endText": "Rešil/a si nove vaje za Bober! 🦫"};</script><script>/* Brihta samostojna ura: zasloni z nalogami, ki se preverijo sami. */
 (function () {
   const $ = (h) => { const d = document.createElement('div'); d.innerHTML = h.trim(); return d.firstElementChild; };
@@ -240,6 +249,7 @@ footer{display:flex;gap:10px;align-items:center;flex-wrap:wrap;border-top:3px so
     if (s.intro) card.appendChild($(`<div class="intro">${s.intro}</div>`));
     const R = TYPES[s.type];
     const r = R(s, card);
+    pisiPokazi(card);
     solver = r && r.solve; podatki = r && r.podatki;
     const already = i < best;
     bNext.disabled = !(s.type === 'info' || already);
@@ -711,6 +721,81 @@ footer{display:flex;gap:10px;align-items:center;flex-wrap:wrap;border-top:3px so
     draw();
     return { solve: () => { s.paras.forEach((p, i) => (cur[i] = p[1])); P.forEach((d) => d.classList.remove('wrong')); fin = true; draw(); } };
   };
+
+  /* ---------- pisi: učenec sam napiše naslove in odstavek, stran preveri obliko in sproti riše slog ----------
+     {type:'pisi', id, title, intro, shrani:'ime', pred:[['Narava','Naslov 1'], ...],
+      polja:[{slog:'Naslov 1', oznaka, zgled}, {slog:'Navadno', oznaka, zgled, povedi:2, besed:10}], hints}
+     Naslov: 1 do 6 besed, z veliko začetnico, brez pike. Odstavek: brez Enter, vsaj »povedi« povedi in »besed« besed.
+     Besedilo se shrani v brskalnik (pisiKey), da ga zaslon z <div data-pisi="ime"></div> na drugi strani pokaže znova. */
+  const pisiKey = (ime) => 'brihta_pisi:' + UID + ':' + ime;
+  const pisiBeri = (ime) => { try { return JSON.parse(localStorage.getItem(pisiKey(ime)) || 'null'); } catch (e) { return null; } };
+  TYPES.pisi = (s, c) => {
+    const prej = (s.shrani && pisiBeri(s.shrani)) || [];
+    const w = $(`<div class="slogi pisi"><div class="sdoc"><div class="pform"></div>
+      <div class="nav"><div class="navh">Podokno za krmarjenje</div><div class="navl"></div></div></div>
+      <div class="pprev"><div class="navh">Tako bo videti v Wordu</div><div class="page"></div></div>
+      <div class="row"><button class="btn go2">Preveri</button></div></div>`);
+    c.appendChild(w);
+    const form = w.querySelector('.pform'), navl = w.querySelector('.navl'), page = w.querySelector('.page');
+    const E = s.polja.map((f, i) => {
+      const odst = f.slog === 'Navadno';
+      const r = $(`<label class="pf"><span class="pl"><span class="ptag ${scls(f.slog)}">${f.slog}</span> ${f.oznaka}</span>
+        ${odst ? '<textarea rows="3"></textarea>' : '<input type="text" maxlength="60">'}</label>`);
+      const x = r.querySelector('input,textarea'); x.placeholder = f.zgled ? 'npr. ' + f.zgled : ''; x.value = prej[i] || '';
+      x.oninput = () => { x.classList.remove('wrong'); draw(); };
+      form.appendChild(r); return x;
+    });
+    const val = () => E.map((x) => x.value.trim());
+    function draw() {
+      const v = val();
+      page.innerHTML = s.polja.map((f, i) => `<p class="para ${scls(f.slog)}">${v[i] ? esc(v[i]).replace(/\n/g, ' <b class="pil">¶</b><br>') : '<span class="small">…</span>'}</p>`).join('');
+      const h = (s.pred || []).concat(s.polja.map((f, i) => [v[i], f.slog]).filter((x) => x[1] !== 'Navadno' && x[0]));
+      navl.innerHTML = h.length ? h.map((x) => `<div class="nv ${scls(x[1])}${(s.pred || []).includes(x) ? '' : ' moj'}">${esc(x[0])}</div>`).join('') : '<div class="small">Tu se pokažejo naslovi.</div>';
+    }
+    const besede = (t) => t.split(/\s+/).filter(Boolean).length;
+    const bes = (n) => n + ' ' + (n % 100 === 1 ? 'beseda' : n % 100 === 2 ? 'besedi' : n % 100 === 3 || n % 100 === 4 ? 'besede' : 'besed');
+    function napaka(f, t, vse) {
+      const ime = f.slog === 'Navadno' ? 'Odstavek' : `Naslov (${f.slog})`;
+      if (!t) return `${ime} je še prazen. Napiši ga.`;
+      if (f.zgled && t.toLowerCase() === f.zgled.toLowerCase()) return `${ime}: to je primer. Napiši <b>svoje</b> besede.`;
+      if (/^[a-zčšžćđ]/.test(t)) return `${ime} se začne z <b>veliko začetnico</b>.`;
+      if (f.slog !== 'Navadno') {
+        if (/\n/.test(t)) return `${ime} je ena sama vrstica.`;
+        if (/[.!?]$/.test(t)) return `${ime} nima pike na koncu. Naslov ni poved, je kažipot.`;
+        if (besede(t) > 6) return `${ime} je predolg (${bes(besede(t))}). Naslov je kratek: največ 6 besed. Razlago daj v odstavek.`;
+        if (vse.filter((x) => x.toLowerCase() === t.toLowerCase()).length > 1) return 'Dva naslova sta enaka. Vsak del besedila ima svoj naslov.';
+        return '';
+      }
+      if (/\n/.test(t)) return 'V odstavku si pritisnil/a <b>Enter</b> (glej ¶ v predogledu). Odstavek je ena celota: vrstico prelomi Word sam. Enter pobriši.';
+      if (!/[.!?]$/.test(t)) return 'Odstavek je iz povedi, zato se konča s <b>piko</b>.';
+      const p = (t.match(/[.!?](\s|$)/g) || []).length;
+      if (p < (f.povedi || 1)) return `Odstavek ima ${p} ${p === 1 ? 'poved' : 'povedi'}. Napiši vsaj <b>${f.povedi}</b> povedi o svojem naslovu.`;
+      if (besede(t) < (f.besed || 1)) return `Odstavek je prekratek (${bes(besede(t))}). Napiši vsaj <b>${f.besed}</b> besed: povej, kaj, kje ali zakaj.`;
+      return '';
+    }
+    w.querySelector('.go2').onclick = () => {
+      const v = val(); poskusi++;
+      E.forEach((x) => x.classList.remove('wrong'));
+      for (let i = 0; i < v.length; i++) {
+        const m = napaka(s.polja[i], v[i], v.filter((_, k) => s.polja[k].slog !== 'Navadno'));
+        if (m) { E[i].classList.add('wrong'); E[i].focus(); feedback('❌ ' + m, 'bad'); return; }
+      }
+      if (s.shrani) { try { localStorage.setItem(pisiKey(s.shrani), JSON.stringify(v)); } catch (e) {} }
+      E.forEach((x) => (x.readOnly = true));
+      done('✅ ' + (s.win || 'Tvoje besedilo je pripravljeno. Naslovi so kratki, odstavek je cel.'));
+    };
+    draw();
+    return { podatki: () => ({ besedilo: val() }),
+      solve: TEST ? () => { E.forEach((x, i) => { x.value = s.polja[i].zgled || 'Primer.'; }); draw(); } : null };
+  };
+  /* <div data-pisi="ime"></div> v html zaslona pokaže besedilo, ki ga je učenec napisal na zaslonu pisi s shrani:'ime'. */
+  function pisiPokazi(c) {
+    c.querySelectorAll('[data-pisi]').forEach((el) => {
+      const v = pisiBeri(el.dataset.pisi), sl = (el.dataset.slogi || '').split(',');
+      el.innerHTML = v && v.length ? '<div class="page pisiout">' + v.map((t, i) => `<p class="para ${scls(sl[i] || 'Navadno')}">${esc(t)}</p>`).join('') + '</div>'
+        : '<div class="warn">Svojega besedila tukaj ne vidim (morda delaš na drugem računalniku). Vrni se na prejšnji korak ali ga napiši na novo.</div>';
+    });
+  }
 
   /* ---------- zrcali: simetrija na mreži z barvami ----------
      {type:'zrcali', title, intro, os:'v'|'h', pol:['..R', ...], obrni:False, demo:False, hints}

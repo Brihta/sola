@@ -124,3 +124,12 @@ footer{display:flex;gap:10px;align-items:center;flex-wrap:wrap;border-top:3px so
 .opill{display:inline-block;background:#59C059;border:1px solid #389438;border-radius:12px;padding:0 6px;margin:0 2px}.cpill{display:inline-block;width:14px;height:14px;border-radius:50%;border:2px solid #fff;vertical-align:-2px}
 .risar .lw{stroke-dasharray:4 4}.risar .lb{stroke:#000;stroke-width:12;stroke-opacity:.18}
 .risar .oder{position:sticky;top:8px;align-self:flex-start}
+
+/* pisi: učenec piše svoje besedilo */
+.pform{flex:1 1 380px;display:flex;flex-direction:column;gap:10px}.pf{display:flex;flex-direction:column;gap:4px}.pl{font-size:16px;color:var(--mut)}
+.ptag{display:inline-block;font-size:14px!important;font-weight:700;background:var(--sky);border-radius:6px;padding:1px 8px;margin-right:4px}
+.pf input,.pf textarea{font:17px/1.4 Calibri,Arial,sans-serif;padding:8px 10px;border:2px solid #b9c6d3;border-radius:10px;width:100%;box-sizing:border-box;resize:vertical}
+.pf input:focus,.pf textarea:focus{border-color:var(--blue);outline:none}.pf .wrong{border-color:var(--bad);background:var(--badbg)}
+.pprev{margin-top:12px}.pprev .page{min-height:0}.pisi .para{cursor:default}.pil{color:var(--bad)}.nv.moj{background:var(--sun);border-radius:4px}
+.pisiout{margin:8px 0;min-height:0}.pisiout .para{cursor:default}
+.luk{display:inline-block;min-width:90px;border-bottom:2px solid var(--blue);color:transparent;text-align:center}.luk.vidi{color:var(--bad)}
